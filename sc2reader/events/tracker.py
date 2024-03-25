@@ -1,7 +1,9 @@
 import functools
+import re
 
 from sc2reader.events.base import Event
 from sc2reader.utils import Length
+from termcolor import colored
 
 clamp = functools.partial(max, 0)
 
@@ -26,10 +28,33 @@ class TrackerEvent(Event):
         pass
 
     def _str_prefix(self):
-        return f"{Length(seconds=int(self.frame / 16))}\t "
+        return f"{Length(seconds=int(self.frame / 22.5))}\t "
 
     def __str__(self):
         return self._str_prefix() + self.name
+    
+    def replaceStrings(self , input, split=False):
+        replacements = {
+            "Player 1 - ": "",
+            "Player 2 - ": "",
+            " (Terran)": "",
+            " (Zerg)": "",
+            " upgrade completed": ""
+        }
+
+        source_string = str(input)
+
+        for old, new in replacements.items():
+            source_string = source_string.replace(old, new)
+        
+        pattern = r"\[\w+\]"
+
+        source_string = re.sub(pattern, "", source_string)
+        if split:
+            source_string = re.sub(r'(?<=[a-z])([A-Z0-9])|^[A-Z]', lambda match: (' ' if match.start() != 0 else '') + match.group(0), source_string)
+
+
+        return source_string
 
 
 class PlayerSetupEvent(TrackerEvent):
@@ -272,7 +297,42 @@ class PlayerStatsEvent(TrackerEvent):
         )
 
     def __str__(self):
-        return self._str_prefix() + f"{str(self.player): >15} - Stats Update"
+        return (
+        f"\n Time: {self._str_prefix()}"+
+        f"\n Player: {self.player}"+
+        f"\n Current Minerals: {self.minerals_current}" +  
+        f"\n Current Gas: {self.vespene_current}" + 
+        f"\n Min Col Rate: {self.minerals_collection_rate}" + 
+        f"\n Gas Col Rate: {self.vespene_collection_rate}" + 
+        f"\n Workers: {self.workers_active_count}" + 
+        f"\n Army min: {self.minerals_used_current_army}" + 
+        f"\n Army gas: {self.vespene_used_current_army}" +
+        f"\n Economy min: {self.minerals_used_current_economy}" + 
+        f"\n Economy gas: {self.vespene_used_current_economy}" + 
+        f"\n Tech min: {self.minerals_used_current_technology}" + 
+        f"\n Tech gas: {self.vespene_used_current_technology}") 
+    
+    
+    def getJson(self):
+
+        time = self._str_prefix().replace(".",":").strip()
+        player = self.replaceStrings(self.player)
+        return (
+            f"00:{time};"+
+            f"{player};"+
+            f"{time} {player};"+
+            f"{self.minerals_current};" +  
+            f"{self.vespene_current};" + 
+            f"{self.minerals_collection_rate};" + 
+            f"{self.vespene_collection_rate};" + 
+            f"{self.workers_active_count};" + 
+            f"{self.minerals_used_current_army};" + 
+            f"{self.vespene_used_current_army};" +
+            f"{self.minerals_used_current_economy};" + 
+            f"{self.vespene_used_current_economy};" + 
+            f"{self.minerals_used_current_technology};" + 
+            f"{self.vespene_used_current_technology};" 
+        )
 
 
 class UnitBornEvent(TrackerEvent):
@@ -334,9 +394,9 @@ class UnitBornEvent(TrackerEvent):
             self.location = (self.x, self.y)
 
     def __str__(self):
-        return self._str_prefix() + "{: >15} - Unit born {}".format(
-            str(self.unit_upkeeper), self.unit
-        )
+        return self._str_prefix() + colored("{: >15} - Unit born {} at {}".format(
+            str(self.unit_upkeeper), self.unit, self.location
+        ),"cyan")
 
 
 class UnitDiedEvent(TrackerEvent):
@@ -409,9 +469,9 @@ class UnitDiedEvent(TrackerEvent):
                 )
 
     def __str__(self):
-        return self._str_prefix() + "{: >15} - Unit died {}.".format(
+        return self._str_prefix() + colored("{: >15} - Unit died {}.".format(
             str(self.unit.owner), self.unit
-        )
+        ),"red")
 
 
 class UnitOwnerChangeEvent(TrackerEvent):
@@ -509,6 +569,9 @@ class UpgradeCompleteEvent(TrackerEvent):
             str(self.player), self.upgrade_type_name
         )
 
+    def getJson(self):
+        return "00:" + self._str_prefix().replace(".",":").strip() + ";" + self.replaceStrings(self.player) + ";" + self.replaceStrings(self.upgrade_type_name, True).strip() + ";"
+
 
 class UnitInitEvent(TrackerEvent):
     """
@@ -564,9 +627,20 @@ class UnitInitEvent(TrackerEvent):
             self.location = (self.x, self.y)
 
     def __str__(self):
-        return self._str_prefix() + "{: >15} - Unit initiated {}".format(
-            str(self.unit_upkeeper), self.unit
+        #new class printer for all events etc
+        return self._str_prefix() + "{: >15} - Unit initiated {} at {}".format(
+            str(self.unit_upkeeper), self.unit, self.location
         )
+    
+    def getCleanUnitName(self, splitName = True):
+        return self.replaceStrings(self.unit, splitName).strip()
+    
+    def getCleanTime(self):
+        return "00:" + self._str_prefix().replace(".",":").strip()
+
+    def getJson(self):
+        return self.getCleanTime() + ";" + self.replaceStrings(self.unit_upkeeper) + ";" + self.getCleanUnitName(False) + ";" + self.getCleanUnitName()+ ";" 
+
 
 
 class UnitDoneEvent(TrackerEvent):

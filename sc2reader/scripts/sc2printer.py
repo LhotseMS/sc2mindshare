@@ -11,7 +11,7 @@ from sc2reader.exceptions import ReadError
 def printReplay(filepath, arguments):
     """Prints summary information about SC2 replay file"""
     try:
-        replay = sc2reader.load_replay(filepath, debug=True)
+        replay = sc2reader.load_replay(filepath, load_level=4)
 
         if arguments.map:
             print(f"   Map:      {replay.map_name}")
@@ -46,6 +46,8 @@ def printReplay(filepath, arguments):
         if arguments.version:
             print(f"   Version:  {replay.release_string}")
 
+        print(replay.tracker.events)
+        
         print
     except ReadError as e:
         raise
@@ -164,7 +166,7 @@ def main():
     s2gs_args.add_argument(
         "--builds",
         action="store_true",
-        default=False,
+        default=True,
         help="print(player build orders (first 64 items) [default off]",
     )
 
