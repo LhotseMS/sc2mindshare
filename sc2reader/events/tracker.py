@@ -19,7 +19,7 @@ class TrackerEvent(Event):
         self.frame = frames % 2**32
 
         #: The second of the game (game time not real time) this event was applied
-        self.second = self.frame >> 4
+        self.second = int(self.frame / 22.4) # self.frame >> 4
 
         #: Short cut string for event class name
         self.name = self.__class__.__name__
@@ -28,11 +28,12 @@ class TrackerEvent(Event):
         pass
 
     def _str_prefix(self):
-        return f"{Length(seconds=int(self.frame / 22.5))}\t "
+        return f"{Length(seconds=int(self.frame / 22.4))}\t "
 
     def __str__(self):
         return self._str_prefix() + self.name
     
+    # modify data for JSON a bit
     def replaceStrings(self , input, split=False):
         replacements = {
             "Player 1 - ": "",
@@ -393,6 +394,9 @@ class UnitBornEvent(TrackerEvent):
             self.y = self.y * 4
             self.location = (self.x, self.y)
 
+    def isCounted(self):
+        return self.unit.type not in [845] #845=InvisibleTargetDummy
+
     def __str__(self):
         return self._str_prefix() + colored("{: >15} - Unit born {} at {}".format(
             str(self.unit_upkeeper), self.unit, self.location
@@ -468,9 +472,19 @@ class UnitDiedEvent(TrackerEvent):
                     self.killing_unit_index << 18 | self.killing_unit_recycle
                 )
 
-    def __str__(self):
-        return self._str_prefix() + colored("{: >15} - Unit died {}.".format(
-            str(self.unit.owner), self.unit
+    @property
+    def player(self):
+        return self.unit.owner
+
+    def isCounted(self):
+        return self.countableDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
+    
+    def countableDeath(self): 
+        return (self.unit.is_army or self.unit.name in ["LurkerBurrowed"]) # and e.unit.type not in [189,1075,158,431,108]
+    
+    def __str__(self):  
+        return self._str_prefix() + colored("{} - Unit died {: >15} at {}.".format(
+            self.unit.name, str(self.unit.owner), self.location
         ),"red")
 
 

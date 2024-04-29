@@ -18,6 +18,7 @@ import sys
 
 import argparse
 import sc2reader
+import sc2reader.mindshare.detectors
 from sc2reader.events import *
    
 
@@ -139,11 +140,15 @@ def processFile(filename):
 
     print(replay.map.map_info)
 
+    events = replay.events
+    # printIntervalAll(0*60,3*60,events)
+    # printSomeEvents(events)
+    BattleDetector(replay)
+
     # Allow picking of the player to 'watch'
     #if args.player:
     #    events = replay.player[args.player].events
     #else:
-    events = replay.events
         
     # printUnits(replay)
     #print(.items())
@@ -151,28 +156,55 @@ def processFile(filename):
     # for unt in u:
     #     print(unt)
     
-    printEventsOfInterest(replay, replay.events)
+    # printEventsOfInterest(replay, replay.events)
     
     # checkIteration(1705, replay)
-    #BattleDetector(replay)
+    
     
     # Allow specification of events to `show`
     # Loop through the events
+    
+
+
+def printIntervalAll(start, finish, events):
+
+    a = sorted(events, key=lambda event: event.second)
+
+    for event in a:
+        if event.second >= start and event.second<= finish:
+            if isinstance(event, UnitBornEvent) or isinstance(event, UnitDiedEvent):
+                if event.isCounted():
+                    print(event)    
+            elif (isinstance(event, TargetUnitCommandEvent)
+                or isinstance(event, TargetPointCommandEvent)
+                or isinstance(event, UpdateTargetPointCommandEvent)
+                or isinstance(event, UpdateTargetUnitCommandEvent)
+                or isinstance(event, SelectionEvent)
+                or isinstance(event, ControlGroupEvent)
+                or isinstance(event, CommandEvent)):
+                print(event)
+
+def printSomeEvents(events):
     for event in events:
 
-        if (
+        if hasattr(event,"pid") and event.pid == 1 and (
             isinstance(event, TargetUnitCommandEvent)
             or isinstance(event, TargetPointCommandEvent)
             or isinstance(event, UpdateTargetPointCommandEvent)
             or isinstance(event, UpdateTargetUnitCommandEvent)
             or isinstance(event, CommandEvent)
+            or isinstance(event, CameraEvent)
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
         ):
             u = 2
+            print(event)
             
+        elif isinstance(event, UnitDiedEvent) and event.countableDeath():
+            if event.unit.__str__().startswith("Lurker"):
+                print(event)
         elif isinstance(event, SelectionEvent):
             # print(f"\n NEW UNITS {event.new_units} {event.second}")
             
@@ -180,6 +212,8 @@ def processFile(filename):
             # getch()
             # if args.bytes:
             #     print("\t" + event.bytes.encode("hex"))
+
+
 
 def printEventsOfInterest(replay, events):
     
@@ -194,8 +228,7 @@ def printEventsOfInterest(replay, events):
                                     isinstance(v, UnitDoneEvent))]:
         #if isinstance(e, UnitDoneEvent):
         if not e.unit.owner in bases:
-            bases[e.unit.owner] = list()
-            
+            bases[e.unit.owner] = list()            
         
         if e.unit.name in {"Hatchery","Hive","Lair","Nexus"}:
             if not e.unit in bases[e.unit.owner]:
@@ -230,6 +263,16 @@ def printEventsOfInterest(replay, events):
         
     #printDict(d)
     printDict(bases)
+
+
+
+def printControlGroups(events):
+    
+    for e in [v for v in events if (isinstance(v, ControlGroupEvent))]:
+        
+        if (isinstance(e, SetControlGroupEvent) 
+            or isinstance(e, StealControlGroupEvent)):
+            print(e.getJson())
 
 def printUpgrades(events):
     #here I bent it a lot

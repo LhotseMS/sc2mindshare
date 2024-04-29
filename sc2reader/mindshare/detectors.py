@@ -1,5 +1,6 @@
 import datetime
 from sc2reader.events import *
+from sc2reader.data import *
 from sc2reader.events.tracker import UnitDiedEvent
 from sc2reader.mindshare.battle import Battle, printDict
 from sc2reader.mindshare.game import ControlGroup
@@ -8,42 +9,52 @@ from resources import Replay
 
 class ControlGroupDetector():
     
-    def __init__(self, replay : Replay) -> None:
+    def __init__(self, events, start = 0, finish = 1000000) -> None:
         
         self.CONTROL_GROUPS = {0:{},1:{}}
         
         x = 0 
         
-        self.lastSelection = {}
-        
-        for e in [v for v in replay.events]:
+        self.lastSelection = {0:list(),1:list()}
+                
+        for e in [v for v in events if v.second >= start and v.second<= finish]:
             if x > 500:
                 break
             
             #hold last selection event for a player
             #when control grp command comes create control group object
+
+            # selection even is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
             
-            if isinstance(e,SelectionEvent):
-                self.lastSelection[e.pid] = e
-            
-            #elif isinstance(e, SetControlGroupEvent):
-            #    self.updateControlGroup(e)
-                
+            if isinstance(e, SelectionEvent):
+                self.lastSelection[e.pid].add(e)
+            elif isinstance(e, SetControlGroupEvent):
+                self.updateCG(e)
+            elif isinstance(e, StealControlGroupEvent):
+                self.removeUnitsFromOtherCGs(e)
+                self.updateCG(e)
+
+
             x = x+1
             print(e)
         
         pass
 
-    def updateControlGroup(self, e : SetControlGroupEvent):
+    def removeUnitsFromOtherCGs(self, unitIDs):
+        self = self
+
+    def updateCG(self, e : SetControlGroupEvent):
         
         if e.control_group in self.CONTROL_GROUPS[e.pid]:
             self.CONTROL_GROUPS[e.pid][e.control_group].update(self.lastSelection[e.pid])
         else:
             self.CONTROL_GROUPS[e.pid][e.control_group] = ControlGroup(self.lastSelection[e.pid], e)
         
-    
 
 class BattleDetector():
+
+    LOWER_BOUND = 2
+    UPPER_BOUND = 2
     
     def __init__(self, replay):
         
@@ -60,11 +71,7 @@ class BattleDetector():
         self.findBattles()
         
         pass
-    
-    @staticmethod
-    def countableDeaths(e): 
-        return isinstance(e, UnitDiedEvent) and e.unit.type not in [189,1075,158,431,108] and e.unit.is_army
-            
+                
     def findBattles(self):
         
         self.sortDeaths()
@@ -77,13 +84,22 @@ class BattleDetector():
             
             if self.battleStart == 0:
                 self.battleStart = self.currentSecond
-                print("AA")
+                # print("AA")
                 
-            print(f"{datetime.timedelta(seconds=self.currentSecond)} - {datetime.timedelta(seconds=self.previousSecond)} - {datetime.timedelta(seconds=self.battleStart)}")
+            # print(f"{datetime.timedelta(seconds=self.currentSecond)} - {datetime.timedelta(seconds=self.previousSecond)} - {datetime.timedelta(seconds=self.battleStart)}")
             
-            if self.previousSecond != -1 and self.previousSecond + 2 < self.currentSecond:
-                print("BB")
-                battles.append(Battle(self.battleStart, self.previousSecond, self.replay, self.secondsOfBattle))
+            if self.previousSecond != -self.LOWER_BOUND and self.previousSecond + self.UPPER_BOUND < self.currentSecond:
+                # print("BB")
+                battles.append(
+                    Battle(
+                        self.replay.players[0],
+                        self.replay.players[1],
+                        self.battleStart, 
+                        self.previousSecond, 
+                        [e for e in self.replay.events 
+                            if e.second >= self.battleStart - self.LOWER_BOUND and 
+                            e.second<= self.previousSecond + self.UPPER_BOUND ], 
+                        self.secondsOfBattle))
                 self.resetBuffers()
                  
             if self.currentKeyFree >= 0 :
@@ -91,22 +107,28 @@ class BattleDetector():
             else:
                 self.shiftBuffers()
                         
-            self.secondsOfBattle.append(SecondOfaDying(self.currentSecond, self.currentDeathEvents, self.localCounts))  
+            self.secondsOfBattle.append(SecondOfDying(self.currentSecond, self.currentDeathEvents, self.localCounts))  
             
             self.previousSecond = self.currentSecond
             #if battles.__len__() > 10:
                 #break
             
-        # print(battles[0])    
-        for b in [t for t in battles if t.p1dc + t.p2dc > 10]:
+        x = 0
+        print(battles.__len__())    
+        for b in [t for t in battles]: #  
             # if b.p1dc > 10 or b.p2dc > 10:
-            getch()
-            print(b)   
+
+            print(b)
+            x = x + 1
+            
+            #if x > 10:
+             #   break
+            getch()   
             
         return battles
     
     def sortDeaths(self):
-        unitDeathEvents = [e for e in self.replay.events if BattleDetector.countableDeaths(e)] #not larva add drone deaths?
+        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableDeath()] #not larva add drone deaths?
         
         self.deathsByTime = {}
         for e in unitDeathEvents:
@@ -155,7 +177,7 @@ class BattleDetector():
 
 
         
-class SecondOfaDying():
+class SecondOfDying():
 
     def __init__(self, sec, events, deathProximity):
         self.events = events

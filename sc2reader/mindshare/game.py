@@ -5,7 +5,11 @@ from resources import Replay
 
 class ControlGroup:
     def __init__(self, se : SelectionEvent, ce : ControlGroupEvent) -> None:
-        self.se = se
+        
+        self.cg_no = ce.control_group
+        self.pid = ""
+        self.player = se.playerName
+        
         self.no = ce.control_group
         
         self.unitsHistory = list()
@@ -17,7 +21,7 @@ class ControlGroup:
     @property
     def currentUnits(self):
         return self.unitsHistory[self.unitsHistory.count-1]
-        
+            
     def update(self, se : SelectionEvent):
         self.addUnits(se)
         pass
