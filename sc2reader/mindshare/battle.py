@@ -1,12 +1,15 @@
 # add focus fire, a moves, abilities
 import datetime
-import math
 
 from sc2reader.data import *
 from sc2reader.events.eventTypes import *
 from sc2reader.events.game import *
 from sc2reader.events.tracker import *
+from sc2reader.mindshare import *
 from termcolor import colored
+
+
+from sc2reader.mindshare.mindshare import View
 
 
 class Battle():
@@ -17,9 +20,14 @@ class Battle():
 
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD):
         #:
+        self.events = events
+
         self.startSec = startSec
         self.endSec = endSec
-        self.events = events
+        self.startTime = datetime.timedelta(seconds=self.startSec)
+        self.endTime = datetime.timedelta(seconds=self.endSec)
+
+
         self.secondsOD = secondsOD
         self.player1 = p1
         self.player2 = p2
@@ -30,9 +38,15 @@ class Battle():
         self.combatAbilitiesByPlayer = self.initDictByPlayer()
         self.nonCombatAbilitiesByPlayer = self.initDictByPlayer()
         self.cameraByPlayer = self.initDictByPlayer()
+        self.controlGroupsUsed = self.initDictByPlayer()
+
+        self.killersTypes = self.initDictByPlayer(2)
+        self.combatAbilitiesTypes = self.initDictByPlayer(2)
+        self.nonCombatAbilitiesTypes = self.initDictByPlayer(2)
 
         self.screens = self.initDictByPlayer()
 
+        self.supplyLost = self.initDictByPlayer(0)
         
         # BACKLOG
         # - pair CGs to actions
@@ -41,6 +55,13 @@ class Battle():
         # TODO create comparators for each event type, so that we can limit multi events and duplicated events
         # TODO evaluate who won the battle, generate simple text descriptions based on numbers
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
+        # creep spread tracker
+        # map images
+        # player view images - screenshoting timer app
+
+        # details 
+        # UnitTypeChangeEvent - buildings upgrading
+        # Unit born KD8Charge [3C00002] at (157, 73)
 
 
         # TODO EDGE CASE too long battle 1248-1382 Player 2 - Piliskner (Zerg)
@@ -64,6 +85,7 @@ class Battle():
 
                 try:            
                     self.deadUnitsByPlayer[e.unit.owner].append(e)
+                    self.supplyLost[e.unit.owner] += e.unit.supply
 
                     self.losses[e.unit.owner].minerals = self.losses[e.unit.owner].minerals + e.unit.minerals
                     self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + e.unit.vespene
@@ -96,10 +118,7 @@ class Battle():
         
         # Dict of all locations that of selected event types
         self.locations = self.initDictByPlayer()
-        
-        
-        self.battleArea = (minX,minY,maxX,maxY,abs(minX-maxX),abs(minY-maxY))
-        
+               
         # print(f"minmax {minX} {maxX}, {minY} {maxY}")
         
         self.playersBattleStats = {}
@@ -110,6 +129,7 @@ class Battle():
         self.playersBattleStats[self.statsEventStartSecond] = {}
         self.playersBattleStats[self.statsEventEndSecond] = {}
 
+        playerNames = {self.player1.name , self.player2.name}
 
 
         #group multiclicks
@@ -124,7 +144,7 @@ class Battle():
                 screenEventsBuffer[e.player].append(e)
 
                 if e.has_ability:
-                    if e.ability_name in COMBAT_ABILITIES:
+                    if e.isCombat():
                         self.combatAbilitiesByPlayer[e.player].append(e)
                     else:
                         self.nonCombatAbilitiesByPlayer[e.player].append(e)
@@ -145,6 +165,7 @@ class Battle():
                         maxY = e.location[1]                 
                     self.locations[e.player].append(e.location)
 
+                    self.countEvent(e)
                     # print(self.replay.players)
 
             elif isinstance(e, SetControlGroupEvent) or isinstance(e, StealControlGroupEvent):
@@ -154,15 +175,16 @@ class Battle():
                 
 
 
-            # TOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOOOOO1: TODO: Don't create new screens if the user returned to the previous location, 
+            #  TODO: Don't create new screens if the user returned to the previous location, 
             # add function isView in screen to add new camera events to existing screen instead of adding a new one
             # piliskner has no camera events in battle bug    
-            elif isinstance(e, CameraEvent) and e.isUnique(self.getLastEvent(lambda x: isinstance(x,CameraEvent))):
+            elif isinstance(e, CameraEvent) and e.isPlayer(playerNames) and e.isUnique(self.getLastEvent(lambda x: isinstance(x,CameraEvent))):
                 self.cameraByPlayer[e.player].append(e)
                 self.eventsByPlayer[e.player].append(e)
 
-                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > 3 or abs(prevCameraEvent[e.player].y - e.y) > 3):
-                    self.screens[e.player].append(Screen(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
+                # if the next camera event is futther than 3 TODO to constant
+                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > 3 and abs(prevCameraEvent[e.player].y - e.y) > 3):
+                    self.screens[e.player].append(View(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
 
                     screenEventsBuffer[e.player] = list()
 
@@ -173,21 +195,25 @@ class Battle():
 
                 prevCameraEvent[e.player] = e
                 
-                
-
-
-
             #lif isinstance(e, CommandManagerStateEvent):
             #    e.commandEvent = lastCommandEvent  
             #    self.eventsByPlayer[e.player].append(e)
 
-            elif (isinstance(e, ControlGroupEvent) or 
-                isinstance(e, SelectionEvent)):                 # TODO check and pair selections only of own units with CGs etc
+            elif isinstance(e, ControlGroupEvent):
+                self.eventsByPlayer[e.player].append(e) 
+
+                if e.update_type == 3:
+                    self.controlGroupsUsed[e.player].append(e.control_group)
+
+
+                # checking if the event belongs to player and not observer, id seesm not to be unique across these 2 groups
+            elif isinstance(e, SelectionEvent) and e.isPlayer(playerNames):                 # TODO check and pair selections only of own units with CGs etc
                 self.eventsByPlayer[e.player].append(e)
 
             elif isinstance(e, UnitDiedEvent) and e.countableDeath(): 
                 self.eventsByPlayer[e.unit.owner].append(e)
                 screenEventsBuffer[e.player].append(e)
+                self.countEvent(e)
 
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","red"))
 
@@ -199,17 +225,31 @@ class Battle():
                 elif e.second == self.statsEventEndSecond:
                     if self.playersBattleStats[self.statsEventEndSecond].get(e.player) == None:
                         self.playersBattleStats[self.statsEventEndSecond][e.player] = list()
-                    self.playersBattleStats[self.statsEventEndSecond][e.player] .append(e)
+                    self.playersBattleStats[self.statsEventEndSecond][e.player].append(e)
 
 
                 # TODO ADD DEATH EVENTS SO WE CAN REPAIR THE DCs
-                    
 
-    
+        
+        self.battleArea = (minX,minY,maxX,maxY,abs(minX-maxX),abs(minY-maxY))
+
+
+    def countEvent(self, e):
+        if isinstance(e, TargetPointCommandEvent) or isinstance(e, TargetUnitCommandEvent):
+            if e.isCombat():
+                self.combatAbilitiesTypes[e.player][e.replaceStrings(e.ability_name, True)] = 1
+            else:
+                self.nonCombatAbilitiesTypes[e.player][e.replaceStrings(e.ability_name, True)] = 1
+        elif isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit):
+            self.killersTypes[e.player][e.replaceStrings(e.killing_unit, True) + "killed " + e.replaceStrings(e.unit, True)] = 1
+        
+
     def assignEventToScreen(self, event) -> bool:
         for s in self.screens[event.player]:
-            if not s.tryAddEvent(event):
-                print("Event not added " + event)
+            if s.tryAddEvent(event):
+                return True
+        
+        return False
                 
 
     def printPlayerInfo(self, player):
@@ -218,43 +258,109 @@ class Battle():
         print(self.losses[player])
         
     # TODO move to util class    
-    def initDictByPlayer(self):
+    def initDictByPlayer(self, type = 1):
         d = {}
-        d[self.player1] = list()
-        d[self.player2] = list()
+
+        if type == 0:
+            d[self.player1] = 0 
+            d[self.player2] = 0
+        elif type == 1:
+            d[self.player1] = list()
+            d[self.player2] = list()
+        elif type == 2:
+            d[self.player1] = {}
+            d[self.player2] = {}
+
         return d
     
+    # number of dead units, killer units + what they killed, attack command targets
+    def getPlayerBattleDesc(self, player):
+        playerEvents = ""
+
+        cgs = ""
+        if len(self.controlGroupsUsed[player]) > 0:
+            cgs += "\ncontrol group(s): "
+            for cg in self.controlGroupsUsed[player]:
+                cgs += str(cg) + ", "
+        
+        kills = ""
+        if len(self.killersTypes[player]) > 0:
+            kills += "\nkill(s): "
+            for key, value in self.killersTypes[player].items():
+                kills += key + ", "
+
+        cas = ""
+        if len(self.combatAbilitiesTypes[player]) > 0:
+            cas += "\ncombat: "
+            for key, value in self.combatAbilitiesTypes[player].items():
+                cas += key + ", "
+              
+        ncas = ""  
+        if len(self.nonCombatAbilitiesTypes[player]) > 0:
+            ncas += "\nnon-combat: "
+            for key, value in self.nonCombatAbilitiesTypes[player].items():
+                ncas += key + ", "
+
+        if cgs != "" or cas != "" or ncas != "":
+            playerEvents = "\n\n{}".format(player.name)
+
+
+        return "{} {} {} {} {}".format(playerEvents, kills, cgs, cas, ncas)
+
+    
+    # TODO MS interface
+    def getNodeDesc(self):
+        desc = ""
+
+        if self.supplyLost[self.player1] > 0:
+            desc += "{} lost {} units {} supply.\n".format(
+                self.player1.name, 
+                len(self.deadUnitsByPlayer[self.player1]),
+                self.supplyLost[self.player1])
+        
+        if self.supplyLost[self.player2] > 0:
+            desc += "{} lost {} units {} supply.\n".format(
+                self.player2.name, 
+                len(self.deadUnitsByPlayer[self.player2]),
+                self.supplyLost[self.player2])
+        
+        desc += "\nFrom {} to {}".format(self.startTime, self.endTime)
+        
+        return "{} {} {}".format(desc, self.getPlayerBattleDesc(self.player1), self.getPlayerBattleDesc(self.player2))
+
+    def getNodeName(self):
+        pass
+
+    def getJson(self):
+        return self.getNodeDesc()
+
     def __str__(self):        
         
         # FULL info
         #print(f"BATTLE===={colored(self.player1, 'green')} vs {colored(self.player2, 'cyan')}=========={datetime.timedelta(seconds=self.startSec)}-{datetime.timedelta(seconds=self.endSec)}=={self._strArea()}==========================================")
         #print(f"=========={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}======{self.battleArea}=====================================================================================")
         
-        # Dev info
-        print(f"BATTLE={colored(datetime.timedelta(seconds=self.startSec),"green")}-{colored(datetime.timedelta(seconds=self.endSec),"green")}=={self._strArea()}={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}==={self.battleArea}")        
+        print(f"BATTLE={colored(self.startTime,"green")}-{colored(self.endTime,"green")}=={self._strArea()}={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}==={self.battleArea}")        
         
-        printDict(self.locations)
-        printDict(self.cameraByPlayer)
-        printDict(self.eventsByPlayer)
-        printDict(self.screens)
+
+        # create nodes for
+        # locations: recognize if its a macro base or another one
+        ### Name: number Unit names vs based on number of units dead, died at base name/ quadrant of map
+        # detail of kills: dead unit, killing unit into desc: x killed y /eol
+        # control groups involved - each CG is a node desc: list of units for CG 
+
+
+        print(self.getJson())
+        #printDict(self.killersTypes)
+        #printDict(self.combatAbilitiesTypes)
+        #printDict(self.nonCombatAbilitiesTypes)
+        #printDict(self.combatAbilitiesByPlayer)
+        #printDict(self.nonCombatAbilitiesByPlayer)
+        #printDict(self.locations)
+        #printDict(self.cameraByPlayer)
+        #printDict(self.eventsByPlayer)
+        #printDict(self.screens)
         
-        # self.printPlayerInfo(self.player1)
-        # self.printPlayerInfo(self.player2)
-        
-        # print(self._strActionsMap())
-        # printDict(self.eventsByPlayer)
-        # printDict(self.deadUnitsByPlayer)
-        
-        # printDict(self.eventsByPlayer)
-        # printDict(self.combatAbilitiesByPlayer)
-        
-        # if self.battleRectangle[4] > 20 or self.battleRectangle[5] > 20:
-        #     print("====================================================================================================================")
-        # printDict(self.deadUnitsByPlayer)
-        #     printDict(self.killersByPlayer, "Killers====================================================")
-        #     printDict(self.combatAbilitiesByPlayer, "Abilities===================================================")
-        #     printDict(self.cameraByPlayer, "Cameras ======")
-            #  printDict(self.nonCombatAbilitiesByPlayer, "NCA===================================================")
         return ""
 
     def _strArea(self):
@@ -360,70 +466,6 @@ def printDict(dict):
             print(e)
 
 
-class Screen():
-
-    SCREEN_SIZE = 15 #distance from the center to corner of the screen, exprimentaly determined
-    SCREEN_RATIO = 30/22
-
-    def __init__(self, cameraEvents, events = list()):
-        self.cameraEvents = cameraEvents
-        self.events = list()
-
-
-        self.vectors = list()
-        for i in range(len(self.cameraEvents) - 2):
-            self.vectors.append((
-                abs(self.cameraEvents[i].x - self.cameraEvents[i+1].x), 
-                abs(self.cameraEvents[i].y - self.cameraEvents[i+1].y)))  
-            
-        for e in events:
-            self.tryAddEvent(e)
-        
-        self.startTime = self.firstView.second
-        self.endTime = self.lastView.second
-
-    @property
-    def duration(self):
-        return self.endTime - self.startTime
-    
-    @property
-    def firstView(self):
-        return self.cameraEvents[0]
-    
-    @property
-    def lastView(self):
-        return self.cameraEvents[len(self.cameraEvents) - 1]
-    
-    def tryAddEvent(self, event) -> bool:
-        if self.isEventOnScreen(event):
-            self.events.append(event)
-            return True
-
-        return False
-
-    def isEventOnScreen(self, event) -> bool:
-        for c in self.cameraEvents:
-            if self.isEventInView(event.x, event.y, c.x, c.y):
-                return True
-            
-        return False
-    
-    def isEventInView(self, ex, ey, cx, cy, aspect_ratio=1.0):
-        # Assume the rectangle's width to height ratio is w:h
-        # Calculate width and height using the given distance d
-        w = self.SCREEN_SIZE / math.sqrt(1 + (1/aspect_ratio)**2)
-        h = w * aspect_ratio
-
-        # Check bounds
-        inside_x = (cx - w) <= ex <= (cx + w)
-        inside_y = (cy - h) <= ey <= (cy + h)
-        
-        return inside_x and inside_y
-
-    # TODO consider location proximity computing functions on event
-    def __str__(self) -> str:
-        return f"Screen {self.firstView.location}-{self.lastView.location}:{len(self.vectors)}xE {self.duration}s"
-    
 class SummaryOfDeath():
     def __init__(self, minerals, gas, supply):
         self.minerals = minerals

@@ -1,5 +1,4 @@
 import functools
-import re
 
 from sc2reader.events.base import Event
 from sc2reader.utils import Length
@@ -33,31 +32,6 @@ class TrackerEvent(Event):
     def __str__(self):
         return self._str_prefix() + self.name
     
-    # modify data for JSON a bit
-    def replaceStrings(self , input, split=False):
-        replacements = {
-            "Player 1 - ": "",
-            "Player 2 - ": "",
-            " (Terran)": "",
-            " (Zerg)": "",
-            " upgrade completed": ""
-        }
-
-        source_string = str(input)
-
-        for old, new in replacements.items():
-            source_string = source_string.replace(old, new)
-        
-        pattern = r"\[\w+\]"
-
-        source_string = re.sub(pattern, "", source_string)
-        if split:
-            source_string = re.sub(r'(?<=[a-z])([A-Z0-9])|^[A-Z]', lambda match: (' ' if match.start() != 0 else '') + match.group(0), source_string)
-
-
-        return source_string
-
-
 class PlayerSetupEvent(TrackerEvent):
     """Sent during game setup to help us organize players better"""
 
@@ -394,6 +368,9 @@ class UnitBornEvent(TrackerEvent):
             self.y = self.y * 4
             self.location = (self.x, self.y)
 
+    def isPlayer(self, pids):
+        return pids.contain(self.upkeep_pid)
+
     def isCounted(self):
         return self.unit.type not in [845] #845=InvisibleTargetDummy
 
@@ -483,8 +460,8 @@ class UnitDiedEvent(TrackerEvent):
         return (self.unit.is_army or self.unit.name in ["LurkerBurrowed"]) # and e.unit.type not in [189,1075,158,431,108]
     
     def __str__(self):  
-        return self._str_prefix() + colored("{} - Unit died {: >15} at {}.".format(
-            self.unit.name, str(self.unit.owner), self.location
+        return self._str_prefix() + colored("{} - Unit died by {} {: >15} at {}.".format(
+            self.unit.name, self.killing_unit, str(self.unit.owner), self.location
         ),"red")
 
 
@@ -640,6 +617,13 @@ class UnitInitEvent(TrackerEvent):
             self.y = self.y * 4
             self.location = (self.x, self.y)
 
+    @property
+    def player(self):
+        return self.unit_upkeeper
+
+    def isCounted(self):
+        return True
+
     def __str__(self):
         #new class printer for all events etc
         return self._str_prefix() + "{: >15} - Unit initiated {} at {}".format(
@@ -677,6 +661,12 @@ class UnitDoneEvent(TrackerEvent):
 
         #: The unit object that was finished
         self.unit = None
+
+    
+    @property
+    def player(self):
+        return self.unit.owner
+
 
     def __str__(self):
         return self._str_prefix() + "{: >15} - Unit {} done".format(

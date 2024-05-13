@@ -5,11 +5,24 @@ from sc2reader.events.tracker import UnitDiedEvent
 from sc2reader.mindshare.battle import Battle, printDict
 from sc2reader.mindshare.game import ControlGroup
 
+from sc2reader.mindshare.mindshare import Base
+
 from resources import Replay
+
+locationDetector = None
+controlGroupDetector = None
+battleDetector = None
+
+@staticmethod
+def createDetectors(replay):
+    locationDetector = BaseDetector(replay)
+    battleDetector = BattleDetector(replay)
+    #controlGroupDetector = ControlGroupDetector(replay)
+
 
 class ControlGroupDetector():
     
-    def __init__(self, events, start = 0, finish = 1000000) -> None:
+    def __init__(self, replay, start = 0, finish = 1000000) -> None:
         
         self.CONTROL_GROUPS = {0:{},1:{}}
         
@@ -17,7 +30,7 @@ class ControlGroupDetector():
         
         self.lastSelection = {0:list(),1:list()}
                 
-        for e in [v for v in events if v.second >= start and v.second<= finish]:
+        for e in [v for v in replay.events if v.second >= start and v.second<= finish]:
             if x > 500:
                 break
             
@@ -50,6 +63,64 @@ class ControlGroupDetector():
         else:
             self.CONTROL_GROUPS[e.pid][e.control_group] = ControlGroup(self.lastSelection[e.pid], e)
         
+class BaseDetector():
+
+    def __init__(self, replay):
+
+        self.replay = replay
+        self.player1 = self.replay.players[0]
+        self.player2 = self.replay.players[1]
+
+        self.locations = self.initDictByPlayer()
+
+        self.findBases()
+    
+    def printLocations(self):
+        printDict(self.locations)
+
+    def findBases(self):
+        basesBuiltEvents = [e for e in self.replay.events if isinstance(e, UnitInitEvent) and e.unit.is_building and e.unit._type_class.name in {"Nexus","Hatchery","OrbitalCommand"}]
+        
+        for e in basesBuiltEvents:
+            self.processNewMainBase(e)
+
+    def addNewBase(self, e):
+        self.locations[e.player].append(Base(e, Base.BASE_NAMES_ORDER[len(self.locations[e.player])]))
+        
+    def processNewMainBase(self, e):
+        
+        for base in self.locations[e.player]:
+            if base.location == e.location:
+                base.newBase(e)
+                return
+
+        self.addNewBase(e)
+    
+    def getBaseOnLocation(self, e):
+
+        basesOnLocation = list()
+        for base in self.locations[e.player].items():
+            if base.isLocationOnScreen(e.location):
+                basesOnLocation.append(base)
+
+        return basesOnLocation
+
+
+    # TODO duplicate
+    def initDictByPlayer(self, type = 1):
+        d = {}
+
+        if type == 0:
+            d[self.player1] = 0 
+            d[self.player2] = 0
+        elif type == 1:
+            d[self.player1] = list()
+            d[self.player2] = list()
+        elif type == 2:
+            d[self.player1] = {}
+            d[self.player2] = {}
+
+        return d
 
 class BattleDetector():
 
@@ -71,7 +142,8 @@ class BattleDetector():
         self.findBattles()
         
         pass
-                
+
+
     def findBattles(self):
         
         self.sortDeaths()
@@ -98,7 +170,7 @@ class BattleDetector():
                         self.previousSecond, 
                         [e for e in self.replay.events 
                             if e.second >= self.battleStart - self.LOWER_BOUND and 
-                            e.second<= self.previousSecond + self.UPPER_BOUND ], 
+                            e.second<= self.previousSecond + self.UPPER_BOUND] , 
                         self.secondsOfBattle))
                 self.resetBuffers()
                  
@@ -128,11 +200,12 @@ class BattleDetector():
         return battles
     
     def sortDeaths(self):
+        # TODO the logic for identifying eligible UD events is all over the place, 3x?
         unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableDeath()] #not larva add drone deaths?
         
         self.deathsByTime = {}
         for e in unitDeathEvents:
-            # time = int(e.frame / 16)
+            
             if self.deathsByTime.get(e.second) == None:
                 self.deathsByTime[e.second] = list()
             self.deathsByTime[e.second].append(e)

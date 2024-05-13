@@ -1,6 +1,7 @@
 from sc2reader.utils import Length
 from sc2reader.events.base import Event
 from sc2reader.log_utils import loggable
+from sc2reader.events.eventTypes import *
 
 from itertools import chain
 
@@ -243,6 +244,31 @@ class CommandEvent(GameEvent):
         #: A reference to the other unit
         self.other_unit = None
 
+    def isCombat(self):
+        return self.ability_name in COMBAT_ABILITIES
+
+    def getJson(self):
+
+        str = ""
+        if self.ability_type == "TargetUnit":
+            if self.ability.name == "Attack":
+                str = "Targeted {}".format(self.target.name)
+            else:
+                str = "{} on {}".format(self.ability.name, self.target.name)
+        else:
+            if self.ability.name == "Attack":
+                str = "A move"
+            else:
+                str = "{}".format(self.ability.name)
+
+        if bool(self.flag["queued"]):
+            str += " Q"
+            
+        if bool(self.flag["minimap"]):
+            str += " M"
+
+        return str
+
     def __str__(self):
         string = self._str_prefix()
         if self.has_ability:
@@ -268,7 +294,7 @@ class CommandEvent(GameEvent):
         if bool(self.flag["minimap"]):
             string += " M"
 
-        return string
+        return string + str(self.__class__)
 
 
 class BasicCommandEvent(CommandEvent):
@@ -533,6 +559,9 @@ class SelectionEvent(GameEvent):
 
         #: Deprecated, see new_units
         self.objects = None
+    
+    def isPLayer(self, playerNames):
+        return self.playerName in playerNames
 
     def __str__(self):
         if self.new_units:
@@ -669,6 +698,9 @@ class CameraEvent(GameEvent):
 
         #: The current yaw of the camera
         self.yaw = data["yaw"]
+
+    def isPlayer(self, names) -> bool:
+        return self.playerName in names
 
     def __str__(self):
         return self._str_prefix() + "{} at ({}, {})".format(self.name, self.x, self.y)

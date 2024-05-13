@@ -8,7 +8,7 @@ from sc2reader.data import Unit
 from pprint import pprint
 from sc2reader.events import *
 from sc2reader.factories.plugins.replay import toDict
-from sc2reader.mindshare.detectors import BattleDetector, ControlGroupDetector
+from sc2reader.mindshare.detectors import BattleDetector, ControlGroupDetector, BaseDetector
 from termcolor import colored
 from pathlib import Path
 
@@ -24,7 +24,6 @@ from sc2reader.events import *
 
 # printer class
     
-
         
 
 def eventsWithoutPid(event):
@@ -135,15 +134,19 @@ def processFile(filename):
     for team in replay.teams:
         print(team)
         for player in team.players:
-            print(f"  {player}")
+            print(f"  {player} - {player.pid}")
     print("\n--------------------------\n\n")
 
     print(replay.map.map_info)
 
     events = replay.events
-    # printIntervalAll(0*60,3*60,events)
-    # printSomeEvents(events)
-    BattleDetector(replay)
+
+    sc2reader.mindshare.detectors.createDetectors(replay)
+
+
+    #printIntervalAll(0*60,10*60,events)
+    #printSomeEvents(events)
+
 
     # Allow picking of the player to 'watch'
     #if args.player:
@@ -172,7 +175,7 @@ def printIntervalAll(start, finish, events):
 
     for event in a:
         if event.second >= start and event.second<= finish:
-            if isinstance(event, UnitBornEvent) or isinstance(event, UnitDiedEvent):
+            if isinstance(event, UnitInitEvent) or isinstance(event, UnitDiedEvent):
                 if event.isCounted():
                     print(event)    
             elif (isinstance(event, TargetUnitCommandEvent)
@@ -182,7 +185,7 @@ def printIntervalAll(start, finish, events):
                 or isinstance(event, SelectionEvent)
                 or isinstance(event, ControlGroupEvent)
                 or isinstance(event, CommandEvent)):
-                print(event)
+                pass #print(event)
 
 def printSomeEvents(events):
     for event in events:
