@@ -368,6 +368,14 @@ class UnitBornEvent(TrackerEvent):
             self.y = self.y * 4
             self.location = (self.x, self.y)
 
+    @property
+    def player(self):
+        return self.unit_controller
+
+    @property
+    def pid(self):
+        return self.control_pid
+
     def isPlayer(self, pids):
         return pids.contain(self.upkeep_pid)
 
@@ -453,12 +461,20 @@ class UnitDiedEvent(TrackerEvent):
     def player(self):
         return self.unit.owner
 
+    @property
+    def pid(self):
+        return self.unit.owner.pid
+    
+    
     def isCounted(self):
-        return self.countableDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
+        return self.countableUnitDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
     
-    def countableDeath(self): 
-        return (self.unit.is_army or self.unit.name in ["LurkerBurrowed"]) # and e.unit.type not in [189,1075,158,431,108]
+    def countableUnitDeath(self): 
+        return ((self.unit.is_army or self.unit.name in ["LurkerBurrowed"]) and self.unit.name not in ["Broodling"]) # and e.unit.type not in [189,1075,158,431,108]
     
+    def buildingDeath(self):
+        return self.unit.is_building
+
     def __str__(self):  
         return self._str_prefix() + colored("{} - Unit died by {} {: >15} at {}.".format(
             self.unit.name, self.killing_unit, str(self.unit.owner), self.location
@@ -528,6 +544,11 @@ class UnitTypeChangeEvent(TrackerEvent):
 
         #: The the new unit type name
         self.unit_type_name = data[2].decode("utf8")
+
+    @property
+    def pid(self):
+        return self.unit.owner.pid
+
 
     def __str__(self):
         return self._str_prefix() + "{: >15} - Unit {} type changed to {}".format(
@@ -621,6 +642,10 @@ class UnitInitEvent(TrackerEvent):
     def player(self):
         return self.unit_upkeeper
 
+    @property
+    def pid(self):
+        return self.upkeep_pid
+
     def isCounted(self):
         return True
 
@@ -667,6 +692,9 @@ class UnitDoneEvent(TrackerEvent):
     def player(self):
         return self.unit.owner
 
+    @property
+    def pid(self):
+        return self.unit.owner.pid
 
     def __str__(self):
         return self._str_prefix() + "{: >15} - Unit {} done".format(
@@ -708,5 +736,17 @@ class UnitPositionsEvent(TrackerEvent):
                 y = y * 4
             self.positions.append((unit_index, (x, y)))
 
+    
+    #TODO -1 is a workaround, probably can't provide any reasonable data, this should always get excluded
+    @property
+    def player(self):
+        return -1
+
+    @property
+    def pid(self):
+        return -1
+
+
     def __str__(self):
+        print(self.units)
         return self._str_prefix() + "Unit positions update"

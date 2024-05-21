@@ -1,0 +1,2281 @@
+00.00    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.00   DarkWarrior     CameraEvent at (33.75, 27.5078125)
+00.00   Ultraman        CameraEvent at (145.25, 138.0078125)
+00.00   DarkWarrior     SelectionEvent10['3x Probe']
+00.00   Ultraman        SelectionEvent11['1x Hatchery']
+00.00   Ultraman        SelectionEvent13['3x Larva']
+00.00   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.00   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.00   Ultraman        SelectionEvent18['1x Egg']
+00.01   DarkWarrior     SelectionEvent26['1x Nexus']
+00.01   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.01   Ultraman        SelectionEvent27['1x Drone']
+00.01   DarkWarrior     CommandManagerStateEvent 3 - None
+00.01   Ultraman        Right Click - TargetUnit; Target: LabMineralField [01740001]; Location: (150.0, 138.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.01   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [00240001]; Location: (33.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.01   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [00240001]; Location: (33.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.01   DarkWarrior     CommandManagerStateEvent 7 - None
+00.01   Ultraman        SelectionEvent44['2x Drone']
+00.02   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.02   Ultraman        CommandManagerStateEvent 3 - None
+00.02   Ultraman        SelectionEvent64['1x Overlord']
+00.03   Ultraman        CG 4 Set
+00.03   Ultraman        Right Click - TargetPoint; Location: (77.358642578125, 80.093017578125, 40880) M<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.03   Ultraman        Right Click - TargetPoint; Location: (27.343505859375, 33.767333984375, 57264)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.03   Ultraman        CommandManagerStateEvent 5 - None
+00.03   DarkWarrior     CG 7 Set
+00.04   Ultraman        Right Click - TargetPoint; Location: (38.335693359375, 64.465087890625, 49072)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.04   Ultraman        CommandManagerStateEvent 6 - None
+00.04   Ultraman        SelectionEvent102['1x Hatchery']
+00.04   Ultraman        CameraEvent at (144.87109375, 137.78515625)
+00.04   Ultraman        CameraEvent at (144.74609375, 137.73046875)
+00.04   Ultraman        CameraEvent at (143.6875, 137.2578125)
+00.04   Ultraman        CameraEvent at (142.76953125, 136.9375)
+00.05   Ultraman        CameraEvent at (141.921875, 136.6875)
+00.05   Ultraman        CameraEvent at (141.4765625, 136.55859375)
+00.05   Ultraman        CameraEvent at (141.3359375, 136.50390625)
+00.05   Ultraman        CG 5 Set
+00.06   Ultraman        CameraEvent at (140.9140625, 136.50390625)
+00.06   Ultraman        CameraEvent at (138.390625, 136.50390625)
+00.06   Ultraman        CameraEvent at (132.85546875, 136.50390625)
+00.06   Ultraman        CameraEvent at (130.5078125, 136.50390625)
+00.06   Ultraman        CameraEvent at (124.9140625, 136.50390625)
+00.06   Ultraman        CameraEvent at (122.38671875, 136.50390625)
+00.06   Ultraman        CameraEvent at (119.91796875, 136.50390625)
+
+ Time: 00.07
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 35
+ Current Gas: 0
+ Min Col Rate: 293
+ Gas Col Rate: 0
+ Workers: 12
+ Army min: 0
+ Army gas: 0
+ Economy min: 1000
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.07
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 30
+ Current Gas: 0
+ Min Col Rate: 251
+ Gas Col Rate: 0
+ Workers: 12
+ Army min: 0
+ Army gas: 0
+ Economy min: 1050
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.07   Ultraman        CameraEvent at (114.4453125, 136.50390625)
+00.07   Ultraman        CameraEvent at (111.67578125, 136.50390625)
+00.07   Ultraman        CameraEvent at (107.70703125, 136.50390625)
+00.07   Ultraman        CameraEvent at (108.72265625, 136.71484375)
+00.07   Ultraman        CameraEvent at (111.328125, 137.1015625)
+00.07   Ultraman        CameraEvent at (111.96484375, 137.1171875)
+00.07   Ultraman        CameraEvent at (112.03515625, 137.1171875)
+00.07   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.08   DarkWarrior     CommandManagerStateEvent 12 - None
+00.08   Ultraman        CameraEvent at (141.3359375, 136.50390625)
+00.08   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.09   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.09   DarkWarrior     CommandManagerStateEvent 16 - None
+00.09   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.09   DarkWarrior     CommandManagerStateEvent 17 - None
+00.10   Ultraman        SelectionEvent224['1x Drone']
+00.10   DarkWarrior     CameraEvent at (35.5, 28.7578125)
+00.10   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.11    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+00.11   DarkWarrior     CameraEvent at (35.5, 26.57421875)
+00.11   DarkWarrior     CameraEvent at (35.5, 25.80078125)
+00.12    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+00.12    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+00.12    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+00.12   Ultraman        SelectionEvent286['1x Drone']
+00.13    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 27)
+00.13   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.13   Ultraman        CommandManagerStateEvent 8 - None
+00.13   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.13   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.13   Ultraman        CommandManagerStateEvent 9 - None
+00.13   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.13   Ultraman        CommandManagerStateEvent 10 - None
+00.13   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.13   Ultraman        CommandManagerStateEvent 11 - None
+00.13   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00D40001]; Location: (143.0, 144.5, 57280)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.13   Ultraman        CommandManagerStateEvent 12 - None
+00.13   Ultraman        CG 5 Get
+00.14    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+
+ Time: 00.14
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 20
+ Current Gas: 0
+ Min Col Rate: 671
+ Gas Col Rate: 0
+ Workers: 13
+ Army min: 0
+ Army gas: 0
+ Economy min: 1050
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.14
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 15
+ Current Gas: 0
+ Min Col Rate: 643
+ Gas Col Rate: 0
+ Workers: 13
+ Army min: 0
+ Army gas: 0
+ Economy min: 1100
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.14   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.14   Ultraman        SelectionEvent315['3x Larva']
+00.14   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.14   DarkWarrior     CommandManagerStateEvent 22 - None
+00.14   Ultraman        CameraEvent at (140.85546875, 136.50390625)
+00.14   Ultraman        Ability (1862) - MorphOverlord<class 'sc2reader.events.game.BasicCommandEvent'>
+00.14   Ultraman        CameraEvent at (135.44140625, 136.50390625)
+00.14   Ultraman        CameraEvent at (132.9140625, 136.50390625)
+00.14   Ultraman        CameraEvent at (129.96484375, 136.50390625)
+00.14   Ultraman        CommandManagerStateEvent 14 - None
+00.14   Ultraman        CameraEvent at (124.4296875, 136.50390625)
+00.14   Ultraman        SelectionEvent324['1x Egg']
+00.14   Ultraman        CameraEvent at (122.74609375, 136.50390625)
+00.14   Ultraman        Right Click - TargetPoint; Location: (112.420654296875, 137.05322265625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.15   Ultraman        CameraEvent at (123.16796875, 136.50390625)
+00.15   Ultraman        CameraEvent at (125.875, 136.50390625)
+00.15   Ultraman        CameraEvent at (131.41015625, 136.50390625)
+00.15   Ultraman        CameraEvent at (133.9375, 136.50390625)
+00.15   Ultraman        CameraEvent at (136.8828125, 136.50390625)
+00.15   DarkWarrior     SelectionEvent347['1x Probe']
+00.15   Ultraman        CameraEvent at (142.1796875, 136.50390625)
+00.15   Ultraman        CG 5 Get
+00.15   DarkWarrior     CameraEvent at (35.5, 26.64453125)
+00.15   DarkWarrior     CameraEvent at (35.5, 29.8828125)
+00.15   DarkWarrior     CameraEvent at (35.5, 36.0078125)
+00.15   DarkWarrior     CameraEvent at (35.5, 38.96484375)
+00.15   Ultraman        CameraEvent at (142.1640625, 136.51953125)
+00.15   DarkWarrior     CameraEvent at (35.5, 45.51171875)
+00.15   Ultraman        CameraEvent at (142.09375, 136.546875)
+00.15   DarkWarrior     CameraEvent at (35.5, 47.4140625)
+00.15   DarkWarrior     Right Click - TargetPoint; Location: (38.948974609375, 59.665283203125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.15   DarkWarrior     CommandManagerStateEvent 23 - None
+00.16   Ultraman        CameraEvent at (141.9140625, 136.62890625)
+00.16   Ultraman        CameraEvent at (141.8984375, 136.62890625)
+00.16   DarkWarrior     Right Click - TargetPoint; Location: (39.824951171875, 59.99560546875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.16   DarkWarrior     CommandManagerStateEvent 24 - None
+00.16   DarkWarrior     Right Click - TargetPoint; Location: (38.950927734375, 57.22265625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.16   DarkWarrior     CommandManagerStateEvent 25 - None
+00.16   DarkWarrior     CameraEvent at (35.5, 48.046875)
+00.16   DarkWarrior     CameraEvent at (35.5, 54.3828125)
+00.16   DarkWarrior     CameraEvent at (35.5, 56.14453125)
+00.16   DarkWarrior     Right Click - TargetPoint; Location: (41.738037109375, 62.373046875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.16   DarkWarrior     CommandManagerStateEvent 26 - None
+00.16   DarkWarrior     Right Click - TargetPoint; Location: (41.322998046875, 61.2001953125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.16   DarkWarrior     CommandManagerStateEvent 27 - None
+00.17   DarkWarrior     CommandManagerStateEvent 28 - None
+00.17   Ultraman        SelectionEvent384['2x Larva']
+00.17   DarkWarrior     CameraEvent at (35.5, 55.44140625)
+00.17   DarkWarrior     CameraEvent at (35.5, 49.59765625)
+00.17   DarkWarrior     CameraEvent at (35.5, 46.21875)
+00.17   DarkWarrior     CameraEvent at (35.5, 40.1640625)
+00.18    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.18   DarkWarrior     CameraEvent at (35.5, 37.62890625)
+00.18   DarkWarrior     CameraEvent at (35.5, 31.57421875)
+00.18   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.18   DarkWarrior     CG 7 Get
+00.18   Ultraman        CommandManagerStateEvent 20 - None
+00.18   Ultraman        SelectionEvent411['1x Egg']
+00.18   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [01AC0001]; Location: (144.0, 145.5, 57280)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.19   DarkWarrior     CameraEvent at (35.5, 32.41796875)
+00.19   DarkWarrior     CameraEvent at (35.5, 35.4453125)
+00.19   DarkWarrior     CameraEvent at (35.5, 41.9921875)
+00.19   DarkWarrior     CameraEvent at (35.5, 45.08984375)
+00.19   DarkWarrior     CameraEvent at (35.5, 46.359375)
+00.19   Ultraman        CG 5 Get
+00.19   Ultraman        CameraEvent at (133.96875, 111.28125)
+00.19   Ultraman        CameraEvent at (132.3203125, 111.28125)
+00.19   Ultraman        CameraEvent at (131.76953125, 110.72265625)
+00.19   Ultraman        CameraEvent at (131.21875, 110.72265625)
+00.20   Ultraman        CameraEvent at (130.55078125, 110.5546875)
+00.20   Ultraman        CameraEvent at (128.83984375, 110.515625)
+00.20   Ultraman        CameraEvent at (128.421875, 110.5)
+00.20   Ultraman        CameraEvent at (127.93359375, 110.5)
+00.20   DarkWarrior     SelectionEvent462['1x Probe']
+00.20   DarkWarrior     CameraEvent at (35.5, 48.1875)
+00.20   DarkWarrior     CameraEvent at (35.5, 51.63671875)
+00.20   DarkWarrior     CameraEvent at (35.5, 53.890625)
+00.20   DarkWarrior     CameraEvent at (35.5, 55.44140625)
+00.20   Ultraman        CameraEvent at (127.921875, 110.5)
+00.20   Ultraman        CameraEvent at (127.7109375, 110.640625)
+00.20   DarkWarrior     CameraEvent at (36.1328125, 55.44140625)
+00.20   Ultraman        CameraEvent at (127.4609375, 110.84765625)
+
+ Time: 00.21
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 100
+ Current Gas: 0
+ Min Col Rate: 727
+ Gas Col Rate: 0
+ Workers: 13
+ Army min: 0
+ Army gas: 0
+ Economy min: 1050
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.21
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 55
+ Current Gas: 0
+ Min Col Rate: 755
+ Gas Col Rate: 0
+ Workers: 13
+ Army min: 0
+ Army gas: 0
+ Economy min: 1100
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.21   DarkWarrior     CameraEvent at (38.94921875, 55.44140625)
+00.21   DarkWarrior     CameraEvent at (41.41015625, 55.44140625)
+00.21   DarkWarrior     CameraEvent at (41.41015625, 58.25390625)
+00.21   DarkWarrior     CameraEvent at (41.41015625, 59.1015625)
+00.21   DarkWarrior     Right Click - TargetPoint; Location: (43.66943359375, 61.610107421875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.21   DarkWarrior     CommandManagerStateEvent 29 - None
+00.21   DarkWarrior     Right Click - TargetPoint; Location: (42.999755859375, 60.76513671875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.21   DarkWarrior     CommandManagerStateEvent 30 - None
+00.22   DarkWarrior     Right Click - TargetPoint; Location: (41.88916015625, 62.061767578125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.22   DarkWarrior     CommandManagerStateEvent 31 - None
+00.22   DarkWarrior     Right Click - TargetPoint; Location: (41.892578125, 62.520263671875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.22   DarkWarrior     CommandManagerStateEvent 32 - None
+00.23   Ultraman        CameraEvent at (95.49609375, 137.515625)
+00.23   Ultraman        CameraEvent at (93.296875, 136.95703125)
+00.23   Ultraman        CameraEvent at (88.34765625, 136.3984375)
+00.23   Ultraman        CameraEvent at (88.34765625, 135.83984375)
+00.23   Ultraman        CameraEvent at (87.29296875, 135.39453125)
+00.24    Player 2 - Ultraman (Zerg) - Unit born Larva at (144, 135)
+00.24   Ultraman        CameraEvent at (85.7734375, 134.796875)
+00.24   Ultraman        CameraEvent at (84.99609375, 134.57421875)
+00.24   Ultraman        CameraEvent at (84.48046875, 134.40625)
+00.24   DarkWarrior     Ability (1581) - BuildPylon; Location: (42.0, 62.0, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.25    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 27)
+00.25    Player 1 - DarkWarrior (Protoss) - Unit initiated Pylon at (42, 62)
+00.25   Ultraman        CameraEvent at (141.3359375, 136.50390625)
+00.25   DarkWarrior     Right Click - TargetPoint; Location: (49.47021484375, 62.061767578125, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.26   DarkWarrior     CameraEvent at (124.07421875, 131.93359375)
+00.26   DarkWarrior     Right Click - TargetPoint; Location: (116.502197265625, 134.509521484375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.26   DarkWarrior     CommandManagerStateEvent 35 - None
+00.27   DarkWarrior     CameraEvent at (124.07421875, 132.91796875)
+00.27   DarkWarrior     CameraEvent at (124.98828125, 135.03125)
+00.27   Ultraman        SelectionEvent607['1x Egg']
+00.27   DarkWarrior     CameraEvent at (131.32421875, 139.67578125)
+00.27   DarkWarrior     CameraEvent at (134.7734375, 139.67578125)
+00.27   DarkWarrior     CameraEvent at (139.28125, 139.67578125)
+00.27   DarkWarrior     Right Click - TargetPoint; Location: (135.466796875, 145.667236328125, 57271) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.27   DarkWarrior     Right Click - TargetPoint; Location: (144.6611328125, 149.04833984375, 57284)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.27   DarkWarrior     CommandManagerStateEvent 37 - None
+00.27   DarkWarrior     Right Click - TargetPoint; Location: (150.176025390625, 146.677978515625, 57284)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.27   DarkWarrior     CommandManagerStateEvent 38 - None
+
+ Time: 00.28
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 85
+ Current Gas: 0
+ Min Col Rate: 699
+ Gas Col Rate: 0
+ Workers: 14
+ Army min: 0
+ Army gas: 0
+ Economy min: 1100
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.28
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 135
+ Current Gas: 0
+ Min Col Rate: 783
+ Gas Col Rate: 0
+ Workers: 13
+ Army min: 0
+ Army gas: 0
+ Economy min: 1100
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.28   DarkWarrior     CameraEvent at (141.46484375, 139.67578125)
+00.28   DarkWarrior     CameraEvent at (144.4921875, 133.41015625)
+00.28   DarkWarrior     CameraEvent at (144.4921875, 131.23046875)
+00.28   DarkWarrior     Right Click - TargetPoint; Location: (153.03076171875, 136.656982421875, 57273)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.28   DarkWarrior     CommandManagerStateEvent 39 - None
+00.28   DarkWarrior     Right Click - TargetPoint; Location: (151.09912109375, 129.3857421875, 57284)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.28   DarkWarrior     CommandManagerStateEvent 40 - None
+00.28   DarkWarrior     Right Click - TargetPoint; Location: (145.708984375, 128.897705078125, 57271)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.28   DarkWarrior     CommandManagerStateEvent 41 - None
+00.29   DarkWarrior     CameraEvent at (35.9375, 23.59375)
+00.29   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.29   DarkWarrior     CommandManagerStateEvent 42 - None
+00.29   DarkWarrior     SelectionEvent669['1x Nexus']
+00.29   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.30    Player 2 - Ultraman (Zerg) - Unit born Drone at (142, 135)
+00.30    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+00.30    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (142, 135).
+00.30   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.30   Ultraman        SelectionEvent683['1x Drone']
+00.30   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.30   DarkWarrior     CommandManagerStateEvent 45 - None
+00.30   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.30   DarkWarrior     CommandManagerStateEvent 46 - None
+00.31   DarkWarrior     SelectionEvent701['1x Probe']
+00.31   DarkWarrior     CameraEvent at (35.9375, 26.55078125)
+00.31   DarkWarrior     CameraEvent at (35.9375, 32.95703125)
+00.31   DarkWarrior     CameraEvent at (35.9375, 35.28125)
+00.31   DarkWarrior     CameraEvent at (35.9375, 41.7578125)
+00.31   DarkWarrior     CameraEvent at (35.9375, 44.359375)
+00.31   DarkWarrior     CameraEvent at (35.9375, 47.59765625)
+00.31   DarkWarrior     CameraEvent at (35.9375, 49.5)
+00.31   DarkWarrior     Right Click - TargetPoint; Location: (38.275390625, 59.92919921875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.31   DarkWarrior     CommandManagerStateEvent 47 - None
+00.32    Player 2 - Ultraman (Zerg) - Unit born Overseer at (144, 135)
+00.32    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+00.32    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (144, 135).
+00.32   DarkWarrior     Right Click - TargetPoint; Location: (42.361572265625, 57.213134765625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.32   DarkWarrior     CommandManagerStateEvent 48 - None
+00.32   DarkWarrior     Right Click - TargetPoint; Location: (43.816650390625, 58.146240234375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.32   DarkWarrior     CommandManagerStateEvent 49 - None
+00.32   Ultraman        CG 5 Get
+00.32   Ultraman        SelectionEvent737['2x Larva']
+00.33    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.33    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.33   DarkWarrior     CameraEvent at (35.9375, 46.96484375)
+00.33   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.33   DarkWarrior     CameraEvent at (35.9375, 40.48828125)
+00.33   DarkWarrior     CameraEvent at (33.6875, 37.8828125)
+00.33   Ultraman        CommandManagerStateEvent 24 - None
+00.33   DarkWarrior     CameraEvent at (30.37890625, 34.99609375)
+00.33   Ultraman        SelectionEvent745['1x Egg']
+00.33   DarkWarrior     CameraEvent at (30.0, 34.99609375)
+00.33   Ultraman        CommandManagerStateEvent 25 - None
+00.33   DarkWarrior     CG 7 Get
+00.33   Ultraman        SelectionEvent748['1x Egg']
+00.34   Ultraman        SelectionEvent[]
+00.34   DarkWarrior     CameraEvent at (35.921875, 23.66015625)
+00.34   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [01B40001]; Location: (151.0, 139.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.35    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 00.35
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 130
+ Current Gas: 0
+ Min Col Rate: 727
+ Gas Col Rate: 0
+ Workers: 14
+ Army min: 0
+ Army gas: 0
+ Economy min: 1100
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.35
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 140
+ Current Gas: 0
+ Min Col Rate: 783
+ Gas Col Rate: 0
+ Workers: 14
+ Army min: 0
+ Army gas: 0
+ Economy min: 1250
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.35   DarkWarrior     CameraEvent at (35.921875, 26.0546875)
+00.35   DarkWarrior     CameraEvent at (35.921875, 29.29296875)
+00.35   DarkWarrior     CameraEvent at (35.921875, 32.109375)
+00.35   DarkWarrior     CameraEvent at (35.921875, 35.41796875)
+00.35   DarkWarrior     CameraEvent at (35.921875, 41.61328125)
+00.35   Ultraman        SelectionEvent796['1x Egg']
+00.35   DarkWarrior     CameraEvent at (35.921875, 44.78125)
+00.35   DarkWarrior     CameraEvent at (35.921875, 49.14453125)
+00.35   Ultraman        Right Click - TargetUnit; Target: LabMineralField [01740001]; Location: (150.0, 138.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.35   Ultraman        CommandManagerStateEvent 27 - None
+00.36   DarkWarrior     SelectionEvent810['1x Probe']
+00.36   DarkWarrior     CameraEvent at (38.03515625, 51.609375)
+00.36   DarkWarrior     CameraEvent at (40.4296875, 54.00390625)
+00.36   DarkWarrior     CameraEvent at (42.5390625, 56.11328125)
+00.36   DarkWarrior     CameraEvent at (45.28515625, 56.11328125)
+00.36   Ultraman        CG 5 Get
+00.36   Ultraman        SelectionEvent826['1x Drone']
+00.37    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 27)
+00.37   DarkWarrior     CameraEvent at (45.28515625, 59.28125)
+00.37   DarkWarrior     CameraEvent at (44.01953125, 61.53515625)
+00.37   Ultraman        Right Click - TargetPoint; Location: (134.409423828125, 135.94580078125, 57271)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.37   Ultraman        CommandManagerStateEvent 28 - None
+00.37   DarkWarrior     CameraEvent at (44.01953125, 61.18359375)
+00.37   DarkWarrior     CameraEvent at (44.01953125, 57.8046875)
+00.37   DarkWarrior     CameraEvent at (44.01953125, 56.46484375)
+00.37   Ultraman        CameraEvent at (118.02734375, 109.60546875)
+00.37   Ultraman        CameraEvent at (122.42578125, 111.28125)
+00.37   Ultraman        CameraEvent at (128.47265625, 115.74609375)
+00.38   DarkWarrior     Right Click - TargetPoint; Location: (43.757568359375, 60.465576171875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.38   DarkWarrior     CommandManagerStateEvent 50 - None
+00.38   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00000000]; Location: (127.0, 119.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.38   Ultraman        CommandManagerStateEvent 29 - None
+00.38   Ultraman        CG 5 Get
+00.39   Ultraman        CameraEvent at (60.3203125, 59.93359375)
+00.39   Ultraman        CameraEvent at (59.21875, 61.046875)
+00.39   Ultraman        CameraEvent at (57.01953125, 62.1640625)
+00.39   Ultraman        CameraEvent at (53.72265625, 63.28125)
+00.39   Ultraman        CG 4 Get
+00.39   Ultraman        Right Click - TargetPoint; Location: (47.793212890625, 71.4072265625, 57295)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.39   Ultraman        CommandManagerStateEvent 30 - None
+00.40   Ultraman        Right Click - TargetPoint; Location: (47.878173828125, 71.792724609375, 57284)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.40   Ultraman        CommandManagerStateEvent 31 - None
+00.40   Ultraman        CommandManagerStateEvent 32 - None
+00.40   Ultraman        Ability (562) - HoldPosition Q<class 'sc2reader.events.game.BasicCommandEvent'>
+00.41   Ultraman        CG 5 Get
+00.41   Ultraman        CameraEvent at (126.2734375, 130.2578125)
+00.41   Ultraman        CameraEvent at (124.625, 130.2578125)
+00.41   Ultraman        CameraEvent at (122.9765625, 130.2578125)
+00.41   Ultraman        CameraEvent at (122.9765625, 130.81640625)
+00.41   Ultraman        CameraEvent at (122.07421875, 130.81640625)
+00.41   Ultraman        CameraEvent at (119.125, 130.81640625)
+
+ Time: 00.42
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 205
+ Current Gas: 0
+ Min Col Rate: 727
+ Gas Col Rate: 0
+ Workers: 15
+ Army min: 0
+ Army gas: 0
+ Economy min: 1150
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.42
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 230
+ Current Gas: 0
+ Min Col Rate: 783
+ Gas Col Rate: 0
+ Workers: 14
+ Army min: 0
+ Army gas: 0
+ Economy min: 1250
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.42   Ultraman        CameraEvent at (115.57421875, 130.81640625)
+00.43    Player 1 - DarkWarrior (Protoss) - Unit Pylon done
+00.43   DarkWarrior     Ability (1583) - BuildGateway; Location: (44.5, 58.5, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.43   Ultraman        SelectionEvent983['1x Drone']
+00.44    Player 1 - DarkWarrior (Protoss) - Unit initiated Warp Gate at (44, 58)
+00.44   Ultraman        CameraEvent at (115.15625, 130.39453125)
+00.44   Ultraman        CameraEvent at (110.1015625, 125.33984375)
+00.44   Ultraman        CameraEvent at (109.37890625, 124.62109375)
+00.44   DarkWarrior     Right Click - TargetPoint; Location: (41.339111328125, 56.53466796875, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.44   DarkWarrior     CameraEvent at (44.01953125, 54.35546875)
+00.44   DarkWarrior     CameraEvent at (37.61328125, 47.94921875)
+00.44   DarkWarrior     CameraEvent at (35.1484375, 45.484375)
+00.44   DarkWarrior     CameraEvent at (31.62890625, 39.1484375)
+00.44   DarkWarrior     CameraEvent at (31.62890625, 36.40234375)
+00.45    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+00.45    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+00.45    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+00.45    Player 2 - Ultraman (Zerg) - Unit born Drone at (144, 135)
+00.45    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+00.45    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (144, 135).
+00.45   DarkWarrior     Right Click - TargetPoint; Location: (25.632568359375, 33.82958984375, 57271)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.45   DarkWarrior     CommandManagerStateEvent 53 - None
+00.45   Ultraman        CameraEvent at (109.37890625, 125.58203125)
+00.45   Ultraman        CameraEvent at (109.37890625, 128.3515625)
+00.45   Ultraman        CameraEvent at (109.37890625, 131.05859375)
+00.45   DarkWarrior     CameraEvent at (31.62890625, 35.98046875)
+00.45   DarkWarrior     CameraEvent at (31.62890625, 33.0234375)
+00.45   Ultraman        CameraEvent at (109.37890625, 135.44921875)
+00.45   DarkWarrior     CameraEvent at (31.62890625, 29.78515625)
+00.45   DarkWarrior     CameraEvent at (31.62890625, 29.36328125)
+00.45   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField750 [01F80001]; Location: (28.0, 29.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.45   DarkWarrior     CommandManagerStateEvent 54 - None
+00.45   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [02600001]; Location: (29.0, 30.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.45   DarkWarrior     CommandManagerStateEvent 55 - None
+00.45   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00000000]; Location: (111.0, 144.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.46    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+00.46   Ultraman        CameraEvent at (109.37890625, 132.7421875)
+00.46   Ultraman        CameraEvent at (109.37890625, 130.03515625)
+00.46   Ultraman        CameraEvent at (109.37890625, 129.61328125)
+00.46   DarkWarrior     SelectionEvent1043['1x Nexus']
+00.47   DarkWarrior     SelectionEvent1059['1x Probe']
+00.47   DarkWarrior     Ability (1582) - BuildAssimilator; Target: SpacePlatformGeyser [02980001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.47   Ultraman        Right Click - TargetPoint; Location: (111.263427734375, 138.767578125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.47   Ultraman        CommandManagerStateEvent 35 - None
+00.47   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [02600001]; Location: (29.0, 30.5, 57264) Q<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.47   Ultraman        Right Click - TargetPoint; Location: (111.443359375, 138.71875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.47   Ultraman        CommandManagerStateEvent 36 - None
+00.47   DarkWarrior     CG 7 Get
+00.48    Player 1 - DarkWarrior (Protoss) - Unit initiated Assimilator at (28, 33)
+00.48   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.48   Ultraman        CommandManagerStateEvent 37 - None
+00.48   DarkWarrior     Ability (5A40) - ChronoBoostEnergyCost; Target: Nexus [03440001]; Location: (35.5, 30.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.48   Ultraman        CameraEvent at (109.37890625, 132.3203125)
+00.48   Ultraman        CameraEvent at (109.37890625, 134.125)
+00.48   Ultraman        CameraEvent at (109.37890625, 136.41015625)
+00.49   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [014C0001]; Location: (29.0, 28.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.49   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [014C0001]; Location: (29.0, 28.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.49   DarkWarrior     CommandManagerStateEvent 62 - None
+
+ Time: 00.50
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 20
+ Current Gas: 0
+ Min Col Rate: 727
+ Gas Col Rate: 0
+ Workers: 15
+ Army min: 0
+ Army gas: 0
+ Economy min: 1250
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.50
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 320
+ Current Gas: 0
+ Min Col Rate: 783
+ Gas Col Rate: 0
+ Workers: 16
+ Army min: 0
+ Army gas: 0
+ Economy min: 1350
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.50    Player 2 - Ultraman (Zerg) - Unit initiated Hatchery at (111, 138)
+00.50    Player 2 - Ultraman (Zerg) - SprayZerg upgrade completed
+00.50   Ultraman        Ability (1720) - BuildHatchery; Location: (111.5, 138.5, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+00.50   Ultraman        SelectionEvent1125['1x Hatchery']
+00.50   Ultraman        CG 5 Get
+00.50   Ultraman        SelectionEvent1138['1x Hatchery']
+00.51   Ultraman        CG 5 Set
+00.51   Ultraman        Right Click - TargetUnit; Target: LabMineralField [01D80001]; Location: (118.0, 138.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.51   Ultraman        SelectionEvent[]
+00.52   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00000000]; Location: (111.0, 144.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.52   Ultraman        CommandManagerStateEvent 40 - None
+00.52   Ultraman        Right Click - TargetPoint; Location: (121.918212890625, 137.056396484375, 52150)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+00.52   Ultraman        CommandManagerStateEvent 41 - None
+00.52   Ultraman        CameraEvent at (141.3359375, 136.50390625)
+00.52   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+00.53    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 29)
+00.53    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.53   Ultraman        CG 5 Get
+00.53   Ultraman        SelectionEvent1207['2x Larva']
+00.53   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.54   Ultraman        SelectionEvent1215['1x Egg']
+00.54   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [01AC0001]; Location: (144.0, 145.5, 57280)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.55   DarkWarrior     CameraEvent at (30.0, 27.875)
+00.55   Ultraman        Right Click - TargetUnit; Target: LabMineralField [02440001]; Location: (150.0, 140.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.55   Ultraman        CommandManagerStateEvent 44 - None
+00.56    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.56   DarkWarrior     CameraEvent at (30.0, 30.62109375)
+00.56   DarkWarrior     CameraEvent at (30.0, 33.6484375)
+00.56   DarkWarrior     CameraEvent at (30.0, 39.9140625)
+00.56   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [01B40001]; Location: (151.0, 139.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+00.56   Ultraman        CommandManagerStateEvent 45 - None
+00.56   DarkWarrior     CameraEvent at (30.0, 42.94140625)
+00.56   DarkWarrior     CameraEvent at (30.0, 46.25)
+00.56   Ultraman        CG 5 Get
+00.56   DarkWarrior     CameraEvent at (32.109375, 46.25)
+00.56   Ultraman        SelectionEvent1266['1x Larva']
+00.56   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.56   DarkWarrior     CameraEvent at (35.48828125, 48.359375)
+00.56   DarkWarrior     CameraEvent at (37.109375, 49.98046875)
+00.56   Ultraman        SelectionEvent1271['1x Egg']
+00.56   Ultraman        Right Click - TargetUnit; Target: SpacePlatformGeyser [004C0001]; Location: (139.5, 145.5, 57272)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+00.57    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 00.57
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 55
+ Current Gas: 0
+ Min Col Rate: 699
+ Gas Col Rate: 0
+ Workers: 16
+ Army min: 0
+ Army gas: 0
+ Economy min: 1300
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 00.57
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 30
+ Current Gas: 0
+ Min Col Rate: 839
+ Gas Col Rate: 0
+ Workers: 15
+ Army min: 0
+ Army gas: 0
+ Economy min: 1300
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+00.57   Ultraman        CG 5 Get
+00.57   DarkWarrior     CameraEvent at (37.109375, 49.55859375)
+00.57   DarkWarrior     CameraEvent at (37.109375, 43.08203125)
+00.57   DarkWarrior     CameraEvent at (37.109375, 40.96875)
+00.58   DarkWarrior     CameraEvent at (37.109375, 38.50390625)
+00.58   DarkWarrior     CameraEvent at (37.109375, 36.95703125)
+00.58   DarkWarrior     CameraEvent at (37.109375, 34.2109375)
+00.58   DarkWarrior     CameraEvent at (37.109375, 31.18359375)
+00.58   DarkWarrior     CameraEvent at (37.109375, 30.26953125)
+00.58   Ultraman        CameraEvent at (138.6875, 136.50390625)
+00.58   Ultraman        CameraEvent at (134.17578125, 136.50390625)
+00.58   Ultraman        SelectionEvent1315['1x Larva']
+00.59    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+00.59   DarkWarrior     CameraEvent at (33.94140625, 30.26953125)
+00.59   DarkWarrior     CameraEvent at (30.4921875, 30.26953125)
+00.59   DarkWarrior     CameraEvent at (30.0703125, 30.26953125)
+00.59   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+00.59   Ultraman        SelectionEvent1341['1x Egg']
+01.00   Ultraman        Right Click - TargetPoint; Location: (137.9541015625, 141.33251953125, 57271)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.00   Ultraman        CameraEvent at (132.61328125, 136.50390625)
+01.00   Ultraman        CameraEvent at (130.02734375, 136.50390625)
+01.00   Ultraman        CameraEvent at (127.62109375, 136.50390625)
+01.00   Ultraman        CameraEvent at (124.61328125, 136.50390625)
+01.00   Ultraman        CameraEvent at (119.6796875, 136.50390625)
+01.00   Ultraman        CameraEvent at (116.97265625, 136.50390625)
+01.00   Ultraman        CameraEvent at (116.55078125, 136.50390625)
+01.00   Ultraman        CG 5 Get
+01.01    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 29)
+01.01   DarkWarrior     CommandManagerStateEvent 66 - None
+01.01   Ultraman        SelectionEvent1372['1x Overlord']
+01.01   Ultraman        CameraEvent at (116.55078125, 134.4609375)
+01.01   Ultraman        CameraEvent at (116.55078125, 131.5703125)
+01.02   Ultraman        Right Click - TargetPoint; Location: (110.634033203125, 140.963134765625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.02   Ultraman        CommandManagerStateEvent 51 - None
+01.02   Ultraman        Right Click - TargetPoint; Location: (106.74609375, 138.613525390625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.02   Ultraman        CommandManagerStateEvent 52 - None
+01.02   DarkWarrior     Right Click - TargetPoint; Location: (29.322998046875, 32.874755859375, 57271)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.02   Ultraman        Right Click - TargetPoint; Location: (107.69384765625, 134.397705078125, 49077) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.02   Ultraman        Right Click - TargetPoint; Location: (116.44580078125, 131.3974609375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.02   Ultraman        CommandManagerStateEvent 54 - None
+01.02   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.02   DarkWarrior     CommandManagerStateEvent 68 - None
+01.02   Ultraman        Right Click - TargetPoint; Location: (117.23779296875, 139.392333984375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.02   Ultraman        CommandManagerStateEvent 55 - None
+01.02   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.02   DarkWarrior     CommandManagerStateEvent 69 - None
+01.03   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.03   DarkWarrior     CommandManagerStateEvent 70 - None
+01.03   Ultraman        CG 5 Get
+01.03   Ultraman        CameraEvent at (118.8984375, 131.5703125)
+01.03   Ultraman        CameraEvent at (121.72265625, 131.5703125)
+01.03   Ultraman        CameraEvent at (124.61328125, 131.5703125)
+01.03   Ultraman        CameraEvent at (129.24609375, 131.5703125)
+01.03   Ultraman        CameraEvent at (130.8671875, 131.5703125)
+01.03   Ultraman        CameraEvent at (135.98046875, 135.72265625)
+01.03   Ultraman        CameraEvent at (136.46484375, 135.72265625)
+
+ Time: 01.04
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 105
+ Current Gas: 0
+ Min Col Rate: 783
+ Gas Col Rate: 0
+ Workers: 17
+ Army min: 0
+ Army gas: 0
+ Economy min: 1350
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 01.04
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 80
+ Current Gas: 0
+ Min Col Rate: 867
+ Gas Col Rate: 0
+ Workers: 15
+ Army min: 0
+ Army gas: 0
+ Economy min: 1300
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.04   Ultraman        SelectionEvent1442['1x Egg']
+01.04   DarkWarrior     SelectionEvent1451['1x Assimilator']
+01.04   DarkWarrior     CG 7 Get
+01.05   DarkWarrior     SelectionEvent1477['1x Assimilator']
+01.06    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.06    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.06    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.06   DarkWarrior     CG 7 Get
+01.06   Ultraman        SelectionEvent1485['1x Drone']
+01.07    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+01.08    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.08    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.08    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.08   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+01.09    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 31)
+01.09   Ultraman        SelectionEvent1546['1x Drone']
+01.09   DarkWarrior     Ability (5A40) - ChronoBoostEnergyCost; Target: Nexus [03440001]; Location: (35.5, 30.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.10    Player 1 - DarkWarrior (Protoss) - Unit Assimilator done
+01.10   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.10   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.10   DarkWarrior     CommandManagerStateEvent 74 - None
+01.10   Ultraman        SelectionEvent1586['1x Drone']
+
+ Time: 01.11
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 160
+ Current Gas: 0
+ Min Col Rate: 895
+ Gas Col Rate: 0
+ Workers: 18
+ Army min: 0
+ Army gas: 0
+ Economy min: 1475
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 01.11
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 165
+ Current Gas: 0
+ Min Col Rate: 895
+ Gas Col Rate: 0
+ Workers: 17
+ Army min: 0
+ Army gas: 0
+ Economy min: 1400
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.11    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.11    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.11    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.11    Player 2 - Ultraman (Zerg) - Unit initiated Extractor at (139, 145)
+01.11   Ultraman        Ability (1722) - BuildExtractor; Target: SpacePlatformGeyser [004C0001]; Location: (139.5, 145.5, 57272)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.11   Ultraman        CameraEvent at (136.46484375, 134.640625)
+01.11   Ultraman        CameraEvent at (136.46484375, 131.8125)
+01.11   Ultraman        CameraEvent at (140.43359375, 127.83984375)
+01.11   DarkWarrior     SelectionEvent1608['1x Probe']
+01.12   Ultraman        CameraEvent at (140.43359375, 128.3828125)
+01.12   Ultraman        CameraEvent at (139.89453125, 130.73046875)
+01.12   Ultraman        SelectionEvent1616['1x Extractor']
+01.12   DarkWarrior     CameraEvent at (30.0703125, 33.15234375)
+01.12   Ultraman        CameraEvent at (134.59765625, 136.0234375)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 35.6171875)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 42.0234375)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 44.34765625)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 50.75390625)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 53.921875)
+01.12   DarkWarrior     CameraEvent at (30.0703125, 54.2734375)
+01.12   DarkWarrior     CameraEvent at (33.30859375, 54.2734375)
+01.12   DarkWarrior     CameraEvent at (36.4765625, 54.2734375)
+01.12   DarkWarrior     CameraEvent at (37.953125, 54.2734375)
+01.13   Ultraman        SelectionEvent1641['1x Drone']
+01.13   DarkWarrior     CameraEvent at (37.953125, 50.96484375)
+01.13   DarkWarrior     CameraEvent at (37.953125, 48.0078125)
+01.13   DarkWarrior     CameraEvent at (37.953125, 45.54296875)
+01.13   DarkWarrior     CameraEvent at (31.6875, 38.85546875)
+01.13   Ultraman        CameraEvent at (134.59765625, 138.73046875)
+01.13   Ultraman        CameraEvent at (134.59765625, 140.77734375)
+01.13   DarkWarrior     CameraEvent at (30.0, 36.390625)
+01.13   DarkWarrior     CameraEvent at (30.0, 32.94140625)
+01.13   DarkWarrior     CameraEvent at (30.0, 28.859375)
+01.13   DarkWarrior     CG 7 Get
+01.14   Ultraman        Right Click - TargetPoint; Location: (138.19189453125, 142.03564453125, 57271)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.14   Ultraman        Ability (1723) - BuildSpawningPool; Location: (138.5, 142.5, 57271)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.15    Player 2 - Ultraman (Zerg) - Unit initiated Spawning Pool at (138, 142)
+01.15   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.15   DarkWarrior     CommandManagerStateEvent 75 - None
+01.15   Ultraman        CameraEvent at (133.09375, 139.75390625)
+01.15   Ultraman        CameraEvent at (130.265625, 136.92578125)
+01.15   Ultraman        CameraEvent at (127.98046875, 134.640625)
+01.15   Ultraman        CameraEvent at (127.55859375, 133.67578125)
+01.15   Ultraman        SelectionEvent1685['1x SpawningPool']
+01.15   Ultraman        CameraEvent at (127.078125, 133.67578125)
+01.15   Ultraman        CameraEvent at (124.8515625, 133.67578125)
+01.15   Ultraman        CameraEvent at (119.37890625, 133.67578125)
+01.15   Ultraman        CameraEvent at (117.2109375, 133.67578125)
+01.15   Ultraman        CameraEvent at (115.828125, 133.67578125)
+01.15   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+01.15   Ultraman        CG 5 Get
+01.16   Ultraman        SelectionEvent1711['1x Overlord']
+01.16   Ultraman        Right Click - TargetPoint; Location: (119.1044921875, 135.454345703125, 49080)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.16   Ultraman        Right Click - TargetPoint; Location: (124.497802734375, 135.563232421875, 54283)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.16   Ultraman        CommandManagerStateEvent 60 - None
+01.16   Ultraman        Right Click - TargetPoint; Location: (120.79736328125, 139.91064453125, 49103)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.16   Ultraman        CommandManagerStateEvent 61 - None
+01.16   Ultraman        Right Click - TargetPoint; Location: (107.458740234375, 139.938232421875, 49077) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.17    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 31)
+01.17    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+01.17   Ultraman        Right Click - TargetPoint; Location: (115.3291015625, 132.1005859375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.17   Ultraman        CommandManagerStateEvent 63 - None
+01.17   Ultraman        CG 5 Get
+01.17   Ultraman        CameraEvent at (117.51171875, 133.67578125)
+01.17   Ultraman        CameraEvent at (123.109375, 133.67578125)
+01.17   Ultraman        CameraEvent at (125.81640625, 133.67578125)
+01.17   Ultraman        SelectionEvent1739['1x Larva']
+01.17   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+01.17   DarkWarrior     CameraEvent at (137.81640625, 139.1875)
+01.17   Ultraman        CameraEvent at (131.3515625, 133.67578125)
+01.17   Ultraman        CameraEvent at (133.21484375, 133.67578125)
+01.17   Ultraman        CameraEvent at (133.81640625, 133.67578125)
+01.17   Ultraman        SelectionEvent1744['1x Egg']
+01.18    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 01.18
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 225
+ Current Gas: 8
+ Min Col Rate: 895
+ Gas Col Rate: 44
+ Workers: 19
+ Army min: 0
+ Army gas: 0
+ Economy min: 1525
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 01.18
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 25
+ Current Gas: 0
+ Min Col Rate: 923
+ Gas Col Rate: 0
+ Workers: 16
+ Army min: 0
+ Army gas: 0
+ Economy min: 1350
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.18   Ultraman        CameraEvent at (133.81640625, 135.2421875)
+01.18   Ultraman        CameraEvent at (133.81640625, 137.828125)
+01.18   Ultraman        CameraEvent at (133.81640625, 138.91015625)
+01.18   Ultraman        Right Click - TargetUnit; Target: Extractor [03EC0002]; Location: (139.5, 145.5, 57272)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.18   DarkWarrior     CameraEvent at (30.74609375, 30.8359375)
+01.18   Ultraman        CameraEvent at (133.3359375, 138.91015625)
+01.18   Ultraman        CameraEvent at (131.23046875, 138.91015625)
+01.18   Ultraman        CameraEvent at (125.6953125, 133.375)
+01.18   Ultraman        CameraEvent at (125.21484375, 132.89453125)
+01.19   DarkWarrior     CameraEvent at (30.74609375, 33.015625)
+01.19   DarkWarrior     CameraEvent at (30.74609375, 39.3515625)
+01.19   DarkWarrior     CameraEvent at (30.74609375, 42.66015625)
+01.19   Ultraman        CameraEvent at (124.25, 132.89453125)
+01.19   DarkWarrior     CameraEvent at (30.74609375, 49.13671875)
+01.19   Ultraman        CameraEvent at (121.36328125, 132.89453125)
+01.19   Ultraman        CameraEvent at (119.5, 132.89453125)
+01.19   DarkWarrior     CameraEvent at (30.74609375, 50.6875)
+01.19   DarkWarrior     Right Click - TargetPoint; Location: (37.797607421875, 62.118896484375, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.20   DarkWarrior     CommandManagerStateEvent 78 - None
+01.20   DarkWarrior     CameraEvent at (30.74609375, 48.57421875)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 45.40625)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 39.421875)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 36.04296875)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 29.63671875)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 27.3828125)
+01.20   DarkWarrior     CameraEvent at (30.74609375, 21.82421875)
+01.21   Ultraman        CameraEvent at (118.65625, 132.89453125)
+01.21   Ultraman        CameraEvent at (115.890625, 132.89453125)
+01.21   Ultraman        CameraEvent at (113.72265625, 132.89453125)
+01.21   Ultraman        CameraEvent at (113.30078125, 132.89453125)
+01.22    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+01.22   Ultraman        CG 5 Get
+01.22   Ultraman        CameraEvent at (113.84375, 132.89453125)
+01.22   Ultraman        CameraEvent at (116.8515625, 132.89453125)
+01.22   Ultraman        CameraEvent at (122.625, 132.89453125)
+01.22   Ultraman        CameraEvent at (124.61328125, 132.89453125)
+01.22   Ultraman        CameraEvent at (129.84765625, 132.89453125)
+01.22   Ultraman        CameraEvent at (132.1328125, 132.89453125)
+01.22   Ultraman        CameraEvent at (134.41796875, 136.265625)
+01.22   Ultraman        SelectionEvent1854['1x Larva']
+01.22   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+01.22   Ultraman        SelectionEvent1859['1x Egg']
+01.23   DarkWarrior     CameraEvent at (30.74609375, 22.66796875)
+01.23   DarkWarrior     CameraEvent at (30.74609375, 25.9765625)
+01.23   DarkWarrior     CameraEvent at (30.74609375, 32.1015625)
+01.23   Ultraman        Right Click - TargetUnit; Target: Extractor [03EC0002]; Location: (139.5, 145.5, 57272)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.23   Ultraman        CameraEvent at (133.3359375, 136.265625)
+01.23   Ultraman        CameraEvent at (130.38671875, 136.265625)
+01.23   Ultraman        CameraEvent at (128.40234375, 136.265625)
+01.23   Ultraman        CameraEvent at (123.109375, 136.265625)
+01.23   Ultraman        CameraEvent at (120.58203125, 136.265625)
+01.23   Ultraman        CG 5 Get
+01.23   Ultraman        CameraEvent at (120.16015625, 136.265625)
+01.24   Ultraman        SelectionEvent1894['1x Overlord']
+01.24   Ultraman        CameraEvent at (120.16015625, 135.0)
+01.24   Ultraman        CameraEvent at (120.16015625, 132.65234375)
+01.24   Ultraman        CameraEvent at (120.16015625, 130.66796875)
+01.25    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 33)
+
+ Time: 01.25
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 330
+ Current Gas: 20
+ Min Col Rate: 895
+ Gas Col Rate: 89
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 1575
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+
+ Time: 01.25
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 90
+ Current Gas: 0
+ Min Col Rate: 923
+ Gas Col Rate: 0
+ Workers: 16
+ Army min: 0
+ Army gas: 0
+ Economy min: 1350
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.25   Ultraman        Right Click - TargetPoint; Location: (117.27001953125, 136.619384765625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.25   Ultraman        CommandManagerStateEvent 68 - None
+01.25   Ultraman        CameraEvent at (120.16015625, 132.71484375)
+01.25   Ultraman        CameraEvent at (119.73828125, 135.48046875)
+01.25   Ultraman        CameraEvent at (117.453125, 135.96484375)
+01.25   Ultraman        Right Click - TargetPoint; Location: (108.79150390625, 145.028076171875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.25   Ultraman        CommandManagerStateEvent 69 - None
+01.25   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.25   DarkWarrior     CommandManagerStateEvent 79 - None
+01.25   Ultraman        Right Click - TargetPoint; Location: (109.62158203125, 142.096435546875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.25   Ultraman        CommandManagerStateEvent 70 - None
+01.26   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.26   DarkWarrior     CommandManagerStateEvent 80 - None
+01.26   Ultraman        Right Click - TargetPoint; Location: (108.527587890625, 141.10595703125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.26   Ultraman        CommandManagerStateEvent 71 - None
+01.26   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [03E00001]; Location: (28.5, 33.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.26   DarkWarrior     CommandManagerStateEvent 81 - None
+01.26   Ultraman        CameraEvent at (116.609375, 135.96484375)
+01.26   Ultraman        CameraEvent at (114.4453125, 134.76171875)
+01.26   Ultraman        CameraEvent at (112.09765625, 131.93359375)
+01.26   Ultraman        CameraEvent at (112.09765625, 130.7890625)
+01.26   DarkWarrior     SelectionEvent1942['1x Probe']
+01.26   Ultraman        Right Click - TargetPoint; Location: (107.395751953125, 133.16748046875, 49077) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.26   DarkWarrior     CameraEvent at (30.74609375, 34.28515625)
+01.26   DarkWarrior     CameraEvent at (30.74609375, 36.95703125)
+01.26   DarkWarrior     CameraEvent at (30.74609375, 40.125)
+01.27   DarkWarrior     CameraEvent at (30.74609375, 46.81640625)
+01.27   DarkWarrior     CameraEvent at (30.74609375, 48.99609375)
+01.27   Ultraman        Right Click - TargetPoint; Location: (108.672119140625, 128.26123046875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   Ultraman        CommandManagerStateEvent 73 - None
+01.27   DarkWarrior     CameraEvent at (30.74609375, 55.40234375)
+01.27   DarkWarrior     CameraEvent at (30.74609375, 56.53125)
+01.27   Ultraman        Right Click - TargetPoint; Location: (115.71142578125, 129.281982421875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   Ultraman        CommandManagerStateEvent 74 - None
+01.27   DarkWarrior     CameraEvent at (32.99609375, 58.4296875)
+01.27   DarkWarrior     CameraEvent at (36.796875, 62.234375)
+01.27   Ultraman        Right Click - TargetPoint; Location: (114.09521484375, 133.489990234375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   Ultraman        CommandManagerStateEvent 75 - None
+01.27   DarkWarrior     Right Click - TargetPoint; Location: (43.419677734375, 64.574462890625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   DarkWarrior     CommandManagerStateEvent 82 - None
+01.27   Ultraman        CameraEvent at (112.578125, 130.7890625)
+01.27   Ultraman        CameraEvent at (115.046875, 130.7890625)
+01.27   Ultraman        CameraEvent at (117.875, 130.7890625)
+01.27   DarkWarrior     Right Click - TargetPoint; Location: (37.293212890625, 63.265380859375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   DarkWarrior     CommandManagerStateEvent 83 - None
+01.27   Ultraman        CG 5 Get
+01.27   Ultraman        CameraEvent at (123.16796875, 130.7890625)
+01.27   Ultraman        CameraEvent at (125.6953125, 130.7890625)
+01.27   DarkWarrior     Right Click - TargetPoint; Location: (38.277587890625, 63.343017578125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.27   DarkWarrior     CommandManagerStateEvent 84 - None
+01.27   Ultraman        CameraEvent at (130.6875, 130.7890625)
+01.27   Ultraman        CameraEvent at (133.39453125, 130.7890625)
+01.28   Ultraman        CameraEvent at (136.1015625, 130.7890625)
+01.28   Ultraman        CameraEvent at (137.3046875, 130.7890625)
+01.28   DarkWarrior     Right Click - TargetPoint; Location: (43.63232421875, 65.355224609375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.28   DarkWarrior     CommandManagerStateEvent 85 - None
+01.28   Ultraman        CameraEvent at (137.3046875, 133.13671875)
+01.28   Ultraman        CameraEvent at (137.3046875, 136.265625)
+01.28   DarkWarrior     Right Click - TargetPoint; Location: (43.894287109375, 65.355224609375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.28   DarkWarrior     CommandManagerStateEvent 86 - None
+01.28   Ultraman        CameraEvent at (135.6796875, 136.265625)
+01.28   DarkWarrior     CameraEvent at (40.109375, 61.45703125)
+01.28   Ultraman        CameraEvent at (132.61328125, 133.1953125)
+01.28   DarkWarrior     CameraEvent at (42.2890625, 58.21875)
+01.28   DarkWarrior     CameraEvent at (42.2890625, 57.9375)
+01.28   Ultraman        CameraEvent at (127.078125, 127.66015625)
+01.28   Ultraman        CameraEvent at (125.21484375, 125.796875)
+01.28   DarkWarrior     Right Click - TargetPoint; Location: (43.67431640625, 63.733154296875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.28   DarkWarrior     CommandManagerStateEvent 87 - None
+01.28   Ultraman        CameraEvent at (124.671875, 125.796875)
+01.29    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+01.29    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.29    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.29    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.29   DarkWarrior     Right Click - TargetPoint; Location: (45.708251953125, 62.798828125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.29   DarkWarrior     CommandManagerStateEvent 88 - None
+01.29   DarkWarrior     Right Click - TargetPoint; Location: (45.867919921875, 62.62353515625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.29   DarkWarrior     CommandManagerStateEvent 89 - None
+01.29   Ultraman        CameraEvent at (122.14453125, 126.27734375)
+01.29   Ultraman        CameraEvent at (119.31640625, 129.10546875)
+01.29   Ultraman        CameraEvent at (117.09375, 130.91015625)
+01.29   DarkWarrior     CommandManagerStateEvent 90 - None
+01.29   DarkWarrior     CommandManagerStateEvent 91 - None
+01.29   DarkWarrior     Right Click - TargetPoint; Location: (45.786865234375, 62.36328125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.29   DarkWarrior     CommandManagerStateEvent 92 - None
+01.30    Player 1 - DarkWarrior (Protoss) - Unit Warp Gate done
+01.30   DarkWarrior     Right Click - TargetPoint; Location: (45.7109375, 62.1904296875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.30   DarkWarrior     CommandManagerStateEvent 93 - None
+01.30   DarkWarrior     Right Click - TargetPoint; Location: (44.917236328125, 62.36328125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.30   DarkWarrior     CommandManagerStateEvent 94 - None
+01.31    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+01.31   Ultraman        CameraEvent at (118.53515625, 130.91015625)
+01.31   Ultraman        CameraEvent at (121.421875, 133.375)
+01.31   Ultraman        CameraEvent at (123.2890625, 135.2421875)
+01.31   Ultraman        CameraEvent at (128.58203125, 140.0546875)
+01.31   Ultraman        CameraEvent at (131.7109375, 140.0546875)
+01.31   Ultraman        CameraEvent at (134.296875, 140.0546875)
+01.31   Ultraman        SelectionEvent2057['1x Larva']
+01.31   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+
+ Time: 01.32
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 290
+ Current Gas: 36
+ Min Col Rate: 923
+ Gas Col Rate: 134
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 1575
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 01.32
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 150
+ Current Gas: 0
+ Min Col Rate: 951
+ Gas Col Rate: 0
+ Workers: 17
+ Army min: 0
+ Army gas: 0
+ Economy min: 1400
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.32   Ultraman        CameraEvent at (134.83984375, 140.0546875)
+01.32   Ultraman        SelectionEvent2062['1x Egg']
+01.32   Ultraman        CameraEvent at (140.375, 140.0546875)
+01.32   Ultraman        CameraEvent at (140.85546875, 140.0546875)
+01.32   DarkWarrior     Ability (158E) - BuildCyberneticsCore; Location: (45.5, 62.5, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.33    Player 2 - Ultraman (Zerg) - Unit Extractor done
+01.33    Drone - Unit died by None Player 2 - Ultraman (Zerg) at (139, 144).
+01.33    Player 1 - DarkWarrior (Protoss) - Unit initiated Cybernetics Core at (45, 62)
+01.33   Ultraman        Right Click - TargetUnit; Target: Extractor [03EC0002]; Location: (139.5, 145.5, 57272)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.33   Ultraman        CameraEvent at (140.375, 140.0546875)
+01.33   Ultraman        CameraEvent at (137.3671875, 140.0546875)
+01.33   Ultraman        CameraEvent at (132.1328125, 140.0546875)
+01.33   Ultraman        CameraEvent at (129.6640625, 140.0546875)
+01.33   Ultraman        CameraEvent at (124.3125, 140.0546875)
+01.33   Ultraman        CG 5 Get
+01.33   Ultraman        CameraEvent at (121.78515625, 140.0546875)
+01.33   Ultraman        CameraEvent at (119.2578125, 140.0546875)
+01.34    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.34    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.34    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.34   Ultraman        CameraEvent at (113.72265625, 140.0546875)
+01.34   Ultraman        CameraEvent at (110.89453125, 140.0546875)
+01.34   Ultraman        CameraEvent at (107.46484375, 140.0546875)
+01.34   DarkWarrior     Right Click - TargetPoint; Location: (39.08740234375, 58.72802734375, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.34   Ultraman        CameraEvent at (108.30859375, 140.0546875)
+01.34   Ultraman        CameraEvent at (111.1953125, 138.0078125)
+01.34   DarkWarrior     Right Click - TargetPoint; Location: (37.08544921875, 59.62841796875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.34   DarkWarrior     CommandManagerStateEvent 97 - None
+01.34   Ultraman        CameraEvent at (113.48046875, 135.72265625)
+01.34   DarkWarrior     Right Click - TargetPoint; Location: (36.4873046875, 59.867431640625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.34   DarkWarrior     CommandManagerStateEvent 98 - None
+01.34   DarkWarrior     CG 7 Get
+01.34   Ultraman        CameraEvent at (113.48046875, 135.30078125)
+01.34   Ultraman        CameraEvent at (113.48046875, 132.953125)
+01.34   Ultraman        CameraEvent at (113.48046875, 131.08984375)
+01.35    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 31)
+01.35   DarkWarrior     CameraEvent at (41.9375, 55.8984375)
+01.35   DarkWarrior     CameraEvent at (39.05078125, 53.01171875)
+01.35   DarkWarrior     CameraEvent at (36.65625, 49.703125)
+01.35   DarkWarrior     CameraEvent at (36.65625, 43.29296875)
+01.35   DarkWarrior     CameraEvent at (36.65625, 40.125)
+01.35   DarkWarrior     CameraEvent at (36.65625, 34.84765625)
+01.36   DarkWarrior     CameraEvent at (36.65625, 32.5234375)
+01.36   DarkWarrior     CameraEvent at (36.65625, 31.2578125)
+01.36   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+01.36   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [02600001]; Location: (29.0, 30.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.37   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [02600001]; Location: (29.0, 30.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.37   DarkWarrior     CommandManagerStateEvent 101 - None
+01.37   Ultraman        CameraEvent at (113.48046875, 128.8046875)
+01.37   Ultraman        CameraEvent at (113.48046875, 126.15625)
+01.37   Ultraman        CameraEvent at (113.48046875, 123.26953125)
+01.37   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [02600001]; Location: (29.0, 30.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.37   DarkWarrior     CommandManagerStateEvent 102 - None
+01.37   Ultraman        CameraEvent at (113.48046875, 122.3671875)
+01.37   DarkWarrior     CameraEvent at (36.65625, 31.6796875)
+01.37   DarkWarrior     CameraEvent at (36.65625, 37.59375)
+01.37   DarkWarrior     CameraEvent at (36.65625, 40.90234375)
+01.37   DarkWarrior     CameraEvent at (36.65625, 47.30859375)
+01.37   DarkWarrior     CameraEvent at (36.65625, 50.546875)
+01.37   DarkWarrior     CameraEvent at (36.65625, 53.36328125)
+01.37   Ultraman        CameraEvent at (113.48046875, 124.59375)
+01.37   Ultraman        CameraEvent at (113.48046875, 127.30078125)
+01.37   Ultraman        CameraEvent at (113.48046875, 130.0078125)
+01.38   DarkWarrior     CameraEvent at (36.65625, 54.06640625)
+01.38   DarkWarrior     CameraEvent at (36.65625, 56.953125)
+01.39    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 01.40
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 340
+ Current Gas: 52
+ Min Col Rate: 839
+ Gas Col Rate: 134
+ Workers: 21
+ Army min: 0
+ Army gas: 0
+ Economy min: 1625
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 01.40
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 260
+ Current Gas: 4
+ Min Col Rate: 951
+ Gas Col Rate: 22
+ Workers: 18
+ Army min: 0
+ Army gas: 0
+ Economy min: 1525
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.40   DarkWarrior     SelectionEvent2247['1x Probe']
+01.40   DarkWarrior     Right Click - TargetPoint; Location: (38.11767578125, 61.91259765625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.40   DarkWarrior     CommandManagerStateEvent 103 - None
+01.40   Ultraman        CameraEvent at (119.67578125, 133.60546875)
+01.40   DarkWarrior     Right Click - TargetPoint; Location: (37.397216796875, 64.19287109375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.40   DarkWarrior     CommandManagerStateEvent 104 - None
+01.41    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+01.41   DarkWarrior     Right Click - TargetPoint; Location: (36.73046875, 64.00439453125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.41   DarkWarrior     CommandManagerStateEvent 105 - None
+01.41   Ultraman        CameraEvent at (118.35546875, 133.60546875)
+01.41   Ultraman        CameraEvent at (116.4296875, 135.53125)
+01.41   Ultraman        CameraEvent at (112.3984375, 138.6015625)
+01.41   Ultraman        SelectionEvent2268['1x Larva']
+01.41   DarkWarrior     Right Click - TargetPoint; Location: (33.78271484375, 61.824951171875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.41   DarkWarrior     CommandManagerStateEvent 106 - None
+01.41   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+01.41   DarkWarrior     Right Click - TargetPoint; Location: (33.4765625, 60.4892578125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.41   DarkWarrior     CommandManagerStateEvent 107 - None
+01.41   Ultraman        SelectionEvent2275['1x Egg']
+01.41   DarkWarrior     Right Click - TargetPoint; Location: (35.714111328125, 59.45166015625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.41   DarkWarrior     CommandManagerStateEvent 108 - None
+01.41   DarkWarrior     Right Click - TargetPoint; Location: (38.099365234375, 61.0859375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.41   DarkWarrior     CommandManagerStateEvent 109 - None
+01.41   Ultraman        Right Click - TargetUnit; Target: LabMineralField [00000000]; Location: (117.0, 143.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.42   DarkWarrior     Right Click - TargetPoint; Location: (38.625732421875, 64.240478515625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.42   DarkWarrior     CommandManagerStateEvent 110 - None
+01.42   Ultraman        CG 5 Get
+01.42   Ultraman        CameraEvent at (113.6015625, 138.6015625)
+01.42   DarkWarrior     Right Click - TargetPoint; Location: (36.976806640625, 64.428955078125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.42   DarkWarrior     CommandManagerStateEvent 111 - None
+01.42   Ultraman        CameraEvent at (116.4296875, 138.6015625)
+01.42   Ultraman        CameraEvent at (122.08203125, 138.6015625)
+01.42   Ultraman        CameraEvent at (123.52734375, 138.6015625)
+01.42   DarkWarrior     Right Click - TargetPoint; Location: (35.517578125, 63.354736328125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.42   DarkWarrior     CommandManagerStateEvent 112 - None
+01.42   Ultraman        CameraEvent at (129.2421875, 138.6015625)
+01.42   Ultraman        CameraEvent at (131.58984375, 138.6015625)
+01.42   DarkWarrior     Right Click - TargetPoint; Location: (35.0361328125, 61.78076171875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.42   DarkWarrior     CommandManagerStateEvent 113 - None
+01.42   Ultraman        CameraEvent at (135.6796875, 138.6015625)
+01.42   Ultraman        CameraEvent at (135.6796875, 136.49609375)
+01.43   DarkWarrior     Right Click - TargetPoint; Location: (35.046875, 61.344482421875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.43   DarkWarrior     CommandManagerStateEvent 114 - None
+01.43   Ultraman        CameraEvent at (135.6796875, 134.390625)
+01.43   Ultraman        CameraEvent at (137.96484375, 134.390625)
+01.43   Ultraman        CameraEvent at (140.4921875, 134.390625)
+01.43   Ultraman        CameraEvent at (140.44921875, 134.4296875)
+01.43   Ultraman        CameraEvent at (140.0625, 134.75)
+01.43   Ultraman        CameraEvent at (137.765625, 136.1015625)
+01.43   Ultraman        CameraEvent at (137.4453125, 136.19921875)
+01.44    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.44    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.44    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.44    Player 1 - DarkWarrior (Protoss) - Unit initiated Nexus at (35, 62)
+01.44    Player 1 - DarkWarrior (Protoss) - SprayProtoss upgrade completed
+01.44   DarkWarrior     Ability (1580) - BuildNexus; Location: (35.5, 62.5, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.44   Ultraman        SelectionEvent2343['1x SpawningPool']
+01.44   DarkWarrior     CG 7 Get
+01.44   Ultraman        CameraEvent at (136.9609375, 136.19921875)
+01.44   Ultraman        CameraEvent at (131.4296875, 136.19921875)
+01.44   Ultraman        CameraEvent at (128.90234375, 136.19921875)
+01.45   DarkWarrior     SelectionEvent2352['1x Nexus']
+01.45   Ultraman        CameraEvent at (126.43359375, 136.19921875)
+01.45   Ultraman        CameraEvent at (120.83984375, 136.19921875)
+01.45   Ultraman        CameraEvent at (119.515625, 136.19921875)
+01.45   Ultraman        SelectionEvent2363['1x Hatchery']
+01.45   DarkWarrior     CG 7 Set
+01.46   Ultraman        CG 5 Get
+01.46   Ultraman        CameraEvent at (119.515625, 133.19140625)
+01.46   Ultraman        CameraEvent at (119.515625, 131.38671875)
+
+ Time: 01.47
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 55
+ Current Gas: 68
+ Min Col Rate: 923
+ Gas Col Rate: 134
+ Workers: 21
+ Army min: 0
+ Army gas: 0
+ Economy min: 1625
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 01.47
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 325
+ Current Gas: 20
+ Min Col Rate: 979
+ Gas Col Rate: 89
+ Workers: 19
+ Army min: 0
+ Army gas: 0
+ Economy min: 1575
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.47   Ultraman        CameraEvent at (121.921875, 131.38671875)
+01.47   Ultraman        CameraEvent at (124.80859375, 131.38671875)
+01.47   Ultraman        CameraEvent at (127.27734375, 131.38671875)
+01.47   Ultraman        CameraEvent at (132.75, 131.38671875)
+01.47   Ultraman        CameraEvent at (134.85546875, 131.38671875)
+01.48    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (32, 30)
+01.48   Ultraman        CameraEvent at (134.375, 131.38671875)
+01.48   Ultraman        CameraEvent at (132.08984375, 131.38671875)
+01.48   Ultraman        CameraEvent at (127.8203125, 131.38671875)
+01.48   Ultraman        Right Click - TargetPoint; Location: (122.44384765625, 136.506103515625, 52124)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.48   Ultraman        CommandManagerStateEvent 80 - None
+01.49   Ultraman        CameraEvent at (128.30078125, 131.38671875)
+01.49   Ultraman        CameraEvent at (131.06640625, 131.38671875)
+01.49   Ultraman        CameraEvent at (133.7734375, 131.38671875)
+01.49   Ultraman        CameraEvent at (137.14453125, 131.38671875)
+01.49   Ultraman        CameraEvent at (137.14453125, 132.41015625)
+01.49   Ultraman        CameraEvent at (137.14453125, 133.3125)
+01.50    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+01.50   Ultraman        CameraEvent at (137.14453125, 134.39453125)
+01.50   Ultraman        CameraEvent at (137.14453125, 136.5)
+01.50   Ultraman        CameraEvent at (137.14453125, 138.60546875)
+01.50   DarkWarrior     SelectionEvent2478['1x Probe']
+01.50   Ultraman        CameraEvent at (134.5546875, 138.60546875)
+01.50   Ultraman        CameraEvent at (131.546875, 138.60546875)
+01.50   Ultraman        CameraEvent at (126.25390625, 138.60546875)
+01.50   Ultraman        CameraEvent at (123.60546875, 138.60546875)
+01.50   Ultraman        CameraEvent at (121.5, 138.60546875)
+01.50   DarkWarrior     CameraEvent at (36.65625, 55.47265625)
+01.50   DarkWarrior     CameraEvent at (36.65625, 49.27734375)
+01.51   DarkWarrior     CameraEvent at (36.65625, 45.96875)
+01.51   DarkWarrior     CameraEvent at (36.65625, 39.3515625)
+01.51   DarkWarrior     CameraEvent at (36.65625, 36.88671875)
+01.51   DarkWarrior     CameraEvent at (36.65625, 30.33984375)
+01.51   DarkWarrior     CameraEvent at (36.65625, 27.66796875)
+01.51   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.51   DarkWarrior     Right Click - TargetPoint; Location: (33.399658203125, 25.22998046875, 57273)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.51   DarkWarrior     CommandManagerStateEvent 121 - None
+01.52    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+01.52   Ultraman        CameraEvent at (121.5, 136.13671875)
+01.52   Ultraman        CameraEvent at (121.5, 134.03125)
+01.52   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [00240001]; Location: (33.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.52   DarkWarrior     CommandManagerStateEvent 122 - None
+01.52   Ultraman        CameraEvent at (121.5, 130.90625)
+01.52   Ultraman        SelectionEvent2520['1x Larva']
+01.52   Ultraman        Ability (1862) - MorphOverlord<class 'sc2reader.events.game.BasicCommandEvent'>
+01.52   DarkWarrior     SelectionEvent2527['1x Probe']
+01.52   Ultraman        SelectionEvent2530['1x Egg']
+01.53    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+01.53    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+01.53    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+01.53   DarkWarrior     Ability (1582) - BuildAssimilator; Target: SpacePlatformGeyser [00100001]; Location: (39.5, 23.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.53   Ultraman        CameraEvent at (119.09375, 130.484375)
+01.53   Ultraman        CameraEvent at (116.38671875, 127.77734375)
+01.53   Ultraman        CameraEvent at (113.44140625, 124.828125)
+01.53   Ultraman        CameraEvent at (113.44140625, 124.46875)
+01.53   Ultraman        Right Click - TargetPoint; Location: (110.54833984375, 125.71044921875, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.53   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264) Q<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.53   DarkWarrior     CG 7 Get
+
+ Time: 01.54
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 90
+ Current Gas: 88
+ Min Col Rate: 951
+ Gas Col Rate: 156
+ Workers: 22
+ Army min: 0
+ Army gas: 0
+ Economy min: 1675
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 01.54
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 335
+ Current Gas: 36
+ Min Col Rate: 951
+ Gas Col Rate: 134
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 1625
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+01.54    Player 1 - DarkWarrior (Protoss) - Unit initiated Assimilator at (39, 23)
+01.54   DarkWarrior     CameraEvent at (36.65625, 28.08984375)
+01.54   DarkWarrior     CameraEvent at (36.65625, 31.5390625)
+01.54   DarkWarrior     CameraEvent at (36.65625, 34.42578125)
+01.54   DarkWarrior     CameraEvent at (36.65625, 41.11328125)
+01.54   DarkWarrior     CameraEvent at (36.65625, 43.22265625)
+01.54   DarkWarrior     CameraEvent at (36.65625, 49.84375)
+01.54   Ultraman        SelectionEvent2560['1x Overlord']
+01.54   DarkWarrior     CameraEvent at (36.65625, 51.53125)
+01.55   Ultraman        CameraEvent at (68.5625, 20.86328125)
+01.55   Ultraman        CameraEvent at (68.01171875, 19.74609375)
+01.55   DarkWarrior     CameraEvent at (32.484375, 23.62890625)
+01.55   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+01.55   Ultraman        Right Click - TargetPoint; Location: (62.560791015625, 18.060546875, 32719)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.55   Ultraman        CommandManagerStateEvent 83 - None
+01.55   DarkWarrior     CameraEvent at (32.484375, 21.65625)
+01.55   DarkWarrior     CameraEvent at (32.484375, 18.55859375)
+01.55   DarkWarrior     CameraEvent at (32.484375, 16.0)
+01.56   DarkWarrior     CameraEvent at (30.93359375, 16.0)
+01.56   DarkWarrior     CameraEvent at (30.0, 16.0)
+01.56   Ultraman        Right Click - TargetPoint; Location: (70.41259765625, 20.067626953125, 40892)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+01.56   Ultraman        CommandManagerStateEvent 84 - None
+01.56   DarkWarrior     CameraEvent at (30.0, 16.9140625)
+01.56   DarkWarrior     CameraEvent at (30.0, 19.87109375)
+01.56   DarkWarrior     CameraEvent at (30.0, 22.8984375)
+01.56   DarkWarrior     CameraEvent at (30.0, 24.8671875)
+01.56   Ultraman        Right Click - TargetPoint; Location: (60.77099609375, 17.5888671875, 32720) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.56   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+01.57   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+01.57   DarkWarrior     CommandManagerStateEvent 127 - None
+01.57   Ultraman        CG 5 Get
+01.57   DarkWarrior     CameraEvent at (31.6171875, 24.8671875)
+01.57   DarkWarrior     CameraEvent at (36.26171875, 24.8671875)
+01.57   Ultraman        CameraEvent at (127.37109375, 133.046875)
+01.57   Ultraman        CameraEvent at (125.72265625, 133.60546875)
+01.58   Ultraman        CameraEvent at (120.2265625, 130.81640625)
+01.58   DarkWarrior     SelectionEvent2653['1x Probe']
+01.58   Ultraman        CameraEvent at (120.6484375, 130.81640625)
+01.58   Ultraman        CameraEvent at (123.59765625, 130.81640625)
+01.58   Ultraman        CameraEvent at (128.76953125, 130.81640625)
+01.58   Ultraman        CameraEvent at (131.0546875, 130.81640625)
+01.59   Ultraman        CameraEvent at (136.53125, 130.81640625)
+01.59   Ultraman        CameraEvent at (137.79296875, 130.81640625)
+01.59   Ultraman        CameraEvent at (137.79296875, 132.80078125)
+01.59   Ultraman        CameraEvent at (137.79296875, 135.5078125)
+01.59   DarkWarrior     Ability (1581) - BuildPylon; Location: (37.0, 23.0, 57269)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+01.59   Ultraman        CameraEvent at (137.78125, 135.5078125)
+01.59   Ultraman        CameraEvent at (137.5859375, 135.46875)
+01.59   Ultraman        CameraEvent at (137.0546875, 135.48046875)
+01.59   Ultraman        CameraEvent at (136.63671875, 135.5234375)
+01.59   Ultraman        CameraEvent at (135.7890625, 135.48046875)
+01.59   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264) Q<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.00    Player 1 - DarkWarrior (Protoss) - Unit initiated Pylon at (37, 23)
+02.00   Ultraman        CameraEvent at (134.08984375, 135.1484375)
+02.00   Ultraman        CameraEvent at (133.83984375, 135.10546875)
+02.00   Ultraman        CameraEvent at (133.33984375, 135.03515625)
+02.00   Ultraman        CameraEvent at (132.90625, 134.92578125)
+02.00   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [01580001]; Location: (36.0, 24.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.00   DarkWarrior     CommandManagerStateEvent 130 - None
+02.00   Ultraman        CameraEvent at (130.77734375, 134.8671875)
+02.00   Ultraman        CameraEvent at (130.38671875, 134.89453125)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 26.34765625)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 29.375)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 32.75390625)
+02.00   DarkWarrior     CG 7 Get
+02.00   Ultraman        CameraEvent at (129.125, 134.89453125)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 35.359375)
+02.00   Ultraman        CameraEvent at (123.53125, 134.89453125)
+02.00   Ultraman        CameraEvent at (121.36328125, 134.89453125)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 36.4140625)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 38.94921875)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 42.046875)
+02.00   Ultraman        CameraEvent at (116.19140625, 134.89453125)
+02.00   Ultraman        CameraEvent at (114.0234375, 134.89453125)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 48.5234375)
+02.00   DarkWarrior     CameraEvent at (36.26171875, 51.76171875)
+02.01    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 02.01
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 50
+ Current Gas: 108
+ Min Col Rate: 951
+ Gas Col Rate: 156
+ Workers: 22
+ Army min: 0
+ Army gas: 0
+ Economy min: 1675
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 02.01
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 445
+ Current Gas: 56
+ Min Col Rate: 951
+ Gas Col Rate: 156
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 1625
+ Economy gas: 0
+ Tech min: 0
+ Tech gas: 0
+02.01    Player 2 - Ultraman (Zerg) - Unit Hatchery done
+02.01    Player 2 - Ultraman (Zerg) - SprayZerg upgrade completed
+02.01    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.01    Drone - Unit died by None Player 2 - Ultraman (Zerg) at (111, 138).
+02.01    Player 2 - Ultraman (Zerg) - Unit Spawning Pool done
+02.01    Drone - Unit died by None Player 2 - Ultraman (Zerg) at (138, 142).
+02.01   DarkWarrior     CameraEvent at (36.26171875, 52.74609375)
+02.01   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+02.01   DarkWarrior     CameraEvent at (36.26171875, 49.296875)
+02.01   DarkWarrior     CameraEvent at (36.26171875, 43.3828125)
+02.02   DarkWarrior     CameraEvent at (36.26171875, 40.14453125)
+02.02   DarkWarrior     CameraEvent at (36.26171875, 33.52734375)
+02.02   DarkWarrior     CameraEvent at (36.26171875, 31.1328125)
+02.02   DarkWarrior     CameraEvent at (36.26171875, 24.9375)
+02.02   DarkWarrior     CameraEvent at (36.26171875, 24.515625)
+02.02   Ultraman        CameraEvent at (116.01171875, 134.89453125)
+02.02   Ultraman        CameraEvent at (118.4765625, 134.89453125)
+02.02   Ultraman        CameraEvent at (121.54296875, 134.89453125)
+02.02   Ultraman        Ability (1EA0) - TrainQueen<class 'sc2reader.events.game.BasicCommandEvent'>
+02.02   Ultraman        CameraEvent at (127.01953125, 134.89453125)
+02.02   Ultraman        CameraEvent at (129.484375, 134.89453125)
+02.02   DarkWarrior     SelectionEvent2750['1x Assimilator']
+02.02   Ultraman        CommandManagerStateEvent 87 - None
+02.02   Ultraman        CameraEvent at (135.19921875, 134.89453125)
+02.02   DarkWarrior     CG 7 Get
+02.03    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.03   DarkWarrior     CameraEvent at (36.26171875, 25.99609375)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 29.1640625)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 31.484375)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 38.10546875)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 41.05859375)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 44.2265625)
+02.03   DarkWarrior     CameraEvent at (36.26171875, 49.296875)
+02.03   Ultraman        SelectionEvent2771['2x Larva']
+02.03   DarkWarrior     CameraEvent at (36.26171875, 51.97265625)
+02.03   Ultraman        Ability (1861) - MorphZergling<class 'sc2reader.events.game.BasicCommandEvent'>
+02.03   DarkWarrior     CameraEvent at (36.26171875, 55.7734375)
+02.04    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.04   Ultraman        CommandManagerStateEvent 89 - None
+02.04   Ultraman        SelectionEvent2779['1x Egg']
+02.04   Ultraman        SelectionEvent2784['1x Egg']
+02.04   Ultraman        CG 5 Get
+02.04   DarkWarrior     SelectionEvent2788['1x Gateway']
+02.04   DarkWarrior     CameraEvent at (36.26171875, 54.4375)
+02.04   DarkWarrior     CameraEvent at (36.26171875, 50.91796875)
+02.04   DarkWarrior     CameraEvent at (36.26171875, 47.609375)
+02.04   DarkWarrior     CameraEvent at (36.26171875, 41.2734375)
+02.04   DarkWarrior     CameraEvent at (36.26171875, 38.66796875)
+02.04   Ultraman        CameraEvent at (132.43359375, 134.89453125)
+02.04   Ultraman        CameraEvent at (129.3671875, 134.89453125)
+02.04   Ultraman        CameraEvent at (127.3203125, 134.89453125)
+02.05   DarkWarrior     CameraEvent at (36.26171875, 32.33203125)
+02.05   DarkWarrior     CameraEvent at (36.26171875, 29.8671875)
+02.05   DarkWarrior     CameraEvent at (36.26171875, 26.55859375)
+02.05   Ultraman        CameraEvent at (121.96484375, 134.89453125)
+02.05   Ultraman        CameraEvent at (119.62109375, 134.89453125)
+02.05   Ultraman        CameraEvent at (116.671875, 134.89453125)
+02.05   DarkWarrior     CG 7 Get
+02.05   Ultraman        CameraEvent at (113.00390625, 134.89453125)
+02.06   DarkWarrior     CommandManagerStateEvent 133 - None
+02.06   DarkWarrior     CameraEvent at (36.26171875, 27.82421875)
+02.06   DarkWarrior     CameraEvent at (36.26171875, 31.34375)
+02.06   DarkWarrior     CameraEvent at (36.26171875, 37.46875)
+02.06   DarkWarrior     CameraEvent at (36.26171875, 40.91796875)
+02.06   DarkWarrior     Right Click - TargetPoint; Location: (38.623046875, 58.840087890625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.06   DarkWarrior     CameraEvent at (36.26171875, 45.35546875)
+02.07    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 33)
+02.07   Ultraman        CameraEvent at (115.94921875, 134.89453125)
+02.07   Ultraman        CameraEvent at (121.42578125, 134.89453125)
+02.07   Ultraman        CameraEvent at (124.0703125, 134.89453125)
+02.07   DarkWarrior     CameraEvent at (36.26171875, 44.44140625)
+02.07   DarkWarrior     CameraEvent at (36.26171875, 41.5546875)
+02.07   Ultraman        CameraEvent at (129.66796875, 134.89453125)
+02.07   Ultraman        CameraEvent at (131.23046875, 134.89453125)
+02.07   DarkWarrior     CameraEvent at (36.26171875, 35.0078125)
+02.07   DarkWarrior     CameraEvent at (36.26171875, 31.6953125)
+02.07   DarkWarrior     CameraEvent at (36.26171875, 25.4296875)
+
+ Time: 02.08
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 65
+ Current Gas: 128
+ Min Col Rate: 979
+ Gas Col Rate: 156
+ Workers: 23
+ Army min: 0
+ Army gas: 0
+ Economy min: 1725
+ Economy gas: 0
+ Tech min: 150
+ Tech gas: 0
+
+ Time: 02.08
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 170
+ Current Gas: 76
+ Min Col Rate: 1007
+ Gas Col Rate: 156
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 1975
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.08   Ultraman        CameraEvent at (131.203125, 134.89453125)
+02.08   Ultraman        CameraEvent at (130.44921875, 135.1328125)
+02.08   Ultraman        CameraEvent at (130.00390625, 135.328125)
+02.08   Ultraman        CameraEvent at (129.39453125, 135.60546875)
+02.08   Ultraman        CameraEvent at (128.8515625, 135.96875)
+02.08   Ultraman        CameraEvent at (128.53125, 136.17578125)
+02.08   Ultraman        CameraEvent at (128.15234375, 136.38671875)
+02.09    Player 1 - DarkWarrior (Protoss) - Unit Cybernetics Core done
+02.09   DarkWarrior     CameraEvent at (36.26171875, 27.82421875)
+02.09   DarkWarrior     CameraEvent at (36.26171875, 30.21875)
+02.09   DarkWarrior     CameraEvent at (36.26171875, 36.9765625)
+02.09   DarkWarrior     CameraEvent at (36.26171875, 39.79296875)
+02.09   DarkWarrior     CameraEvent at (36.26171875, 42.75)
+02.10   DarkWarrior     CameraEvent at (36.26171875, 49.296875)
+02.10    Player 2 - Ultraman (Zerg) - Unit born Overlord at (143, 135)
+02.10    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.10    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+02.10   DarkWarrior     CameraEvent at (36.26171875, 52.60546875)
+02.10   DarkWarrior     CameraEvent at (36.26171875, 55.6328125)
+02.10   DarkWarrior     CameraEvent at (36.26171875, 52.60546875)
+02.10   DarkWarrior     CameraEvent at (36.26171875, 51.05859375)
+02.11   DarkWarrior     SelectionEvent2935['1x Gateway']
+02.11   Ultraman        CameraEvent at (52.07421875, 59.93359375)
+02.11   Ultraman        CameraEvent at (50.9765625, 60.4921875)
+02.11   Ultraman        CameraEvent at (49.875, 61.046875)
+02.12    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+02.12    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.12    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.12   Ultraman        CameraEvent at (49.875, 61.60546875)
+02.12   Ultraman        SelectionEvent2966['2x Larva']
+02.12   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+02.12   Ultraman        CG 5 Get
+02.12   Ultraman        CameraEvent at (49.875, 64.5546875)
+02.12   Ultraman        CameraEvent at (49.875, 67.01953125)
+02.12   Ultraman        CameraEvent at (49.875, 68.46484375)
+02.12   DarkWarrior     Ability (15C1) - TrainStalker<class 'sc2reader.events.game.BasicCommandEvent'>
+02.12   Ultraman        SelectionEvent2976['1x Overlord']
+02.13   DarkWarrior     CG 7 Get
+02.13   Ultraman        CameraEvent at (49.875, 67.5625)
+02.13   Ultraman        CameraEvent at (49.875, 64.734375)
+02.13   Ultraman        CameraEvent at (49.875, 63.7734375)
+02.13   Ultraman        Right Click - TargetPoint; Location: (41.21044921875, 68.493408203125, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.14   Ultraman        Right Click - TargetPoint; Location: (48.13671875, 71.8095703125, 57284) Q<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.14   Ultraman        Ability (562) - HoldPosition Q<class 'sc2reader.events.game.BasicCommandEvent'>
+
+ Time: 02.15
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 60
+ Current Gas: 98
+ Min Col Rate: 1007
+ Gas Col Rate: 156
+ Workers: 23
+ Army min: 0
+ Army gas: 0
+ Economy min: 1725
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.15
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 235
+ Current Gas: 96
+ Min Col Rate: 1035
+ Gas Col Rate: 179
+ Workers: 20
+ Army min: 0
+ Army gas: 0
+ Economy min: 2075
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.15   Ultraman        CG 5 Get
+02.15   Ultraman        CameraEvent at (136.1640625, 138.62890625)
+02.16    Player 1 - DarkWarrior (Protoss) - Unit Assimilator done
+02.16    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.16   Ultraman        CameraEvent at (136.1640625, 136.40234375)
+02.16   Ultraman        SelectionEvent3060['1x Larva']
+02.16   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+02.16   Ultraman        SelectionEvent3064['1x Egg']
+02.17   Ultraman        CG 5 Get
+02.17   Ultraman        SelectionEvent3089['1x SpawningPool']
+02.18    Player 1 - DarkWarrior (Protoss) - Unit Pylon done
+02.18   Ultraman        Ability (1801) - EvolveMetabolicBoost<class 'sc2reader.events.game.BasicCommandEvent'>
+02.18   Ultraman        CommandManagerStateEvent 96 - None
+02.18   Ultraman        SelectionEvent3106['1x Drone']
+02.18   Ultraman        CameraEvent at (133.94140625, 136.40234375)
+02.18   Ultraman        CameraEvent at (131.71484375, 136.40234375)
+02.18   Ultraman        CameraEvent at (130.5703125, 136.40234375)
+02.19   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [02100001]; Location: (119.0, 139.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.19   DarkWarrior     Ability (5A40) - ChronoBoostEnergyCost; Target: WarpGate [03D80001]; Location: (44.5, 58.5, 49108)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.19   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [02100001]; Location: (119.0, 139.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.19   Ultraman        CommandManagerStateEvent 98 - None
+02.19   DarkWarrior     CameraEvent at (36.26171875, 48.1015625)
+02.19   DarkWarrior     CameraEvent at (36.26171875, 45.14453125)
+02.19   DarkWarrior     CameraEvent at (36.26171875, 38.38671875)
+02.19   DarkWarrior     CameraEvent at (36.26171875, 35.9921875)
+02.19   DarkWarrior     CameraEvent at (36.26171875, 29.9375)
+02.19   DarkWarrior     CameraEvent at (36.26171875, 28.953125)
+02.20   DarkWarrior     SelectionEvent3141['2x Probe']
+02.20   Ultraman        SelectionEvent3141['1x Drone']
+02.20   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [04180002]; Location: (39.5, 23.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.20   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [02100001]; Location: (119.0, 139.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.20   Ultraman        CommandManagerStateEvent 99 - None
+02.20   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [04180002]; Location: (39.5, 23.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.20   DarkWarrior     CommandManagerStateEvent 142 - None
+02.21    Player 2 - Ultraman (Zerg) - Unit born Zergling at (143, 135)
+02.21    Player 2 - Ultraman (Zerg) - Unit born Zergling at (144, 135)
+02.21    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.21    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+02.21    Player 2 - Ultraman (Zerg) - Unit born Zergling at (111, 135)
+02.21    Player 2 - Ultraman (Zerg) - Unit born Zergling at (112, 135)
+02.21    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.21    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (111, 135).
+02.21   DarkWarrior     SelectionEvent3168['1x Probe']
+02.21   Ultraman        CG 5 Get
+02.21   DarkWarrior     Right Click - TargetUnit; Target: Assimilator [04180002]; Location: (39.5, 23.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.21   DarkWarrior     CommandManagerStateEvent 143 - None
+02.22    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 02.22
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 170
+ Current Gas: 118
+ Min Col Rate: 979
+ Gas Col Rate: 179
+ Workers: 23
+ Army min: 0
+ Army gas: 0
+ Economy min: 1900
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.22
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 195
+ Current Gas: 12
+ Min Col Rate: 979
+ Gas Col Rate: 156
+ Workers: 20
+ Army min: 100
+ Army gas: 0
+ Economy min: 2075
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.22    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 30.78125)
+02.22   Ultraman        CameraEvent at (127.86328125, 136.40234375)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 34.01953125)
+02.22   Ultraman        CameraEvent at (125.578125, 136.40234375)
+02.22   Ultraman        CameraEvent at (123.65234375, 136.40234375)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 40.21484375)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 43.3125)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 49.71875)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 52.81640625)
+02.22   DarkWarrior     CameraEvent at (36.26171875, 59.08203125)
+02.22   DarkWarrior     SelectionEvent3197['1x Probe']
+02.22   Ultraman        CameraEvent at (42.1796875, 54.3515625)
+02.22   Ultraman        CameraEvent at (42.73046875, 54.3515625)
+02.23   DarkWarrior     Right Click - TargetPoint; Location: (39.626220703125, 60.40673828125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.23   DarkWarrior     CommandManagerStateEvent 144 - None
+02.23   Ultraman        CameraEvent at (42.73046875, 55.3125)
+02.23   Ultraman        CameraEvent at (42.73046875, 58.203125)
+02.23   Ultraman        CameraEvent at (42.73046875, 60.0078125)
+02.24    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+02.24    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.24    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+02.24    Player 1 - DarkWarrior (Protoss) - Unit initiated Shield Battery at (41, 60)
+02.24   Ultraman        CameraEvent at (42.73046875, 62.4140625)
+02.24   Ultraman        CameraEvent at (42.73046875, 64.45703125)
+02.24   Ultraman        CameraEvent at (42.73046875, 66.3828125)
+02.24   DarkWarrior     Ability (158F) - BuildShieldBattery; Location: (41.0, 60.0, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.24   Ultraman        CameraEvent at (111.5, 136.7578125)
+02.24   Ultraman        SelectionEvent3246['2x Larva']
+02.25    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.25    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.25   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+02.25   Ultraman        CommandManagerStateEvent 101 - None
+02.25   Ultraman        SelectionEvent3254['1x Egg']
+02.25   Ultraman        SelectionEvent3259['1x Egg']
+02.25   Ultraman        CameraEvent at (111.984375, 137.515625)
+02.25   DarkWarrior     Right Click - TargetPoint; Location: (41.269775390625, 65.36572265625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.25   Ultraman        CG 5 Get
+02.25   Ultraman        CameraEvent at (111.984375, 136.95703125)
+02.25   DarkWarrior     CommandManagerStateEvent 147 - None
+02.25   Ultraman        SelectionEvent3270['4x Zergling']
+02.26   DarkWarrior     CG 7 Get
+02.26   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+02.26   Ultraman        CG 1 Set
+02.26   Ultraman        Ability (5C0) - Attack; Location: (121.328125, 106.883544921875, 49080) M<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.26   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField750 [01180001]; Location: (35.0, 55.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.27   Ultraman        CG 5 Get
+02.27   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField750 [01180001]; Location: (35.0, 55.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.27   DarkWarrior     CommandManagerStateEvent 150 - None
+02.27   DarkWarrior     SelectionEvent3306['1x Gateway']
+02.27   Ultraman        SelectionEvent3306['1x Egg']
+02.27   DarkWarrior     Right Click - TargetPoint; Location: (43.072265625, 63.195556640625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.27   DarkWarrior     CommandManagerStateEvent 151 - None
+02.27   Ultraman        CameraEvent at (111.984375, 136.47265625)
+02.27   Ultraman        CameraEvent at (111.984375, 134.25)
+02.27   Ultraman        CameraEvent at (111.984375, 128.47265625)
+02.27   Ultraman        CameraEvent at (111.984375, 126.1875)
+02.27   Ultraman        CameraEvent at (111.984375, 123.48046875)
+02.28    Player 2 - Ultraman (Zerg) - Unit born Drone at (112, 135)
+02.28    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.28    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (112, 135).
+02.28   Ultraman        CameraEvent at (111.984375, 118.42578125)
+02.28   Ultraman        CameraEvent at (111.984375, 117.88671875)
+02.28   Ultraman        CameraEvent at (110.359375, 117.88671875)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 58.73046875)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 56.125)
+02.28   Ultraman        CameraEvent at (104.9453125, 117.88671875)
+02.28   Ultraman        CameraEvent at (102.23828125, 117.88671875)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 50.0)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 47.18359375)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 43.59375)
+02.28   Ultraman        CameraEvent at (96.640625, 123.0)
+02.28   Ultraman        CameraEvent at (93.99609375, 125.64453125)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 37.46875)
+02.28   Ultraman        CameraEvent at (92.55078125, 127.08984375)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 35.078125)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 28.671875)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 26.34765625)
+02.28   DarkWarrior     CameraEvent at (36.26171875, 22.6875)
+02.28   DarkWarrior     CG 7 Get
+02.28   Ultraman        Right Click - TargetPoint; Location: (85.724365234375, 134.77783203125, 40885)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.29   Ultraman        CameraEvent at (93.453125, 127.08984375)
+02.29   Ultraman        CameraEvent at (95.859375, 129.07421875)
+02.29   Ultraman        CameraEvent at (98.6875, 131.90234375)
+02.29   Ultraman        CameraEvent at (103.98046875, 134.25)
+02.29   Ultraman        CameraEvent at (106.44921875, 134.25)
+02.29   Ultraman        CameraEvent at (111.80078125, 134.25)
+02.29   Ultraman        CG 5 Get
+02.29   DarkWarrior     Ability (22E0) - CancelLast<class 'sc2reader.events.game.BasicCommandEvent'>
+02.29   Ultraman        CameraEvent at (112.765625, 134.25)
+
+ Time: 02.30
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 180
+ Current Gas: 154
+ Min Col Rate: 895
+ Gas Col Rate: 268
+ Workers: 23
+ Army min: 0
+ Army gas: 0
+ Economy min: 1900
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.30
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 220
+ Current Gas: 20
+ Min Col Rate: 979
+ Gas Col Rate: 89
+ Workers: 22
+ Army min: 100
+ Army gas: 0
+ Economy min: 2175
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.30    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 33)
+02.30   Ultraman        CameraEvent at (118.1796875, 134.25)
+02.30   Ultraman        CameraEvent at (120.765625, 134.25)
+02.30   Ultraman        CameraEvent at (123.53515625, 134.25)
+02.30   Ultraman        CameraEvent at (128.765625, 134.25)
+02.30   Ultraman        CameraEvent at (130.93359375, 134.25)
+02.30   DarkWarrior     SelectionEvent3372['1x Probe']
+02.30   DarkWarrior     Right Click - TargetPoint; Location: (36.31201171875, 19.634033203125, 57275)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.30   Ultraman        CameraEvent at (133.09765625, 135.8125)
+02.30   Ultraman        CameraEvent at (135.8046875, 137.9765625)
+02.30   Ultraman        CameraEvent at (136.2890625, 137.9765625)
+02.31   Ultraman        CameraEvent at (134.12109375, 137.9765625)
+02.31   DarkWarrior     Ability (1589) - BuildStargate; Location: (36.5, 20.5, 57269)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.31   Ultraman        CameraEvent at (131.35546875, 137.9765625)
+02.31   Ultraman        CameraEvent at (128.28515625, 137.9765625)
+02.31   Ultraman        CameraEvent at (125.7578125, 137.9765625)
+02.31   Ultraman        CameraEvent at (120.10546875, 137.9765625)
+02.31   Ultraman        CameraEvent at (117.3359375, 137.9765625)
+02.31   Ultraman        CameraEvent at (116.375, 137.9765625)
+02.31   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField750 [02000001]; Location: (35.0, 23.5, 57264) Q<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.31   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField750 [02000001]; Location: (35.0, 23.5, 57264)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.31   DarkWarrior     CommandManagerStateEvent 156 - None
+02.32   DarkWarrior     CameraEvent at (36.26171875, 24.8671875)
+02.32   DarkWarrior     CameraEvent at (36.26171875, 27.75390625)
+02.32   DarkWarrior     CameraEvent at (36.26171875, 30.5703125)
+02.32   Ultraman        SelectionEvent3408['1x Drone']
+02.32   DarkWarrior     CameraEvent at (36.26171875, 36.765625)
+02.32   DarkWarrior     CameraEvent at (36.26171875, 40.35546875)
+02.32   Ultraman        Right Click - TargetPoint; Location: (107.84814453125, 142.291748046875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.32   Ultraman        CommandManagerStateEvent 104 - None
+02.32   DarkWarrior     CameraEvent at (36.26171875, 46.62109375)
+02.32   DarkWarrior     CameraEvent at (36.26171875, 48.9453125)
+02.32   Ultraman        Right Click - TargetPoint; Location: (107.40771484375, 141.3544921875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.32   Ultraman        CommandManagerStateEvent 105 - None
+02.32   DarkWarrior     CameraEvent at (36.26171875, 55.4921875)
+02.32   DarkWarrior     CameraEvent at (36.26171875, 55.84375)
+02.32   DarkWarrior     CG 7 Get
+02.32   Ultraman        CameraEvent at (114.44921875, 137.55859375)
+02.32   DarkWarrior     CameraEvent at (36.6875, 55.84375)
+02.32   Ultraman        CameraEvent at (108.85546875, 131.9609375)
+02.32   Ultraman        CameraEvent at (106.5078125, 129.6171875)
+02.32   DarkWarrior     CameraEvent at (39.92578125, 57.32421875)
+02.32   Ultraman        CameraEvent at (103.55859375, 126.66796875)
+02.32   DarkWarrior     CameraEvent at (42.8828125, 60.6328125)
+02.32   DarkWarrior     CameraEvent at (42.8828125, 60.984375)
+02.32   Ultraman        CameraEvent at (98.14453125, 121.25390625)
+02.32   Ultraman        CameraEvent at (96.16015625, 120.171875)
+02.33    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+02.33    Player 1 - DarkWarrior (Protoss) - Unit initiated Stargate at (36, 20)
+02.33    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.33   Ultraman        CameraEvent at (93.6953125, 120.171875)
+02.33   DarkWarrior     CameraEvent at (44.0078125, 60.984375)
+02.33   DarkWarrior     CameraEvent at (46.26171875, 60.984375)
+02.33   Ultraman        Right Click - TargetPoint; Location: (85.850830078125, 134.414306640625, 40885)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.33   Ultraman        CommandManagerStateEvent 106 - None
+02.33   Ultraman        CameraEvent at (93.6953125, 122.03515625)
+02.33   Ultraman        CameraEvent at (93.6953125, 124.44140625)
+02.33   Ultraman        CameraEvent at (93.6953125, 130.27734375)
+02.33   Ultraman        CameraEvent at (95.2578125, 132.26171875)
+02.33   Ultraman        CameraEvent at (100.55078125, 137.55859375)
+02.33   Ultraman        CameraEvent at (103.19921875, 138.51953125)
+02.33   DarkWarrior     SelectionEvent3443['1x Gateway']
+02.33   Ultraman        CameraEvent at (105.546875, 138.51953125)
+02.34   DarkWarrior     CameraEvent at (44.5, 60.984375)
+02.34   DarkWarrior     CameraEvent at (41.54296875, 60.984375)
+02.34   Ultraman        SelectionEvent3462['1x Egg']
+02.34   DarkWarrior     CameraEvent at (41.19140625, 60.984375)
+02.34   Ultraman        Right Click - TargetUnit; Target: LabMineralField750 [00700001]; Location: (117.0, 143.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.34   Ultraman        CommandManagerStateEvent 107 - None
+02.35    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.35    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.35   Ultraman        CameraEvent at (107.2890625, 138.51953125)
+02.35   Ultraman        CG 5 Get
+02.35   Ultraman        CameraEvent at (112.765625, 135.87109375)
+02.35   Ultraman        CameraEvent at (115.05078125, 133.5859375)
+02.35   Ultraman        CameraEvent at (120.5859375, 128.05078125)
+02.35   Ultraman        CameraEvent at (123.11328125, 127.02734375)
+02.35   Ultraman        CameraEvent at (124.25390625, 127.02734375)
+02.35   Ultraman        CameraEvent at (131.234375, 127.02734375)
+02.35   Ultraman        SelectionEvent3485['2x Larva']
+02.35   Ultraman        CameraEvent at (132.67578125, 127.02734375)
+02.35   Ultraman        CameraEvent at (134.0625, 127.02734375)
+02.35   DarkWarrior     SelectionEvent3490['1x CyberneticsCore']
+02.35   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+02.35   Ultraman        CommandManagerStateEvent 109 - None
+02.36   Ultraman        SelectionEvent3495['1x Egg']
+02.36   Ultraman        SelectionEvent3498['1x Egg']
+02.36   Ultraman        CG 5 Get
+02.36   Ultraman        CameraEvent at (53.72265625, 62.1640625)
+02.36   Ultraman        CameraEvent at (49.875, 61.60546875)
+02.36   DarkWarrior     SelectionEvent3508['1x Pylon']
+02.36   Ultraman        CameraEvent at (48.2265625, 61.60546875)
+02.36   Ultraman        CameraEvent at (47.67578125, 61.60546875)
+02.36   Ultraman        CameraEvent at (47.67578125, 61.046875)
+02.36   Ultraman        CameraEvent at (47.67578125, 62.72265625)
+
+ Time: 02.37
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 120
+ Current Gas: 40
+ Min Col Rate: 839
+ Gas Col Rate: 313
+ Workers: 24
+ Army min: 0
+ Army gas: 0
+ Economy min: 1950
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.37
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 250
+ Current Gas: 24
+ Min Col Rate: 1119
+ Gas Col Rate: 44
+ Workers: 22
+ Army min: 100
+ Army gas: 0
+ Economy min: 2175
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.37    Player 2 - Ultraman (Zerg) - Unit born Drone at (143, 135)
+02.37    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.37    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+02.37    Player 2 - Ultraman (Zerg) - Unit born Drone at (111, 135)
+02.37    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.37    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (111, 135).
+02.37   DarkWarrior     SelectionEvent3522['1x Gateway']
+02.37   DarkWarrior     SelectionEvent3536['1x Probe']
+02.37   Ultraman        CameraEvent at (47.67578125, 63.625)
+02.37   Ultraman        CameraEvent at (47.67578125, 66.6328125)
+02.37   Ultraman        CameraEvent at (47.67578125, 68.2578125)
+02.38    Player 2 - Ultraman (Zerg) - Unit born Queen at (143, 135)
+02.38    Player 2 - Ultraman (Zerg) - Unit born Queen at (111, 135)
+02.38    Player 1 - DarkWarrior (Protoss) - Unit born Stalker at (43, 60)
+02.38   DarkWarrior     Right Click - TargetPoint; Location: (45.77880859375, 65.943603515625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.38   DarkWarrior     Right Click - TargetPoint; Location: (46.076416015625, 65.42041015625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.38   DarkWarrior     CommandManagerStateEvent 158 - None
+02.40    Player 1 - DarkWarrior (Protoss) - Unit initiated Warp Gate at (45, 65)
+02.40   DarkWarrior     Ability (1583) - BuildGateway; Location: (45.5, 65.5, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.40   Ultraman        CameraEvent at (95.49609375, 125.234375)
+02.41   DarkWarrior     Right Click - TargetPoint; Location: (39.2421875, 67.016357421875, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.41   DarkWarrior     Right Click - TargetPoint; Location: (37.4951171875, 67.016357421875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.41   DarkWarrior     CommandManagerStateEvent 167 - None
+02.41   Ultraman        SelectionEvent3621['1x Drone']
+02.41   DarkWarrior     SelectionEvent3624['1x Stalker']
+02.41   Ultraman        CameraEvent at (94.83203125, 125.234375)
+02.41   Ultraman        CameraEvent at (91.58203125, 128.484375)
+02.41   DarkWarrior     Right Click - TargetPoint; Location: (47.802490234375, 59.877197265625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.41   DarkWarrior     CommandManagerStateEvent 168 - None
+02.42   Ultraman        CameraEvent at (88.63671875, 131.4296875)
+02.42   DarkWarrior     Right Click - TargetPoint; Location: (48.27978515625, 59.768798828125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.42   DarkWarrior     CommandManagerStateEvent 169 - None
+02.42   DarkWarrior     CommandManagerStateEvent 170 - None
+02.42   DarkWarrior     Right Click - TargetPoint; Location: (48.20947265625, 59.94921875, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.42   DarkWarrior     CommandManagerStateEvent 171 - None
+02.42   Ultraman        Ability (1720) - BuildHatchery; Location: (85.5, 135.5, 40885)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.42   DarkWarrior     Right Click - TargetPoint; Location: (47.99365234375, 60.20556640625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.42   DarkWarrior     CommandManagerStateEvent 172 - None
+02.42   DarkWarrior     Ability (562) - HoldPosition<class 'sc2reader.events.game.BasicCommandEvent'>
+02.42   Ultraman        CG 5 Get
+02.43    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 33)
+02.43   DarkWarrior     Right Click - TargetPoint; Location: (42.9248046875, 61.55322265625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.43   Ultraman        CameraEvent at (94.9453125, 127.46875)
+02.43   DarkWarrior     CommandManagerStateEvent 175 - None
+02.43   DarkWarrior     Ability (562) - HoldPosition<class 'sc2reader.events.game.BasicCommandEvent'>
+02.43   Ultraman        CameraEvent at (95.42578125, 127.46875)
+02.43   Ultraman        CameraEvent at (100.6015625, 127.46875)
+02.43   Ultraman        CameraEvent at (101.08203125, 127.46875)
+02.44    Player 2 - Ultraman (Zerg) - Unit initiated Hatchery at (85, 135)
+02.44    Player 2 - Ultraman (Zerg) - SprayZerg upgrade completed
+02.44    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+
+ Time: 02.44
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 70
+ Current Gas: 80
+ Min Col Rate: 811
+ Gas Col Rate: 335
+ Workers: 25
+ Army min: 125
+ Army gas: 50
+ Economy min: 2000
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.44
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 100
+ Current Gas: 32
+ Min Col Rate: 1203
+ Gas Col Rate: 67
+ Workers: 23
+ Army min: 400
+ Army gas: 0
+ Economy min: 2225
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.44    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.44   DarkWarrior     SelectionEvent3676['1x CyberneticsCore']
+02.44   Ultraman        SelectionEvent3680['1x Queen']
+02.44   Ultraman        CG 3 Set
+02.44   DarkWarrior     Ability (1DC6) - ResearchWarpGate<class 'sc2reader.events.game.BasicCommandEvent'>
+02.44   Ultraman        Right Click - TargetPoint; Location: (109.326171875, 129.339599609375, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.45   Ultraman        Ability (20C0) - CreepTumor; Location: (107.5, 126.5, 49069)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.45   DarkWarrior     SelectionEvent3705['1x Probe']
+02.45   DarkWarrior     Right Click - TargetPoint; Location: (35.88720703125, 59.019775390625, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.45   DarkWarrior     Right Click - TargetPoint; Location: (34.9541015625, 56.818359375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.45   DarkWarrior     CommandManagerStateEvent 179 - None
+02.46   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [021C0001]; Location: (36.0, 56.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.46   DarkWarrior     CommandManagerStateEvent 180 - None
+02.46   Ultraman        CameraEvent at (137.81640625, 124.1171875)
+02.46   Ultraman        CameraEvent at (137.81640625, 124.67578125)
+02.46   Ultraman        CG 5 Get
+02.46   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [021C0001]; Location: (36.0, 56.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.46   DarkWarrior     CommandManagerStateEvent 181 - None
+02.46   Ultraman        CameraEvent at (139.46484375, 126.91015625)
+02.46   DarkWarrior     CG 7 Get
+02.46   Ultraman        SelectionEvent3734['1x Queen']
+02.46   DarkWarrior     Right Click - TargetUnit; Target: LabMineralField [021C0001]; Location: (36.0, 56.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.46   DarkWarrior     CommandManagerStateEvent 182 - None
+02.46   Ultraman        Ability (E20) - SpawnLarva; Target: Hive [03780001]; Location: (143.5, 138.5, 57264)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.47    Player 2 - Ultraman (Zerg) - Unit initiated Creep Tumor Burrowed at (107, 126)
+02.47    Player 2 - Ultraman (Zerg) - Unit born Drone at (142, 135)
+02.47    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.47    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (143, 135).
+02.47   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+02.47   Ultraman        CameraEvent at (136.515625, 126.91015625)
+02.47   Ultraman        CameraEvent at (134.16796875, 126.91015625)
+02.47   Ultraman        CameraEvent at (131.76171875, 126.91015625)
+02.47   Ultraman        CameraEvent at (128.81640625, 126.91015625)
+02.47   Ultraman        CameraEvent at (123.76171875, 126.91015625)
+02.47   Ultraman        CameraEvent at (121.59765625, 126.91015625)
+02.47   Ultraman        CG 5 Get
+02.47   Ultraman        CameraEvent at (120.09375, 126.91015625)
+02.48    Player 2 - Ultraman (Zerg) - Unit born Drone at (111, 135)
+02.48    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Larva
+02.48    Larva - Unit died by None Player 2 - Ultraman (Zerg) at (111, 135).
+02.48    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.48   Ultraman        CameraEvent at (115.16015625, 123.9609375)
+02.48   Ultraman        CameraEvent at (115.16015625, 121.91796875)
+02.48   Ultraman        CameraEvent at (115.16015625, 118.7890625)
+02.48   Ultraman        SelectionEvent3768['2x Larva']
+02.48   Ultraman        CameraEvent at (115.16015625, 114.3359375)
+02.48   Ultraman        CameraEvent at (116.2421875, 113.85546875)
+02.48   Ultraman        CameraEvent at (118.890625, 111.20703125)
+02.48   Ultraman        CameraEvent at (121.59765625, 109.04296875)
+02.48   DarkWarrior     SelectionEvent3774['1x Gateway']
+02.48   Ultraman        Ability (1862) - MorphOverlord<class 'sc2reader.events.game.BasicCommandEvent'>
+02.48   Ultraman        CameraEvent at (127.37109375, 109.04296875)
+02.48   Ultraman        CameraEvent at (129.17578125, 109.04296875)
+02.48   DarkWarrior     SelectionEvent3777['1x Gateway']
+02.48   Ultraman        CameraEvent at (130.37890625, 109.04296875)
+02.48   Ultraman        SelectionEvent3778['1x Egg']
+02.48   Ultraman        CameraEvent at (132.84765625, 109.58203125)
+02.48   DarkWarrior     Right Click - TargetPoint; Location: (37.4130859375, 63.245361328125, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.48   Ultraman        CameraEvent at (134.76953125, 114.99609375)
+02.48   Ultraman        CameraEvent at (134.76953125, 117.5859375)
+02.48   Ultraman        CameraEvent at (134.76953125, 118.1875)
+02.49   Ultraman        CameraEvent at (134.16796875, 118.1875)
+02.49   Ultraman        CameraEvent at (131.703125, 115.71875)
+02.49   Ultraman        CameraEvent at (128.9375, 111.20703125)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 59.43359375)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 56.0546875)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 49.71875)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 47.11328125)
+02.49   Ultraman        CameraEvent at (128.3359375, 110.06640625)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 40.70703125)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 38.10546875)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 34.79296875)
+02.49   Ultraman        CameraEvent at (122.73828125, 104.46875)
+02.49   Ultraman        CameraEvent at (120.39453125, 102.125)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 28.7421875)
+02.49   Ultraman        CameraEvent at (119.12890625, 101.58203125)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 24.9375)
+02.49   DarkWarrior     CameraEvent at (41.19140625, 21.48828125)
+02.50   DarkWarrior     SelectionEvent3813['1x Stargate']
+02.50   Ultraman        Right Click - TargetPoint; Location: (126.038818359375, 97.862548828125, 57278)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.50   Ultraman        CameraEvent at (119.12890625, 103.265625)
+02.50   Ultraman        CameraEvent at (119.12890625, 105.734375)
+02.50   Ultraman        CameraEvent at (119.12890625, 108.078125)
+02.50   Ultraman        CameraEvent at (119.12890625, 113.734375)
+02.50   Ultraman        CameraEvent at (119.12890625, 116.44140625)
+02.50   DarkWarrior     CG 6 Set
+02.50   Ultraman        CameraEvent at (119.12890625, 121.5546875)
+
+ Time: 02.51
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 80
+ Current Gas: 70
+ Min Col Rate: 923
+ Gas Col Rate: 335
+ Workers: 25
+ Army min: 125
+ Army gas: 50
+ Economy min: 2000
+ Economy gas: 0
+ Tech min: 300
+ Tech gas: 0
+
+ Time: 02.51
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 140
+ Current Gas: 40
+ Min Col Rate: 1259
+ Gas Col Rate: 67
+ Workers: 25
+ Army min: 400
+ Army gas: 0
+ Economy min: 2325
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.51   DarkWarrior     CameraEvent at (36.37109375, 53.2421875)
+02.51   Ultraman        CameraEvent at (119.12890625, 124.44140625)
+02.51   Ultraman        CameraEvent at (119.12890625, 129.85546875)
+02.51   Ultraman        CameraEvent at (119.12890625, 130.94140625)
+02.51   Ultraman        CG 5 Get
+02.51   DarkWarrior     CG 7 Get
+02.51   DarkWarrior     CameraEvent at (36.37109375, 51.8359375)
+02.51   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+02.51   DarkWarrior     CameraEvent at (36.37109375, 51.41015625)
+02.51   DarkWarrior     CommandManagerStateEvent 190 - None
+02.51   Ultraman        SelectionEvent[]
+02.51   Ultraman        CameraEvent at (116.484375, 130.94140625)
+02.51   Ultraman        CameraEvent at (113.7734375, 130.94140625)
+02.51   Ultraman        CameraEvent at (110.70703125, 130.94140625)
+02.51   Ultraman        CameraEvent at (105.953125, 130.94140625)
+02.51   Ultraman        CameraEvent at (103.3671875, 130.94140625)
+02.52   DarkWarrior     CommandManagerStateEvent 193 - None
+02.52   Ultraman        CameraEvent at (97.41015625, 130.94140625)
+02.52   Ultraman        CameraEvent at (95.546875, 130.94140625)
+02.52   Ultraman        Ability (1EA0) - TrainQueen<class 'sc2reader.events.game.BasicCommandEvent'>
+02.52   Ultraman        CameraEvent at (90.734375, 130.94140625)
+02.52   Ultraman        CommandManagerStateEvent 118 - None
+02.52   Ultraman        CG 5 Get
+02.53    Player 1 - DarkWarrior (Protoss) - Unit Shield Battery done
+02.53   Ultraman        SelectionEvent3878['1x Hatchery']
+02.53   Ultraman        CameraEvent at (92.296875, 130.94140625)
+02.53   Ultraman        CameraEvent at (97.7734375, 133.40625)
+02.53   Ultraman        CameraEvent at (100.1171875, 135.75390625)
+02.53   Ultraman        CameraEvent at (103.06640625, 137.859375)
+02.53   Ultraman        CameraEvent at (106.4375, 137.859375)
+02.53   Ultraman        CG 5 Set
+02.53   DarkWarrior     SelectionEvent3893['2x Probe']
+02.53   DarkWarrior     Right Click - TargetPoint; Location: (37.246826171875, 56.059814453125, 49077)<class 'sc2reader.events.game.TargetPointCommandEvent'>
+02.54    Player 2 - Ultraman (Zerg) - Unit born Larva at (143, 135)
+02.54   Ultraman        Right Click - TargetUnit; Target: LabMineralField [01A40001]; Location: (114.0, 144.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.54   DarkWarrior     Right Click - TargetPoint; Location: (37.741455078125, 60.096923828125, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.54   DarkWarrior     CommandManagerStateEvent 195 - None
+02.54   Ultraman        CameraEvent at (106.4375, 135.390625)
+02.54   Ultraman        CameraEvent at (106.4375, 132.4453125)
+02.54   Ultraman        CameraEvent at (106.4375, 130.21875)
+02.54   Ultraman        CameraEvent at (106.4375, 127.69140625)
+02.54   Ultraman        CameraEvent at (106.4375, 125.10546875)
+02.54   DarkWarrior     SelectionEvent3919['1x Probe']
+02.54   Ultraman        Right Click - TargetPoint; Location: (114.28955078125, 128.801025390625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.54   Ultraman        CommandManagerStateEvent 121 - None
+02.55    Player 2 - Ultraman (Zerg) - Unit born Larva at (111, 135)
+02.55    Player 1 - DarkWarrior (Protoss) - Unit Nexus done
+02.55    Player 1 - DarkWarrior (Protoss) - SprayProtoss upgrade completed
+02.55   Ultraman        CG 3 Get
+02.55   Ultraman        Right Click - TargetPoint; Location: (109.69287109375, 124.5634765625, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.55   Ultraman        CommandManagerStateEvent 122 - None
+02.55   DarkWarrior     Right Click - TargetUnit; Target: Nexus [04100002]; Location: (35.5, 62.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.55   DarkWarrior     CommandManagerStateEvent 196 - None
+02.55   Ultraman        Right Click - TargetPoint; Location: (109.999267578125, 124.45458984375, 49077)<class 'sc2reader.events.game.UpdateTargetPointCommandEvent'>
+02.55   Ultraman        CommandManagerStateEvent 123 - None
+02.55   DarkWarrior     Right Click - TargetUnit; Target: Nexus [04100002]; Location: (35.5, 62.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.55   DarkWarrior     CommandManagerStateEvent 197 - None
+02.55   Ultraman        CommandManagerStateEvent 124 - None
+02.55   DarkWarrior     Right Click - TargetUnit; Target: Nexus [04100002]; Location: (35.5, 62.5, 49072)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+02.55   DarkWarrior     CommandManagerStateEvent 198 - None
+02.56    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.56   DarkWarrior     CG 7 Get
+02.56   DarkWarrior     Ability (1620) - TrainProbe<class 'sc2reader.events.game.BasicCommandEvent'>
+02.56   Ultraman        CG 5 Get
+02.56   Ultraman        CameraEvent at (106.9765625, 125.10546875)
+02.56   Ultraman        CameraEvent at (108.72265625, 125.10546875)
+02.56   Ultraman        CameraEvent at (110.765625, 125.10546875)
+02.56   Ultraman        SelectionEvent3957['3x Larva']
+02.56   Ultraman        Ability (1860) - MorphDrone<class 'sc2reader.events.game.BasicCommandEvent'>
+02.57    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.57    Player 2 - Ultraman (Zerg) - Unit Creep Tumor Burrowed done
+02.57    Player 2 - Ultraman (Zerg) - Unit Creep Tumor Burrowed type changed to CreepTumorBurrowed
+02.57   Ultraman        CommandManagerStateEvent 126 - None
+02.57   Ultraman        SelectionEvent3968['1x Egg']
+02.57   Ultraman        CameraEvent at (46.578125, 64.95703125)
+02.57   Ultraman        SelectionEvent3970['1x Egg']
+02.57   DarkWarrior     CameraEvent at (36.37109375, 54.79296875)
+02.57   DarkWarrior     CameraEvent at (36.37109375, 56.55078125)
+02.57   Ultraman        CameraEvent at (46.02734375, 64.95703125)
+
+ Time: 02.58
+ Player: Player 1 - DarkWarrior (Protoss)
+ Current Minerals: 40
+ Current Gas: 106
+ Min Col Rate: 895
+ Gas Col Rate: 313
+ Workers: 25
+ Army min: 125
+ Army gas: 50
+ Economy min: 2400
+ Economy gas: 0
+ Tech min: 400
+ Tech gas: 0
+
+ Time: 02.58
+ Player: Player 2 - Ultraman (Zerg)
+ Current Minerals: 60
+ Current Gas: 44
+ Min Col Rate: 1343
+ Gas Col Rate: 44
+ Workers: 25
+ Army min: 400
+ Army gas: 0
+ Economy min: 2325
+ Economy gas: 0
+ Tech min: 250
+ Tech gas: 0
+02.58   Ultraman        SelectionEvent3993['1x Gateway']
+02.58   Ultraman        SelectionEvent4000['1x CyberneticsCore']
+02.58   Ultraman        CameraEvent at (46.02734375, 62.91015625)
+02.58   Ultraman        CameraEvent at (46.02734375, 60.3828125)
+02.59    Player 1 - DarkWarrior (Protoss) - Unit born Probe at (35, 33)
+02.59    Player 2 - Ultraman (Zerg) - Unit Larva type changed to Egg
+02.59   Ultraman        CG 5 Get
+02.59   DarkWarrior     CommandManagerStateEvent 216 - None
+02.59   Ultraman        SelectionEvent4016['1x Larva']
+02.59   Ultraman        CommandManagerStateEvent 127 - None
+02.59   Ultraman        CommandManagerStateEvent 128 - None
+02.59   DarkWarrior     Ability (5A40) - ChronoBoostEnergyCost; Target: Nexus [04100002]; Location: (35.5, 62.5, 49072)<class 'sc2reader.events.game.TargetUnitCommandEvent'>
+02.59   Ultraman        SelectionEvent4024['1x Egg']
+02.59   Ultraman        CameraEvent at (90.546875, 72.2109375)
+02.59   Ultraman        CameraEvent at (91.09765625, 72.76953125)
+02.59   Ultraman        CG 5 Get

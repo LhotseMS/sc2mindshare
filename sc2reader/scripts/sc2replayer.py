@@ -144,7 +144,8 @@ def processFile(filename):
     sc2reader.mindshare.detectors.createDetectors(replay)
 
 
-    #printIntervalAll(0*60,10*60,events)
+    #printIntervalAll(0*60,2*60,events)
+    printIntervalAll(2*60+50,8*60,events)
     #printSomeEvents(events)
 
 
@@ -174,18 +175,14 @@ def printIntervalAll(start, finish, events):
     a = sorted(events, key=lambda event: event.second)
 
     for event in a:
-        if event.second >= start and event.second<= finish:
-            if isinstance(event, UnitInitEvent) or isinstance(event, UnitDiedEvent):
-                if event.isCounted():
-                    print(event)    
-            elif (isinstance(event, TargetUnitCommandEvent)
-                or isinstance(event, TargetPointCommandEvent)
-                or isinstance(event, UpdateTargetPointCommandEvent)
-                or isinstance(event, UpdateTargetUnitCommandEvent)
-                or isinstance(event, SelectionEvent)
-                or isinstance(event, ControlGroupEvent)
-                or isinstance(event, CommandEvent)):
-                pass #print(event)
+        if event.second >= start and event.second<= finish and (
+            isinstance(event, SetControlGroupEvent) or 
+            isinstance(event, StealControlGroupEvent) or 
+            isinstance(event, AddToControlGroupEvent) or 
+            isinstance(event, SelectionEvent)):
+            #if event.control_group != 10:
+            if event.pid == 0:
+                print(str(event))
 
 def printSomeEvents(events):
     for event in events:
@@ -205,7 +202,7 @@ def printSomeEvents(events):
             u = 2
             print(event)
             
-        elif isinstance(event, UnitDiedEvent) and event.countableDeath():
+        elif isinstance(event, UnitDiedEvent) and event.countableUnitDeath():
             if event.unit.__str__().startswith("Lurker"):
                 print(event)
         elif isinstance(event, SelectionEvent):

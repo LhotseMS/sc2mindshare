@@ -31,7 +31,7 @@ class GameEvent(Event):
         self.frame = frame
 
         #: The second of the game that this event was recorded at. 16 frames per game second.
-        self.second = self.frame / 22.4
+        self.second = self.frame / 22.4 #TODO centralize this value
 
         #: A flag indicating if it is a local or global event.
         self.is_local = pid != 16
@@ -560,14 +560,21 @@ class SelectionEvent(GameEvent):
         #: Deprecated, see new_units
         self.objects = None
     
-    def isPLayer(self, playerNames):
+    def isPlayer(self, playerNames):
         return self.playerName in playerNames
 
     def __str__(self):
         if self.new_units:
-            return colored(GameEvent.__str__(self) + f"{self.frame}" + str([str(u[3]) + "x " + UNIT_TYPES[u[0]] for u in self.new_unit_types]), "yellow")
+            
+            #return colored(GameEvent.__str__(self) + f"{self.frame}" + str(["{} {} {} {}".format(u[0],UNIT_TYPES[u[1]],u[2],u[3] ) for u in self.new_unit_info]), "yellow")
+            #return colored(GameEvent.__str__(self) + f"{self.frame}" + str(
+            #    [str(u[3]) + "x " + 
+            #     "2:" + str(u[2]) + " " + 
+            #     "1:" + str(u[1]) + " " + 
+             #    UNIT_TYPES[u[0]] for u in self.new_unit_types]), "yellow")
+             return colored(str(self.objects) + " --- " + str(self.mask_data),"yellow")
         else:
-            return colored(GameEvent.__str__(self) + str([str(u) for u in self.new_unit_info]), "yellow")  
+            return colored(GameEvent.__str__(self) + str([str(u) for u in self.new_unit_info]), "blue")  
 
 
 def create_control_group_event(frame, pid, data):

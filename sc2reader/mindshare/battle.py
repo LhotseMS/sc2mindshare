@@ -1,15 +1,17 @@
 # add focus fire, a moves, abilities
 import datetime
+import sc2reader.mindshare.detectors
 
 from sc2reader.data import *
 from sc2reader.events.eventTypes import *
+from sc2reader.mindshare.mindshare import Base
 from sc2reader.events.game import *
 from sc2reader.events.tracker import *
 from sc2reader.mindshare import *
 from termcolor import colored
 
 
-from sc2reader.mindshare.mindshare import View
+from sc2reader.mindshare.mindshare import Screen
 
 
 class Battle():
@@ -27,6 +29,8 @@ class Battle():
         self.startTime = datetime.timedelta(seconds=self.startSec)
         self.endTime = datetime.timedelta(seconds=self.endSec)
 
+        self.basesWhereEvents = list()
+        self.basesWhereDeaths = list()
 
         self.secondsOD = secondsOD
         self.player1 = p1
@@ -40,6 +44,8 @@ class Battle():
         self.cameraByPlayer = self.initDictByPlayer()
         self.controlGroupsUsed = self.initDictByPlayer()
 
+        self.deadTypes = self.initDictByPlayer(2)
+        self.deadBuildingsTypes = self.initDictByPlayer(2)
         self.killersTypes = self.initDictByPlayer(2)
         self.combatAbilitiesTypes = self.initDictByPlayer(2)
         self.nonCombatAbilitiesTypes = self.initDictByPlayer(2)
@@ -50,18 +56,18 @@ class Battle():
         
         # BACKLOG
         # - pair CGs to actions
-        # - Filter events that took place in the battle 
-        # - count other locations that were used during the battle time
         # TODO create comparators for each event type, so that we can limit multi events and duplicated events
         # TODO evaluate who won the battle, generate simple text descriptions based on numbers
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
         # creep spread tracker
+        # TODO drone pulls
         # map images
         # player view images - screenshoting timer app
 
         # details 
         # UnitTypeChangeEvent - buildings upgrading
         # Unit born KD8Charge [3C00002] at (157, 73)
+        # Track  APM
 
 
         # TODO EDGE CASE too long battle 1248-1382 Player 2 - Piliskner (Zerg)
@@ -73,7 +79,7 @@ class Battle():
 
         # camera - was a player multitasking, which abilities were cast in the battle
         # Highlight a move - count it Ability (5C0) - Attack; Location: (57.5927734375, 57.080078125, 40920)
-        # store locations of creep tumors and check if someone is on creep - how many are there, remove if dead? 
+        # store locations of creep tumors and check if someone is on creep - how many are there, remove if dead? BASE onCreep(), dying bases and tumors
         
         self.losses = {}
         self.losses[self.player1] = SummaryOfDeath(0,0,0)
@@ -165,14 +171,11 @@ class Battle():
                         maxY = e.location[1]                 
                     self.locations[e.player].append(e.location)
 
-                    self.countEvent(e)
+                    self.processLocationEvent(e)
+                    self.processBaseEvent(e, self.basesWhereEvents)
+
                     # print(self.replay.players)
 
-            elif isinstance(e, SetControlGroupEvent) or isinstance(e, StealControlGroupEvent):
-                self.eventsByPlayer[e.player].append(e)
-            #elif isinstance(e, UnitBornEvent): 
-            #    self.eventsByPlayer[e.unit_upkeeper].append(e)
-                
 
 
             #  TODO: Don't create new screens if the user returned to the previous location, 
@@ -184,7 +187,7 @@ class Battle():
 
                 # if the next camera event is futther than 3 TODO to constant
                 if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > 3 and abs(prevCameraEvent[e.player].y - e.y) > 3):
-                    self.screens[e.player].append(View(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
+                    self.screens[e.player].append(Screen(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
 
                     screenEventsBuffer[e.player] = list()
 
@@ -199,6 +202,11 @@ class Battle():
             #    e.commandEvent = lastCommandEvent  
             #    self.eventsByPlayer[e.player].append(e)
 
+            elif isinstance(e, SetControlGroupEvent) or isinstance(e, StealControlGroupEvent):
+                self.eventsByPlayer[e.player].append(e)
+            #elif isinstance(e, UnitBornEvent): 
+            #    self.eventsByPlayer[e.unit_upkeeper].append(e)
+                
             elif isinstance(e, ControlGroupEvent):
                 self.eventsByPlayer[e.player].append(e) 
 
@@ -210,10 +218,20 @@ class Battle():
             elif isinstance(e, SelectionEvent) and e.isPlayer(playerNames):                 # TODO check and pair selections only of own units with CGs etc
                 self.eventsByPlayer[e.player].append(e)
 
-            elif isinstance(e, UnitDiedEvent) and e.countableDeath(): 
-                self.eventsByPlayer[e.unit.owner].append(e)
-                screenEventsBuffer[e.player].append(e)
-                self.countEvent(e)
+            elif isinstance(e, UnitDiedEvent): 
+                if e.countableUnitDeath():
+                    self.eventsByPlayer[e.unit.owner].append(e)
+                    screenEventsBuffer[e.player].append(e)
+                    self.processLocationEvent(e)
+                    self.processBaseEvent(e, self.basesWhereDeaths)
+
+                # TODO TODOOOO 
+                # TODO TODOOOO 
+                # TODO TODOOOO 
+                # TODO TODOOOO Building deaths do not initiate creation of battle, maybe they should be countable deaths.
+                elif e.buildingDeath(): #TODO this condition repeats in the processLocEvent
+                    self.processLocationEvent(e)
+
 
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","red"))
 
@@ -233,16 +251,46 @@ class Battle():
         
         self.battleArea = (minX,minY,maxX,maxY,abs(minX-maxX),abs(minY-maxY))
 
+    @property
+    def deathCount(self):
+        return self.p1dc + self.p2dc
+    
+    @property
+    def deadUnits(self):
+        return self.deadUnitsByPlayer[self.player1] + self.deadUnitsByPlayer[self.player2]
 
-    def countEvent(self, e):
+    def otherPlayer(self, player):
+        return self.player2 if player == self.player1 else self.player1
+
+    def processBaseEvent(self, e, potentialOwnerList):
+        locationBase = sc2reader.mindshare.detectors.basesDetector.getBaseOnLocation(e)
+
+        if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
+            potentialOwnerList.append(locationBase)
+
+    #categorize events get numbers by type
+    def processLocationEvent(self, e):
         if isinstance(e, TargetPointCommandEvent) or isinstance(e, TargetUnitCommandEvent):
             if e.isCombat():
-                self.combatAbilitiesTypes[e.player][e.replaceStrings(e.ability_name, True)] = 1
+                self.iterateType(self.combatAbilitiesTypes[e.player], e.replaceStrings(e.ability_name, True)) #TODO most of times e.str method is used to get string rep but sometimes its set outside of the event, redo 
             else:
-                self.nonCombatAbilitiesTypes[e.player][e.replaceStrings(e.ability_name, True)] = 1
+                self.iterateType(self.nonCombatAbilitiesTypes[e.player],e.replaceStrings(e.ability_name, True))
         elif isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit):
-            self.killersTypes[e.player][e.replaceStrings(e.killing_unit, True) + "killed " + e.replaceStrings(e.unit, True)] = 1
+            if e.buildingDeath():
+                self.iterateType(self.deadBuildingsTypes[e.player], str(e.unit))
+            else:
+                # TODO the logic of the key (string of unit names) should be somewher else
+                self.iterateType(self.killersTypes[self.otherPlayer(e.player)], e.replaceStrings(e.killing_unit, True) + " killed " + e.replaceStrings(e.unit, True))
+                self.iterateType(self.deadTypes[e.player], e.replaceStrings(e.unit, True)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
+
         
+    # TODO utility?
+    def iterateType(self, typedDict, type):
+        if not type in typedDict:
+            typedDict[type] = 1
+        else:
+            typedDict[type] = typedDict[type] + 1
+
 
     def assignEventToScreen(self, event) -> bool:
         for s in self.screens[event.player]:
@@ -277,59 +325,94 @@ class Battle():
     def getPlayerBattleDesc(self, player):
         playerEvents = ""
 
+        # TODO parametrize these functions, util class?
         cgs = ""
         if len(self.controlGroupsUsed[player]) > 0:
-            cgs += "\ncontrol group(s): "
+            cgs += "\nControl group(s): "
             for cg in self.controlGroupsUsed[player]:
                 cgs += str(cg) + ", "
         
         kills = ""
         if len(self.killersTypes[player]) > 0:
-            kills += "\nkill(s): "
+            kills += "\nKill(s): "
             for key, value in self.killersTypes[player].items():
-                kills += key + ", "
+                kills += key + str("({})".format(str(value)) if value > 1 else "") + ", "
+
+        bLost = ""
+        if len(self.deadBuildingsTypes[player]) > 0:
+            bLost += "\nLost: "
+            for key, value in self.deadBuildingsTypes[player].items():
+                bLost += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         cas = ""
         if len(self.combatAbilitiesTypes[player]) > 0:
-            cas += "\ncombat: "
+            cas += "\nCombat: "
             for key, value in self.combatAbilitiesTypes[player].items():
-                cas += key + ", "
+                cas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
               
         ncas = ""  
         if len(self.nonCombatAbilitiesTypes[player]) > 0:
-            ncas += "\nnon-combat: "
+            ncas += "\nNon-combat: "
             for key, value in self.nonCombatAbilitiesTypes[player].items():
-                ncas += key + ", "
+                ncas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         if cgs != "" or cas != "" or ncas != "":
             playerEvents = "\n\n{}".format(player.name)
 
 
-        return "{} {} {} {} {}".format(playerEvents, kills, cgs, cas, ncas)
+        return "{} {} {} {} {} {}".format(playerEvents, kills, bLost, cgs, cas, ncas)
 
     
-    # TODO MS interface
+    # TODO MS interface for node outputs across classes
     def getNodeDesc(self):
         desc = ""
 
         if self.supplyLost[self.player1] > 0:
-            desc += "{} lost {} units {} supply.\n".format(
+            desc += "{} lost {} units, {} supply.".format(
                 self.player1.name, 
                 len(self.deadUnitsByPlayer[self.player1]),
                 self.supplyLost[self.player1])
+        elif len(self.deadUnitsByPlayer[self.player1]) > 0:
+            desc += "{} lost an {}.".format(self.player1.name, self.deadUnitsByPlayer[self.player1][0].unit)
         
         if self.supplyLost[self.player2] > 0:
-            desc += "{} lost {} units {} supply.\n".format(
+            desc += "\n{} lost {} units, {} supply.".format(
                 self.player2.name, 
                 len(self.deadUnitsByPlayer[self.player2]),
                 self.supplyLost[self.player2])
+        elif len(self.deadUnitsByPlayer[self.player2]) > 0:
+            desc += "\n{} lost an {}.".format(self.player2.name, self.deadUnitsByPlayer[self.player2][0].unit)
         
-        desc += "\nFrom {} to {}".format(self.startTime, self.endTime)
+        if self.startTime == self.endTime:
+            desc += "\nAt {}.".format(self.startTime)
+        else:
+            desc += "\nFrom {} to {}.".format(self.startTime, self.endTime)
         
         return "{} {} {}".format(desc, self.getPlayerBattleDesc(self.player1), self.getPlayerBattleDesc(self.player2))
 
     def getNodeName(self):
-        pass
+
+        unitPart = ""
+        locationPart = ""
+
+        if self.deathCount == 1:
+            unitPart = "{} killed {}".format(self.deadUnits[0].killing_unit.name, self.deadUnits[0].unit.name)
+        elif len(self.killersTypes.items()) == 1:
+            for key, value in self.killersTypes.items(): # TODO how to take just one key and value from dict?
+                unitPart = "{} {}".format(key, value)
+        elif len(self.deadTypes.items()) <= 3:
+            for key,value in self.deadTypes.items():
+                for unit in value:
+                    unitPart += "{}s ".format(unit)    
+            unitPart += "died"
+        else:
+            unitPart = "{} units died".format(self.deathCount) 
+
+
+        if len(self.basesWhereDeaths) > 0:
+            locationPart = " near {}".format(self.basesWhereDeaths[0])
+
+        return unitPart + locationPart
 
     def getJson(self):
         return self.getNodeDesc()
@@ -340,7 +423,7 @@ class Battle():
         #print(f"BATTLE===={colored(self.player1, 'green')} vs {colored(self.player2, 'cyan')}=========={datetime.timedelta(seconds=self.startSec)}-{datetime.timedelta(seconds=self.endSec)}=={self._strArea()}==========================================")
         #print(f"=========={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}======{self.battleArea}=====================================================================================")
         
-        print(f"BATTLE={colored(self.startTime,"green")}-{colored(self.endTime,"green")}=={self._strArea()}={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}==={self.battleArea}")        
+        print(f"BATTLE {self.getNodeName()} ={colored(self.startTime,"green")}-{colored(self.endTime,"green")}=={self._strArea()}={colored(self.p1dc,'green')} vs {colored(self.p2dc, 'cyan')}==={self.battleArea}")        
         
 
         # create nodes for
@@ -351,14 +434,21 @@ class Battle():
 
 
         print(self.getJson())
+
+        #printDict(self.locations)
+
+        printDict(self.eventsByPlayer)
+        #printDict(self.cameraByPlayer)
+        
+        #print(sc2reader.mindshare.detectors.basesDetector)
+
         #printDict(self.killersTypes)
         #printDict(self.combatAbilitiesTypes)
         #printDict(self.nonCombatAbilitiesTypes)
         #printDict(self.combatAbilitiesByPlayer)
         #printDict(self.nonCombatAbilitiesByPlayer)
         #printDict(self.locations)
-        #printDict(self.cameraByPlayer)
-        #printDict(self.eventsByPlayer)
+        
         #printDict(self.screens)
         
         return ""

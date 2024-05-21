@@ -2,24 +2,25 @@
 import math
 
 
-class Screen():
+class View():
     
-    SCREEN_SIZE = 15 #distance from the center to corner of the screen, exprimentaly determined
+    VIEW_SIZE = 15 #distance from the center to corner of the screen, exprimentaly determined
     
-    def isLocationOnScreen(self, ex, ey, cx, cy, aspect_ratio=1.0):
+    def isLocationInView(self, ex, ey, vx, vy, aspect_ratio=1.0):
         # Assume the rectangle's width to height ratio is w:h
         # Calculate width and height using the given distance d
-        w = self.SCREEN_SIZE / math.sqrt(1 + (1/aspect_ratio)**2)
+        w = self.VIEW_SIZE / math.sqrt(1 + (1/aspect_ratio)**2)
         h = w * aspect_ratio
 
         # Check bounds
-        inside_x = (cx - w) <= ex <= (cx + w)
-        inside_y = (cy - h) <= ey <= (cy + h)
+        inside_x = (vx - w) <= ex <= (vx + w)
+        inside_y = (vy - h) <= ey <= (vy + h)
         
         return inside_x and inside_y
+    
+class Screen(View):
 
-class View(Screen):
-
+    #TODO movement of camera across locations? is it upwards, up and down? from vectors
     SCREEN_RATIO = 30/22
 
     def __init__(self, cameraEvents, events = list()):
@@ -59,7 +60,7 @@ class View(Screen):
 
     def isEventOnScreen(self, event) -> bool:
         for c in self.cameraEvents:
-            if self.isLocationOnScreen(event.x, event.y, c.x, c.y):
+            if self.isLocationInView(event.x, event.y, c.x, c.y):
                 return True
             
         return False
@@ -71,14 +72,17 @@ class View(Screen):
     
 
 
-class Base(Screen):
+class Base(View):
 
     BASE_NAMES_ORDER = ["Main base", "Natural", "3rd base", "4th base", "5th base", "6th base", "7th base"]
 
+    #TODO check for when bases id destroyed
     def __init__(self, baseInitEvent, name):
         self.name = name
         self.bornEvevnt = baseInitEvent
-        self.mainBase = baseInitEvent.unit
+        self.raisedSec = baseInitEvent.second
+        self.player = baseInitEvent.player
+        self.base = baseInitEvent.unit
         self.vespene = []
         self.location = baseInitEvent.location
 
@@ -86,11 +90,17 @@ class Base(Screen):
 
     def newBase(self, e):
         self.isUp = True
-        self.mainBase = e.unit
+        self.base = e.unit
         self.location = e.location
 
+    def isLocationInBase(self, e):
+        return self.raisedSec < e.second and self.isLocationInView(e.x, e.y, self.location[0], self.location[1])
+
+    def minDistance(self, loc):
+        return min(abs(self.location[0] - loc[0]),abs(self.location[1] - loc[1])) 
+
     def __str__(self):
-        return "{} {} at {}".format(self.name, self.mainBase, self.location) 
+        return "{} {}".format(self.name, self.base) 
             
         
 class SecondOfaDying():

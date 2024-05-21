@@ -9,104 +9,25 @@ from sc2reader.mindshare.mindshare import Base
 
 from resources import Replay
 
-locationDetector = None
+basesDetector = None
 controlGroupDetector = None
 battleDetector = None
 
-@staticmethod
 def createDetectors(replay):
-    locationDetector = BaseDetector(replay)
-    battleDetector = BattleDetector(replay)
-    #controlGroupDetector = ControlGroupDetector(replay)
+    global basesDetector, battleDetector, controlGroupDetector
+    #basesDetector = BaseDetector(replay)
+    #battleDetector = BattleDetector(replay)
+    controlGroupDetector = ControlGroupDetector(replay)
 
+class Detector():
+    # TODO duplicate declaration exists
 
-class ControlGroupDetector():
-    
-    def __init__(self, replay, start = 0, finish = 1000000) -> None:
+    def __init__(self, replay) -> None:
         
-        self.CONTROL_GROUPS = {0:{},1:{}}
-        
-        x = 0 
-        
-        self.lastSelection = {0:list(),1:list()}
-                
-        for e in [v for v in replay.events if v.second >= start and v.second<= finish]:
-            if x > 500:
-                break
-            
-            #hold last selection event for a player
-            #when control grp command comes create control group object
-
-            # selection even is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
-            
-            if isinstance(e, SelectionEvent):
-                self.lastSelection[e.pid].add(e)
-            elif isinstance(e, SetControlGroupEvent):
-                self.updateCG(e)
-            elif isinstance(e, StealControlGroupEvent):
-                self.removeUnitsFromOtherCGs(e)
-                self.updateCG(e)
-
-
-            x = x+1
-            print(e)
-        
-        pass
-
-    def removeUnitsFromOtherCGs(self, unitIDs):
-        self = self
-
-    def updateCG(self, e : SetControlGroupEvent):
-        
-        if e.control_group in self.CONTROL_GROUPS[e.pid]:
-            self.CONTROL_GROUPS[e.pid][e.control_group].update(self.lastSelection[e.pid])
-        else:
-            self.CONTROL_GROUPS[e.pid][e.control_group] = ControlGroup(self.lastSelection[e.pid], e)
-        
-class BaseDetector():
-
-    def __init__(self, replay):
-
         self.replay = replay
         self.player1 = self.replay.players[0]
         self.player2 = self.replay.players[1]
 
-        self.locations = self.initDictByPlayer()
-
-        self.findBases()
-    
-    def printLocations(self):
-        printDict(self.locations)
-
-    def findBases(self):
-        basesBuiltEvents = [e for e in self.replay.events if isinstance(e, UnitInitEvent) and e.unit.is_building and e.unit._type_class.name in {"Nexus","Hatchery","OrbitalCommand"}]
-        
-        for e in basesBuiltEvents:
-            self.processNewMainBase(e)
-
-    def addNewBase(self, e):
-        self.locations[e.player].append(Base(e, Base.BASE_NAMES_ORDER[len(self.locations[e.player])]))
-        
-    def processNewMainBase(self, e):
-        
-        for base in self.locations[e.player]:
-            if base.location == e.location:
-                base.newBase(e)
-                return
-
-        self.addNewBase(e)
-    
-    def getBaseOnLocation(self, e):
-
-        basesOnLocation = list()
-        for base in self.locations[e.player].items():
-            if base.isLocationOnScreen(e.location):
-                basesOnLocation.append(base)
-
-        return basesOnLocation
-
-
-    # TODO duplicate
     def initDictByPlayer(self, type = 1):
         d = {}
 
@@ -122,7 +43,153 @@ class BaseDetector():
 
         return d
 
-class BattleDetector():
+#TODO if there is events get cg select set cg count is as add to CG
+class ControlGroupDetector(Detector):
+    
+    def __init__(self, replay) -> None:
+        super().__init__(replay)
+        
+        self.CONTROL_GROUPS = self.initDictByPlayer(2)
+        
+        x = 0 
+        
+        self.lastSelection = {}
+        self.lastGetEvent = {0:None, 1:None}
+
+        #TODO ideally there should be one big loop and detector should be called per event
+        for e in [e for e in replay.events if 
+                  isinstance(e, SelectionEvent) or  
+                  isinstance(e, StealControlGroupEvent) or 
+                  isinstance(e, AddToControlGroupEvent) or 
+                  isinstance(e, SetControlGroupEvent) or 
+                  isinstance(e, GetControlGroupEvent) or 
+                  isinstance(e, TargetPointCommandEvent) or 
+                  isinstance(e, UnitDiedEvent) or 
+                  isinstance(e, TargetUnitCommandEvent)]:
+            
+            #hold last selection event for a player
+            #when control grp command comes create control group object
+
+            # selection even is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
+            
+            if isinstance(e, SelectionEvent) and e.new_units:
+                self.lastSelection[e.player] = e
+            elif isinstance(e, SetControlGroupEvent):
+                self.updateCG(e)
+            elif isinstance(e, StealControlGroupEvent):
+                self.removeUnitsFromOtherCGs(e.player, "")
+                self.updateCG(e)
+            elif isinstance(e, GetControlGroupEvent):
+                self.lastGetEvent[e.player] = e
+        
+        print(self)
+
+    def getCgUnits(self, player, cgNo, second):
+        return self.CONTROL_GROUPS[player][cgNo].getUnits(second)
+
+    def addActionToCG(self, e):
+        pass
+
+    def removeUnitsFromOtherCGs(self, player, unitIDs):
+        pass
+       # for id in unitIDs:
+            #self.CONTROL_GROUPS[player].
+
+    def updateCG(self, e : SetControlGroupEvent):
+        
+        if e.control_group in self.CONTROL_GROUPS[e.player]:
+            self.CONTROL_GROUPS[e.player][e.control_group].update(self.lastSelection[e.player])
+        else:
+            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(self.lastSelection[e.player], e)
+
+            
+    def __str__(self) -> str:
+        for player, cgs in self.CONTROL_GROUPS.items():
+            for cgNo, cg in cgs.items():
+                print(cg)
+        return ""
+        
+class BaseDetector(Detector):
+
+    DISTANCE_FROM_MINERALS = 5
+
+    def __init__(self, replay):
+
+        self.replay = replay
+        self.player1 = self.replay.players[0]
+        self.player2 = self.replay.players[1]
+
+        self.mineralLocations = list()
+        self.bases = self.initDictByPlayer()
+
+        self.findMinerals()
+
+        self.findBases()
+        
+        print(self)
+    
+    def printLocations(self):
+        printDict(self.bases)
+
+    def findMinerals(self):
+        mineralEvents = [e for e in self.replay.events if isinstance(e, UnitBornEvent)]
+
+        for me in mineralEvents:
+            if "mineral" in me.unit.name or "Mineral" in me.unit.name:
+                self.mineralLocations.append(me.location)
+
+    def isNearMinerals(self, e):
+        return len([ml for ml in self.mineralLocations if 
+                    abs(ml[0] - e.x) < self.DISTANCE_FROM_MINERALS or 
+                    abs(ml[1] - e.y) < self.DISTANCE_FROM_MINERALS]) > 0
+
+    def findBases(self):
+        basesBuiltEvents = [e for e in self.replay.events if 
+                            (isinstance(e, UnitInitEvent) or isinstance(e, UnitBornEvent))  
+                            and e.unit.is_building 
+                            and e.unit._type_class.name in {"Nexus","Hatchery","Hive","OrbitalCommand"} #main base unit born event has Hive for some reason
+                            and self.isNearMinerals(e)]
+        
+        for e in basesBuiltEvents:
+            self.processNewMainBase(e)
+
+    def addNewBase(self, e):
+        self.bases[e.player].append(Base(e, Base.BASE_NAMES_ORDER[len(self.bases[e.player])])) #TODO the base name logic should be in Base
+        
+    def processNewMainBase(self, e):
+        
+        print(e)
+        for base in self.bases[e.player]:
+            if base.location == e.location:
+                print("THIS GOT TRIGGERED?! Base dies?")
+                base.newBase(e)
+                return
+
+        self.addNewBase(e)
+    
+
+    # bases might not exist yet
+    def getBaseOnLocation(self, e) -> Base:
+
+        minDistBase = None
+        minDistance = 1000
+        for player, bases in self.bases.items():
+            for base in bases:
+                if base.isLocationInBase(e):
+                    dist = base.minDistance(e.location) < minDistance
+                    if dist < minDistance:
+                        minDistBase = base
+                        minDistance = dist
+
+        return minDistBase
+
+    
+
+    def __str__(self) -> str:
+        printDict(self.bases)
+        return ""
+
+class BattleDetector(Detector):
 
     LOWER_BOUND = 2
     UPPER_BOUND = 2
@@ -201,7 +268,7 @@ class BattleDetector():
     
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?
-        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableDeath()] #not larva add drone deaths?
+        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath()] #not larva add drone deaths?
         
         self.deathsByTime = {}
         for e in unitDeathEvents:
