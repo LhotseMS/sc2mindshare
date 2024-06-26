@@ -97,6 +97,9 @@ class Unit(Renamer):
         #: Is this unit type a hallucinated one?
         self.hallucinated = False
 
+        self.baseName = None
+        self.baseType = None
+
         self.flags = 0
 
     def apply_flags(self, flags):
@@ -140,13 +143,17 @@ class Unit(Renamer):
                     return unit_type is None
 
     @property
+    def player(self):
+        return self.owner
+
+    @property
     def diedAtSec(self):
         return None if self.died_at == None else self.died_at / 22.4
 
     @property
     def name(self):
         """The name of the unit type currently active. None if no type is assigned"""
-        return self._type_class.name if self._type_class else None
+        return self.baseName if self.baseName != None else (self._type_class.name if self._type_class else None)
 
     @property
     def title(self):
@@ -193,7 +200,7 @@ class Unit(Renamer):
         return self._type_class.is_army if self._type_class else False
 
     def __str__(self):
-        return self.replaceStrings(f"{self.name} [{self.id:X}]", True)
+        return self.replaceStrings(f"{self.name} ", True)# + f"[{self.id:X}]"
 
     def __cmp__(self, other):
         return cmp(self.id, other.id)

@@ -1,4 +1,4 @@
-from mindshare.utils import Renamer
+from sc2reader.mindshare.utils import Renamer
 
 class Event(Renamer):
     name = "Event"

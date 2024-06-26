@@ -1,6 +1,8 @@
-from data import Unit
-from events.game import ControlGroupEvent, SelectionEvent, StealControlGroupEvent
-from resources import Replay
+from sc2reader.data import Unit
+from sc2reader.events.game import ControlGroupEvent, SelectionEvent, StealControlGroupEvent
+from sc2reader.mindshare.utils import PlayerHandler, MsUtils
+from sc2reader.resources import Replay
+import sc2reader.mindshare.detectors
 
 from termcolor import colored
 
@@ -8,46 +10,58 @@ from termcolor import colored
 #TODO remove units first needs a list of units with IDs
 #TODO count up units 
 # TODO remove steals
-class ControlGroup:
-    def __init__(self, se : SelectionEvent, ce : ControlGroupEvent) -> None:
+class ControlGroup():
+    def __init__(self, cge : ControlGroupEvent, se : SelectionEvent) -> None:
         
-        self.cg_no = ce.control_group
-        self.pid = ce.pid
+        self.cg_no = cge.control_group
+        self.pid = cge.pid
         self.player = se.playerName
         
-        self.no = ce.control_group
+        self.no = cge.control_group
+
+        self.aliveUnitsByType = None
         
         self.unitsHistory = {}
         self.location = ()
 
-        self.addUnits(se)
+        self.addUnits(cge, se)
         
         pass
     
-    #TODO just omit the units that have already died
-    @property
+    #TODO group units by type, create new class unitManager who is responsible for working with and providing units
     def getUnits(self, second):
-        units = None
+        
+        self.aliveUnitsByType = {}
+
+        seen = set()
+        allAddedUnits = list()
         for key, value in self.unitsHistory.items():
             if key > second:
-                break            
-            units = value
-        
+                break
+
+            for unit in value:
+                if unit not in seen:
+                    seen.add(unit)
+                    allAddedUnits.append(unit)
+
         aliveUnits = list()
-        for unit in units:
-            das = unit.diedAtSec()
-            if das != None and das > second:
-                aliveUnits.append(unit)
+        for unit in allAddedUnits:
+            das = unit.diedAtSec
+            if das == None or das > second:
+                aliveUnits.append(unit) #this is currently unused but a different format to enamurate units and not only type
+
+                MsUtils.iterateType(self.aliveUnitsByType, str(unit))
             
-        return aliveUnits
-            
-    def update(self, se : SelectionEvent):
-        self.addUnits(se)
-        pass
-    
+        unitsByType = ""
+        for key, value in self.aliveUnitsByType.items():
+            unitsByType += "{}".format(str(key)) + str("({})".format(str(value)) if value > 1 else "") + ", "
+
+        return unitsByType
+                
     def addUnits(self, cge : ControlGroupEvent, se : SelectionEvent):
         self.unitsHistory[cge.second] = se.new_units
 
+    #TODO use this case
     def unitsStolen(self, scge : StealControlGroupEvent, se : SelectionEvent):
         remainingUnits = list()
 
@@ -58,10 +72,10 @@ class ControlGroup:
         self.unitsHistory[scge.second] = remainingUnits
 
     def __str__(self) -> str:
-        str = colored("{} {}".format(self.cg_no, self.player), "blue")
+        str = colored("{} {}, Units: {}".format(self.cg_no, self.player,self.getUnits(second=200)), "blue")
         
-        for sec, units in self.unitsHistory.items():
-            str += "\n {}: {}".format(sec, units)
+        #for sec, units in self.unitsHistory.items():
+        #    str += "\n {}: {}".format(sec, units)
 
         return str
 

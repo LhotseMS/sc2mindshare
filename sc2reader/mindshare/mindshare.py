@@ -1,5 +1,6 @@
 
 import math
+from sc2reader.events import *
 
 
 class View():
@@ -71,15 +72,26 @@ class Screen(View):
         return f"Screen {self.firstView.location}-{self.lastView.location}:{len(self.vectors)}xE {self.duration}s"
     
 
-
+# TODO control groups to show the base name 
 class Base(View):
 
-    BASE_NAMES_ORDER = ["Main base", "Natural", "3rd base", "4th base", "5th base", "6th base", "7th base"]
+    BASE_NAMES_ORDER = ["Main base", "Natural", "3rd base", "4th base", "5th base", "6th base", "7th base", "8th base", "9th base", "10th base", "11th base", "12th base", "13th base", "14th base", "15th base", "16th base"]
 
     #TODO check for when bases id destroyed
-    def __init__(self, baseInitEvent, name):
-        self.name = name
-        self.bornEvevnt = baseInitEvent
+    def __init__(self, baseInitEvent : UnitInitEvent, order):
+        
+        # !!! CORRECTING and rewriting event unit name
+        self.name = self.BASE_NAMES_ORDER[order]
+        if order == 0 and self.name == "Hive":
+            self.name = "Hatchery"
+            baseInitEvent.unit.baseName = self.name
+            baseInitEvent.unit.baseType = self.name
+        else:
+            baseInitEvent.unit.baseName = self.name
+            baseInitEvent.unit.baseType = baseInitEvent.unit._type_class.name
+            
+
+        self.bornEvent = baseInitEvent
         self.raisedSec = baseInitEvent.second
         self.player = baseInitEvent.player
         self.base = baseInitEvent.unit
@@ -100,7 +112,7 @@ class Base(View):
         return min(abs(self.location[0] - loc[0]),abs(self.location[1] - loc[1])) 
 
     def __str__(self):
-        return "{} {}".format(self.name, self.base) 
+        return "{}".format(self.name) 
             
         
 class SecondOfaDying():

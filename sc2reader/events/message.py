@@ -21,10 +21,11 @@ class MessageEvent(Event):
 
         #: Short cut string for event class name
         self.name = self.__class__.__name__
-
+    
     def _str_prefix(self):
-        player_name = self.player.name if getattr(self, "pid", 16) != 16 else "Global"
-        return f"{Length(seconds=int(self.frame / 22.4))}\t{player_name:<15} "
+        return f"{Length(seconds=int(self.frame / 22.4))}\t "
+        #player_name = self.player.name if getattr(self, "pid", 16) != 16 else "Global"
+        #return f"{Length(seconds=int(self.frame / 22.4))}\t{player_name:<15} "
 
     def __str__(self):
         return self._str_prefix() + self.name
@@ -52,6 +53,9 @@ class ChatEvent(MessageEvent):
 
         #: Flag marked true of message was to observers.
         self.to_observers = self.target == 4
+
+    def __str__(self):
+        return super().__str__() + ":" + self.text
 
 
 @loggable

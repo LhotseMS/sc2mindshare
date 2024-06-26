@@ -2,22 +2,34 @@ import datetime
 from sc2reader.events import *
 from sc2reader.data import *
 from sc2reader.events.tracker import UnitDiedEvent
-from sc2reader.mindshare.battle import Battle, printDict
+from sc2reader.mindshare.exports.link import UnitsLink
+from sc2reader.mindshare.exports.battleNode import BattleNode
+from sc2reader.mindshare.exports.upgradeNode import UpgradeNode 
+from sc2reader.mindshare.exports.statsNode import StatsNode 
+from sc2reader.mindshare.exports.buildingNode import BuildingNode 
+from sc2reader.mindshare.exports.unitsNode import UnitsNode 
+from sc2reader.mindshare.exports.messageNode import MessageNode 
+from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
 
 from sc2reader.mindshare.mindshare import Base
+from sc2reader.mindshare.utils import MsUtils
 
-from resources import Replay
+from sc2reader.resources import Replay
 
 basesDetector = None
 controlGroupDetector = None
 battleDetector = None
+simpleDetector = None
 
 def createDetectors(replay):
-    global basesDetector, battleDetector, controlGroupDetector
-    #basesDetector = BaseDetector(replay)
-    #battleDetector = BattleDetector(replay)
+    global basesDetector, battleDetector, controlGroupDetector, simpleDetector
+
+    # order is improtant as many use data set up by base controler or CGc
+    basesDetector = BaseDetector(replay)
     controlGroupDetector = ControlGroupDetector(replay)
+    battleDetector = BattleDetector(replay)
+    simpleDetector = SimpleDetector(replay)
 
 class Detector():
     # TODO duplicate declaration exists
@@ -43,6 +55,170 @@ class Detector():
 
         return d
 
+class SimpleDetector(Detector):
+    
+    OMIT_UNITS_UPGRADES = ("Reward","Spray","Game")
+    OMIT_BUILDINGS = ("Creep","SupplyDepotLowered")
+    OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy")
+    STATS_TIMES = ("01.04","02.08","03.12","04.17","05.21","06.25","07.30","08.34","09.38","10.42","11.47","12.58","14.02","15.07","16.11","17.16")
+
+    UNIT_INTERVAL = 10
+
+    def __init__(self, replay) -> None:
+
+        self.replay = replay
+        self.player1 = self.replay.players[0]
+        self.player2 = self.replay.players[1]
+
+        self.links = list()
+
+        self.upgradesByPlayer = self.initDictByPlayer()
+        self.statsByPlayer = self.initDictByPlayer()
+        self.buildingsByPlayer = self.initDictByPlayer()
+        self.unitsByPlayerAndType = self.initDictByPlayer()
+        
+        self.lastUnitsByType = self.initDictByPlayer(2)
+        self.messagesByPlayer = self.initDictByPlayer()
+
+        #before findSimpleNodes 
+        self.buildingNameIndex = {}
+        
+        #self.unitIntervalStart = "00:00"
+        self.currentIntervalEvents = self.initDictByPlayer(2)
+        
+        # simple nodes are the ones that are 1:1 with events and don't need too much post processing
+        self.findSimpleNodes()
+
+        #after findSimpleNodes
+        self.upgrades = self.upgradesByPlayer[self.player1] + self.upgradesByPlayer[self.player2]
+        self.stats = self.statsByPlayer[self.player1] + self.statsByPlayer[self.player2]
+        self.buildings = self.buildingsByPlayer[self.player1] + self.buildingsByPlayer[self.player2]
+        self.units = self.unitsByPlayerAndType[self.player1] + self.unitsByPlayerAndType[self.player2]
+        self.messages = self.messagesByPlayer[self.player1] + self.messagesByPlayer[self.player2]
+
+
+    def findSimpleNodes(self):
+
+        #unit detection variables
+        currentInterval = "00:00"
+        upgradeCounter = 0
+        statsCounter = 0
+        buildingCounter = 0
+        unitsCounter = 0
+
+        for e in [v for v in self.replay.events if 
+                  (isinstance(v, UpgradeCompleteEvent) or 
+                   isinstance(v, PlayerStatsEvent) or 
+                   isinstance(v, UnitBornEvent) or 
+                   isinstance(v, UnitDoneEvent) or
+                   isinstance(v, MessageEvent))]:
+            
+            if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
+                upgradeCounter += 1
+                self.upgradesByPlayer[e.player].append(UpgradeNode(e, upgradeCounter))
+            elif isinstance(e, PlayerStatsEvent) and self.statsEligible(e):
+                statsCounter += 1
+                self.statsByPlayer[e.player].append(StatsNode(e, statsCounter))
+            elif isinstance(e, UnitDoneEvent) and self.buildingsEligible(e):
+                buildingCounter += 1
+                self.addBuilding(e, buildingCounter)
+            #elif isinstance(e, MessageEvent):
+            #    self.messagesByPlayer[e.player].append(MessageNode(e))
+            elif ((isinstance(e, UnitBornEvent) or 
+                  isinstance(e, UnitDoneEvent)) and
+                  self.unitEligble(e)):
+                
+                newInterval = self.getNearestIntervalStart(e.time)
+
+                # same interval, add unit
+                if currentInterval == newInterval:
+                    self.addUnit(e)
+                else:
+                    for player, types in self.currentIntervalEvents.items():
+                        for type, events in types.items():
+
+                            unitsCounter += 1
+                            node = UnitsNode(events, "00:" + currentInterval, unitsCounter)
+                            nodeUnitType = node.getNodeName()
+
+                            self.unitsByPlayerAndType[player].append(node)
+
+                            if nodeUnitType in self.lastUnitsByType[player]:
+                                self.addLink(self.lastUnitsByType[player][nodeUnitType], node) 
+
+                            self.lastUnitsByType[player][nodeUnitType] = node
+                    
+                    self.currentIntervalEvents = self.initDictByPlayer(2)
+                    currentInterval = newInterval
+
+                    self.addUnit(e)
+
+    # TODO seems like no units are being found
+
+    def addLink(self, n1, n2):
+        self.links.append(UnitsLink(n1, n2))
+
+    def upgradeEligible(self, e) -> bool:
+        return not str(e.upgrade_type_name).startswith(self.OMIT_UNITS_UPGRADES)
+    
+    def statsEligible(self, e) -> bool:
+        return e._str_prefix().strip().endswith(self.STATS_TIMES)
+    
+    def buildingsEligible(self, e) -> bool:
+        return not str(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building
+
+    def unitEligble(self, e) -> bool:
+        return (e.player != None and
+                not e.unit.is_building and 
+                not e.time == "00:00" and 
+                not e.unit.name.startswith(self.OMIT_UNITS))
+
+    def addBuilding(self, e, seq):
+        node = BuildingNode(e, seq)
+        node.index = self.getBuildingIndex(node)
+        self.buildingsByPlayer[e.player].append(node)
+
+    # TODO building are indexed across both players should be per player
+    def getBuildingIndex(self, node) -> int:
+
+        buildingName = node.getNodeName()
+        
+        # append building index so that building dont have the same name
+        if self.buildingNameIndex.get(buildingName) == None:
+            self.buildingNameIndex[buildingName] = 0
+        else:
+            self.buildingNameIndex[buildingName] = self.buildingNameIndex[buildingName] + 1
+
+        return self.buildingNameIndex[buildingName]
+    
+    def addUnit(self, e):
+        try:
+            if not e.unit.name in self.currentIntervalEvents[e.player]:
+                self.currentIntervalEvents[e.player][e.unit.name] = list()
+
+            self.currentIntervalEvents[e.player][e.unit.name].append(e)
+    
+        except Exception:
+            print(e.__class__())
+
+    def shiftUnitsInterval(self):
+        self.unitIntervalStart = MsUtils.incrementSeconds(self.unitIntervalStart, self.UNIT_INTERVAL)
+        self.unitIntervalEnd = MsUtils.incrementSeconds(self.unitIntervalEnd, self.UNIT_INTERVAL)
+        self.currentIntervalEvents = self.initDictByPlayer(2)
+
+    def getNearestIntervalStart(self, timeStr) -> str:
+        minutes, seconds = map(int, timeStr.split(':'))
+        totalSeconds = minutes * 60 + seconds
+        
+        nearestInterval = round(totalSeconds / 10) * 10
+        
+        nearestMin = nearestInterval // 60
+        nearestSec = nearestInterval % 60
+        
+        # Format the result as MM:SS
+        return f"{nearestMin:02}:{nearestSec:02}"        
+        
+
 #TODO if there is events get cg select set cg count is as add to CG
 class ControlGroupDetector(Detector):
     
@@ -50,9 +226,7 @@ class ControlGroupDetector(Detector):
         super().__init__(replay)
         
         self.CONTROL_GROUPS = self.initDictByPlayer(2)
-        
-        x = 0 
-        
+                
         self.lastSelection = {}
         self.lastGetEvent = {0:None, 1:None}
 
@@ -82,7 +256,6 @@ class ControlGroupDetector(Detector):
             elif isinstance(e, GetControlGroupEvent):
                 self.lastGetEvent[e.player] = e
         
-        print(self)
 
     def getCgUnits(self, player, cgNo, second):
         return self.CONTROL_GROUPS[player][cgNo].getUnits(second)
@@ -98,9 +271,9 @@ class ControlGroupDetector(Detector):
     def updateCG(self, e : SetControlGroupEvent):
         
         if e.control_group in self.CONTROL_GROUPS[e.player]:
-            self.CONTROL_GROUPS[e.player][e.control_group].update(self.lastSelection[e.player])
+            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.lastSelection[e.player])
         else:
-            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(self.lastSelection[e.player], e)
+            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.lastSelection[e.player])
 
             
     def __str__(self) -> str:
@@ -123,10 +296,7 @@ class BaseDetector(Detector):
         self.bases = self.initDictByPlayer()
 
         self.findMinerals()
-
         self.findBases()
-        
-        print(self)
     
     def printLocations(self):
         printDict(self.bases)
@@ -143,22 +313,27 @@ class BaseDetector(Detector):
                     abs(ml[0] - e.x) < self.DISTANCE_FROM_MINERALS or 
                     abs(ml[1] - e.y) < self.DISTANCE_FROM_MINERALS]) > 0
 
+    def isBase(self, unit):
+        return unit.is_building and unit._type_class.name in {"Nexus","Hatchery","Hive","OrbitalCommand"} #main base unit born event has Hive for some reason
+                            
     def findBases(self):
         basesBuiltEvents = [e for e in self.replay.events if 
                             (isinstance(e, UnitInitEvent) or isinstance(e, UnitBornEvent))  
-                            and e.unit.is_building 
-                            and e.unit._type_class.name in {"Nexus","Hatchery","Hive","OrbitalCommand"} #main base unit born event has Hive for some reason
+                            and self.isBase(e.unit)
                             and self.isNearMinerals(e)]
         
         for e in basesBuiltEvents:
             self.processNewMainBase(e)
 
     def addNewBase(self, e):
-        self.bases[e.player].append(Base(e, Base.BASE_NAMES_ORDER[len(self.bases[e.player])])) #TODO the base name logic should be in Base
+        
+        #TODO the base name logic should be in Base
+        #workaround as 1st zerg base is named Hive for some reason
+            
+        self.bases[e.player].append(Base(e, len(self.bases[e.player]))) 
         
     def processNewMainBase(self, e):
         
-        print(e)
         for base in self.bases[e.player]:
             if base.location == e.location:
                 print("THIS GOT TRIGGERED?! Base dies?")
@@ -206,16 +381,16 @@ class BattleDetector(Detector):
         self.deathsByTime = {}
         self.previousSecond = -1
                 
+        self.battles = []   
         self.findBattles()
         
         pass
 
-
+    # TODO add Unit initiated Shield Battery
     def findBattles(self):
         
         self.sortDeaths()
         
-        battles = []
         self.battleStart = 0
         self.secondsOfBattle = []
                         
@@ -229,8 +404,8 @@ class BattleDetector(Detector):
             
             if self.previousSecond != -self.LOWER_BOUND and self.previousSecond + self.UPPER_BOUND < self.currentSecond:
                 # print("BB")
-                battles.append(
-                    Battle(
+                self.battles.append(
+                    BattleNode(
                         self.replay.players[0],
                         self.replay.players[1],
                         self.battleStart, 
@@ -238,7 +413,8 @@ class BattleDetector(Detector):
                         [e for e in self.replay.events 
                             if e.second >= self.battleStart - self.LOWER_BOUND and 
                             e.second<= self.previousSecond + self.UPPER_BOUND] , 
-                        self.secondsOfBattle))
+                        self.secondsOfBattle,
+                        len(self.battles)))
                 self.resetBuffers()
                  
             if self.currentKeyFree >= 0 :
@@ -251,20 +427,19 @@ class BattleDetector(Detector):
             self.previousSecond = self.currentSecond
             #if battles.__len__() > 10:
                 #break
-            
+        
+        self.battles.pop(0)
         x = 0
-        print(battles.__len__())    
-        for b in [t for t in battles]: #  
+        #print(battles.__len__())    
+        #for b in [t for t in battles]: #  
             # if b.p1dc > 10 or b.p2dc > 10:
 
-            print(b)
-            x = x + 1
+         #   print(b)
+          #  x = x + 1
             
             #if x > 10:
              #   break
-            getch()   
-            
-        return battles
+           # getch()   
     
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?

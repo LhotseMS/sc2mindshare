@@ -914,8 +914,6 @@ class Map(Resource):
     def __init__(self, map_file, filename=None, region=None, map_hash=None, **options):
         super().__init__(map_file, filename, **options)
 
-        print("ASDASD")
-
         #: The localized (only enUS supported right now) map name.
         self.name = ""
 
