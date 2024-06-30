@@ -145,9 +145,10 @@ def processFile(filename):
 
     export = exp.getExport()
     
-    printSomeEvents(replay.events)
+    #printSomeEvents(replay.events)
+    print(replay.active_units)
 
-    with open('exports/{}.csv'.format(exportFileName), mode='w') as file:
+    with open('output/exports/events_{}.csv'.format(exportFileName), mode='w') as file:
     # Write the CSV string to the file
         file.write(export)
 

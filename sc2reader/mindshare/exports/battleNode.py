@@ -97,37 +97,37 @@ class BattleNode(Battle, Node):
         # TODO parametrize these functions, util class?
         cgs = ""
         if len(self.controlGroupsUsed[player]) > 0:
-            cgs += X_LD + "- Control group(s) used: "
+            cgs += X_LD + "Control group(s) used: "
             for cg in self.controlGroupsUsed[player]:
-                cgs += "-- {}{}: {}".format(X_LD, str(cg), sc2reader.mindshare.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec))
+                cgs += "{}{}: {}".format(X_LD, str(cg), sc2reader.mindshare.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec))
         
         kills = ""
         if len(self.killersTypes[player]) > 0:
-            kills += X_LD + "- Kill(s): "
+            kills += X_LD + "Kill(s): "
             for key, value in self.killersTypes[player].items():
                 #the below functions to util class, how to enumerate count dicitonaries, also in CGs.class
                 kills += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         bLost = ""
         if len(self.deadBuildingsTypes[player]) > 0:
-            bLost += X_LD + "- Lost: "
+            bLost += X_LD + "Lost: "
             for key, value in self.deadBuildingsTypes[player].items():
                 bLost += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         cas = ""
         if len(self.combatAbilitiesTypes[player]) > 0:
-            cas += X_LD + "- Combat: "
+            cas += X_LD + "Combat: "
             for key, value in self.combatAbilitiesTypes[player].items():
                 cas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
               
         ncas = ""  
         if len(self.nonCombatAbilitiesTypes[player]) > 0:
-            ncas += X_LD + "- Non-combat: "
+            ncas += X_LD + "Non-combat: "
             for key, value in self.nonCombatAbilitiesTypes[player].items():
                 ncas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         if cgs != "" or cas != "" or ncas != "":
-            playerHeader = X_LD + X_LD + "=={}==".format(player.name)
+            playerHeader = X_LD + X_LD + "===={}====".format(player.name)
 
 
         return "{} {} {} {} {} {}".format(playerHeader, kills, bLost, cas, ncas, cgs)

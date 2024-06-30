@@ -19,11 +19,12 @@ class UnitsLink(Link):
     def __init__(self, n1, n2) -> None:
         super().__init__(n1, n2)
 
-        self.name1 = "after"
-        self.name2 = "before"
+        self.name1 = "previous"
+        self.name2 = "next"
         self.desc = "same units"
+        self.direction = 1
         
-        self.propertiesCount = 0
+        self.propertiesCount = 1
 
     def getIDs(self, sep) -> str:
         return self.node1.getNodeID() + sep + self.node2.getNodeID() 
@@ -35,5 +36,4 @@ class UnitsLink(Link):
         return self.desc
     
     def getProperties(self, sep) -> str:
-        return ""
-
+        return str(self.direction)

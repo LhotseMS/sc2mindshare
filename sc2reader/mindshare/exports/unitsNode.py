@@ -12,13 +12,18 @@ class UnitsNode(MultiNode):
             self.supply += e.unit.supply
 
         self.type = "Units"
-        self.propertiesCount = 3
+        self.propertiesCount = 4
+        self.currentUnits = 0
     
     def getProperties(self, sep):
-        return "{}{}{}{}{}{}{}".format(super().getProperties(sep),
+        return "{}{}{}{}{}{}{}{}{}".format(super().getProperties(sep),
                              self.name, sep,
                              self.count, sep,
-                             self.supply, sep)
+                             self.supply, sep,
+                             self.currentUnits, sep)
     
     # TODO link to related opponent upgrade, previous upgrade
     def getNodeLinks(self) -> str: pass
+
+    def setCurrenCount(self, cc):
+        self.currentUnits = cc

@@ -155,6 +155,11 @@ class Unit(Renamer):
         """The name of the unit type currently active. None if no type is assigned"""
         return self.baseName if self.baseName != None else (self._type_class.name if self._type_class else None)
 
+    # TODO use this clean name everywhere instead of just name and postprocess
+    @property
+    def nameC(self):
+        return self.replaceStrings(self.name, True)
+
     @property
     def title(self):
         return self._type_class.title if self._type_class else None

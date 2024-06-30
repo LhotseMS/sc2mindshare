@@ -78,6 +78,7 @@ class SimpleDetector(Detector):
         self.unitsByPlayerAndType = self.initDictByPlayer()
         
         self.lastUnitsByType = self.initDictByPlayer(2)
+        self.unitTypeCount = self.initDictByPlayer(2)
         self.messagesByPlayer = self.initDictByPlayer()
 
         #before findSimpleNodes 
@@ -111,7 +112,8 @@ class SimpleDetector(Detector):
                    isinstance(v, PlayerStatsEvent) or 
                    isinstance(v, UnitBornEvent) or 
                    isinstance(v, UnitDoneEvent) or
-                   isinstance(v, MessageEvent))]:
+                   isinstance(v, MessageEvent) or
+                   isinstance(v, UnitDiedEvent)  )]:
             
             if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
                 upgradeCounter += 1
@@ -124,6 +126,10 @@ class SimpleDetector(Detector):
                 self.addBuilding(e, buildingCounter)
             #elif isinstance(e, MessageEvent):
             #    self.messagesByPlayer[e.player].append(MessageNode(e))
+            
+            elif isinstance(e, UnitDiedEvent):
+                if e.player != None and e.unit.nameC in self.unitTypeCount[e.player]:
+                    self.unitTypeCount[e.player][e.unit.nameC] -= 1            
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
                   self.unitEligble(e)):
@@ -137,12 +143,22 @@ class SimpleDetector(Detector):
                     for player, types in self.currentIntervalEvents.items():
                         for type, events in types.items():
 
+                            # init the node with all events that have been captured for given type
                             unitsCounter += 1
                             node = UnitsNode(events, "00:" + currentInterval, unitsCounter)
-                            nodeUnitType = node.getNodeName()
+                            nodeUnitType = node.name
+
+                            # iterate unit type count
+                            if not nodeUnitType in self.unitTypeCount[player]:
+                                self.unitTypeCount[player][nodeUnitType] = 0
+
+                            # set unit count type
+                            self.unitTypeCount[player][nodeUnitType] += node.count
+                            node.setCurrenCount(self.unitTypeCount[player][nodeUnitType])
 
                             self.unitsByPlayerAndType[player].append(node)
 
+                            # save last unit node by type for links and create links
                             if nodeUnitType in self.lastUnitsByType[player]:
                                 self.addLink(self.lastUnitsByType[player][nodeUnitType], node) 
 
@@ -358,16 +374,18 @@ class BaseDetector(Detector):
 
         return minDistBase
 
-    
-
     def __str__(self) -> str:
         printDict(self.bases)
         return ""
 
 class BattleDetector(Detector):
 
-    LOWER_BOUND = 2
-    UPPER_BOUND = 2
+    LOWER_BOUND = 3
+    UPPER_BOUND = 4
+
+    INTERVALS_EXPORT_FOLDER = "output/intervals/"
+    INTERVALS_EXPORT_FILE_PREFIX = "Intervals_"
+    INTERVALS_EXPORT_FILE_EXT = ".csv"
     
     def __init__(self, replay):
         
@@ -375,6 +393,8 @@ class BattleDetector(Detector):
         self.battleStart = 0
         self.resetBuffers()
         self.replay = replay
+        self.player1 = self.replay.players[0]
+        self.player2 = self.replay.players[1]
         
         self.currentSecond = None
         self.currentDeathEvents = []
@@ -383,6 +403,8 @@ class BattleDetector(Detector):
                 
         self.battles = []   
         self.findBattles()
+        self.createBattleIntervals()
+        
         
         pass
 
@@ -406,8 +428,8 @@ class BattleDetector(Detector):
                 # print("BB")
                 self.battles.append(
                     BattleNode(
-                        self.replay.players[0],
-                        self.replay.players[1],
+                        self.player1,
+                        self.player2,
                         self.battleStart, 
                         self.previousSecond, 
                         [e for e in self.replay.events 
@@ -428,6 +450,7 @@ class BattleDetector(Detector):
             #if battles.__len__() > 10:
                 #break
         
+        #for some reason there is a 00 empty battle at the start TODO?
         self.battles.pop(0)
         x = 0
         #print(battles.__len__())    
@@ -441,6 +464,19 @@ class BattleDetector(Detector):
              #   break
            # getch()   
     
+    def createBattleIntervals(self):
+
+        gameFileName = "{}__{}_vs_{}".format(self.replay.map_name, self.player1, self.player2)
+        gameBattlesIntervalsStr = "start,end\n"
+
+        for battle in self.battles:
+            gameBattlesIntervalsStr += "{},{}\n".format(battle.startTime, battle.endTime)
+
+        
+        with open(self.INTERVALS_EXPORT_FOLDER + self.INTERVALS_EXPORT_FILE_PREFIX + gameFileName + self.INTERVALS_EXPORT_FILE_EXT, mode='w') as file:
+        # Write the CSV string to the file
+            file.write(gameBattlesIntervalsStr)
+
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?
         unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath()] #not larva add drone deaths?

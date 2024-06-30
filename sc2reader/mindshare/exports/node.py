@@ -67,8 +67,8 @@ class MultiNode(Node):
         self.startTime = startTime
         self.count = self.events.__len__()
 
-        # TODO unit or the event should provide the cleaned name
-        self.name = self.event.unit.replaceStrings(self.event.unit.name,True)
+        # TODO unit or the event should provide the cleaned name, #
+        self.name = self.event.unit.nameC
         
     def getNodeName(self) -> str: 
         if self.count > 1:
