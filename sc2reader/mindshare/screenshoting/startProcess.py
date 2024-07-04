@@ -3,6 +3,7 @@ import pandas as pd
 import pyautogui
 import tkinter as tk
 import os
+import sys
 from datetime import datetime, timedelta
 
 
@@ -15,6 +16,7 @@ from datetime import datetime, timedelta
 
 class ScreeningProcess():
 
+    PLAYER_NAME = "SkippyJo"
     INTERVALS_FILE = ".intervals_Oceanborn LE__Player 1 - SkippyJo (Zerg)_vs_Player 2 - Fluffy (Protoss).csv"
     INTERVAL_MARGIN = 2
     SCREENSHOT_INTERVAL = 2
@@ -42,11 +44,11 @@ class ScreeningProcess():
         """Capture a screenshot and save it to the specified folder with a timestamp."""
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        filename = f"screenshot_{timestamp}.png"
+        filename = f"{self.PLAYER_NAME}_{timestamp}.png"
         file_path = os.path.join(folder_path, filename)
         screenshot = pyautogui.screenshot()
         screenshot.save(file_path)
-        self.flashScreen()
+        #self.flashScreen()
 
     def flashScreen(self):
         """Flash the screen to indicate a screenshot has been taken."""
@@ -62,32 +64,14 @@ class ScreeningProcess():
         root.after(150, close_flash)  # Flash duration: 100 ms
         root.mainloop()
 
-    def prevent_lock_screen(self):
-        """Move the mouse slightly every 'interval' seconds to prevent screen lock."""
-        current_position = pyautogui.position()
-        # Move the mouse by 1 pixel right and then back to avoid screen lock
-        pyautogui.moveRel(10, 0)
-        pyautogui.moveRel(-10, 0)
-
     # intervals are ordered chronologically from found battles
     def withinIntervals(self, current_time, intervals):
         """Check if the current time is within any of the specified intervals."""
-
-        current_time = current_time.replace(microsecond=0)
-        i_1_start = (datetime.strptime(intervals[0][0], "%H:%M:%S") - timedelta(seconds=self.INTERVAL_MARGIN)).time().replace(microsecond=0)
-        i_1_end = (datetime.strptime(intervals[0][1], "%H:%M:%S") + timedelta(seconds=self.INTERVAL_MARGIN)).time().replace(microsecond=0)
-             
-        i_2_start = (datetime.strptime(intervals[1][0], "%H:%M:%S") - timedelta(seconds=self.INTERVAL_MARGIN)).time().replace(microsecond=0)
-        i_2_end = (datetime.strptime(intervals[1][1], "%H:%M:%S") + timedelta(seconds=self.INTERVAL_MARGIN)).time().replace(microsecond=0)
-
-        # if the time is in 1st interval confrim
-        if i_1_start <= current_time <= i_1_end:
-            return True
-        # if the time is in 2nd, the time of the 1st one has passed, remove it and confirm 
-        elif i_2_start <= current_time <= i_2_end:
-            self.processedIntervals.append(intervals.pop(0))
-            return True
-        
+        for start, end in intervals:
+            start_time = datetime.strptime(start, "%H:%M:%S").time()
+            end_time = datetime.strptime(end, "%H:%M:%S").time()
+            if start_time <= current_time <= end_time:
+                return True
         return False
 
     def countdown(self):
@@ -95,6 +79,7 @@ class ScreeningProcess():
         root = tk.Tk()
         root.overrideredirect(True)  # Remove window decorations
         root.geometry(self.COUNTDOWN_SIZE+self.COUNTDOWN_POSITION)  # Position the window
+        root.attributes('-topmost', True)
 
         label = tk.Label(root, font=('Helvetica', 48))
         label.pack(expand=True)
@@ -114,56 +99,32 @@ class ScreeningProcess():
 
         self.countdown()
         start_time = datetime.now()
+        last_time = datetime.strptime(intervals[-1][1], "%H:%M:%S").time()
 
-        previousEnd = datetime.now() - timedelta(seconds=1)
-        currentEnd = datetime.now()
         elapsed = None
-
 
         while True:
             
             self.prevent_lock_screen()
-            # TODO TODO TODO just cut down sleep by difference from the first MS one not from the previous
-            # TODO there is an inherent delay probably caused by the algorithm that keeps delaying the 1s cycle eventually start slipping
-            # by seconds, each iteration it slips about 200mcs
+            
             elapsed = datetime.now() - start_time
             elapsed_time = (datetime.min + elapsed).time()  # Convert timedelta to time
             
-            interval_duration = (currentEnd - previousEnd).total_seconds()
-            previousEnd = currentEnd
+            if elapsed_time > last_time:
+                sys.exit()
 
-            print("\n\nprevEnd: " + str(previousEnd))
-            print("curEnd: " + str(currentEnd))
+            print("\nms: " + str(elapsed_time.microsecond))
             
             if self.withinIntervals(elapsed_time, intervals):
                 self.captureScreenshot(self.OUTPUT_FOLDER, elapsed_time.strftime("%H-%M-%S"))
-                #print("screenshot taken\n")
-                time.sleep(self.SCREENSHOT_INTERVAL)
+                print("screenshot taken at {} \n".format(elapsed_time))
+                time.sleep(2)
             else:
-                sleepTime = self.getSleepTime(interval_duration)
-                self.endTimes.append(currentEnd)
+                sleepTime = 1 - timedelta(microseconds=elapsed_time.microsecond).microseconds/1000000
+                print("sleep time {}".format(str(sleepTime)))
+                print("time now {}".format(datetime.now().time()))
+                print("game time {}".format(elapsed_time))
                 time.sleep(sleepTime)
-                print("game time " + str(elapsed_time) + "  real time " + str(datetime.now()) + " sleep " + str(sleepTime))
-                currentEnd = datetime.now()
-
-    def getSleepTime(self, curntervalDuration):
-
-        correlation = 0
-        curDiff = 0
-        prevDiff = 0
-
-        if len(self.endTimes) > 3:
-            prevDiff = self.endTimes[-2].microsecond - self.endTimes[-3].microsecond 
-            curDiff = self.endTimes[-1].microsecond - self.endTimes[-2].microsecond 
-
-        if curDiff > prevDiff:
-            correlation = abs(curDiff - prevDiff)
-
-        #print("cur" + str(curDiff))
-        #print("prev" + str(prevDiff))
-        #print("correlation:" + str(correlation))
-        return 1 - abs(curntervalDuration - 1) - timedelta(microseconds= correlation).seconds
-
 
 def main():
 
