@@ -10,6 +10,8 @@ from sc2reader.events import (
 from sc2reader.engine.events import InitGameEvent, EndGameEvent, PluginExit
 
 
+
+
 class GameEngine:
     """
     GameEngine Specification
@@ -133,6 +135,9 @@ class GameEngine:
         return self._plugins
 
     def run(self, replay):
+        
+
+
         # A map of [event.name] => event handlers in plugin registration order
         # ranked from most generic to most specific
         handlers = dict()

@@ -1,6 +1,7 @@
 SINGLE_ACTION_AREA_SIZE = (2,2)
 SINGLE_BATTLE_AREA_SIZE = (20,16)
 
+# TODO missing terran, build abilities probably
 TRAIN_UNIT_ABILITIES = ["TrainBaneling",
 "TrainMothership",
 "TrainSCV",

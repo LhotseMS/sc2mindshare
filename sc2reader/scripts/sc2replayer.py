@@ -8,22 +8,22 @@ from sc2reader.data import Unit
 from pprint import pprint
 from sc2reader.events import *
 from sc2reader.factories.plugins.replay import toDict
-from sc2reader.mindshare.detectors import BattleDetector, ControlGroupDetector
+from sc2reader.mindshare.detectors import *
+from sc2reader.mindshare.exports.exporter import CSVExporter
 from termcolor import colored
 from pathlib import Path
-
-from datetime import datetime, timedelta
 
 import sys
 
 import argparse
 import sc2reader
+import sc2reader.mindshare.detectors
 from sc2reader.events import *
+import sc2reader.mindshare.exports.exporter
    
 
 # printer class
     
-
         
 
 def eventsWithoutPid(event):
@@ -123,83 +123,80 @@ def printDict(dict):
 def processFile(filename):
     replay = sc2reader.load_replay(filename, debug=True, load_map=True)
         
-    a = toDict()(replay)
-    
-    print(a)
-    print(replay.players)
-    
-    print(f"Release {replay.release_string}")
-    print(f"{replay.type} on {replay.map_name} at {replay.start_time}")
-    print("")
-    for team in replay.teams:
-        print(team)
-        for player in team.players:
-            print(f"  {player}")
-    print("\n--------------------------\n\n")
+    print(toDict()(replay))
 
+    exportFileName = replay.map_name
     print(replay.map.map_info)
+    
 
-    # Allow picking of the player to 'watch'
-    #if args.player:
-    #    events = replay.player[args.player].events
-    #else:
-    events = replay.events
-        
-    # printUnits(replay)
-    #print(.items())
-    # u = [x for x in replay.datapack.units.items()]
-    # for unt in u:
-    #     print(unt)
+    for team in replay.teams:  
+        for player in team.players:  
+            exportFileName += " " + str(player) 
+
+    sc2reader.mindshare.detectors.createDetectors(replay)
+
+    #TODO Messages gl hf and ggs
+    exp = CSVExporter(sc2reader.mindshare.detectors.battleDetector.battles + 
+                       sc2reader.mindshare.detectors.simpleDetector.upgrades + 
+                       sc2reader.mindshare.detectors.simpleDetector.buildings + 
+                       sc2reader.mindshare.detectors.simpleDetector.units + 
+                       sc2reader.mindshare.detectors.simpleDetector.stats, 
+                       sc2reader.mindshare.detectors.simpleDetector.links)
+
+    export = exp.getExport()
     
-    printEventsOfInterest(replay, replay.events)
-    
-    # checkIteration(1705, replay)
-    #BattleDetector(replay)
-    
-    # Allow specification of events to `show`
-    # Loop through the events
+    #printSomeEvents(replay.events)
+    print(replay.active_units)
+
+    #TODO unify these configuration inputs, multiple definitions
+    with open('C:/Users/Štefan/OneDrive/Dokumenty/MS/SC/Parser outputs/imports/events_{}.csv'.format(exportFileName), mode='w') as file:
+    # Write the CSV string to the file
+        file.write(export)
+
+
+def printIntervalAll(start, finish, events):
+
+    a = sorted(events, key=lambda event: event.second)
+
+    for event in a:
+        if event.second >= start and event.second<= finish and (
+            isinstance(event, SetControlGroupEvent) or 
+            isinstance(event, StealControlGroupEvent) or 
+            isinstance(event, AddToControlGroupEvent) or 
+            isinstance(event, SelectionEvent)):
+            #if event.control_group != 10:
+            if event.pid == 0:
+                print(str(event))
+
+def printSomeEvents(events):
     for event in events:
 
-        if (
-            isinstance(event, TargetUnitCommandEvent)
-            or isinstance(event, TargetPointCommandEvent)
-            or isinstance(event, UpdateTargetPointCommandEvent)
-            or isinstance(event, UpdateTargetUnitCommandEvent)
-            or isinstance(event, CommandEvent)
+        if isinstance(event, PlayerStatsEvent):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-        ):
-            u = 2
+            print(event)
             
-        elif isinstance(event, SelectionEvent):
-            # print(f"\n NEW UNITS {event.new_units} {event.second}")
-            
-            u = 2
-            # getch()
-            # if args.bytes:
-            #     print("\t" + event.bytes.encode("hex"))
 
 def printEventsOfInterest(replay, events):
-    
-    
+        
     ustrt = {}
     bases = {}
         
     #a = ControlGroupDetector(replay)
     
     for e in [v for v in events if (isinstance(v, UnitBornEvent) or 
-                                    isinstance(v, UnitInitEvent) or 
                                     isinstance(v, UnitDoneEvent))]:
-        #if isinstance(e, UnitDoneEvent):
-        if not e.unit.owner in bases:
-            bases[e.unit.owner] = list()
-            
         
-        if e.unit.name in {"Hatchery","Hive","Lair","Nexus"}:
-            if not e.unit in bases[e.unit.owner]:
-                bases[e.unit.owner].append(e.unit) 
+        # not building,  
+        # born: time not 00, Unit born Larva, Unit born Broodling 
+        # done: shield battery
+        # Unit Extractor Rich done
+        
+        if not e.unit.is_building and e.time != "00:00":
+            print(e)
+       
         #else:
         #    if not e.control_pid in bases:
         #       bases[e.control_pid] = list()
@@ -207,14 +204,6 @@ def printEventsOfInterest(replay, events):
         
         
     
-    d = {}
-    cg = {}
-    
-    printStats(events)
-    print("\n\n")
-    printUpgrades(events)
-    print("\n\n")
-    printBuildings(events)
         
         #if not e.pid in d:
         #    d[e.pid] = list()
@@ -229,92 +218,19 @@ def printEventsOfInterest(replay, events):
             
         
     #printDict(d)
-    printDict(bases)
-
-def printUpgrades(events):
-    #here I bent it a lot
-    for e in [v for v in events if (isinstance(v, UpgradeCompleteEvent))]:
-        
-        omitUnits = ("Reward","Spray","Game")
-
-        if not str(e.upgrade_type_name).startswith(omitUnits):
-            print(e.getJson())
-
-def printStats(events):
-    #here I bent it a lot
-    for e in [v for v in events if (isinstance(v, PlayerStatsEvent))]:
-        
-        desiredTimes = ("01.04","02.08","03.12","04.16","05.20","06.24","07.28","08.32","09.36","10.40","11.44","12.48","13.52","14.56","16.00","17.04")
-
-        if e._str_prefix().strip().endswith(desiredTimes):
-            print(e.getJson())
-
-def printBuildings(events):
-    #here I bent it a lot
-    buildingNameIndex = {}
-    prevTime = "00:00:00"
-    currentTime = "00:00:00"
-
-    for e in [v for v in events if (#isinstance(v, SelectionEvent) 
-                                    #or isinstance(v, ControlGroupEvent)
-                                    #or isinstance(v, TargetUnitCommandEvent)
-                                    #or isinstance(v, TargetPointCommandEvent)
-                                    #or isinstance(v, UpdateTargetPointCommandEvent)
-                                    #or isinstance(v, UpdateTargetUnitCommandEvent)
-                                    #or isinstance(v, CommandEvent) or
-                                    # isinstance(v, UnitDoneEvent)
-                                    #or isinstance(v, UnitBornEvent)
-                                    isinstance(v, UnitInitEvent))]:
-        
-        omitUnits = ("Creep","SupplyDepotLowered")
 
 
 
-
+def printControlGroups(events):
     
+    for e in [v for v in events if (isinstance(v, ControlGroupEvent))]:
         
-        if not str(e.unit).startswith(omitUnits):
-            
-            output = e.getJson()
-
-            # don't allow same times, breaks the logic downstream, bad workaround TODO
-            currentTime = e.getCleanTime()
-            buildingName = e.getCleanUnitName()
-
-            if currentTime == prevTime:
-                adjustedTime = incrementSeconds(currentTime)
-                output = output.replace(currentTime, adjustedTime)
-                prevTime = adjustedTime
-            else:
-                prevTime = currentTime
-            
-
-            # append building index so that building dont have the same name
-            if buildingNameIndex.get(buildingName) == None: 
-                buildingNameIndex[buildingName] = 0
-                #print("init " + str(buildingNameIndex.get(buildingName)) + "XX")
-            else:
-                buildingNameIndex[buildingName] = buildingNameIndex[buildingName] + 1
-                #'print("increment " + str(buildingNameIndex[buildingName])+"xx")
-
-
-            
-            if buildingNameIndex[buildingName] != 0:
-                # add the building number before ; This should happen in the class
-                output = output[:-1] + " " + str(buildingNameIndex[buildingName]) + ";"
-                
-            print(output)
+        if (isinstance(e, SetControlGroupEvent) 
+            or isinstance(e, StealControlGroupEvent)):
+            print(e.getJson())
 
 
 # todo to util class
-def incrementSeconds(time_string: str) -> str:
-    # Parse the time string into a datetime object
-    time_obj = datetime.strptime(time_string, "%H:%M:%S")
-    # Increment the seconds by 1
-    time_obj += timedelta(seconds=1)
-    # Convert the datetime object back to a string
-    incremented_time_string = time_obj.strftime("%H:%M:%S")
-    return incremented_time_string
 
 
 def main():

@@ -1,5 +1,4 @@
 import functools
-import re
 
 from sc2reader.events.base import Event
 from sc2reader.utils import Length
@@ -19,7 +18,7 @@ class TrackerEvent(Event):
         self.frame = frames % 2**32
 
         #: The second of the game (game time not real time) this event was applied
-        self.second = self.frame >> 4
+        self.second = int(self.frame / 22.4) # self.frame >> 4
 
         #: Short cut string for event class name
         self.name = self.__class__.__name__
@@ -28,35 +27,11 @@ class TrackerEvent(Event):
         pass
 
     def _str_prefix(self):
-        return f"{Length(seconds=int(self.frame / 22.5))}\t "
+        return f"{Length(seconds=int(self.frame / 22.4))}\t "
 
     def __str__(self):
         return self._str_prefix() + self.name
     
-    def replaceStrings(self , input, split=False):
-        replacements = {
-            "Player 1 - ": "",
-            "Player 2 - ": "",
-            " (Terran)": "",
-            " (Zerg)": "",
-            " upgrade completed": ""
-        }
-
-        source_string = str(input)
-
-        for old, new in replacements.items():
-            source_string = source_string.replace(old, new)
-        
-        pattern = r"\[\w+\]"
-
-        source_string = re.sub(pattern, "", source_string)
-        if split:
-            source_string = re.sub(r'(?<=[a-z])([A-Z0-9])|^[A-Z]', lambda match: (' ' if match.start() != 0 else '') + match.group(0), source_string)
-
-
-        return source_string
-
-
 class PlayerSetupEvent(TrackerEvent):
     """Sent during game setup to help us organize players better"""
 
@@ -298,42 +273,8 @@ class PlayerStatsEvent(TrackerEvent):
 
     def __str__(self):
         return (
-        f"\n Time: {self._str_prefix()}"+
-        f"\n Player: {self.player}"+
-        f"\n Current Minerals: {self.minerals_current}" +  
-        f"\n Current Gas: {self.vespene_current}" + 
-        f"\n Min Col Rate: {self.minerals_collection_rate}" + 
-        f"\n Gas Col Rate: {self.vespene_collection_rate}" + 
-        f"\n Workers: {self.workers_active_count}" + 
-        f"\n Army min: {self.minerals_used_current_army}" + 
-        f"\n Army gas: {self.vespene_used_current_army}" +
-        f"\n Economy min: {self.minerals_used_current_economy}" + 
-        f"\n Economy gas: {self.vespene_used_current_economy}" + 
-        f"\n Tech min: {self.minerals_used_current_technology}" + 
-        f"\n Tech gas: {self.vespene_used_current_technology}") 
+        f"\n Time: {self._str_prefix()}")
     
-    
-    def getJson(self):
-
-        time = self._str_prefix().replace(".",":").strip()
-        player = self.replaceStrings(self.player)
-        return (
-            f"00:{time};"+
-            f"{player};"+
-            f"{time} {player};"+
-            f"{self.minerals_current};" +  
-            f"{self.vespene_current};" + 
-            f"{self.minerals_collection_rate};" + 
-            f"{self.vespene_collection_rate};" + 
-            f"{self.workers_active_count};" + 
-            f"{self.minerals_used_current_army};" + 
-            f"{self.vespene_used_current_army};" +
-            f"{self.minerals_used_current_economy};" + 
-            f"{self.vespene_used_current_economy};" + 
-            f"{self.minerals_used_current_technology};" + 
-            f"{self.vespene_used_current_technology};" 
-        )
-
 
 class UnitBornEvent(TrackerEvent):
     """
@@ -392,6 +333,26 @@ class UnitBornEvent(TrackerEvent):
             self.x = self.x * 4
             self.y = self.y * 4
             self.location = (self.x, self.y)
+
+    @property
+    def player(self):
+        return self.unit_controller
+
+    @property
+    def pid(self):
+        return self.control_pid
+    
+    #TODO duplicate definition in events and also adding 00 in some other places
+    @property
+    def time(self):
+        return self._str_prefix().replace('.', ':').split('\t')[0]
+
+    def isPlayer(self, pids):
+        return pids.contain(self.upkeep_pid)
+
+    def isCounted(self):
+        return self.unit.type not in [845] #845=InvisibleTargetDummy
+
 
     def __str__(self):
         return self._str_prefix() + colored("{: >15} - Unit born {} at {}".format(
@@ -468,9 +429,29 @@ class UnitDiedEvent(TrackerEvent):
                     self.killing_unit_index << 18 | self.killing_unit_recycle
                 )
 
-    def __str__(self):
-        return self._str_prefix() + colored("{: >15} - Unit died {}.".format(
-            str(self.unit.owner), self.unit
+    @property
+    def player(self):
+        return self.unit.owner
+
+    @property
+    def pid(self):
+        return self.unit.owner.pid
+    
+    
+    def isCounted(self):
+        return self.countableUnitDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
+    
+    def countableUnitDeath(self): 
+        return ((self.unit.is_army or 
+                 self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) 
+                 and self.unit.name not in ["Broodling"]) # and e.unit.type not in [189,1075,158,431,108]
+    
+    def buildingDeath(self):
+        return self.unit.is_building
+
+    def __str__(self):  
+        return self._str_prefix() + colored("{} - Unit died by {} {: >15} at {}.".format(
+            self.unit.name, self.killing_unit, str(self.unit.owner), self.location
         ),"red")
 
 
@@ -538,6 +519,11 @@ class UnitTypeChangeEvent(TrackerEvent):
         #: The the new unit type name
         self.unit_type_name = data[2].decode("utf8")
 
+    @property
+    def pid(self):
+        return self.unit.owner.pid
+
+
     def __str__(self):
         return self._str_prefix() + "{: >15} - Unit {} type changed to {}".format(
             str(self.unit.owner), self.unit, self.unit_type_name
@@ -568,10 +554,6 @@ class UpgradeCompleteEvent(TrackerEvent):
         return self._str_prefix() + "{: >15} - {} upgrade completed".format(
             str(self.player), self.upgrade_type_name
         )
-
-    def getJson(self):
-        return "00:" + self._str_prefix().replace(".",":").strip() + ";" + self.replaceStrings(self.player) + ";" + self.replaceStrings(self.upgrade_type_name, True).strip() + ";"
-
 
 class UnitInitEvent(TrackerEvent):
     """
@@ -626,21 +608,23 @@ class UnitInitEvent(TrackerEvent):
             self.y = self.y * 4
             self.location = (self.x, self.y)
 
+    @property
+    def player(self):
+        return self.unit_upkeeper
+
+    @property
+    def pid(self):
+        return self.upkeep_pid
+
+    def isCounted(self):
+        return True
+
     def __str__(self):
         #new class printer for all events etc
         return self._str_prefix() + "{: >15} - Unit initiated {} at {}".format(
             str(self.unit_upkeeper), self.unit, self.location
         )
     
-    def getCleanUnitName(self, splitName = True):
-        return self.replaceStrings(self.unit, splitName).strip()
-    
-    def getCleanTime(self):
-        return "00:" + self._str_prefix().replace(".",":").strip()
-
-    def getJson(self):
-        return self.getCleanTime() + ";" + self.replaceStrings(self.unit_upkeeper) + ";" + self.getCleanUnitName(False) + ";" + self.getCleanUnitName()+ ";" 
-
 
 
 class UnitDoneEvent(TrackerEvent):
@@ -663,6 +647,19 @@ class UnitDoneEvent(TrackerEvent):
 
         #: The unit object that was finished
         self.unit = None
+
+    
+    @property
+    def player(self):
+        return self.unit.owner
+
+    @property
+    def pid(self):
+        return self.unit.owner.pid
+    
+    @property
+    def time(self):
+        return self._str_prefix().replace('.', ':').split('\t')[0]
 
     def __str__(self):
         return self._str_prefix() + "{: >15} - Unit {} done".format(
@@ -704,5 +701,17 @@ class UnitPositionsEvent(TrackerEvent):
                 y = y * 4
             self.positions.append((unit_index, (x, y)))
 
+    
+    #TODO -1 is a workaround, probably can't provide any reasonable data, this should always get excluded
+    @property
+    def player(self):
+        return -1
+
+    @property
+    def pid(self):
+        return -1
+
+
     def __str__(self):
+        print(self.units)
         return self._str_prefix() + "Unit positions update"

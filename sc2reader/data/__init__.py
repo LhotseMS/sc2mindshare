@@ -1,6 +1,8 @@
 import json
 import pkgutil
 
+from mindshare.utils import Renamer
+
 try:
     from collections import OrderedDict
 except ImportError as e:
@@ -38,7 +40,7 @@ command_data = pkgutil.get_data("sc2reader.data", "train_commands.json").decode(
 train_commands = json.loads(command_data)
 
 
-class Unit:
+class Unit(Renamer):
     """Represents an in-game unit."""
 
     def __init__(self, unit_id):
@@ -95,6 +97,9 @@ class Unit:
         #: Is this unit type a hallucinated one?
         self.hallucinated = False
 
+        self.baseName = None
+        self.baseType = None
+
         self.flags = 0
 
     def apply_flags(self, flags):
@@ -138,9 +143,22 @@ class Unit:
                     return unit_type is None
 
     @property
+    def player(self):
+        return self.owner
+
+    @property
+    def diedAtSec(self):
+        return None if self.died_at == None else self.died_at / 22.4
+
+    @property
     def name(self):
         """The name of the unit type currently active. None if no type is assigned"""
-        return self._type_class.name if self._type_class else None
+        return self.baseName if self.baseName != None else (self._type_class.name if self._type_class else None)
+
+    # TODO use this clean name everywhere instead of just name and postprocess
+    @property
+    def nameC(self):
+        return self.replaceStrings(self.name, True)
 
     @property
     def title(self):
@@ -187,7 +205,7 @@ class Unit:
         return self._type_class.is_army if self._type_class else False
 
     def __str__(self):
-        return f"{self.name} [{self.id:X}]"
+        return self.replaceStrings(f"{self.name} ", True)# + f"[{self.id:X}]"
 
     def __cmp__(self, other):
         return cmp(self.id, other.id)
@@ -291,6 +309,7 @@ class Ability:
 
         #: A reference to the :class:`UnitType` type built by this ability. Default to None.
         self.build_unit = build_unit
+
 
 
 @loggable

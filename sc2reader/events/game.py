@@ -1,8 +1,13 @@
 from sc2reader.utils import Length
 from sc2reader.events.base import Event
 from sc2reader.log_utils import loggable
+from sc2reader.events.eventTypes import *
 
 from itertools import chain
+
+from termcolor import colored
+
+from mindshare.unitTypes import UNIT_TYPES
 
 
 @loggable
@@ -26,7 +31,7 @@ class GameEvent(Event):
         self.frame = frame
 
         #: The second of the game that this event was recorded at. 16 frames per game second.
-        self.second = frame >> 4
+        self.second = self.frame / 22.4 #TODO centralize this value
 
         #: A flag indicating if it is a local or global event.
         self.is_local = pid != 16
@@ -34,18 +39,23 @@ class GameEvent(Event):
         #: Short cut string for event class name
         self.name = self.__class__.__name__
 
-    def _str_prefix(self):
+    @property
+    def playerName(self):
         if getattr(self, "pid", 16) == 16:
             player_name = "Global"
         elif self.player and not self.player.name:
-            player_name = "Player {} - ({})".format(
-                self.player.pid, self.player.play_race
+            player_name = "{}".format(
+                self.player.play_race
             )
         elif self.player:
             player_name = self.player.name
         else:
             player_name = "no name"
-        return f"{Length(seconds=int(self.frame / 16))}\t{player_name:<15} "
+
+        return player_name
+
+    def _str_prefix(self):
+        return f"{Length(seconds=int(self.frame / 22.4))}\t{self.playerName:<15} "
 
     def __str__(self):
         return self._str_prefix() + self.name
@@ -234,24 +244,57 @@ class CommandEvent(GameEvent):
         #: A reference to the other unit
         self.other_unit = None
 
+    def isCombat(self):
+        return self.ability_name in COMBAT_ABILITIES
+
+    def getJson(self):
+
+        str = ""
+        if self.ability_type == "TargetUnit":
+            if self.ability.name == "Attack":
+                str = "Targeted {}".format(self.target.name)
+            else:
+                str = "{} on {}".format(self.ability.name, self.target.name)
+        else:
+            if self.ability.name == "Attack":
+                str = "A move"
+            else:
+                str = "{}".format(self.ability.name)
+
+        if bool(self.flag["queued"]):
+            str += " Q"
+            
+        if bool(self.flag["minimap"]):
+            str += " M"
+
+        return str
+
     def __str__(self):
         string = self._str_prefix()
         if self.has_ability:
-            string += f"Ability ({self.ability_id:X})"
+            string += colored(f"Ability ({self.ability_id:X})","green")
             if self.ability:
-                string += f" - {self.ability.name}"
+                string += colored(f" - {self.ability.name}","green")
+            else:
+                string += colored("No self.ability ","red")
         else:
-            string += "Right Click"
+            string += colored(f"Right Click","light_cyan") + colored(f" - {self.ability_type}","grey")
 
         if self.ability_type == "TargetUnit":
-            string += "; Target: {} [{:0>8X}]".format(
-                self.target.name, self.target_unit_id
+            string += colored("; Target: {} [{:0>8X}]".format(
+                self.target.name, self.target_unit_id),"light_red"
             )
 
         if self.ability_type in ("TargetPoint", "TargetUnit"):
-            string += f"; Location: {str(self.location)}"
+            string += colored(f"; Location: {str(self.location)}","white")
 
-        return string
+        if bool(self.flag["queued"]):
+            string += " Q"
+            
+        if bool(self.flag["minimap"]):
+            string += " M"
+
+        return string + str(self.__class__)
 
 
 class BasicCommandEvent(CommandEvent):
@@ -404,7 +447,7 @@ class CommandManagerStateEvent(GameEvent):
     Command Center, the first add will be generate a :class:`BasicCommandEvent`
     and the two subsequent adds will each generate a
     :class:`CommandManagerStateEvent`.
-    """
+    """    
 
     def __init__(self, frame, pid, data):
         super().__init__(frame, pid)
@@ -414,6 +457,11 @@ class CommandManagerStateEvent(GameEvent):
 
         #: An index identifying how many events of this type have been called
         self.sequence = data["sequence"]
+        
+        self.commandEvent = None
+
+    def __str__(self):
+        return colored(self._str_prefix() + self.name + f" {self.sequence} - {self.commandEvent}", "blue")
 
 
 @loggable
@@ -511,31 +559,39 @@ class SelectionEvent(GameEvent):
 
         #: Deprecated, see new_units
         self.objects = None
+    
+    def isPlayer(self, playerNames):
+        return self.playerName in playerNames
 
     def __str__(self):
         if self.new_units:
-            return GameEvent.__str__(self) + str([str(u) for u in self.new_units])
+            
+            #return colored(GameEvent.__str__(self) + f"{self.frame}" + str(["{} {} {} {}".format(u[0],UNIT_TYPES[u[1]],u[2],u[3] ) for u in self.new_unit_info]), "yellow")
+            #return colored(GameEvent.__str__(self) + f"{self.frame}" + str(
+            #    [str(u[3]) + "x " + 
+            #     "2:" + str(u[2]) + " " + 
+            #     "1:" + str(u[1]) + " " + 
+             #    UNIT_TYPES[u[0]] for u in self.new_unit_types]), "yellow")
+             return colored(str(self.objects) + " --- " + str(self.mask_data),"yellow")
         else:
-            return GameEvent.__str__(self) + str([str(u) for u in self.new_unit_info])
+            return colored(GameEvent.__str__(self) + str([str(u) for u in self.new_unit_info]), "blue")  
 
 
 def create_control_group_event(frame, pid, data):
     update_type = data["control_group_update"]
-    if update_type in [0, 4]:
-        # 0 is the normal set command.
-        # 4 is used when you steal and set. If required, type 4 will be followed by autogenerated
-        # selection and control group events that remove the units from their other groups.
+    if update_type == 0:
         return SetControlGroupEvent(frame, pid, data)
-    elif update_type in [1, 5]:
-        # 1 is the normal add command.
-        # 5 is used when you steal and add. If required, type 5 will be followed by autogenerated
-        # selection and control group events that remove the units from their other groups.
+    elif update_type == 1:
         return AddToControlGroupEvent(frame, pid, data)
     elif update_type == 2:
         return GetControlGroupEvent(frame, pid, data)
     elif update_type == 3:
-        return DeleteControlGroupEvent(frame, pid, data)
+        # TODO: What could this be?!?
+        return ControlGroupEvent(frame, pid, data)
+    elif update_type == 4:
+        return StealControlGroupEvent(frame, pid, data)
     else:
+        # No idea what this is but we're seeing update_types of 4 and 5 in 3.0
         return ControlGroupEvent(frame, pid, data)
 
 
@@ -574,7 +630,18 @@ class ControlGroupEvent(GameEvent):
 
         #: The data for the mask
         self.mask_data = data["remove_mask"][1]
+        
+        
+    def __str__(self):
+        return colored(self._str_prefix() + self.name + f" : {self.control_group} : {self.update_type}","magenta")
 
+class StealControlGroupEvent(ControlGroupEvent):
+    """
+    Extends :class:`ControlGroupEvent`
+    """
+
+    def __str__(self):
+        return colored(self._str_prefix() + f"CG {self.control_group} Steal","magenta")
 
 class SetControlGroupEvent(ControlGroupEvent):
     """
@@ -584,6 +651,8 @@ class SetControlGroupEvent(ControlGroupEvent):
     with the player's current selection. This event doesn't have masks set.
     """
 
+    def __str__(self):
+        return colored(self._str_prefix() + f"CG {self.control_group} Set","magenta")
 
 class AddToControlGroupEvent(SetControlGroupEvent):
     """
@@ -592,15 +661,8 @@ class AddToControlGroupEvent(SetControlGroupEvent):
     This event adds the current selection to the control group.
     """
 
-
-class DeleteControlGroupEvent(ControlGroupEvent):
-    """
-    Extends :class:`ControlGroupEvent`
-
-    This event deletes the control group (all units are removed). This happens when all
-    units are stolen from the event group (alt, alt+shift modifiers by default).
-    """
-
+    def __str__(self):
+        return colored(self._str_prefix()+ f"CG {self.control_group} Add","magenta")
 
 class GetControlGroupEvent(ControlGroupEvent):
     """
@@ -612,6 +674,8 @@ class GetControlGroupEvent(ControlGroupEvent):
     inside the medivac they cannot be part of your selection.
     """
 
+    def __str__(self):
+        return colored(self._str_prefix() + f"CG {self.control_group} Get","magenta")
 
 @loggable
 class CameraEvent(GameEvent):
@@ -641,6 +705,9 @@ class CameraEvent(GameEvent):
 
         #: The current yaw of the camera
         self.yaw = data["yaw"]
+
+    def isPlayer(self, names) -> bool:
+        return self.playerName in names
 
     def __str__(self):
         return self._str_prefix() + "{} at ({}, {})".format(self.name, self.x, self.y)

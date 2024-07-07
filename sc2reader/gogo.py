@@ -1,8 +1,8 @@
-from scripts import sc2replayer
+from sc2reader.scripts import sc2replayer
 
 def main():
     #os.getcwd()
-    sc2replayer.processFile("C:/Repositories/sc2reader/sc2reader/Replays/byun_solar_g3.SC2Replay")
+    sc2replayer.processFile("C:/Repositories/sc2reader/sc2reader/replays/Skippy_Oceanborn LE (24).SC2Replay")
     
 
 
