@@ -7,7 +7,7 @@ from itertools import chain
 
 from termcolor import colored
 
-from mindshare.unitTypes import UNIT_TYPES
+from sc2reader.mindshare.unitTypes import UNIT_TYPES
 
 
 @loggable

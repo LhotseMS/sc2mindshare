@@ -1,7 +1,7 @@
 import json
 import pkgutil
 
-from mindshare.utils import Renamer
+from sc2reader.mindshare.utils import Renamer
 
 try:
     from collections import OrderedDict

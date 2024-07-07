@@ -18,6 +18,7 @@ from sc2reader.mindshare.mindshare import Base
 from sc2reader.mindshare.utils import MsUtils
 
 from sc2reader.resources import Replay
+from sc2reader.mindshare.fileHandler import FileHandler
 
 basesDetector = None
 controlGroupDetector = None
@@ -41,6 +42,8 @@ class Detector():
         self.replay = replay
         self.player1 = self.replay.players[0]
         self.player2 = self.replay.players[1]
+
+        self.fh = FileHandler(replay)
 
     def initDictByPlayer(self, type = 1):
         d = {}
@@ -67,10 +70,7 @@ class SimpleDetector(Detector):
     UNIT_INTERVAL = 10
 
     def __init__(self, replay) -> None:
-
-        self.replay = replay
-        self.player1 = self.replay.players[0]
-        self.player2 = self.replay.players[1]
+        super().__init__(replay)
 
         self.links = list()
 
@@ -309,10 +309,7 @@ class BaseDetector(Detector):
     DISTANCE_FROM_MINERALS = 5
 
     def __init__(self, replay):
-
-        self.replay = replay
-        self.player1 = self.replay.players[0]
-        self.player2 = self.replay.players[1]
+        super().__init__(replay)
 
         self.mineralLocations = list()
         self.bases = self.initDictByPlayer()
@@ -384,42 +381,28 @@ class BaseDetector(Detector):
         printDict(self.bases)
         return ""
 
-class BattleDetector(Detector):
+class BattleDetector(Detector): 
 
     LOWER_BOUND = 3
     UPPER_BOUND = 4
+    INTERVALS_FILE_HEADER = "start,end,id\n"
 
-    INTERVALS_EXPORT_FOLDER = "C:/MS SC/"
-    INTERVALS_EXPORT_FILE = "Intervals.csv"
-    
     def __init__(self, replay):
+        super().__init__(replay)
         
         self.currentSecond = 0
         self.battleStart = 0
         self.resetBuffers()
-        self.replay = replay
-        self.player1 = self.replay.players[0]
-        self.player2 = self.replay.players[1]
         
         self.currentSecond = None
         self.currentDeathEvents = []
         self.deathsByTime = {}
         self.previousSecond = -1
-                
-
-        self.gameFolder = "{}__{}_vs_{}/".format(self.replay.map_name, self.player1, self.player2)
-        self.gameBattlesIntervalsStr = "start,end,id\n"
-        
-        self.intervalsFile = self.INTERVALS_EXPORT_FOLDER + self.gameFolder + self.INTERVALS_EXPORT_FILE
 
         self.battles = []   
         self.findBattles()
         
-        if not os.path.exists(self.intervalsFile):
-        
-            if not os.path.exists(self.INTERVALS_EXPORT_FOLDER + self.gameFolder):
-                os.makedirs(self.INTERVALS_EXPORT_FOLDER + self.gameFolder)
-                
+        if not os.path.exists(self.fh.intervalsFile):
             self.createBattleIntervals()
 
     # TODO add Unit initiated Shield Battery
@@ -458,7 +441,7 @@ class BattleDetector(Detector):
             else:
                 self.shiftBuffers()
                         
-            self.secondsOfBattle.append(SecondOfDying(self.currentSecond, self.currentDeathEvents, self.localCounts))  
+            self.secondsOfBattle.append(SecondOfDying(self.currentSecond, self.currentDeathEvents, self.localCounts))
             
             self.previousSecond = self.currentSecond
             #if battles.__len__() > 10:
@@ -469,12 +452,12 @@ class BattleDetector(Detector):
     
     def createBattleIntervals(self):
 
-        for battle in self.battles:
-            self.gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime, battle.endTime, battle.getNodeID())
+        gameBattlesIntervalsStr = self.INTERVALS_FILE_HEADER
 
-        with open(self.intervalsFile, mode='w') as file:
-            # Write the CSV string to the file
-            file.write(self.gameBattlesIntervalsStr)
+        for battle in self.battles:
+            gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime, battle.endTime, battle.getNodeID())
+
+        self.fh.createIntervalsFile(gameBattlesIntervalsStr)
 
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?

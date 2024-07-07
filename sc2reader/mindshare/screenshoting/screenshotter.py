@@ -1,8 +1,10 @@
 import time
 import pandas as pd
 import pyautogui
-import os
 from datetime import datetime, timedelta
+from sc2reader.mindshare.fileHandler import FileHandler
+import sc2reader
+
 import tkinter as tk
 import threading
 import cv2
@@ -19,31 +21,20 @@ import argparse
 
 class Screenshotter():
 
-    INTERVALS_FILE = "Intervals.csv"
-    VIDEO_FILE_PREFIX = "Game"
-    VIDEO_EXT = ".mp4"
-
     INTERVAL_MARGIN = 2
     SCREENSHOT_INTERVAL = 2
     COUNTDOWN_SIZE = "200x100"
     COUNTDOWN_POSITION = "+200+200"
 
     #TODO the folders should be provided to all entities in the process by some helper class
-    def __init__(self, folderName, playerName) -> None:
+    def __init__(self, replay, playerName) -> None:
 
         self.playerName = playerName
-        self.folderName = folderName
-        self.gameFolder = "C:/MS SC/{}".format(folderName)
-        self.videoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, self.playerName, self.VIDEO_EXT)
 
+        self.fh = FileHandler(replay)
+        
         self.processedIntervals = list()
         self.endTimes = list()
-
-        self.INTERVALS_FILE_PATH = self.gameFolder + "/" + self.INTERVALS_FILE
-        self.IMAGE_OUTPUT_FOLDER = self.gameFolder + "/screenshots/"
-
-        if not os.path.exists(self.IMAGE_OUTPUT_FOLDER):
-            os.makedirs(self.IMAGE_OUTPUT_FOLDER)
 
         self.fps = 30
         self.duration = None
@@ -52,13 +43,13 @@ class Screenshotter():
     def readIntervals(self):    
         """Read time intervals from a CSV file and return a list of tuples (start, end, id)."""
         try:
-            df = pd.read_csv(self.INTERVALS_FILE_PATH)
+            df = pd.read_csv(self.fh.intervalsFile)
             self.intervals = [(row['start'], row['end'], row['id']) for _, row in df.iterrows()]
 
             self.duration = self.totalSeconds(datetime.strptime(self.intervals[-1][1], "%H:%M:%S").time()) + 5
             print(self.duration)
         except FileNotFoundError:
-            print(f"File not found: {self.INTERVALS_FILE_PATH}")
+            print(f"File not found: {self.fh.intervalsFile}")
             raise
     
     def totalSeconds(self, time):
@@ -68,7 +59,7 @@ class Screenshotter():
             """Display a countdown before starting the timer."""
             root = tk.Tk()
             root.overrideredirect(True)  # Remove window decorations
-            root.geometry(self.COUNTDOWN_SIZE+self.COUNTDOWN_POSITION)  # Position the window
+            root.geometry(self.COUNTDOWN_SIZE + self.COUNTDOWN_POSITION)  # Position the window
             root.attributes('-topmost', True)
 
             label = tk.Label(root, font=('Helvetica', 48))
@@ -86,7 +77,7 @@ class Screenshotter():
 
     def extractFrames(self):
         # Open the video file
-        cap = cv2.VideoCapture("{}/{}".format(self.gameFolder, self.videoFileName))
+        cap = cv2.VideoCapture("{}/{}".format(self.fh.gameFolder, self.fh.getPlayerVideoFileName(self.playerName)))
 
         for start, end, interval_id in self.intervals:
             # Convert times to frame numbers
@@ -104,9 +95,8 @@ class Screenshotter():
 
                 if ret:
                     timestamp = str(timedelta(seconds=frame_num/self.fps))
-                    output_file = "{}{}_{}_{}_at_{}.png".format(
-                        self.IMAGE_OUTPUT_FOLDER,                                               
-                        self.folderName, 
+                    output_file = "{}/{}_{}_at_{}.png".format(
+                        self.fh.screenshotsFolder,
                         interval_id, 
                         self.playerName, 
                         timestamp.replace(":","-"))
@@ -165,11 +155,11 @@ class Screenshotter():
         print("video save popup at " + str(datetime.now()))
 
         #confirm save
-        pyautogui.write(self.videoFileName)
+        pyautogui.write(self.fh.getPlayerVideoFileName(self.playerName))
         time.sleep(1)
         pyautogui.click(823, 131)
         time.sleep(1)
-        pyautogui.write(self.gameFolder)
+        pyautogui.write(self.fh.gameFolder)
         time.sleep(1)
         pyautogui.click(1012, 783)
         #pyautogui.click(1040, 801)
@@ -183,13 +173,12 @@ class Screenshotter():
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
-    parser.add_argument('--folder', type=str, help='Name of the folder with the intervals and used for storing the results.')
+    parser.add_argument('--replay', type=str, help='Name of the replay file')
     parser.add_argument('--player', type=str, help='Name of the player in the video')
     
-
     args = parser.parse_args()
-
-    process = Screenshotter(args.folder, args.player)
+    
+    process = Screenshotter(sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + args.replay, debug=True, load_map=True), args.player)
     process.startRecording()
 
     #file needs to be fully saved before screenshotting give it some time

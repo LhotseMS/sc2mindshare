@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-
-
-
 import string
 from sc2reader.data import Unit
 from pprint import pprint
@@ -18,6 +15,7 @@ import sys
 import argparse
 import sc2reader
 import sc2reader.mindshare.detectors
+from sc2reader.mindshare.fileHandler import FileHandler
 from sc2reader.events import *
 import sc2reader.mindshare.exports.exporter
    
@@ -121,17 +119,12 @@ def printDict(dict):
             print(e)   
 
 def processFile(filename):
-    replay = sc2reader.load_replay(filename, debug=True, load_map=True)
+    replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
         
     print(toDict()(replay))
 
-    exportFileName = replay.map_name
     print(replay.map.map_info)
     
-
-    for team in replay.teams:  
-        for player in team.players:  
-            exportFileName += " " + str(player) 
 
     sc2reader.mindshare.detectors.createDetectors(replay)
 
@@ -148,10 +141,8 @@ def processFile(filename):
     #printSomeEvents(replay.events)
     print(replay.active_units)
 
-    #TODO unify these configuration inputs, multiple definitions
-    with open('C:/Users/Štefan/OneDrive/Dokumenty/MS/SC/Parser outputs/imports/events_{}.csv'.format(exportFileName), mode='w') as file:
-    # Write the CSV string to the file
-        file.write(export)
+    fh = FileHandler(replay)
+    fh.createEventsFile(export)
 
 
 def printIntervalAll(start, finish, events):
