@@ -8,6 +8,7 @@ import threading
 import cv2
 import numpy as np
 import mss
+import argparse
 
 
 # 1. Export battle times to game_battleID_intervals.csv
@@ -18,27 +19,33 @@ import mss
 
 class Screenshotter():
 
-    PLAYER_NAME = "SkippyJo"
-    INTERVALS_FILE = ".intervals_Oceanborn LE__Player 1 - SkippyJo (Zerg)_vs_Player 2 - Fluffy (Protoss).csv"
-    VIDEO_FILE = "Oceanborn LE__Player 1 - SkippyJo (Zerg)_vs_Player 2 - Fluffy (Protoss).avi"
+    INTERVALS_FILE = "Intervals.csv"
+    VIDEO_FILE_PREFIX = "Game"
+    VIDEO_EXT = ".mp4"
 
     INTERVAL_MARGIN = 2
     SCREENSHOT_INTERVAL = 2
     COUNTDOWN_SIZE = "200x100"
     COUNTDOWN_POSITION = "+200+200"
 
-    def __init__(self) -> None:
+    #TODO the folders should be provided to all entities in the process by some helper class
+    def __init__(self, folderName, playerName) -> None:
 
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        parent_of_parent_dir = os.path.abspath(os.path.join(script_dir, "../../"))
+        self.playerName = playerName
+        self.folderName = folderName
+        self.gameFolder = "C:/MS SC/{}".format(folderName)
+        self.videoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, self.playerName, self.VIDEO_EXT)
 
         self.processedIntervals = list()
         self.endTimes = list()
 
-        self.INTERVALS_FILE_PATH = parent_of_parent_dir + "/output/intervals/" + self.INTERVALS_FILE
-        self.IMAGE_OUTPUT_FOLDER = parent_of_parent_dir + "/output/screenshots/" 
-        self.VIDEO_OUTPUT_FOLDER = parent_of_parent_dir + "/output/videos/" 
+        self.INTERVALS_FILE_PATH = self.gameFolder + "/" + self.INTERVALS_FILE
+        self.IMAGE_OUTPUT_FOLDER = self.gameFolder + "/screenshots/"
 
+        if not os.path.exists(self.IMAGE_OUTPUT_FOLDER):
+            os.makedirs(self.IMAGE_OUTPUT_FOLDER)
+
+        self.fps = 30
         self.duration = None
         self.readIntervals()
 
@@ -48,115 +55,143 @@ class Screenshotter():
             df = pd.read_csv(self.INTERVALS_FILE_PATH)
             self.intervals = [(row['start'], row['end'], row['id']) for _, row in df.iterrows()]
 
-            self.duration = self.totalSeconds(datetime.strptime(self.intervals[-1][1], "%H:%M:%S").time())
+            self.duration = self.totalSeconds(datetime.strptime(self.intervals[-1][1], "%H:%M:%S").time()) + 5
             print(self.duration)
         except FileNotFoundError:
             print(f"File not found: {self.INTERVALS_FILE_PATH}")
             raise
-
-    def recordVideo(self, fps=12): # 14.3
-
-        print("Recording started")
-
-        with mss.mss() as sct:
-            monitor = sct.monitors[1]
-            screen_width = monitor["width"]
-            screen_height = monitor["height"]
-
-            # Define the codec and create VideoWriter object
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
-            out = cv2.VideoWriter(self.VIDEO_OUTPUT_FOLDER + self.VIDEO_FILE, fourcc, fps, (screen_width, screen_height))
-
-            # Start the prevent_lock_screen function in a separate thread
-            threading.Thread(target=self.prevent_lock_screen, daemon=True).start()
-            # Record video for the specified duration
-            for _ in range(int(fps * self.duration)):
-                img = sct.grab(monitor)
-                frame = np.array(img)
-
-                # Convert from BGRA to BGR
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)
-                out.write(frame)
-
-            # Release everything when the job is finished
-            out.release()
     
-    def prevent_lock_screen(self, interval=20):
-        """Move the mouse slightly every 'interval' seconds to prevent screen lock."""
-        while True:
-            pyautogui.moveRel(10, 0)  # Move the mouse by 1 pixel right
-            pyautogui.moveRel(-10, 0)  # Move the mouse back to the left
-            time.sleep(interval)
-
-
     def totalSeconds(self, time):
         return int(time.hour * 3600 + time.minute * 60 + time.second)
+    
+    def countdown(self):
+            """Display a countdown before starting the timer."""
+            root = tk.Tk()
+            root.overrideredirect(True)  # Remove window decorations
+            root.geometry(self.COUNTDOWN_SIZE+self.COUNTDOWN_POSITION)  # Position the window
+            root.attributes('-topmost', True)
 
-    def extractFrames(self, fps=30):
+            label = tk.Label(root, font=('Helvetica', 48))
+            label.pack(expand=True)
+
+            def update_label(count):
+                if count >= 0:
+                    label.config(text=str(count) if count > 0 else "GO")
+                    root.after(1000, update_label, count - 1)
+                else:
+                    root.destroy()
+
+            update_label(3)  # Start countdown from 3
+            root.mainloop()
+
+    def extractFrames(self):
         # Open the video file
-        cap = cv2.VideoCapture(self.VIDEO_OUTPUT_FOLDER + "Recording 2024-07-04 151225.mp4")
-
-        # Ensure the output folder exists
-        if not os.path.exists(self.IMAGE_OUTPUT_FOLDER):
-            os.makedirs(self.IMAGE_OUTPUT_FOLDER)
+        cap = cv2.VideoCapture("{}/{}".format(self.gameFolder, self.videoFileName))
 
         for start, end, interval_id in self.intervals:
             # Convert times to frame numbers
             start_time = datetime.strptime(start, "%H:%M:%S")
             end_time = datetime.strptime(end, "%H:%M:%S")
-            start_frame = self.totalSeconds(start_time) * fps
-            end_frame = self.totalSeconds(end_time) * fps
+            start_frame = self.totalSeconds(start_time) * self.fps
+            end_frame = self.totalSeconds(end_time) * self.fps
 
             # Set the current frame position to start
             cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
 
-            for frame_num in range(start_frame, end_frame, int(2 * fps)):  # Capture every 2 seconds
+            for frame_num in range(start_frame, end_frame, int(2 * self.fps)):  # Capture every 2 seconds
                 cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
                 ret, frame = cap.read()
 
                 if ret:
-                    # Save the frame as an image file
-                    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    output_file = os.path.join(self.IMAGE_OUTPUT_FOLDER, f"{interval_id}_frame_at_{frame_num}.png")
+                    timestamp = str(timedelta(seconds=frame_num/self.fps))
+                    output_file = "{}{}_{}_{}_at_{}.png".format(
+                        self.IMAGE_OUTPUT_FOLDER,                                               
+                        self.folderName, 
+                        interval_id, 
+                        self.playerName, 
+                        timestamp.replace(":","-"))
+                    
                     cv2.imwrite(output_file, frame)
-                    print(f"Saved frame from {interval_id} at frame {frame_num} to {output_file}")
+                    print(f"Screenshots created: {interval_id} at {timestamp} to {output_file}")
                 else:
-                    print(f"Failed to capture frame at frame {frame_num}")
+                    print(f"Failed to capture frame at {timestamp}")
 
         # Release the video capture object
         cap.release()
 
-    def countdown(self):
-        """Display a countdown before starting the timer."""
-        root = tk.Tk()
-        root.overrideredirect(True)  # Remove window decorations
-        root.geometry(self.COUNTDOWN_SIZE+self.COUNTDOWN_POSITION)  # Position the window
-        root.attributes('-topmost', True)
+    def startRecording(self):
 
-        label = tk.Label(root, font=('Helvetica', 48))
-        label.pack(expand=True)
+        self.countdown()
 
-        def update_label(count):
-            if count >= 0:
-                label.config(text=str(count) if count > 0 else "GO")
-                root.after(1000, update_label, count - 1)
-            else:
-                root.destroy()
+        #start recording
+        pyautogui.hotkey('winleft', 'shift', 'r')
+        print("recording UI up at " + str(datetime.now()))
+        time.sleep(1)
 
-        update_label(3)  # Start countdown from 3
-        root.mainloop()
+        #select record area as a whole screen
+        pyautogui.moveTo(1, 1)
+        pyautogui.mouseDown()
+        pyautogui.moveTo(2558, 1598, 1)#2559, 1599
+        pyautogui.mouseUp()
+        print("recording area set at " + str(datetime.now()))
+        time.sleep(1)
 
-def main():
+        #click start recording
+        pyautogui.click(1154, 47)
+        pyautogui.click(1154, 47)
+        print("recording started at " + str(datetime.now()))
 
-    process = Screenshotter()
-    
-    #process.countdown()
+        time.sleep(3)
+        pyautogui.click(51, 794)
 
-    #process.recordVideo()
-    process.extractFrames()
 
-    pass
+        #wait for the duration of the game
+        time.sleep(self.duration)
+        
+        #stop recording
+        pyautogui.click(1178, 46)
+        pyautogui.click(1178, 46)
+        print("recording ended at " + str(datetime.now()))
+        time.sleep(1)
+
+        #maximise sniping tool window with the recording
+        pyautogui.hotkey('winleft', 'up')
+        time.sleep(1)
+        print("window maxed at " + str(datetime.now()))
+
+        #click save video
+        pyautogui.click(2379, 81)
+        time.sleep(1)
+        print("video save popup at " + str(datetime.now()))
+
+        #confirm save
+        pyautogui.write(self.videoFileName)
+        time.sleep(1)
+        pyautogui.click(823, 131)
+        time.sleep(1)
+        pyautogui.write(self.gameFolder)
+        time.sleep(1)
+        pyautogui.click(1012, 783)
+        #pyautogui.click(1040, 801)
+        print("video saved at " + str(datetime.now()))
+
+        #close snipping tool window
+        time.sleep(2)
+        pyautogui.click(2529, 31)
+
 
 if __name__ == "__main__":
 
-    main()
+    parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
+    parser.add_argument('--folder', type=str, help='Name of the folder with the intervals and used for storing the results.')
+    parser.add_argument('--player', type=str, help='Name of the player in the video')
+    
+
+    args = parser.parse_args()
+
+    process = Screenshotter(args.folder, args.player)
+    process.startRecording()
+
+    #file needs to be fully saved before screenshotting give it some time
+    time.sleep(5)
+    process.extractFrames()

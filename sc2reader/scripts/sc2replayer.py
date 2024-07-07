@@ -148,7 +148,8 @@ def processFile(filename):
     #printSomeEvents(replay.events)
     print(replay.active_units)
 
-    with open('output/exports/events_{}.csv'.format(exportFileName), mode='w') as file:
+    #TODO unify these configuration inputs, multiple definitions
+    with open('C:/Users/Štefan/OneDrive/Dokumenty/MS/SC/Parser outputs/imports/events_{}.csv'.format(exportFileName), mode='w') as file:
     # Write the CSV string to the file
         file.write(export)
 

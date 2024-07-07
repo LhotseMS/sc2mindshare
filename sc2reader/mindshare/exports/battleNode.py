@@ -99,7 +99,12 @@ class BattleNode(Battle, Node):
         if len(self.controlGroupsUsed[player]) > 0:
             cgs += X_LD + "Control group(s) used: "
             for cg in self.controlGroupsUsed[player]:
-                cgs += "{}{}: {}".format(X_LD, str(cg), sc2reader.mindshare.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec))
+
+                # player can press the CG get but there is no CG created for it 
+                # TODO the used CGs shouldnt record get if there is no prior set or steal CG
+                units = sc2reader.mindshare.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec)
+                if units != None:
+                    cgs += "{}{}: {}".format(X_LD, str(cg), units)
         
         kills = ""
         if len(self.killersTypes[player]) > 0:

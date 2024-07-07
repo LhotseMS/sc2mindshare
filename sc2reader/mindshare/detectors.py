@@ -1,4 +1,6 @@
 import datetime
+import os
+
 from sc2reader.events import *
 from sc2reader.data import *
 from sc2reader.events.tracker import UnitDiedEvent
@@ -260,7 +262,7 @@ class ControlGroupDetector(Detector):
             #hold last selection event for a player
             #when control grp command comes create control group object
 
-            # selection even is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
+            # selection event is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
             
             if isinstance(e, SelectionEvent) and e.new_units:
                 self.lastSelection[e.player] = e
@@ -274,7 +276,11 @@ class ControlGroupDetector(Detector):
         
 
     def getCgUnits(self, player, cgNo, second):
-        return self.CONTROL_GROUPS[player][cgNo].getUnits(second)
+
+        if cgNo in self.CONTROL_GROUPS[player]:
+            return self.CONTROL_GROUPS[player][cgNo].getUnits(second)
+        else:
+            return None
 
     def addActionToCG(self, e):
         pass
@@ -383,9 +389,8 @@ class BattleDetector(Detector):
     LOWER_BOUND = 3
     UPPER_BOUND = 4
 
-    INTERVALS_EXPORT_FOLDER = "output/intervals/"
-    INTERVALS_EXPORT_FILE_PREFIX = "Intervals_"
-    INTERVALS_EXPORT_FILE_EXT = ".csv"
+    INTERVALS_EXPORT_FOLDER = "C:/MS SC/"
+    INTERVALS_EXPORT_FILE = "Intervals.csv"
     
     def __init__(self, replay):
         
@@ -401,12 +406,21 @@ class BattleDetector(Detector):
         self.deathsByTime = {}
         self.previousSecond = -1
                 
+
+        self.gameFolder = "{}__{}_vs_{}/".format(self.replay.map_name, self.player1, self.player2)
+        self.gameBattlesIntervalsStr = "start,end,id\n"
+        
+        self.intervalsFile = self.INTERVALS_EXPORT_FOLDER + self.gameFolder + self.INTERVALS_EXPORT_FILE
+
         self.battles = []   
         self.findBattles()
-        self.createBattleIntervals()
         
+        if not os.path.exists(self.intervalsFile):
         
-        pass
+            if not os.path.exists(self.INTERVALS_EXPORT_FOLDER + self.gameFolder):
+                os.makedirs(self.INTERVALS_EXPORT_FOLDER + self.gameFolder)
+                
+            self.createBattleIntervals()
 
     # TODO add Unit initiated Shield Battery
     def findBattles(self):
@@ -451,31 +465,16 @@ class BattleDetector(Detector):
                 #break
         
         #for some reason there is a 00 empty battle at the start TODO?
-        self.battles.pop(0)
-        x = 0
-        #print(battles.__len__())    
-        #for b in [t for t in battles]: #  
-            # if b.p1dc > 10 or b.p2dc > 10:
-
-         #   print(b)
-          #  x = x + 1
-            
-            #if x > 10:
-             #   break
-           # getch()   
+        self.battles.pop(0) 
     
     def createBattleIntervals(self):
 
-        gameFileName = "{}__{}_vs_{}".format(self.replay.map_name, self.player1, self.player2)
-        gameBattlesIntervalsStr = "start,end\n"
-
         for battle in self.battles:
-            gameBattlesIntervalsStr += "{},{}\n".format(battle.startTime, battle.endTime)
+            self.gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime, battle.endTime, battle.getNodeID())
 
-        
-        with open(self.INTERVALS_EXPORT_FOLDER + self.INTERVALS_EXPORT_FILE_PREFIX + gameFileName + self.INTERVALS_EXPORT_FILE_EXT, mode='w') as file:
-        # Write the CSV string to the file
-            file.write(gameBattlesIntervalsStr)
+        with open(self.intervalsFile, mode='w') as file:
+            # Write the CSV string to the file
+            file.write(self.gameBattlesIntervalsStr)
 
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?
@@ -512,22 +511,7 @@ class BattleDetector(Detector):
     def shiftBuffers(self):
         self.shiftArray(self.currentKeys,self.currentSecond)
         self.shiftArray(self.localCounts,self.currentDeathEvents.__len__())
-       
-        
-    # printDict(deathsByTime, "Deaths")
-        
-    # if 
-       
-    
-    
-    # for a,value in replay.datapack.abilities.items():
-    #     if value.is_build:
-    #         pprint(f"{a}, {value.}")
-    # print(deathsByTime[537][0].unit.type)
-    
-
-
-        
+               
 class SecondOfDying():
 
     def __init__(self, sec, events, deathProximity):

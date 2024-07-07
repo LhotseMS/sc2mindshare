@@ -442,7 +442,9 @@ class UnitDiedEvent(TrackerEvent):
         return self.countableUnitDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
     
     def countableUnitDeath(self): 
-        return ((self.unit.is_army or self.unit.name in ["LurkerBurrowed"]) and self.unit.name not in ["Broodling"]) # and e.unit.type not in [189,1075,158,431,108]
+        return ((self.unit.is_army or 
+                 self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) 
+                 and self.unit.name not in ["Broodling"]) # and e.unit.type not in [189,1075,158,431,108]
     
     def buildingDeath(self):
         return self.unit.is_building

@@ -29,7 +29,7 @@ class Node(Exportable):
         return self.id
 
     def getNodeIDBase(self) -> str:
-        return self.getNodeType() + ":"
+        return self.getNodeType() + "_"
     
     def getNodeLinks(self) -> str: pass
     def getNodeTime(self) -> str: pass

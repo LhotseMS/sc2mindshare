@@ -5,6 +5,7 @@ from collections import namedtuple
 from sc2reader import utils, log_utils
 from sc2reader.decoders import ByteDecoder
 from sc2reader.constants import *
+from sc2reader.mindshare.utils import Renamer
 
 Location = namedtuple("Location", ["x", "y"])
 
@@ -161,7 +162,7 @@ class Entity:
         return format_string.format(**self.__dict__)
 
 
-class Player:
+class Player(Renamer):
     """
     :param integer pid: The player's unique player id.
     :param dict detail_data: The detail data associated with this player
@@ -248,7 +249,6 @@ class Player:
         #: bnet profile url. This value can be zero for games
         #: played offline when a user was not logged in to battle.net.
         self.toon_id = detail_data["bnet"]["uid"]
-
 
 class User:
     """
@@ -366,13 +366,14 @@ class Participant(Entity, User, Player):
         Player.__init__(self, pid, slot_data, detail_data, attribute_data)
 
     def __str__(self):
-        return f"Player {self.pid} - {self.name} ({self.play_race})"
+        return self.name
+        #return f"Player {self.pid} - {self.name} ({self.play_race})"
 
     def __repr__(self):
         return str(self)
 
 
-class PlayerSummary:
+class PlayerSummary():
     """
     Resents a player as loaded from a :class:`~sc2reader.resources.GameSummary`
     file.
