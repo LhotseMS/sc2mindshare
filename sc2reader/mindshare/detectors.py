@@ -1,5 +1,6 @@
 import datetime
 import os
+import pandas as pd
 
 from sc2reader.events import *
 from sc2reader.data import *
@@ -19,6 +20,7 @@ from sc2reader.mindshare.utils import MsUtils
 
 from sc2reader.resources import Replay
 from sc2reader.mindshare.fileHandler import FileHandler
+from sc2reader.mindshare.imageUploader import ImageUploader
 
 basesDetector = None
 controlGroupDetector = None
@@ -390,6 +392,8 @@ class BattleDetector(Detector):
     def __init__(self, replay):
         super().__init__(replay)
         
+        self.iu = ImageUploader()
+
         self.currentSecond = 0
         self.battleStart = 0
         self.resetBuffers()
@@ -402,7 +406,11 @@ class BattleDetector(Detector):
         self.battles = []   
         self.findBattles()
         
-        if not os.path.exists(self.fh.intervalsFile):
+        self.screenshotsDict = None
+
+        if os.path.exists(self.fh.intervalsFile):
+            self.addScreenshotsToBattles()
+        else:
             self.createBattleIntervals()
 
     # TODO add Unit initiated Shield Battery
@@ -431,7 +439,7 @@ class BattleDetector(Detector):
                         self.previousSecond, 
                         [e for e in self.replay.events 
                             if e.second >= self.battleStart - self.LOWER_BOUND and 
-                            e.second<= self.previousSecond + self.UPPER_BOUND] , 
+                            e.second<= self.previousSecond + self.UPPER_BOUND], 
                         self.secondsOfBattle,
                         len(self.battles)))
                 self.resetBuffers()
@@ -458,6 +466,55 @@ class BattleDetector(Detector):
             gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime, battle.endTime, battle.getNodeID())
 
         self.fh.createIntervalsFile(gameBattlesIntervalsStr)
+
+    def initScreenshotsDict(self):
+        self.screenshotsDict = {}
+        for battle in self.battles:
+            self.screenshotsDict[battle.getNodeID()] = list()
+
+    def addScreenshotsToBattles(self):        
+        self.initScreenshotsDict()
+        self.uploadScreenshotsToMediaServer()
+
+        for battle in self.battles:
+            for imageID in self.screenshotsDict[battle.getNodeID()]:
+                battle.addImage("{}{}".format(ImageUploader.SERVER_URL, imageID))
+
+    def uploadScreenshotsToMediaServer(self):
+        pngScreenshots = [file for file in os.listdir(self.fh.screenshotsFolder) if file.endswith('.png')]
+
+        if os.path.isfile(self.fh.imageTrackingFile):
+            newlyUploadedImages = ""
+            uploadedImagesDict = self.readTrackedImageFile()
+        else:
+            #TODO move to imageHandler
+            newlyUploadedImages = "imageName,imageID\n"
+            uploadedImagesDict = {}
+
+        for screenshotName in pngScreenshots:
+            battleID = screenshotName.split("_")[0]
+            imageID = None
+
+            # if the image has already been uploaded
+            if screenshotName in uploadedImagesDict:
+                imageID = uploadedImagesDict[screenshotName]
+            else:
+                uploadInfo = self.iu.uploadImage(self.fh.screenshotsFolder, screenshotName)
+                imageID = uploadInfo["id"]
+
+                if uploadInfo["status"] == 201:
+                    newlyUploadedImages += "{},{}\n".format(screenshotName, uploadInfo["id"])
+                else:
+                    print("Failed to upload file {}, status {}".format(screenshotName, uploadInfo["status"]))
+
+            self.screenshotsDict[battleID].append(imageID)
+
+        self.fh.createOrUpdateImageTrackingFile(newlyUploadedImages)
+
+    #TODO move all file reading to the file handler class
+    def readTrackedImageFile(self):
+        df = pd.read_csv(self.fh.imageTrackingFile)
+        return {row['imageName']: row['imageID'] for _, row in df.iterrows()}
 
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?

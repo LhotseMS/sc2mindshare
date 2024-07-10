@@ -13,12 +13,6 @@ import mss
 import argparse
 
 
-# 1. Export battle times to game_battleID_intervals.csv
-# 2. Read intervals make screenshots battle_player_second
-# 3. Run export again reading the screenshots from a folder, 
-# 4. assigninng screenshots names to battle images
-# 5. upload images to mindshare picture
-
 class Screenshotter():
 
     INTERVAL_MARGIN = 2
@@ -79,7 +73,7 @@ class Screenshotter():
         # Open the video file
         cap = cv2.VideoCapture("{}/{}".format(self.fh.gameFolder, self.fh.getPlayerVideoFileName(self.playerName)))
 
-        for start, end, interval_id in self.intervals:
+        for start, end, battle_id in self.intervals:
             # Convert times to frame numbers
             start_time = datetime.strptime(start, "%H:%M:%S")
             end_time = datetime.strptime(end, "%H:%M:%S")
@@ -93,16 +87,17 @@ class Screenshotter():
                 cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
                 ret, frame = cap.read()
 
+                #TODO add screenshot creation to file handler
                 if ret:
                     timestamp = str(timedelta(seconds=frame_num/self.fps))
                     output_file = "{}/{}_{}_at_{}.png".format(
                         self.fh.screenshotsFolder,
-                        interval_id, 
+                        battle_id, 
                         self.playerName, 
                         timestamp.replace(":","-"))
                     
                     cv2.imwrite(output_file, frame)
-                    print(f"Screenshots created: {interval_id} at {timestamp} to {output_file}")
+                    print(f"Screenshots created: {battle_id} at {timestamp} to {output_file}")
                 else:
                     print(f"Failed to capture frame at {timestamp}")
 
