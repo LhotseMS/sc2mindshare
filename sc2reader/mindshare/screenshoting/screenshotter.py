@@ -7,6 +7,7 @@ import sc2reader
 
 import tkinter as tk
 import threading
+import ctypes
 import cv2
 import numpy as np
 import mss
@@ -19,6 +20,8 @@ class Screenshotter():
     SCREENSHOT_INTERVAL = 2
     COUNTDOWN_SIZE = "200x100"
     COUNTDOWN_POSITION = "+200+200"
+
+    MOVE_MOUSE_INTERVAL = 30
 
     #TODO the folders should be provided to all entities in the process by some helper class
     def __init__(self, replay, playerName) -> None:
@@ -68,6 +71,15 @@ class Screenshotter():
 
             update_label(3)  # Start countdown from 3
             root.mainloop()
+
+    def preventSleep(self):
+        start_time = time.time()
+        while time.time() - start_time < (self.duration - 30):
+            current_x, current_y = pyautogui.position()
+            pyautogui.moveTo(current_x + 10, current_y)  # Move the mouse slightly
+            pyautogui.moveTo(current_x, current_y)  # Move it back to the original position
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000002)  # Prevent the system from sleeping
+            time.sleep(self.MOVE_MOUSE_INTERVAL)  # Wait for the specified period
 
     def extractFrames(self):
         # Open the video file
@@ -129,6 +141,8 @@ class Screenshotter():
         time.sleep(3)
         pyautogui.click(51, 794)
 
+        thread = threading.Thread(target=self.preventSleep)
+        thread.start()
 
         #wait for the duration of the game
         time.sleep(self.duration)

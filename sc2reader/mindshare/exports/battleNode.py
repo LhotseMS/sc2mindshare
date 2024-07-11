@@ -15,7 +15,7 @@ class BattleNode(Battle, Node):
         Battle.__init__(self, p1, p2, startSec, endSec, events, secondsOD)
         Node.__init__(self, seq)
 
-        self.propertiesCount = 5 
+        self.propertiesCount = 7 
         self.images = list()   
 
     def getNodeTime(self):

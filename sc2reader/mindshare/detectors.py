@@ -12,6 +12,8 @@ from sc2reader.mindshare.exports.statsNode import StatsNode
 from sc2reader.mindshare.exports.buildingNode import BuildingNode 
 from sc2reader.mindshare.exports.unitsNode import UnitsNode 
 from sc2reader.mindshare.exports.messageNode import MessageNode 
+from sc2reader.mindshare.exports.gameNode import GameNode 
+from sc2reader.mindshare.exports.playerNode import PlayerNode 
 from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
 
@@ -36,7 +38,15 @@ def createDetectors(replay):
     battleDetector = BattleDetector(replay)
     simpleDetector = SimpleDetector(replay)
 
-class Detector():
+class DirectDetector():
+    
+    def __init__(self, replay) -> None:
+
+        self.nodes = list()
+    
+        self.nodes.append(MapNode())
+
+class EventsDetector():
     # TODO duplicate declaration exists
 
     def __init__(self, replay) -> None:
@@ -62,7 +72,7 @@ class Detector():
 
         return d
 
-class SimpleDetector(Detector):
+class SimpleDetector(EventsDetector):
     
     OMIT_UNITS_UPGRADES = ("Reward","Spray","Game")
     OMIT_BUILDINGS = ("Creep","SupplyDepotLowered")
@@ -240,7 +250,7 @@ class SimpleDetector(Detector):
         
 
 #TODO if there is events get cg select set cg count is as add to CG
-class ControlGroupDetector(Detector):
+class ControlGroupDetector(EventsDetector):
     
     def __init__(self, replay) -> None:
         super().__init__(replay)
@@ -306,7 +316,7 @@ class ControlGroupDetector(Detector):
                 print(cg)
         return ""
         
-class BaseDetector(Detector):
+class BaseDetector(EventsDetector):
 
     DISTANCE_FROM_MINERALS = 5
 
@@ -383,7 +393,7 @@ class BaseDetector(Detector):
         printDict(self.bases)
         return ""
 
-class BattleDetector(Detector): 
+class BattleDetector(EventsDetector): 
 
     LOWER_BOUND = 3
     UPPER_BOUND = 4
@@ -425,10 +435,7 @@ class BattleDetector(Detector):
             
             if self.battleStart == 0:
                 self.battleStart = self.currentSecond
-                # print("AA")
                 
-            # print(f"{datetime.timedelta(seconds=self.currentSecond)} - {datetime.timedelta(seconds=self.previousSecond)} - {datetime.timedelta(seconds=self.battleStart)}")
-            
             if self.previousSecond != -self.LOWER_BOUND and self.previousSecond + self.UPPER_BOUND < self.currentSecond:
                 # print("BB")
                 self.battles.append(
@@ -478,7 +485,7 @@ class BattleDetector(Detector):
 
         for battle in self.battles:
             for imageID in self.screenshotsDict[battle.getNodeID()]:
-                battle.addImage("{}{}".format(ImageUploader.SERVER_URL, imageID))
+                battle.addImage("{}{}".format(ImageUploader.RESOURCE_URL, imageID))
 
     def uploadScreenshotsToMediaServer(self):
         pngScreenshots = [file for file in os.listdir(self.fh.screenshotsFolder) if file.endswith('.png')]
@@ -498,12 +505,14 @@ class BattleDetector(Detector):
             # if the image has already been uploaded
             if screenshotName in uploadedImagesDict:
                 imageID = uploadedImagesDict[screenshotName]
+                print("image {} existing as {}".format(screenshotName, uploadInfo["id"]))
             else:
                 uploadInfo = self.iu.uploadImage(self.fh.screenshotsFolder, screenshotName)
                 imageID = uploadInfo["id"]
 
                 if uploadInfo["status"] == 201:
                     newlyUploadedImages += "{},{}\n".format(screenshotName, uploadInfo["id"])
+                    print("image {} uploaded as {}".format(screenshotName, uploadInfo["id"]))
                 else:
                     print("Failed to upload file {}, status {}".format(screenshotName, uploadInfo["status"]))
 

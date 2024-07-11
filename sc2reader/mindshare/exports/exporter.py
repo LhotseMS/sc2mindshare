@@ -80,14 +80,11 @@ class CSVExporter(Exporter):
         nodeStr += node.getNodeType() + self.SEPARATOR
         nodeStr += node.getNodeID() + self.SEPARATOR
 
-        nodeStr += self.spaceOutProperties(node) + self.SEPARATOR 
+        nodeStr += node.getNodeImages() + self.SEPARATOR 
+
+        nodeStr += self.spaceOutProperties(node) + "\n"
         
-        nodeStr += node.getNodeImages() + "\n"
-
         return nodeStr
-
-
-
 
 class JSONExporter(Exporter):
 
