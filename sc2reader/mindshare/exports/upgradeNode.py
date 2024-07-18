@@ -1,13 +1,31 @@
+import re
+
 from sc2reader.mindshare.exports.node import SimpleNode
 from sc2reader.events.tracker import UpgradeCompleteEvent
 
 
 class UpgradeNode(SimpleNode):
     
+    LEVELS_PATTERN = r'Level \d+$'
+
     def __init__(self, e : UpgradeCompleteEvent, seq) -> None:
         super().__init__(e, seq)
 
-        self.propertiesCount = 2
+        name = self.getNodeName()
+        self.subtype = re.sub(self.LEVELS_PATTERN, '', name).strip()
+        if "Level" in name:     
+            self.level = name[-1]
+        else:
+            self.level = None      
+
+        if "Weapons" in name:
+            self.interaction = "Offence"
+        elif "Armors" in name:
+            self.interaction = "Defence"
+        else:
+            self.interaction = None
+
+        self.propertiesCount = 3
         self.type = "Upgrade"
 
     def getNodeName(self):
@@ -20,7 +38,8 @@ class UpgradeNode(SimpleNode):
                            self.getNodeTime())
     
     def getProperties(self, sep):
-        return "{}".format(super().getProperties(sep))
+        return "{}".format(super().getProperties(sep),
+                           self.subtype, sep)
     
     # TODO link to related opponent upgrade, previous upgrade
     def getNodeLinks(self) -> str: pass

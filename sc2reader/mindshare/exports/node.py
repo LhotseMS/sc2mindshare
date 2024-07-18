@@ -1,7 +1,7 @@
 # line delimiter as csv doesn't like \n. Replaced back in excel
 X_LD = "X_LD"
 
-class Exportable:
+class Exportable:   
     
     propertiesCount = None
 

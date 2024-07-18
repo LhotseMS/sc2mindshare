@@ -89,6 +89,10 @@ class Screenshotter():
             # Convert times to frame numbers
             start_time = datetime.strptime(start, "%H:%M:%S")
             end_time = datetime.strptime(end, "%H:%M:%S")
+
+            if start_time == end_time:
+                end_time += timedelta(seconds=2)
+
             start_frame = self.totalSeconds(start_time) * self.fps
             end_frame = self.totalSeconds(end_time) * self.fps
 
@@ -187,9 +191,9 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    process = Screenshotter(sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + args.replay, debug=True, load_map=True), args.player)
-    process.startRecording()
+    process = Screenshotter(sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + "Skippy_Oceanborn LE (24).SC2Replay", debug=True, load_map=True), "SkippyJo")
+    #process.startRecording()
 
     #file needs to be fully saved before screenshotting give it some time
-    time.sleep(5)
+    #time.sleep(5)
     process.extractFrames()

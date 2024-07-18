@@ -6,6 +6,9 @@ class BuildingNode(SimpleNode):
 
     def __init__(self, e : UnitDoneEvent, seq) -> None:
         super().__init__(e, seq)
+
+        self.subtype = self.event.replaceStrings(self.event.unit, False).strip()
+
         self.propertiesCount = 1
         self.type = "Building"
         self.index = None
@@ -25,7 +28,7 @@ class BuildingNode(SimpleNode):
     
     def getProperties(self, sep):
         return "{}{}{}".format(super().getProperties(sep),
-                             self.event.replaceStrings(self.event.unit, False).strip(), sep)
+                               self.subtype, sep)
     
     # TODO link to related opponent upgrade, previous upgrade
     def getNodeLinks(self) -> str: pass

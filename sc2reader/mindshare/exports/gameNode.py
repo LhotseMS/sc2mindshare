@@ -1,10 +1,13 @@
 from datetime import datetime, timedelta
-from sc2reader.mindshare.exports.node import SimpleNode
+from sc2reader.mindshare.exports.node import SimpleNode, X_LD
 
 # TODO this should probably be a supertype of Node that doesn't have time etc. now its just ommitted
 class GameNode(SimpleNode): 
 
     def __init__(self, replay) -> None:
+        self.id = None
+        self.seq = 1
+
         self.map = replay.map_name
         # TODO get map image and heatmap for deaths and buildings
 
@@ -21,7 +24,8 @@ class GameNode(SimpleNode):
             self.timeZone = "UTC".format(replay.time_zone)
 
         self.datePlayed = replay.date
-        self.duration = datetime.strptime(replay.length, "%H:%M:%S")
+        # TODO change format 
+        self.duration = datetime.strptime(str(replay.length), "%M.%S").strftime("%H:%M:%S")
 
         self.speed = replay.speed
         self.ladder = replay.is_ladder
@@ -38,12 +42,12 @@ class GameNode(SimpleNode):
         else:
             nameStr = self.category
 
-        nameStr += self.map
+        nameStr += " {}".format(self.map)
         
         return nameStr
         
     def getNodeDescription(self):
-        return "Played on {} {}, for {}.\n Won by {}".format(self.datePlayed, self.duration, self.timeZone, self.winningPlayer)
+        return "Played on {} {}, for {} {}. The game was won by {}".format(self.datePlayed, self.duration, self.timeZone, X_LD, self.winningPlayer)
     
     def getProperties(self, sep):
         return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(self.speed, sep,

@@ -43,7 +43,7 @@ class BattleNode(Battle, Node):
             unitPart = "{} units died".format(self.deathCount) 
 
         if len(self.basesWhereDeaths) > 0:
-            locationPart = " near {}".format(self.basesWhereDeaths[0])
+            locationPart = " near {} {}".format(self.basesWhereDeaths[0].race, self.basesWhereDeaths[0])
 
         return unitPart + locationPart
     
@@ -102,7 +102,7 @@ class BattleNode(Battle, Node):
         for imageUrl in self.images:
             imagesStr += imageUrl + self.IMAGE_SEPARATOR
 
-        return imagesStr
+        return imagesStr.rstrip("|")
 
     # number of dead units, killer units + what they killed, attack command targets
     def getPlayerBattleDesc(self, player):
@@ -144,8 +144,8 @@ class BattleNode(Battle, Node):
             for key, value in self.nonCombatAbilitiesTypes[player].items():
                 ncas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
-        if cgs != "" or cas != "" or ncas != "":
-            playerHeader = X_LD + X_LD + "===={}====".format(player.name)
+        # if cgs != "" or cas != "" or ncas != "":
+        playerHeader = X_LD + X_LD + "===={}====".format(player.name)
 
 
         return "{} {} {} {} {} {}".format(playerHeader, kills, bLost, cas, ncas, cgs)

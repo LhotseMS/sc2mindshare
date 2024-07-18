@@ -118,33 +118,31 @@ def printDict(dict):
         for e in value:
             print(e)   
 
+#TODO
+#TODO
+#TODO get some nice inital call and remove from scripts
 def processFile(filename):
     replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
         
-    print(toDict()(replay))
-    print("\n")
+    #print(toDict()(replay))
+    #print("\n")
+    
     #printSomeEvents(replay.tracker_events)
-    print("\n")
-
-    print("MI ")
-    print(replay.map)
-    print("\n")
-    print("\n")
-    print([player.detail_data for player in replay.players])
-    print("\n")
-    print("\n")
-    print(replay.messages)
     
 
-    #sc2reader.mindshare.detectors.createDetectors(replay)
+    sc2reader.mindshare.detectors.createDetectors(replay)
 
     #TODO Messages gl hf and ggs
-    """exp = CSVExporter(sc2reader.mindshare.detectors.battleDetector.battles + 
-                       sc2reader.mindshare.detectors.simpleDetector.upgrades + 
-                       sc2reader.mindshare.detectors.simpleDetector.buildings + 
-                       sc2reader.mindshare.detectors.simpleDetector.units + 
-                       sc2reader.mindshare.detectors.simpleDetector.stats, 
-                       sc2reader.mindshare.detectors.simpleDetector.links)
+    exp = CSVExporter(sc2reader.mindshare.detectors.singlesDetector.nodes +
+                      sc2reader.mindshare.detectors.battleDetector.battles + 
+                      sc2reader.mindshare.detectors.simpleDetector.upgrades + 
+                      sc2reader.mindshare.detectors.simpleDetector.buildings + 
+                      sc2reader.mindshare.detectors.simpleDetector.units + 
+                      sc2reader.mindshare.detectors.simpleDetector.stats + 
+                      sc2reader.mindshare.detectors.simpleDetector.messages, 
+                      sc2reader.mindshare.detectors.singlesDetector.links +
+                      sc2reader.mindshare.detectors.battleDetector.links +
+                      sc2reader.mindshare.detectors.simpleDetector.links)
 
     export = exp.getExport()
     
@@ -152,7 +150,7 @@ def processFile(filename):
     #print(replay.active_units)
 
     fh = FileHandler(replay)
-    fh.createEventsFile(export)"""
+    fh.createEventsFile(export)
 
 
 def printIntervalAll(start, finish, events):
@@ -172,7 +170,7 @@ def printIntervalAll(start, finish, events):
 def printSomeEvents(events):
     for event in events:
 
-        if isinstance(event, UnitPositionsEvent):
+        if isinstance(event, PlayerStatsEvent):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))

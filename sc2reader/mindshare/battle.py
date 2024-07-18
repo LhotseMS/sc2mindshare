@@ -264,6 +264,7 @@ class Battle(PlayerHandler):
     def overallSupply(self):
         return self.supplyLost[self.player1] + self.supplyLost[self.player2]
 
+    # TODO duplicate with detectors
     def otherPlayer(self, player):
         return self.player2 if player == self.player1 else self.player1
 

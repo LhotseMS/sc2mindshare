@@ -1,4 +1,3 @@
-
 from sc2reader.mindshare.exports.node import SimpleNode, X_LD
 from sc2reader.events.tracker import PlayerStatsEvent
 

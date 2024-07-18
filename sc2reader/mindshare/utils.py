@@ -17,8 +17,11 @@ class Renamer:
             " (Protoss)": "",   
             " upgrade completed": "",
             "Attack": "A-move", 
-            "zerglingmovementspeed": "Zergling Movement Speed",
-            "zerglingattackpeed": "Zergling Attack Speed"
+            "zerglingmovementspeed": "ZerglingMovementSpeed",
+            "zerglingattackspeed": "ZerglingAttackSpeed",
+            "Terran": "",
+            "Zerg": "",
+            "Protos": ""
         }
 
         source_string = str(input)

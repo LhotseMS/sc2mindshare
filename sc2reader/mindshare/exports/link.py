@@ -13,16 +13,6 @@ class Link(Exportable):
         self.name1 = None
         self.name2 = None
         self.desc = None
-
-
-class UnitsLink(Link):
-    def __init__(self, n1, n2) -> None:
-        super().__init__(n1, n2)
-
-        self.name1 = "previous"
-        self.name2 = "next"
-        self.desc = "same units"
-        self.direction = 1
         
         self.propertiesCount = 1
 
@@ -35,5 +25,61 @@ class UnitsLink(Link):
     def getDescription(self) -> str:
         return self.desc
     
-    def getProperties(self, sep) -> str:
+    def getProperties(self, sep) -> str:    
         return str(self.direction)
+
+
+#TODO add classes to link nodes
+class BattleLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "previous"
+        self.name2 = "next"
+        self.desc = "Two consecutive battles"
+        self.direction = 1
+
+class UpgradeLevelLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "previous"
+        self.name2 = "next"
+        self.desc = "Two consecutive levels of upgrades."
+        self.direction = 1
+
+class UpgradeEqLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        #TODO fix bug where only name isn't taken in Excel
+        self.name1 = "same level"
+        self.name2 = "same level"
+        self.desc = "Two equivalent upgrades."
+        self.direction = 2
+
+class StatsLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        self.name = "vs"
+        self.desc = "Comparison of players stats from the same time."
+        self.direction = 2
+
+class UnitsLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "previous"
+        self.name2 = "next"
+        self.desc = "same units"
+        self.direction = 1
+        
+class gpLink(Link):
+    def __init__(self, n1, n2) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "played"
+        self.name2 = "played by"
+        self.desc = "same units"
+        self.direction = -1

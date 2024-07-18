@@ -3,18 +3,20 @@ from sc2reader.objects import Player
 
 class PlayerNode(SimpleNode): 
     
-    def __init__(self, player : Player) -> None:
+    def __init__(self, player : Player, opponent : Player, seq) -> None:
+        self.id = None
+        self.seq = seq
 
         # TODO map region numbers to descriptions
         self.region = player.region
         self.subregion = player.subregion
 
         self.name = player.name
-        self.race = player.race
+        self.race = player.pick_race
         self.color = player.color
 
         self.builtUnits = len(player.units)
-        self.killedUnits = len(player.killed_units)
+        self.killedUnits = len(opponent.killed_units)
 
         self.type = "Player"
         self.propertiesCount = 4

@@ -4,11 +4,11 @@ from sc2reader.events.message import ChatEvent
 
 class ChatNode(SimpleNode):
     
-    def __init__(self, e : ChatEvent, seq) -> None:
+    def __init__(self, e : ChatEvent, seq, player) -> None:
         super().__init__(e, seq)
 
         # TODO change pid to player name
-        self.player = e.pid
+        self.player = player
         self.text = e.text
 
         self.propertiesCount = 2
@@ -18,13 +18,13 @@ class ChatNode(SimpleNode):
         return "{}".format(self.text)
 
     def getNodeDescription(self):
-        return "{}:{}".format(self.pid, self.text)
+        return "{}: {}".format(self.player, self.text)
     
     def getProperties(self, sep):
         return "{}".format(super().getProperties(sep))
     
     def getNodePlayer(self) -> str: 
-        return self.pid
+        return self.player
 
     def getNodeTime(self):
         return "00:" + self.event._str_prefix().replace(".",":").strip()

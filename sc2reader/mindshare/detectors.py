@@ -1,17 +1,18 @@
 import datetime
 import os
 import pandas as pd
+from datetime import datetime, timedelta
 
 from sc2reader.events import *
 from sc2reader.data import *
 from sc2reader.events.tracker import UnitDiedEvent
-from sc2reader.mindshare.exports.link import UnitsLink
+from sc2reader.mindshare.exports.link import BattleLink, UnitsLink, StatsLink, UpgradeLevelLink, UpgradeEqLink, gpLink
 from sc2reader.mindshare.exports.battleNode import BattleNode
 from sc2reader.mindshare.exports.upgradeNode import UpgradeNode 
 from sc2reader.mindshare.exports.statsNode import StatsNode 
 from sc2reader.mindshare.exports.buildingNode import BuildingNode 
 from sc2reader.mindshare.exports.unitsNode import UnitsNode 
-from sc2reader.mindshare.exports.messageNode import MessageNode 
+from sc2reader.mindshare.exports.chatNode import ChatNode 
 from sc2reader.mindshare.exports.gameNode import GameNode 
 from sc2reader.mindshare.exports.playerNode import PlayerNode 
 from sc2reader.mindshare.battle import printDict 
@@ -28,23 +29,37 @@ basesDetector = None
 controlGroupDetector = None
 battleDetector = None
 simpleDetector = None
+singlesDetector = None
 
 def createDetectors(replay):
-    global basesDetector, battleDetector, controlGroupDetector, simpleDetector
+    global basesDetector, battleDetector, controlGroupDetector, simpleDetector, singlesDetector
 
     # order is improtant as many use data set up by base controler or CGc
     basesDetector = BaseDetector(replay)
     controlGroupDetector = ControlGroupDetector(replay)
     battleDetector = BattleDetector(replay)
     simpleDetector = SimpleDetector(replay)
+    singlesDetector = SinglesDetector(replay)
 
-class DirectDetector():
+class SinglesDetector():
     
     def __init__(self, replay) -> None:
 
         self.nodes = list()
+        self.links = list()
     
-        self.nodes.append(MapNode())
+        g = GameNode(replay)
+        p1 = PlayerNode(replay.players[0], replay.players[1],1)
+        p2 = PlayerNode(replay.players[1], replay.players[0],2)
+
+        self.nodes.append(g)
+        self.nodes.append(p1)
+        self.nodes.append(p2)
+
+        self.links.append(gpLink(g,p1))
+        self.links.append(gpLink(g,p2))
+
+        #TODO add links
 
 class EventsDetector():
     # TODO duplicate declaration exists
@@ -72,12 +87,18 @@ class EventsDetector():
 
         return d
 
+    def otherPlayer(self, player):
+        return self.player2 if player == self.player1 else self.player1
+
 class SimpleDetector(EventsDetector):
     
     OMIT_UNITS_UPGRADES = ("Reward","Spray","Game")
     OMIT_BUILDINGS = ("Creep","SupplyDepotLowered")
-    OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy")
-    STATS_TIMES = ("01.04","02.08","03.12","04.17","05.21","06.25","07.30","08.34","09.38","10.42","11.47","12.58","14.02","15.07","16.11","17.16")
+    OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy","InvisibleTargetDummy")
+    STATS_TIMES = ("01.04","02.08","03.12","04.17","05.21","06.25","07.30","08.34","09.38","10.42",
+                   "11.47","12.58","14.02","15.07","16.11","17.14","18.20","19.24","20.28","21.32",
+                   "22.36","23.40","24.45","25.57","27.01","28.05","29.17","30.21","32.25","32.30","33.34",
+                   "34.38","35.42","36.47","37.51")
 
     UNIT_INTERVAL = 10
 
@@ -100,6 +121,8 @@ class SimpleDetector(EventsDetector):
         
         #self.unitIntervalStart = "00:00"
         self.currentIntervalEvents = self.initDictByPlayer(2)
+        self.previousUpgradeLevels = self.initDictByPlayer(2)
+        self.upgradesByLevels = {}
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
         self.findSimpleNodes()
@@ -111,7 +134,6 @@ class SimpleDetector(EventsDetector):
         self.units = self.unitsByPlayerAndType[self.player1] + self.unitsByPlayerAndType[self.player2]
         self.messages = self.messagesByPlayer[self.player1] + self.messagesByPlayer[self.player2]
 
-
     def findSimpleNodes(self):
 
         #unit detection variables
@@ -120,27 +142,51 @@ class SimpleDetector(EventsDetector):
         statsCounter = 0
         buildingCounter = 0
         unitsCounter = 0
+        chatCounter = 0
 
+        # TODO add message event as for messages in lobby?
         for e in [v for v in self.replay.events if 
                   (isinstance(v, UpgradeCompleteEvent) or 
                    isinstance(v, PlayerStatsEvent) or 
                    isinstance(v, UnitBornEvent) or 
-                   isinstance(v, UnitDoneEvent) or
-                   isinstance(v, MessageEvent) or
-                   isinstance(v, UnitDiedEvent)  )]:
+                   isinstance(v, UnitDoneEvent) or 
+                   isinstance(v, ChatEvent) or 
+                   isinstance(v, UnitDiedEvent))]:
             
             if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
                 upgradeCounter += 1
-                self.upgradesByPlayer[e.player].append(UpgradeNode(e, upgradeCounter))
+
+                newNode = UpgradeNode(e, upgradeCounter)
+                self.upgradesByPlayer[e.player].append(newNode)
+
+                if newNode.subtype in self.previousUpgradeLevels[e.player]:
+                    self.links.append(UpgradeLevelLink(self.previousUpgradeLevels[e.player][newNode.subtype], newNode))
+
+                if newNode.level != None:
+                    #TODO setting up the dict might be a candidate for move
+                    if newNode.level not in self.upgradesByLevels:
+                        self.upgradesByLevels[newNode.level] = {}
+                    if newNode.interaction not in self.upgradesByLevels[newNode.level]:
+                        self.upgradesByLevels[newNode.level][newNode.interaction] = list()
+                        
+                    self.upgradesByLevels[newNode.level][newNode.interaction].append(newNode)
+
             elif isinstance(e, PlayerStatsEvent) and self.statsEligible(e):
                 statsCounter += 1
                 self.statsByPlayer[e.player].append(StatsNode(e, statsCounter))
+
+                #TODO adding links should be in a separate class probably just as adding nodes
+                if (e.player in self.statsByPlayer and
+                    len(self.statsByPlayer[e.player]) == len(self.statsByPlayer[self.otherPlayer(e.player)])):
+                    self.links.append(StatsLink(self.statsByPlayer[e.player][-1], 
+                                                self.statsByPlayer[self.otherPlayer(e.player)][-1]))
+
             elif isinstance(e, UnitDoneEvent) and self.buildingsEligible(e):
                 buildingCounter += 1
                 self.addBuilding(e, buildingCounter)
-            #elif isinstance(e, MessageEvent):
-            #    self.messagesByPlayer[e.player].append(MessageNode(e))
-            
+            elif isinstance(e, ChatEvent):
+                chatCounter += 1
+                self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, str(e.player)))
             elif isinstance(e, UnitDiedEvent):
                 if e.player != None and e.unit.nameC in self.unitTypeCount[e.player]:
                     self.unitTypeCount[e.player][e.unit.nameC] -= 1            
@@ -182,6 +228,16 @@ class SimpleDetector(EventsDetector):
                     currentInterval = newInterval
 
                     self.addUnit(e)
+
+        #create upgrade links
+        for level in self.upgradesByLevels:
+            if level != None:
+                for interaction in enumerate(self.upgradesByLevels[level]):
+                        if interaction != None:
+                            for i, node in enumerate(self.upgradesByLevels[level][interaction[1]]):
+                                for j, otherNode in enumerate(self.upgradesByLevels[level][interaction[1]]):
+                                    if i < j:
+                                        self.links.append(UpgradeEqLink(node, otherNode))
 
     # TODO seems like no units are being found
 
@@ -230,6 +286,7 @@ class SimpleDetector(EventsDetector):
     
         except Exception:
             print(e.__class__())
+
 
     def shiftUnitsInterval(self):
         self.unitIntervalStart = MsUtils.incrementSeconds(self.unitIntervalStart, self.UNIT_INTERVAL)
@@ -395,8 +452,10 @@ class BaseDetector(EventsDetector):
 
 class BattleDetector(EventsDetector): 
 
-    LOWER_BOUND = 3
-    UPPER_BOUND = 4
+    BATTLE_LOWER_BOUND = 3
+    BATTLE_UPPER_BOUND = 4
+    INTERVAL_LOWER_BOUND = 2
+    INTERVAL_UPPER_BOUND = 2
     INTERVALS_FILE_HEADER = "start,end,id\n"
 
     def __init__(self, replay):
@@ -413,6 +472,7 @@ class BattleDetector(EventsDetector):
         self.deathsByTime = {}
         self.previousSecond = -1
 
+        self.links = list() 
         self.battles = []   
         self.findBattles()
         
@@ -436,7 +496,7 @@ class BattleDetector(EventsDetector):
             if self.battleStart == 0:
                 self.battleStart = self.currentSecond
                 
-            if self.previousSecond != -self.LOWER_BOUND and self.previousSecond + self.UPPER_BOUND < self.currentSecond:
+            if self.previousSecond != -self.BATTLE_LOWER_BOUND and self.previousSecond + self.BATTLE_UPPER_BOUND < self.currentSecond:
                 # print("BB")
                 self.battles.append(
                     BattleNode(
@@ -445,10 +505,14 @@ class BattleDetector(EventsDetector):
                         self.battleStart, 
                         self.previousSecond, 
                         [e for e in self.replay.events 
-                            if e.second >= self.battleStart - self.LOWER_BOUND and 
-                            e.second<= self.previousSecond + self.UPPER_BOUND], 
+                            if e.second >= self.battleStart - self.BATTLE_LOWER_BOUND and 
+                            e.second<= self.previousSecond + self.BATTLE_UPPER_BOUND], 
                         self.secondsOfBattle,
                         len(self.battles)))
+                
+                if len(self.battles) > 2:
+                    self.links.append(BattleLink(self.battles[-2],self.battles[-1]))
+
                 self.resetBuffers()
                  
             if self.currentKeyFree >= 0 :
@@ -470,7 +534,8 @@ class BattleDetector(EventsDetector):
         gameBattlesIntervalsStr = self.INTERVALS_FILE_HEADER
 
         for battle in self.battles:
-            gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime, battle.endTime, battle.getNodeID())
+            gameBattlesIntervalsStr += "{},{},{}\n".format(battle.startTime - timedelta(seconds=self.INTERVAL_LOWER_BOUND), 
+                                                           battle.endTime + timedelta(seconds=self.INTERVAL_LOWER_BOUND), battle.getNodeID())
 
         self.fh.createIntervalsFile(gameBattlesIntervalsStr)
 
@@ -505,7 +570,7 @@ class BattleDetector(EventsDetector):
             # if the image has already been uploaded
             if screenshotName in uploadedImagesDict:
                 imageID = uploadedImagesDict[screenshotName]
-                print("image {} existing as {}".format(screenshotName, uploadInfo["id"]))
+                print("image {} existing as {}".format(screenshotName, imageID))
             else:
                 uploadInfo = self.iu.uploadImage(self.fh.screenshotsFolder, screenshotName)
                 imageID = uploadInfo["id"]

@@ -94,6 +94,7 @@ class Base(View):
         self.bornEvent = baseInitEvent
         self.raisedSec = baseInitEvent.second
         self.player = baseInitEvent.player
+        self.race = baseInitEvent.player.pick_race
         self.base = baseInitEvent.unit
         self.vespene = []
         self.location = baseInitEvent.location
