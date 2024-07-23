@@ -201,6 +201,9 @@ class ContextLoader:
                         event.unit_id_index, Length(seconds=event.second), event.frame
                     )
                 )
+            
+            #MS: create practical links for tracing event for units 
+            event.unit.deathEvent = event
         else:
             self.logger.error(
                 "Unit {} died at {} [{}] before it was born!".format(
@@ -289,6 +292,9 @@ class ContextLoader:
             )
             replay.objects[event.unit_id] = event.unit
 
+        #MS: create practical links for tracing event for units 
+        event.unit.initEvent = event
+
         replay.active_units[event.unit_id_index] = event.unit
         event.unit.location = event.location
         event.unit.started_at = event.frame
@@ -304,6 +310,9 @@ class ContextLoader:
         if event.unit_id in replay.objects:
             event.unit = replay.objects[event.unit_id]
             event.unit.finished_at = event.frame
+            
+            #MS: create practical links for tracing event for units 
+            event.unit.doneEvent = event
         else:
             self.logger.error(
                 "Unit {} done at {} [{}] before it was started!".format(

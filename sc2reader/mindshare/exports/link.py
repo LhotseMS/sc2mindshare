@@ -1,4 +1,9 @@
 from sc2reader.mindshare.exports.node import Exportable 
+from sc2reader.mindshare.exports.battleNode import BattleNode
+from sc2reader.mindshare.exports.unitsNode import UnitsNode
+from sc2reader.mindshare.exports.buildingNode import BuildingNode
+from sc2reader.mindshare.exports.initNode import InitNode
+from sc2reader.mindshare.exports.abilityNode import AbilityNode
 
 # TODO links between buildings that produced/enabled the unit
 # TODO link unit transformations
@@ -30,8 +35,51 @@ class Link(Exportable):
 
 
 #TODO add classes to link nodes
+#name 1 = n2 -> n1
+class UnitBattleLink(Link):
+    def __init__(self, n1 : BattleNode, n2 : UnitsNode, unitCount) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "{} died in".format(unitCount)
+        self.name2 = "killed {} of".format(unitCount)
+        self.desc = "Units start and end"
+        self.direction = 0
+        
+class InitBuildingBattleLink(Link):
+    def __init__(self, n1 : BattleNode, n2 : InitNode) -> None:
+        super().__init__(n1, n2)
+
+        if n2.cancelled:
+            self.name1 = "cancelled during"
+        else:
+            self.name1 = "destroyed in"
+            
+        self.name2 = "started during"
+        self.desc = "Building that wasn't finished"
+        self.direction = 0
+
+
+class AbilityBattleLink(Link):
+    def __init__(self, n1 : BattleNode, n2 : AbilityNode) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "used during"
+        self.name2 = "involved"
+        self.desc = "Ability used in battle"
+        self.direction = 0
+
+
+class BuildingBattleLink(Link):
+    def __init__(self, n1 : BattleNode, n2 : BuildingNode) -> None:
+        super().__init__(n1, n2)
+
+        self.name1 = "razed during"
+        self.name2 = "razed"
+        self.desc = "Building start and end"
+        self.direction = 0
+
 class BattleLink(Link):
-    def __init__(self, n1, n2) -> None:
+    def __init__(self, n1 : BattleNode, n2 : BattleNode) -> None:
         super().__init__(n1, n2)
 
         self.name1 = "previous"

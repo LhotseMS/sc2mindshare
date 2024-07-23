@@ -7,12 +7,18 @@ class Exportable:
 
 # TODO rename all functions and remove "node"
 class Node(Exportable):
+    
+    IMAGE_SEPARATOR = "|"
 
     def __init__(self, seq) -> None:
         
         self.seq = seq
         self.id = None
         self.type = None
+        self.images = list()   
+
+    def addImage(self, imageUrl):
+        self.images.append(imageUrl)
 
     def getNodeName(self) -> str: pass
     def getNodeDescription(self) -> str: pass
@@ -33,8 +39,14 @@ class Node(Exportable):
     
     def getNodeLinks(self) -> str: pass
     def getNodeTime(self) -> str: pass
-    def getNodeImages(self) -> str: 
-        return ""
+    
+    def getNodeImages(self):
+        imagesStr = ""
+
+        for imageUrl in self.images:
+            imagesStr += imageUrl + self.IMAGE_SEPARATOR
+
+        return imagesStr.rstrip("|")
     
     def getNodePlayer(self) -> str:
         return self.event.replaceStrings(self.event.player)

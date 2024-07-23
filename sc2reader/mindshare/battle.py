@@ -55,15 +55,18 @@ class Battle(PlayerHandler):
 
         self.supplyLost = self.initDictByPlayer(0)
         
+
+        # battle desctiption units building and workers died specifically
+
         # BACKLOG
         # - pair CGs to actions
+        # abilities nodes outside battles, around battles?
+        # TODO maybe don't count zerg structures being cancelled as deaths?
         # TODO create comparators for each event type, so that we can limit multi events and duplicated events
         # TODO evaluate who won the battle, generate simple text descriptions based on numbers
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
         # creep spread tracker
         # TODO drone pulls
-        # map images
-        # player view images - screenshoting timer app
 
         # details 
         # UnitTypeChangeEvent - buildings upgrading
@@ -73,10 +76,13 @@ class Battle(PlayerHandler):
 
         # TODO EDGE CASE too long battle 1248-1382 Player 2 - Piliskner (Zerg)
         # Zergling burrows - death?
+        # add all burrow type units to deaths
+        # recognize battles on different places
+        # battle deaths heatmap
         # For each battle: action in battle  Ability (5C0) - Attack TargetUnit; TargetPoint;
-        # Link CG to selected units, and attack with these units
         # link camera events with movement vectors - measure how much player moves
         # recognize when camera just moved and when was the screen shifter to new screen - length of the shift
+        # maybe recognize using camera hotkeys when camera instantly shifts to base location
 
         # camera - was a player multitasking, which abilities were cast in the battle
         # Highlight a move - count it Ability (5C0) - Attack; Location: (57.5927734375, 57.080078125, 40920)
@@ -105,7 +111,6 @@ class Battle(PlayerHandler):
                         if self.killersByPlayer.get(e.unit.killing_unit.owner) == None:
                             self.killersByPlayer[e.unit.killing_unit.owner] = list()
                         self.killersByPlayer[e.unit.killing_unit.owner].append(e.unit.killing_unit)
-
                 
                 except:
                     print(colored(f"++++++++++++++ ERR NO KILLING UNIT {e}", "red"))
@@ -226,14 +231,6 @@ class Battle(PlayerHandler):
                     self.processLocationEvent(e)
                     self.processBaseEvent(e, self.basesWhereDeaths)
 
-                # TODO TODOOOO 
-                # TODO TODOOOO 
-                # TODO TODOOOO 
-                # TODO TODOOOO Building deaths do not initiate creation of battle, maybe they should be countable deaths.
-                elif e.buildingDeath(): #TODO this condition repeats in the processLocEvent
-                    self.processLocationEvent(e)
-
-
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","red"))
 
             elif isinstance(e, PlayerStatsEvent):
@@ -252,6 +249,11 @@ class Battle(PlayerHandler):
         
         self.battleArea = (minX,minY,maxX,maxY,abs(minX-maxX),abs(minY-maxY))
 
+        self.allAbilities = (self.nonCombatAbilitiesByPlayer[self.player1] + 
+                         self.nonCombatAbilitiesByPlayer[self.player2] + 
+                         self.combatAbilitiesByPlayer[self.player1] + 
+                         self.combatAbilitiesByPlayer[self.player2])
+
     @property
     def deathCount(self):
         return self.p1dc + self.p2dc
@@ -264,6 +266,9 @@ class Battle(PlayerHandler):
     def overallSupply(self):
         return self.supplyLost[self.player1] + self.supplyLost[self.player2]
 
+    def getCountableDeaths(self):
+        return [e for e in self.events if isinstance(e, UnitDiedEvent) and e.countableUnitDeath()] 
+                
     # TODO duplicate with detectors
     def otherPlayer(self, player):
         return self.player2 if player == self.player1 else self.player1

@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 from sc2reader.mindshare.exports.node import SimpleNode, X_LD
+from sc2reader.mindshare.imageUploader import ImageUploader
 
 # TODO this should probably be a supertype of Node that doesn't have time etc. now its just ommitted
 class GameNode(SimpleNode): 
 
-    def __init__(self, replay) -> None:
+    def __init__(self, replay, heatMapID) -> None:
         self.id = None
         self.seq = 1
+        self.images = list()
 
         self.map = replay.map_name
         # TODO get map image and heatmap for deaths and buildings
@@ -32,6 +34,8 @@ class GameNode(SimpleNode):
         self.type = replay.type
         self.category = replay.category
 
+        self.addImage("{}{}".format(ImageUploader.RESOURCE_URL, heatMapID))
+
         self.type = "Game"
         self.propertiesCount = 7
 
@@ -47,7 +51,7 @@ class GameNode(SimpleNode):
         return nameStr
         
     def getNodeDescription(self):
-        return "Played on {} {}, for {} {}. The game was won by {}".format(self.datePlayed, self.duration, self.timeZone, X_LD, self.winningPlayer)
+        return "Played on {} {} for {}.{}The game was won by {}".format(self.datePlayed, self.timeZone, self.duration, X_LD, self.winningPlayer)
     
     def getProperties(self, sep):
         return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(self.speed, sep,
@@ -57,4 +61,6 @@ class GameNode(SimpleNode):
                                self.duration, sep,
                                self.datePlayed, sep,
                                self.timeZone, sep)
+    
+    
     

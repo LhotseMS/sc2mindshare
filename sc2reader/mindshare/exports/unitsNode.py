@@ -10,6 +10,7 @@ class UnitsNode(MultiNode):
 
         for e in self.events:
             self.supply += e.unit.supply
+            e.unit.unitsNode = self
 
         self.type = "Units"
         self.propertiesCount = 4

@@ -99,6 +99,13 @@ class Unit(Renamer):
 
         self.baseName = None
         self.baseType = None
+        
+        self.unitsNode = None
+        self.initNode = None
+
+        self.deathEvent = None
+        self.doneEvent = None
+        self.initEvent = None
 
         self.flags = 0
 

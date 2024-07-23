@@ -1,26 +1,27 @@
 import os
+from sc2reader.resources import Map, MapInfo
 from PIL import Image, ImageDraw, ImageFont
 
 # Constants
 FONT_PATH = "C:/Windows/Fonts/AGENCYB.TTF"
-FONT_SIZE = 40
+CLOCK_FONT_SIZE = 40
 OUTPUT_DIR = "C:/MS SC/ClockImages"
-BACKGROUND_COLOR = (237, 240, 249)  # Transparent background
+CLOCK_BACKGROUND_COLOR = (237, 240, 249) 
 TEXT_COLOR = (105, 105, 105)  # Dark gray text
+
+P2_FONT_SIZE = 500
+P2_BACKGROUND_COLOR = (0, 0, 0)  
 
 def create_time_image(time_str, output_path, width):
     # Create font object
-    font = ImageFont.truetype(FONT_PATH, FONT_SIZE)
+    font = ImageFont.truetype(FONT_PATH, CLOCK_FONT_SIZE)
     
     # Create a dummy image to get text size
-    dummy_img = Image.new("RGBA", (1, 1), BACKGROUND_COLOR)
+    dummy_img = Image.new("RGBA", (1, 1), CLOCK_BACKGROUND_COLOR)
     draw = ImageDraw.Draw(dummy_img)
-    text_bbox = draw.textbbox((10, 0), time_str, font=font)
-    text_width = text_bbox[2] - text_bbox[0]
-    text_height = text_bbox[3] - text_bbox[1]
     
     # Create final image with appropriate size
-    img = Image.new("RGBA", (width, 48), BACKGROUND_COLOR)
+    img = Image.new("RGBA", (width, 48), CLOCK_BACKGROUND_COLOR)
     draw = ImageDraw.Draw(img)
     draw.text((8, 0), time_str, font=font, fill=TEXT_COLOR)
     
@@ -48,5 +49,90 @@ def generate_clock_images():
 
             create_time_image(time_str, output_path, width)
 
+def generatePlayer2Image():
+    # Create font object
+    font = ImageFont.truetype(FONT_PATH, P2_FONT_SIZE)
+    
+    # Create a dummy image to get text size
+    dummy_img = Image.new("RGBA", (1, 1), P2_BACKGROUND_COLOR)
+    draw = ImageDraw.Draw(dummy_img)
+    
+    # Create final image with appropriate size
+    img = Image.new("RGBA", (2558, 1598), P2_BACKGROUND_COLOR)
+    draw = ImageDraw.Draw(img)
+    draw.text((560, 460), "Player 2", font=font, fill=CLOCK_BACKGROUND_COLOR)
+    
+    # Save the image
+    img.save(OUTPUT_DIR + "/" + "player2BattleImageDivider.png")
+
+def generateBattleHeatMap(map : Map, input_image_path, output_image_path, playersCoordinates, circle_radius=15, circle_color=(255, 0, 0)):
+
+    mapName = input_image_path.split("/")[-1]
+    mapInfos = {
+        "Site Delta LE.jpg": {
+            "fileHeight" : 1088,
+            "filewidth" : 1000
+        },
+        "Goldenaura LE.jpg": {
+            "fileHeight" : 1000,
+            "filewidth" : 1000
+        },
+        "Oceanborn LE.jpg": {
+            "fileHeight" : 943,
+            "filewidth" : 1000
+        }
+    }
+
+    playableMapHeight = map.map_info.height - map.map_info.camera_bottom - (map.map_info.height - map.map_info.camera_top)
+    playableMapWidth = map.map_info.width - map.map_info.camera_left - (map.map_info.width - map.map_info.camera_right)
+
+    vCoef = mapInfos[mapName]["fileHeight"] / playableMapHeight
+    hCoef = mapInfos[mapName]["filewidth"] / playableMapWidth
+
+    # Open the existing image
+    image = Image.open(input_image_path)
+    draw = ImageDraw.Draw(image)
+
+    # Draw circles at the specified coordinates
+    for player, coordinates in playersCoordinates.items():
+        color = (player.color.r, player.color.g, player.color.b)
+
+        for (x, y, s, isb) in coordinates:
+
+            x1 = (x - map.map_info.camera_left) * hCoef
+            y1 = (playableMapHeight - (y - map.map_info.camera_bottom)) * vCoef
+                
+            if isb:
+                rect_coords = (x1 - 10, y1 - 10, x1 + 10, y1 + 10)
+                draw.rectangle(rect_coords, outline=(0,0,0), fill=color)
+            else:
+                if s <= 1:
+                    circle_radius = 8
+                elif s <= 2:
+                    circle_radius = 12
+                elif s <= 3:
+                    circle_radius = 16
+                else:
+                    circle_radius = 20
+
+                #image coordinate system is 0.0 left bottom, SC is left top
+
+                left_up_point = (x1 - circle_radius, 
+                                y1 - circle_radius)
+                right_down_point = (x1 + circle_radius, 
+                                    y1 + circle_radius)
+                draw.ellipse([left_up_point, right_down_point], 
+                            outline=(0,0,0), fill=color)
+            
+
+    # Save the result as a new file
+    image.save(output_image_path)
+    print(f"Image saved to {output_image_path}")
+
 if __name__ == "__main__":
-    generate_clock_images()
+    #generate_clock_images()
+    #generatePlayer2Image()
+    coordinates = [(50, 50), (100, 100), (150, 150)]  # Example coordinates
+    circle_radius = 10
+    circle_color = (0, 255, 0)  # Green color
+    generateBattleHeatMap("","",coordinates)

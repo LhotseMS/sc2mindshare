@@ -9,14 +9,11 @@ from sc2reader.mindshare.exports.node import Node, X_LD
 
 class BattleNode(Battle, Node):
 
-    IMAGE_SEPARATOR = "|"
-
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD, seq):
         Battle.__init__(self, p1, p2, startSec, endSec, events, secondsOD)
         Node.__init__(self, seq)
 
         self.propertiesCount = 7 
-        self.images = list()   
 
     def getNodeTime(self):
         return str(self.startTime)
@@ -37,7 +34,13 @@ class BattleNode(Battle, Node):
         elif len(self.deadTypes.items()) <= 3:
             for key,value in self.deadTypes.items():
                 for unit in value:
-                    unitPart += "{}s ".format(unit)    
+                    unitPart += "{}s ".format(unit)
+            
+            if unitPart == "":
+                for key,value in self.deadBuildingsTypes.items():
+                    for unit in value:
+                        unitPart += "{}s ".format(unit)
+            
             unitPart += "died"
         else:
             unitPart = "{} units died".format(self.deathCount) 
@@ -92,17 +95,9 @@ class BattleNode(Battle, Node):
 
         # self.addProperty("{} dead units".format(self.player1), self.deadUnitsByPlayer[self.player1])
         # self.addProperty("{} dead units".format(self.player2), self.deadUnitsByPlayer[self.player2])
-
-    def addImage(self, imageUrl):
-        self.images.append(imageUrl)
-
-    def getNodeImages(self):
-        imagesStr = ""
-
-        for imageUrl in self.images:
-            imagesStr += imageUrl + self.IMAGE_SEPARATOR
-
-        return imagesStr.rstrip("|")
+        
+    def addImageDivider(self, imageUrl, position):
+        self.images.insert(position, imageUrl)
 
     # number of dead units, killer units + what they killed, attack command targets
     def getPlayerBattleDesc(self, player):

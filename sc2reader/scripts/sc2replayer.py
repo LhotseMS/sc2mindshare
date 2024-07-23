@@ -9,6 +9,7 @@ from sc2reader.mindshare.detectors import *
 from sc2reader.mindshare.exports.exporter import CSVExporter
 from termcolor import colored
 from pathlib import Path
+from sc2reader.events.tracker import UnitDiedEvent, UnitBornEvent
 
 import sys
 
@@ -124,33 +125,10 @@ def printDict(dict):
 def processFile(filename):
     replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
         
-    #print(toDict()(replay))
-    #print("\n")
+    print(toDict()(replay))
+    print("\n")
     
-    #printSomeEvents(replay.tracker_events)
-    
-
-    sc2reader.mindshare.detectors.createDetectors(replay)
-
-    #TODO Messages gl hf and ggs
-    exp = CSVExporter(sc2reader.mindshare.detectors.singlesDetector.nodes +
-                      sc2reader.mindshare.detectors.battleDetector.battles + 
-                      sc2reader.mindshare.detectors.simpleDetector.upgrades + 
-                      sc2reader.mindshare.detectors.simpleDetector.buildings + 
-                      sc2reader.mindshare.detectors.simpleDetector.units + 
-                      sc2reader.mindshare.detectors.simpleDetector.stats + 
-                      sc2reader.mindshare.detectors.simpleDetector.messages, 
-                      sc2reader.mindshare.detectors.singlesDetector.links +
-                      sc2reader.mindshare.detectors.battleDetector.links +
-                      sc2reader.mindshare.detectors.simpleDetector.links)
-
-    export = exp.getExport()
-    
-    #printSomeEvents(replay.events)
-    #print(replay.active_units)
-
-    fh = FileHandler(replay)
-    fh.createEventsFile(export)
+    printSomeEvents(replay.events)
 
 
 def printIntervalAll(start, finish, events):
@@ -168,14 +146,15 @@ def printIntervalAll(start, finish, events):
                 print(str(event))
 
 def printSomeEvents(events):
-    for event in events:
-
-        if isinstance(event, PlayerStatsEvent):
+    for e in events:
+        if  isinstance(e, TargetUnitCommandEvent):
+       # if (isinstance(event, UnitInitEvent) or
+        #    isinstance(event, UnitBornEvent)):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            print(event)
+            print(e)
             
 
 def printEventsOfInterest(replay, events):
@@ -274,7 +253,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
+    parser.add_argument('--replay', type=str, help='Name of the replay file')
+    
+    args = parser.parse_args()
+    processFile(args.replay)
 
 
 try:

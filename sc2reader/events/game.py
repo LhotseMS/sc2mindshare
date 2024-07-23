@@ -54,8 +54,12 @@ class GameEvent(Event):
 
         return player_name
 
+    def _str_time(self):
+        return f"{Length(seconds=int(self.frame / 22.4))}"
+
+    #maybe this can be used on more places, more event types
     def _str_prefix(self):
-        return f"{Length(seconds=int(self.frame / 22.4))}\t{self.playerName:<15} "
+        return f"{Length(seconds=int(self.frame / 22.4))}"
 
     def __str__(self):
         return self._str_prefix() + self.name
@@ -244,6 +248,8 @@ class CommandEvent(GameEvent):
         #: A reference to the other unit
         self.other_unit = None
 
+        self.abilityNode = None
+
     def isCombat(self):
         return self.ability_name in COMBAT_ABILITIES
 
@@ -285,14 +291,15 @@ class CommandEvent(GameEvent):
                 self.target.name, self.target_unit_id),"light_red"
             )
 
+        if bool(self.flag["queued"]):
+            string += colored(f" Q", "light_blue")
+            
+        if bool(self.flag["minimap"]):
+            string += colored(f" M", "light_blue")
+            
         if self.ability_type in ("TargetPoint", "TargetUnit"):
             string += colored(f"; Location: {str(self.location)}","white")
 
-        if bool(self.flag["queued"]):
-            string += " Q"
-            
-        if bool(self.flag["minimap"]):
-            string += " M"
 
         return string + str(self.__class__)
 

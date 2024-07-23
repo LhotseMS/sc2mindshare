@@ -1,18 +1,19 @@
-from sc2reader.mindshare.exports.node import SimpleNode
-from sc2reader.events.tracker import UnitDoneEvent
+from sc2reader.mindshare.exports.buildingNode import BuildingNode
+from sc2reader.events.tracker import UnitInitEvent
 
 #TODO add building deaths. Unit killed them. Tied to battle? Was that unit in battle? 
-class BuildingNode(SimpleNode):
+class InitNode(BuildingNode):
 
-    def __init__(self, e : UnitDoneEvent, seq) -> None:
+    def __init__(self, e : UnitInitEvent, seq) -> None:
         super().__init__(e, seq)
 
         self.subtype = self.event.replaceStrings(self.event.unit, False).strip()
 
-        self.event.unit.unitsNode = self
+        self.event.unit.initNode = self
+        self.cancelled = self.event.unit.deathEvent.killing_player == self.event.player
 
         self.propertiesCount = 1
-        self.type = "Building"
+        self.type = "Initiated"
         self.index = None
 
     # TODO get a clean name withou race in ()
@@ -26,7 +27,10 @@ class BuildingNode(SimpleNode):
     
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
-        return ""
+        if self.cancelled:
+            return "{} started building at {} but was cancelled".format(self.event.unit, self.getNodeTime())
+        else:
+            return "{} started building at {} but was killed".format(self.event.unit, self.getNodeTime())
     
     def getProperties(self, sep):
         return "{}{}{}".format(super().getProperties(sep),

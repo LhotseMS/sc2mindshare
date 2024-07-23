@@ -6,6 +6,7 @@ class PlayerNode(SimpleNode):
     def __init__(self, player : Player, opponent : Player, seq) -> None:
         self.id = None
         self.seq = seq
+        self.images = list() #TODO the list images definitions are copied to nodes that doesn't use the constructor
 
         # TODO map region numbers to descriptions
         self.region = player.region

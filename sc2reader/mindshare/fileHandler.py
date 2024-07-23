@@ -1,5 +1,6 @@
 import os
 import sc2reader
+import pandas as pd
 
 class FileHandler():
 
@@ -8,7 +9,8 @@ class FileHandler():
     SOURCE_FOLDER = "C:/MS SC"
     INTERVALS_EXPORT_FILE_NAME = "Intervals.csv"
     IMAGE_TRACKING_FILE_NAME = "ImageTracking.csv"
-    SCREENSHOTS_END_FOLDER = "screenshots"
+    IMAGES_END_FOLDER = "images"
+    MAPS_END_FOLDER = "Maps"
     REPLAYS_FOLDER = SOURCE_FOLDER + "/Replays"
 
     def __init__(self, replay) -> None:
@@ -19,7 +21,8 @@ class FileHandler():
         self.gameName = "{}__{}_vs_{}".format(replay.map_name, self.player1, self.player2)
 
         self.gameFolder = "{}/{}".format(self.SOURCE_FOLDER, self.gameName)
-        self.screenshotsFolder = "{}/{}".format(self.gameFolder, self.SCREENSHOTS_END_FOLDER) 
+        self.imagesFolder = "{}/{}".format(self.gameFolder, self.IMAGES_END_FOLDER) 
+        self.mapsFolder = "{}/{}".format(self.SOURCE_FOLDER, self.MAPS_END_FOLDER) 
 
         self.eventsFile = "{}/events_{}.csv".format(self.gameFolder, self.gameName)
         self.intervalsFile = "{}/{}".format(self.gameFolder, self.INTERVALS_EXPORT_FILE_NAME)
@@ -32,9 +35,20 @@ class FileHandler():
         if not os.path.exists(self.gameFolder):
             os.makedirs(self.gameFolder)
 
-        if not os.path.exists(self.screenshotsFolder):
-            os.makedirs(self.screenshotsFolder)
+        if not os.path.exists(self.imagesFolder):
+            os.makedirs(self.imagesFolder)
         
+    def getImageTrackingFile(self):
+
+        if os.path.isfile(self.imageTrackingFile):
+            uploadedImagesTracker = {row['imageName']: row['imageID'] for _, row in pd.read_csv(self.imageTrackingFile).iterrows()}
+        else:
+            #TODO move to imageHandler
+            self.createOrUpdateImageTrackingFile("imageName,imageID\n")
+            uploadedImagesTracker = {}
+
+        return uploadedImagesTracker
+
     def getPlayerVideoFileName(self, playerName):
         if playerName == self.player1.name:
             return self.player1VideoFileName

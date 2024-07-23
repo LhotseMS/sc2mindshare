@@ -47,8 +47,6 @@ class ImageUploader():
         return {"status": response.status_code, "content": response.content.decode('utf-8')}
 
 
-
-
 if __name__ == "__main__":
     
     iu = ImageUploader()

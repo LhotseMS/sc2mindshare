@@ -13,6 +13,8 @@ import numpy as np
 import mss
 import argparse
 
+from PIL import Image
+
 
 class Screenshotter():
 
@@ -82,6 +84,12 @@ class Screenshotter():
             time.sleep(self.MOVE_MOUSE_INTERVAL)  # Wait for the specified period
 
     def extractFrames(self):
+
+        logo = Image.open("C:/MS SC/mindshareLogo.png")
+        logo_width, logo_height = logo.size
+        logo = logo.resize((round(logo_width * 0.2), round(logo_height * 0.2)))
+        logo_width, logo_height = logo.size
+
         # Open the video file
         cap = cv2.VideoCapture("{}/{}".format(self.fh.gameFolder, self.fh.getPlayerVideoFileName(self.playerName)))
 
@@ -103,15 +111,31 @@ class Screenshotter():
                 cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
                 ret, frame = cap.read()
 
-                #TODO add screenshot creation to file handler
                 if ret:
-                    timestamp = str(timedelta(seconds=frame_num/self.fps))
+                    # Convert the frame to a PIL image
+                    frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+                    # Get the dimensions of the frame and the logo
+                    frame_width, frame_height = frame_pil.size
+
+                    # Calculate position to place the logo (top right corner)
+                    position = (frame_width - logo_width - 30, 20)
+
+                    # Paste the logo onto the frame
+                    frame_pil.paste(logo, position, logo.convert("RGBA"))
+
+                    # Convert the PIL image back to an OpenCV image
+                    frame = cv2.cvtColor(np.array(frame_pil), cv2.COLOR_RGB2BGR)
+
+                    # Create the output file
+                    timestamp = str(timedelta(seconds=frame_num / self.fps))
                     output_file = "{}/{}_{}_at_{}.png".format(
-                        self.fh.screenshotsFolder,
-                        battle_id, 
-                        self.playerName, 
-                        timestamp.replace(":","-"))
-                    
+                        self.fh.imagesFolder,
+                        battle_id,
+                        self.playerName,
+                        timestamp.replace(":", "-"))
+
+                    # Save the frame with the logo
                     cv2.imwrite(output_file, frame)
                     print(f"Screenshots created: {battle_id} at {timestamp} to {output_file}")
                 else:
@@ -143,7 +167,10 @@ class Screenshotter():
         print("recording started at " + str(datetime.now()))
 
         time.sleep(3)
-        pyautogui.click(51, 794)
+        #click on play in classic replay gui
+        #pyautogui.click(51, 794)
+        pyautogui.click(2538, 10)
+        pyautogui.press("p")
 
         thread = threading.Thread(target=self.preventSleep)
         thread.start()
@@ -191,7 +218,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    process = Screenshotter(sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + "Skippy_Oceanborn LE (24).SC2Replay", debug=True, load_map=True), "SkippyJo")
+    process = Screenshotter(sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + args.replay, debug=True, load_map=True), args.player)
     #process.startRecording()
 
     #file needs to be fully saved before screenshotting give it some time
