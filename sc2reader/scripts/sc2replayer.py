@@ -5,7 +5,7 @@ from sc2reader.data import Unit
 from pprint import pprint
 from sc2reader.events import *
 from sc2reader.factories.plugins.replay import toDict
-from sc2reader.mindshare.detectors import *
+from sc2reader.mindshare.detectors.detectors import *
 from sc2reader.mindshare.exports.exporter import CSVExporter
 from termcolor import colored
 from pathlib import Path
@@ -15,7 +15,7 @@ import sys
 
 import argparse
 import sc2reader
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 from sc2reader.mindshare.fileHandler import FileHandler
 from sc2reader.events import *
 import sc2reader.mindshare.exports.exporter
@@ -128,8 +128,10 @@ def processFile(filename):
     print(toDict()(replay))
     print("\n")
     
-    printSomeEvents(replay.events)
-
+    printSelectionsAndCommandsEvents(replay)
+    #printCommandEvents(replay)
+    #printSomeEvents(replay)
+    
 
 def printIntervalAll(start, finish, events):
 
@@ -145,16 +147,50 @@ def printIntervalAll(start, finish, events):
             if event.pid == 0:
                 print(str(event))
 
-def printSomeEvents(events):
-    for e in events:
-        if  isinstance(e, TargetUnitCommandEvent):
+def printSelectionsAndCommandsEvents(replay):
+    for e in replay.events:
+        if  (isinstance(e, TargetUnitCommandEvent) 
+             or isinstance(e, TargetPointCommandEvent) 
+             or isinstance(e, UpdateTargetPointCommandEvent) 
+             or isinstance(e, UpdateTargetUnitCommandEvent)
+             or isinstance(e, SelectionEvent) 
+             or isinstance(e, DataCommandEvent) 
+             or isinstance(e, BasicCommandEvent)
+             or isinstance(e, ControlGroupEvent)):
        # if (isinstance(event, UnitInitEvent) or
         #    isinstance(event, UnitBornEvent)):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            print(e)
+            if "Wanky" in str(e.player):
+                print(e)
+
+def printCommandEvents(replay):
+    for e in replay.events:
+        if (isinstance(e, TargetUnitCommandEvent) or
+            isinstance(e, TargetPointCommandEvent) or
+            isinstance(e, UpdateTargetPointCommandEvent) or
+            isinstance(e, UpdateTargetUnitCommandEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "Wanky" in str(e.player):
+                print(e)
+
+
+def printSomeEvents(replay):
+    for e in replay.events:
+        if (isinstance(e, UnitTypeChangeEvent) or
+            #isinstance(e, UpdateTargetUnitCommandEvent) or
+            isinstance(e, UnitTypeChangeEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "Wanky" in str(e.player):
+                print(e)
             
 
 def printEventsOfInterest(replay, events):
@@ -254,11 +290,11 @@ def main():
 
 if __name__ == "__main__":
     #main()
-    parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
-    parser.add_argument('--replay', type=str, help='Name of the replay file')
+    #parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
+    #parser.add_argument('--replay', type=str, help='Name of the replay file')
     
-    args = parser.parse_args()
-    processFile(args.replay)
+    #args = parser.parse_args()
+    processFile("Crimson Court LE Applejuice Wanky (2).SC2Replay")
 
 
 try:

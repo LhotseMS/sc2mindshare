@@ -2,7 +2,9 @@ from sc2reader.data import Unit
 from sc2reader.events.game import ControlGroupEvent, SelectionEvent, StealControlGroupEvent
 from sc2reader.mindshare.utils import PlayerHandler, MsUtils
 from sc2reader.resources import Replay
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
+
+from collections import OrderedDict
 
 from termcolor import colored
 
@@ -11,27 +13,34 @@ from termcolor import colored
 #TODO count up units 
 # TODO remove steals
 class ControlGroup():
-    def __init__(self, cge : ControlGroupEvent, se : SelectionEvent) -> None:
+    def __init__(self, cge : ControlGroupEvent, units : list) -> None:
         
         self.cg_no = cge.control_group
         self.pid = cge.pid
-        self.player = se.playerName
+        self.player = cge.playerName
         
         self.no = cge.control_group
 
         self.aliveUnitsByType = None
         
-        self.unitsHistory = {}
+        self.unitsHistory = OrderedDict()
         self.location = ()
 
-        self.addUnits(cge, se)
+        self.addUnits(cge, units)
         
         pass
     
+    def getLatestUnits(self):
+        if len(self.unitsHistory) == 0:
+            return list()
+        else:
+            return next(reversed(self.unitsHistory.values()))
+    
     #TODO group units by type, create new class unitManager who is responsible for working with and providing units
-    def getUnits(self, second):
-        
-        self.aliveUnitsByType = {}
+    # TODO change how this gets calculated use the part when discarding dead units. 
+    def getUnitsStr(self, second):
+        return ""
+        """self.aliveUnitsByType = {}
 
         seen = set()
         allAddedUnits = list()
@@ -56,10 +65,10 @@ class ControlGroup():
         for key, value in self.aliveUnitsByType.items():
             unitsByType += "{}".format(str(key)) + str("({})".format(str(value)) if value > 1 else "") + ", "
 
-        return unitsByType
+        return unitsByType"""
                 
-    def addUnits(self, cge : ControlGroupEvent, se : SelectionEvent):
-        self.unitsHistory[cge.second] = se.new_units
+    def addUnits(self, cge : ControlGroupEvent, newUnits):
+        self.unitsHistory[cge.second] = self.getLatestUnits() + newUnits
 
     #TODO use this case
     def unitsStolen(self, scge : StealControlGroupEvent, se : SelectionEvent):
@@ -72,7 +81,7 @@ class ControlGroup():
         self.unitsHistory[scge.second] = remainingUnits
 
     def __str__(self) -> str:
-        str = colored("{} {}, Units: {}".format(self.cg_no, self.player,self.getUnits(second=200)), "blue")
+        str = colored("{} {}, Units: {}".format(self.cg_no, self.player,self.getUnitsStr(second=200)), "blue")
         
         #for sec, units in self.unitsHistory.items():
         #    str += "\n {}: {}".format(sec, units)

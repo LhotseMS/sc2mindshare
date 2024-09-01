@@ -12,7 +12,7 @@ class AbilityNode(SimpleNode):
         self.queued = bool(self.event.flag["queued"])
         self.minimap = bool(self.event.flag["minimap"])
         self.combat = self.event.isCombat()
-        self.target = self.event.target.name
+        self.target = self.event.replaceStrings(self.event.target.name)
 
         self.propertiesCount = 5
         self.type = "Ability"
@@ -32,7 +32,7 @@ class AbilityNode(SimpleNode):
             desc += "Non-combat ability '{}'".format(self.getNodeName())
         
         if self.event.ability_type == "TargetUnit":
-            desc += " targetted {}".format(self.target)
+            desc += " targetted {}".format(self.event.replaceStrings(self.target))
 
         if self.queued:
             desc += " queued"

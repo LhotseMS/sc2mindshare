@@ -48,6 +48,7 @@ class Node(Exportable):
 
         return imagesStr.rstrip("|")
     
+    #TODO this shouldnt be in Node as node doesnt' have an event
     def getNodePlayer(self) -> str:
         return self.event.replaceStrings(self.event.player)
     

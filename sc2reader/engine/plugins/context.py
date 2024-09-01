@@ -180,6 +180,9 @@ class ContextLoader:
         event.unit.location = event.location
         event.unit.started_at = event.frame
         event.unit.finished_at = event.frame
+        
+        #MS: create practical links for tracing event for units 
+        event.unit.doneEvent = event
 
         if event.unit_upkeeper:
             event.unit.owner = event.unit_upkeeper
@@ -323,7 +326,7 @@ class ContextLoader:
     def handleUnitPositionsEvent(self, event, replay):
         if not replay.datapack:
             return
-
+        
         for unit_index, (x, y) in event.positions:
             if unit_index in replay.active_units:
                 unit = replay.active_units[unit_index]

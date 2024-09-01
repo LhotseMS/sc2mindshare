@@ -7,11 +7,15 @@ class FileHandler():
     VIDEO_FILE_PREFIX = "Game"
     VIDEO_EXT = ".mp4"
     SOURCE_FOLDER = "C:/MS SC"
-    INTERVALS_EXPORT_FILE_NAME = "Intervals.csv"
-    IMAGE_TRACKING_FILE_NAME = "ImageTracking.csv"
+    REPLAYS_FOLDER = SOURCE_FOLDER + "/Replays"
+
     IMAGES_END_FOLDER = "images"
     MAPS_END_FOLDER = "Maps"
-    REPLAYS_FOLDER = SOURCE_FOLDER + "/Replays"
+
+    UPGRADES_INFO_FILE_NAME = "upgradesInfo.csv"
+    UNITS_INFO_FILE_NAME = "unitsInfo.csv"
+    INTERVALS_EXPORT_FILE_NAME = "Intervals.csv"
+    IMAGE_TRACKING_FILE_NAME = "ImageTracking.csv"
 
     def __init__(self, replay) -> None:
         
@@ -26,6 +30,9 @@ class FileHandler():
 
         self.eventsFile = "{}/events_{}.csv".format(self.gameFolder, self.gameName)
         self.intervalsFile = "{}/{}".format(self.gameFolder, self.INTERVALS_EXPORT_FILE_NAME)
+
+        self.unitInfoFile = "{}/{}".format(self.SOURCE_FOLDER, self.UNITS_INFO_FILE_NAME)
+        self.ugradesInfoFile = "{}/{}".format(self.SOURCE_FOLDER, self.UPGRADES_INFO_FILE_NAME)
         
         self.imageTrackingFile = "{}/{}".format(self.SOURCE_FOLDER, self.IMAGE_TRACKING_FILE_NAME)
 

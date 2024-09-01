@@ -32,6 +32,10 @@ class TrackerEvent(Event):
     def __str__(self):
         return self._str_prefix() + self.name
     
+    @property
+    def time(self):
+        return self._str_prefix().replace('.', ':').split('\t')[0]
+    
 class PlayerSetupEvent(TrackerEvent):
     """Sent during game setup to help us organize players better"""
 
@@ -342,11 +346,6 @@ class UnitBornEvent(TrackerEvent):
     def pid(self):
         return self.control_pid
     
-    #TODO duplicate definition in events and also adding 00 in some other places
-    @property
-    def time(self):
-        return self._str_prefix().replace('.', ':').split('\t')[0]
-
     def isPlayer(self, pids):
         return pids.contain(self.upkeep_pid)
 
@@ -355,8 +354,8 @@ class UnitBornEvent(TrackerEvent):
 
 
     def __str__(self):
-        return self._str_prefix() + colored("{: >15} - Unit born {} at {}".format(
-            str(self.unit_upkeeper), self.unit, self.location
+        return self._str_prefix() + colored("{: >15} - Unit born {} at {} id {}".format(
+            str(self.unit_upkeeper), self.unit, self.location, self.unit_id
         ),"cyan")
 
 
@@ -437,14 +436,13 @@ class UnitDiedEvent(TrackerEvent):
     def pid(self):
         return self.unit.owner.pid
     
-    
     def isCounted(self):
         return self.countableUnitDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
     
     def countableUnitDeath(self): 
         return ((self.unit.is_army or self.unit.is_building or
-                 self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) 
-                 and self.unit.name not in ["Broodling"]) # and e.unit.type not in [189,1075,158,431,108]
+                 self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) and
+                 not self.unit.name.startswith(tuple(["Broodling","RichMineral", "Mineral"]))) # and e.unit.type not in [189,1075,158,431,108]
     
     def buildingDeath(self):
         return self.unit.is_building
@@ -522,6 +520,10 @@ class UnitTypeChangeEvent(TrackerEvent):
     @property
     def pid(self):
         return self.unit.owner.pid
+    
+    @property
+    def player(self):
+        return self.unit.owner
 
 
     def __str__(self):
@@ -656,14 +658,10 @@ class UnitDoneEvent(TrackerEvent):
     @property
     def pid(self):
         return self.unit.owner.pid
-    
-    @property
-    def time(self):
-        return self._str_prefix().replace('.', ':').split('\t')[0]
 
     def __str__(self):
-        return self._str_prefix() + "{: >15} - Unit {} done".format(
-            str(self.unit.owner), self.unit
+        return self._str_prefix() + "{: >15} - Unit {}({}) done".format(
+            str(self.unit.owner), self.unit, self.unit.id
         )
 
 

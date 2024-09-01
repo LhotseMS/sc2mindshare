@@ -1,6 +1,6 @@
 # add focus fire, a moves, abilities
 import datetime
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 
 from sc2reader.data import *
 from sc2reader.events.eventTypes import *
@@ -54,19 +54,53 @@ class Battle(PlayerHandler):
         self.screens = self.initDictByPlayer()
 
         self.supplyLost = self.initDictByPlayer(0)
+        self.minLost = self.initDictByPlayer(0)
+        self.gasLost = self.initDictByPlayer(0)
+        
+        #/energy spending/
+        # larva injects
+        # not building workers in the first 
+        # larva count too low - relative to max supply
+        # creep spread - 
+        #unit positions
+        # - damaged every 15s
+        # - on selection
+        # - at target location after not being killed and not having other command 
+        #any units cross the map? - segments of map
+        #have we scouted anything at all? 
+        # - target location vs buildings
+        # - 
+        #fog of war - list of all current visibility, range from file
+        #builds
+        #GameSummary
+        #APMTracker
+        #camera locations if camera returns from far to the exact location of main base
+        #count camera hotkeys usage - too few too many? When during multitasking? When macro when not?
+        # catching an observer, scan and kill or just kill
+        # base blocks - creep, unit on hold, building
+        # control of towers - tower coordinates, unit sent there, no other command and didn't die
+
+        #split battles by location - multiprone
+        #drone pulls - reaction times
+        # recognize screen shortcuts use
+        # camera - was a player multitasking - no multitasking during battles, is macro falling behind in battles?
+        # fighting on/off creep
+        # when player got attacked and wasn't watching - his unit was targetted - opponents camera was on that unit, the attack point
+
+
+        #staring at a screen for a long time. link camera events with movement vectors - measure how much player moves, 
+        # ...recognize when camera just moved and when was the screen shifter to new screen - length of the shift
+        # 
         
 
         # battle desctiption units building and workers died specifically
 
         # BACKLOG
         # - pair CGs to actions
-        # abilities nodes outside battles, around battles?
-        # TODO maybe don't count zerg structures being cancelled as deaths?
-        # TODO create comparators for each event type, so that we can limit multi events and duplicated events
+        # TODO mention in battle that it was a cancellation
         # TODO evaluate who won the battle, generate simple text descriptions based on numbers
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
         # creep spread tracker
-        # TODO drone pulls
 
         # details 
         # UnitTypeChangeEvent - buildings upgrading
@@ -77,17 +111,8 @@ class Battle(PlayerHandler):
         # TODO EDGE CASE too long battle 1248-1382 Player 2 - Piliskner (Zerg)
         # Zergling burrows - death?
         # add all burrow type units to deaths
-        # recognize battles on different places
-        # battle deaths heatmap
         # For each battle: action in battle  Ability (5C0) - Attack TargetUnit; TargetPoint;
-        # link camera events with movement vectors - measure how much player moves
-        # recognize when camera just moved and when was the screen shifter to new screen - length of the shift
-        # maybe recognize using camera hotkeys when camera instantly shifts to base location
 
-        # camera - was a player multitasking, which abilities were cast in the battle
-        # Highlight a move - count it Ability (5C0) - Attack; Location: (57.5927734375, 57.080078125, 40920)
-        # store locations of creep tumors and check if someone is on creep - how many are there, remove if dead? BASE onCreep(), dying bases and tumors
-        
         self.losses = {}
         self.losses[self.player1] = SummaryOfDeath(0,0,0)
         self.losses[self.player2] = SummaryOfDeath(0,0,0)
@@ -99,6 +124,8 @@ class Battle(PlayerHandler):
                 try:            
                     self.deadUnitsByPlayer[e.unit.owner].append(e)
                     self.supplyLost[e.unit.owner] += e.unit.supply
+                    self.minLost[e.unit.owner] += e.unit.minerals
+                    self.gasLost[e.unit.owner] += e.unit.vespene
 
                     self.losses[e.unit.owner].minerals = self.losses[e.unit.owner].minerals + e.unit.minerals
                     self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + e.unit.vespene
@@ -274,7 +301,7 @@ class Battle(PlayerHandler):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = sc2reader.mindshare.detectors.basesDetector.getBaseOnLocation(e)
+        locationBase = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseOnLocation(e)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)

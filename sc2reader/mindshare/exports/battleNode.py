@@ -1,7 +1,7 @@
 import sc2reader
 import sc2reader.mindshare
 from sc2reader.mindshare.battle import Battle
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 from sc2reader.mindshare.exports.node import Node, X_LD
 
 # TODO ADD SUPPLY WON 
@@ -27,7 +27,9 @@ class BattleNode(Battle, Node):
         locationPart = ""
 
         if self.deathCount == 1:
-            unitPart = "{} killed {}".format(self.deadUnits[0].killing_unit.name, self.deadUnits[0].unit.name)
+            unitPart = "{} killed {}".format(
+                self.events[0].replaceStrings(self.deadUnits[0].killing_unit.name), 
+                self.events[0].replaceStrings(self.deadUnits[0].unit.name)) #TODO hAXorz, replace str doesn't need to be on event
         elif len(self.killersTypes.items()) == 1:
             for key, value in self.killersTypes.items(): # TODO how to take just one key and value from dict?
                 unitPart = "{} {}".format(key, value)
@@ -46,7 +48,7 @@ class BattleNode(Battle, Node):
             unitPart = "{} units died".format(self.deathCount) 
 
         if len(self.basesWhereDeaths) > 0:
-            locationPart = " near {} {}".format(self.basesWhereDeaths[0].race, self.basesWhereDeaths[0])
+            locationPart = " near {} {}".format(self.basesWhereDeaths[0].player, self.basesWhereDeaths[0])
 
         return unitPart + locationPart
     
@@ -55,26 +57,31 @@ class BattleNode(Battle, Node):
         desc = ""
 
         if self.supplyLost[self.player1] > 0:
-            desc += "{} lost {} units, {} supply.".format(
+            desc += "{} lost {} units, {} supply, {} min {} gas.".format(
                 self.player1.name, 
                 self.p1dc,
-                self.supplyLost[self.player1])
+                self.supplyLost[self.player1],
+                self.minLost[self.player1],
+                self.gasLost[self.player1])
         elif self.p1dc > 0:
             desc += "{} lost an {}.".format(self.player1.name, self.deadUnitsByPlayer[self.player1][0].unit)
         
         if self.supplyLost[self.player2] > 0:
-            desc += "{}{} lost {} units, {} supply.".format(
+            desc += "{}{}{} lost {} units, {} supply, {} min {} gas.".format(
+                X_LD,
                 X_LD,
                 self.player2.name, 
                 self.p2dc,
-                self.supplyLost[self.player2])
+                self.supplyLost[self.player2],
+                self.minLost[self.player2],
+                self.gasLost[self.player2])
         elif self.p2dc > 0:
             desc += "{}{} lost an {}.".format(X_LD,self.player2.name, self.deadUnitsByPlayer[self.player2][0].unit)
         
         if self.startTime == self.endTime:
-            desc += "{}At {}.".format(X_LD,self.startTime)
+            desc += "{}{}At {}.".format(X_LD, X_LD, self.startTime)
         else:
-            desc += "{}From {} to {}.".format(X_LD,self.startTime, self.endTime)
+            desc += "{}{}From {} to {}.".format(X_LD, X_LD, self.startTime, self.endTime)
         
         return "{} {} {}".format(desc, self.getPlayerBattleDesc(self.player1), self.getPlayerBattleDesc(self.player2))
     
@@ -105,37 +112,38 @@ class BattleNode(Battle, Node):
         # TODO parametrize these functions, util class?
         cgs = ""
         if len(self.controlGroupsUsed[player]) > 0:
-            cgs += X_LD + "Control group(s) used: "
+            cgs += X_LD + X_LD + "CONTROL GROUPS: "
             for cg in self.controlGroupsUsed[player]:
 
                 # player can press the CG get but there is no CG created for it 
                 # TODO the used CGs shouldnt record get if there is no prior set or steal CG
-                units = sc2reader.mindshare.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec)
+                units = sc2reader.mindshare.detectors.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec)
                 if units != None:
                     cgs += "{}{}: {}".format(X_LD, str(cg), units)
         
         kills = ""
         if len(self.killersTypes[player]) > 0:
-            kills += X_LD + "Kill(s): "
+            kills += X_LD + "KILLS(s): "
             for key, value in self.killersTypes[player].items():
                 #the below functions to util class, how to enumerate count dicitonaries, also in CGs.class
                 kills += key + str("({})".format(str(value)) if value > 1 else "") + ", "
+            kills += X_LD
 
         bLost = ""
         if len(self.deadBuildingsTypes[player]) > 0:
-            bLost += X_LD + "Lost: "
+            bLost += X_LD + "LOST: "
             for key, value in self.deadBuildingsTypes[player].items():
                 bLost += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 
         cas = ""
         if len(self.combatAbilitiesTypes[player]) > 0:
-            cas += X_LD + "Combat: "
+            cas += X_LD + "COMBAT: "
             for key, value in self.combatAbilitiesTypes[player].items():
                 cas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
               
         ncas = ""  
         if len(self.nonCombatAbilitiesTypes[player]) > 0:
-            ncas += X_LD + "Non-combat: "
+            ncas += X_LD + "NON-COMBAT: "
             for key, value in self.nonCombatAbilitiesTypes[player].items():
                 ncas += key + str("({})".format(str(value)) if value > 1 else "") + ", "
 

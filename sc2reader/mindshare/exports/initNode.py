@@ -5,12 +5,15 @@ from sc2reader.events.tracker import UnitInitEvent
 class InitNode(BuildingNode):
 
     def __init__(self, e : UnitInitEvent, seq) -> None:
-        super().__init__(e, seq)
+        super().__init__(e, 0, seq)
 
         self.subtype = self.event.replaceStrings(self.event.unit, False).strip()
 
         self.event.unit.initNode = self
-        self.cancelled = self.event.unit.deathEvent.killing_player == self.event.player
+        if self.event.unit.deathEvent == None:
+            self.cancelled = False
+        else:
+            self.cancelled = self.event.unit.deathEvent.killing_player == self.event.player
 
         self.propertiesCount = 1
         self.type = "Initiated"

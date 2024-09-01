@@ -69,9 +69,25 @@ def generateBattleHeatMap(map : Map, input_image_path, output_image_path, player
 
     mapName = input_image_path.split("/")[-1]
     mapInfos = {
-        "Site Delta LE.jpg": {
-            "fileHeight" : 1088,
-            "filewidth" : 1000
+        "Alcyone LE.jpg": {
+            "fileHeight" : 1400,
+            "filewidth" : 1400
+        },
+        "Amphion LE.jpg": {
+            "fileHeight" : 2000,
+            "filewidth" : 2000
+        },
+        "Crimson Court LE.jpg": {
+            "fileHeight" : 2387,
+            "filewidth" : 2000
+        },
+        "Dynasty LE.jpg": {
+            "fileHeight" : 1527,
+            "filewidth" : 2000
+        },
+        "Ghost River LE.jpg": {
+            "fileHeight" : 1280,
+            "filewidth" : 1480
         },
         "Goldenaura LE.jpg": {
             "fileHeight" : 1000,
@@ -79,6 +95,14 @@ def generateBattleHeatMap(map : Map, input_image_path, output_image_path, player
         },
         "Oceanborn LE.jpg": {
             "fileHeight" : 943,
+            "filewidth" : 1000
+        },
+        "Post-Youth LE.jpg": {
+            "fileHeight" : 941,
+            "filewidth" : 758
+        },
+        "Site Delta LE.jpg": {
+            "fileHeight" : 1088,
             "filewidth" : 1000
         }
     }
@@ -88,6 +112,8 @@ def generateBattleHeatMap(map : Map, input_image_path, output_image_path, player
 
     vCoef = mapInfos[mapName]["fileHeight"] / playableMapHeight
     hCoef = mapInfos[mapName]["filewidth"] / playableMapWidth
+    mapSizeCoef = max(mapInfos[mapName]["fileHeight"] ,mapInfos[mapName]["filewidth"]) / 1000
+    borderWidth = round(4*mapSizeCoef)
 
     # Open the existing image
     image = Image.open(input_image_path)
@@ -103,17 +129,21 @@ def generateBattleHeatMap(map : Map, input_image_path, output_image_path, player
             y1 = (playableMapHeight - (y - map.map_info.camera_bottom)) * vCoef
                 
             if isb:
-                rect_coords = (x1 - 10, y1 - 10, x1 + 10, y1 + 10)
-                draw.rectangle(rect_coords, outline=(0,0,0), fill=color)
+                
+                sqSize = round(20 * mapSizeCoef)
+                rect_coords = (x1 - sqSize, y1 - sqSize, x1 + sqSize, y1 + sqSize)
+                draw.rectangle(rect_coords, outline=color, fill=(255,255,255), width=borderWidth)
             else:
                 if s <= 1:
-                    circle_radius = 8
+                    circle_radius = 10
                 elif s <= 2:
-                    circle_radius = 12
+                    circle_radius = 14
                 elif s <= 3:
-                    circle_radius = 16
+                    circle_radius = 18
                 else:
-                    circle_radius = 20
+                    circle_radius = 22
+
+                circle_radius = round(circle_radius * mapSizeCoef)
 
                 #image coordinate system is 0.0 left bottom, SC is left top
 
@@ -122,7 +152,7 @@ def generateBattleHeatMap(map : Map, input_image_path, output_image_path, player
                 right_down_point = (x1 + circle_radius, 
                                     y1 + circle_radius)
                 draw.ellipse([left_up_point, right_down_point], 
-                            outline=(0,0,0), fill=color)
+                            outline=color, fill=(255,255,255), width=borderWidth)
             
 
     # Save the result as a new file

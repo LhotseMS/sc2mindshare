@@ -1,12 +1,12 @@
 
 from pprint import pprint
-from sc2reader.mindshare.detectors import *
+from sc2reader.mindshare.detectors.detectors import *
 from sc2reader.mindshare.exports.exporter import CSVExporter
 
 
 import argparse
 import sc2reader
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 from sc2reader.mindshare.fileHandler import FileHandler
 from sc2reader.events import *
 import sc2reader.mindshare.exports.exporter
@@ -14,20 +14,22 @@ import sc2reader.mindshare.exports.exporter
 def parseReplay(filename):
     replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
             
-    sc2reader.mindshare.detectors.createDetectors(replay)
+    sc2reader.mindshare.detectors.detectors.createDetectors(replay)
 
-    exp = CSVExporter(sc2reader.mindshare.detectors.singlesDetector.nodes +
-                      sc2reader.mindshare.detectors.battleDetector.battles + 
-                      sc2reader.mindshare.detectors.simpleDetector.upgrades + 
-                      sc2reader.mindshare.detectors.simpleDetector.buildings + 
-                      sc2reader.mindshare.detectors.simpleDetector.initializations + 
-                      sc2reader.mindshare.detectors.simpleDetector.units + 
-                      sc2reader.mindshare.detectors.simpleDetector.stats + 
-                      sc2reader.mindshare.detectors.simpleDetector.abilities +  
-                      sc2reader.mindshare.detectors.simpleDetector.messages, 
-                      sc2reader.mindshare.detectors.singlesDetector.links +
-                      sc2reader.mindshare.detectors.battleDetector.links +
-                      sc2reader.mindshare.detectors.simpleDetector.links)
+    exp = CSVExporter(sc2reader.mindshare.detectors.detectors.singlesDetector.nodes +
+                      sc2reader.mindshare.detectors.detectors.battleDetector.battles + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.upgrades + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.buildings + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.initializations + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.units + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.stats + 
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.abilities +  
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.messages +  
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.supplyBlocks +
+                      sc2reader.mindshare.detectors.detectors.controlGroupDetector.excessEnergy, 
+                      sc2reader.mindshare.detectors.detectors.singlesDetector.links +
+                      sc2reader.mindshare.detectors.detectors.battleDetector.links +
+                      sc2reader.mindshare.detectors.detectors.simpleDetector.links)
 
     export = exp.getExport()
 

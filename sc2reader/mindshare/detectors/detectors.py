@@ -1,5 +1,7 @@
 import datetime
 import os
+import csv
+
 from datetime import datetime, timedelta
 
 from sc2reader.events import *
@@ -18,6 +20,8 @@ from sc2reader.mindshare.exports.initNode import InitNode
 from sc2reader.mindshare.exports.abilityNode import AbilityNode 
 from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
+ 
+from sc2reader.mindshare.detectors.trackers import EnergyTracker, SupplyTracker
 
 from sc2reader.mindshare.mindshare import Base
 from sc2reader.mindshare.utils import MsUtils
@@ -62,11 +66,11 @@ class SinglesDetector(Detector):
     
     def __init__(self, replay) -> None:
         super().__init__(replay)
-
+        
         self.nodes = list()
         self.links = list()
 
-        gameHeatMapName = "{}_{}{}".format(self.mapFileName, None, self.HEAT_MAP_APPENDIX)
+        gameHeatMapName = "{}_{}_{}-{}{}".format(self.mapFileName, None, replay.players[0], replay.players[1], self.HEAT_MAP_APPENDIX)
 
         gameHeatMapID = ""
         if gameHeatMapName in self.uploadedImagesTracker:
@@ -87,8 +91,17 @@ class SinglesDetector(Detector):
         #TODO add links
 
 class EventsDetector(Detector):
-    # TODO duplicate declaration exists
+        
+    STATS_TIMES = ("01.04","02.08","03.12","04.17","05.21","06.25","07.30","08.34","09.38","10.42",
+                   "11.47","12.58","14.02","15.07","16.11","17.14","18.20","19.24","20.28","21.32",
+                   "22.36","23.40","24.45","25.57","27.01","28.05","29.17","30.21","32.25","32.30","33.34",
+                   "34.38","35.42","36.47","37.51")
+    OMIT_UNITS_UPGRADES = ("Reward","Spray","Game","ShieldWall","PunisherGrenades")
+    OMIT_BUILDINGS = ("Creep","Mineral Field","Vespene Geyser","Unbuildable Plates","Destructible Rock","Beacon")
+    OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy","InvisibleTargetDummy")
+    OMIT_ABILITIES = ("Build", "Attack", "Gather")
 
+    # TODO duplicate declaration exists
     def __init__(self, replay) -> None:
         super().__init__(replay)
         
@@ -115,16 +128,26 @@ class EventsDetector(Detector):
 
     def otherPlayer(self, player):
         return self.player2 if player == self.player1 else self.player1
+    
+    def upgradeEligible(self, e) -> bool:
+        return not str(e.upgrade_type_name).startswith(self.OMIT_UNITS_UPGRADES)
+    
+    def statsEligible(self, e) -> bool:
+        return e._str_prefix().strip().endswith(self.STATS_TIMES)
+
+    def unitEligble(self, e) -> bool:
+        return (e.player != None and
+                not e.unit.is_building and 
+                (not e.time == "00:00" or e.unit.name.startswith(("SCV","Drone","Probe","Overlord"))) and 
+                not e.unit.name.startswith(self.OMIT_UNITS))
+    
+    def buildingsEligible(self, e) -> bool:
+        return not str(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building
+    
+    def abilityEligible(self, e) -> bool:
+        return e.has_ability and not e.ability_name.startswith(self.OMIT_ABILITIES)
 
 class SimpleDetector(EventsDetector):
-    
-    OMIT_UNITS_UPGRADES = ("Reward","Spray","Game")
-    OMIT_BUILDINGS = ("Creep","SupplyDepotLowered")
-    OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy","InvisibleTargetDummy")
-    STATS_TIMES = ("01.04","02.08","03.12","04.17","05.21","06.25","07.30","08.34","09.38","10.42",
-                   "11.47","12.58","14.02","15.07","16.11","17.14","18.20","19.24","20.28","21.32",
-                   "22.36","23.40","24.45","25.57","27.01","28.05","29.17","30.21","32.25","32.30","33.34",
-                   "34.38","35.42","36.47","37.51")
 
     UNIT_INTERVAL = 10
 
@@ -132,6 +155,11 @@ class SimpleDetector(EventsDetector):
         super().__init__(replay)
 
         self.links = list()
+        self.unitsInfoDict = {}
+        self.upgradesInfoDict = {}
+
+        self.readUnitInfo()
+        self.readUpgradeInfo()
 
         self.upgradesByPlayer = self.initDictByPlayer()
         self.statsByPlayer = self.initDictByPlayer()
@@ -146,12 +174,15 @@ class SimpleDetector(EventsDetector):
         self.abilitiesByPlayer = self.initDictByPlayer()
 
         #before findSimpleNodes 
-        self.buildingNameIndex = {}
+        self.buildingNameIndex = self.initDictByPlayer(2)
         
         #self.unitIntervalStart = "00:00"
         self.currentIntervalEvents = self.initDictByPlayer(2)
         self.previousUpgradeLevels = self.initDictByPlayer(2)
         self.upgradesByLevels = {}
+        
+        self.st = SupplyTracker(self.player1, self.player2)
+        self.supplyBlocks = list()
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
         self.findSimpleNodes()
@@ -164,6 +195,36 @@ class SimpleDetector(EventsDetector):
         self.messages = self.messagesByPlayer[self.player1] + self.messagesByPlayer[self.player2]
         self.initializations = self.initsByPlayer[self.player1] + self.initsByPlayer[self.player2]
         self.abilities = self.abilitiesByPlayer[self.player1] + self.abilitiesByPlayer[self.player2]
+
+
+    def readUpgradeInfo(self):
+        with open(self.fh.ugradesInfoFile, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            
+            # Iterate through each row in the CSV
+            for row in csv_reader:
+                # Use the 'Name' as the key and store the rest of the row as the value
+                self.upgradesInfoDict[row['Name']] = {
+                    "Upgrade Time": row['Upgrade Time']
+                }
+
+    def readUnitInfo(self):
+        with open(self.fh.unitInfoFile, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            
+            # Iterate through each row in the CSV
+            for row in csv_reader:
+                # Use the 'Name' as the key and store the rest of the row as the value
+                self.unitsInfoDict[row['Name']] = {
+                    "Minerals": row['Minerals'],
+                    "Gas": row['Gas'],
+                    "Build Time": row['Build Time'],
+                    "Hit Points": row['Hit Points'],
+                    "Shields": row['Shields'],
+                    "Armor": row['Armor'],
+                    "Sight": row['Sight'],
+                    "Supply": row['Supply']
+                }
 
     def findSimpleNodes(self):
 
@@ -189,22 +250,26 @@ class SimpleDetector(EventsDetector):
                    isinstance(v, UnitInitEvent))]:
             
             if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
-                upgradeCounter += 1
+                try:
+                    upgradeCounter += 1
 
-                newNode = UpgradeNode(e, upgradeCounter)
-                self.upgradesByPlayer[e.player].append(newNode)
+                    newNode = UpgradeNode(e, self.upgradesInfoDict[str(e.upgrade_type_name)]['Upgrade Time'], upgradeCounter)
+                    self.upgradesByPlayer[e.player].append(newNode)
 
-                if newNode.subtype in self.previousUpgradeLevels[e.player]:
-                    self.links.append(UpgradeLevelLink(self.previousUpgradeLevels[e.player][newNode.subtype], newNode))
+                    if newNode.subtype in self.previousUpgradeLevels[e.player]:
+                        self.links.append(UpgradeLevelLink(self.previousUpgradeLevels[e.player][newNode.subtype], newNode))
 
-                if newNode.level != None:
-                    #TODO setting up the dict might be a candidate for move
-                    if newNode.level not in self.upgradesByLevels:
-                        self.upgradesByLevels[newNode.level] = {}
-                    if newNode.interaction not in self.upgradesByLevels[newNode.level]:
-                        self.upgradesByLevels[newNode.level][newNode.interaction] = list()
-                        
-                    self.upgradesByLevels[newNode.level][newNode.interaction].append(newNode)
+                    if newNode.level != None:
+                        #TODO setting up the dict might be a candidate for move
+                        if newNode.level not in self.upgradesByLevels:
+                            self.upgradesByLevels[newNode.level] = {}
+                        if newNode.interaction not in self.upgradesByLevels[newNode.level]:
+                            self.upgradesByLevels[newNode.level][newNode.interaction] = list()
+                            
+                        self.upgradesByLevels[newNode.level][newNode.interaction].append(newNode)
+                    
+                except KeyError:
+                    print("Upgrade not found " + str(e.upgrade_type_name))
 
             elif isinstance(e, PlayerStatsEvent) and self.statsEligible(e):
                 statsCounter += 1
@@ -216,16 +281,25 @@ class SimpleDetector(EventsDetector):
                     self.links.append(StatsLink(self.statsByPlayer[e.player][-1], 
                                                 self.statsByPlayer[self.otherPlayer(e.player)][-1]))
 
-            elif isinstance(e, UnitDoneEvent) and self.buildingsEligible(e):
-                buildingCounter += 1
-                self.addBuilding(e, buildingCounter)
+            elif (isinstance(e, UnitDoneEvent) or isinstance(e, UnitBornEvent)) and self.buildingsEligible(e):
+                try:
+                    buildingCounter += 1 
+                    self.addBuilding(e, buildingCounter)
+
+                    #print("building: " + str(e.unit))
+                    if self.st.isSupplyProvider(str(e.unit)):
+                        self.st.increaseLimit(e.player, e.time, str(e.unit))
+                
+                except KeyError:
+                    print("Unit not found :" + str(e.unit))
 
             # incomplete buildings
             elif isinstance(e, UnitInitEvent) and e.unit.is_building and e.unit.doneEvent == None:
                 initsCounter += 1
                 self.initsByPlayer[e.player].append(InitNode(e, initsCounter))
 
-            elif isinstance(e, TargetUnitCommandEvent) and e.has_ability and not e.ability.name.startswith("Build") and not e.ability.name.startswith("Attack"):
+            # TODO, starts with put into separate eligible function
+            elif isinstance(e, TargetUnitCommandEvent) and self.abilityEligible(e):
                 abilitiesCounter += 1
                 newAbilityNode = AbilityNode(e, abilitiesCounter)
                 self.abilitiesByPlayer[e.player].append(newAbilityNode)
@@ -236,13 +310,25 @@ class SimpleDetector(EventsDetector):
                 chatCounter += 1
                 self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, str(e.player)))
 
-            elif isinstance(e, UnitDiedEvent):
+            elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
                 if e.player != None and e.unit.nameC in self.unitTypeCount[e.player]:
-                    self.unitTypeCount[e.player][e.unit.nameC] -= 1            
+                    self.unitTypeCount[e.player][e.unit.nameC] -= 1     
+                
+                #print("unit died: " + str(e.unit))
+                if self.st.isSupplyProvider(str(e.unit)):
+                    self.st.decreaseLimit(e.player, e.time, str(e.unit))
+                else:
+                    self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply)
 
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
                   self.unitEligble(e)):
+                                
+                #print("new unit: " + str(e.unit))
+                if self.st.isSupplyProvider(str(e.unit)):
+                    self.st.increaseLimit(e.player, e.time, str(e.unit))
+                else:
+                    self.st.changeSupply(e.player, e.time, e.unit._type_class.supply)
                 
                 newInterval = self.getNearestIntervalStart(e.time)
 
@@ -289,28 +375,16 @@ class SimpleDetector(EventsDetector):
                                     if i < j:
                                         self.links.append(UpgradeEqLink(node, otherNode))
 
+        self.supplyBlocks = self.st.getSupplyBlocks()
+
     # TODO seems like no units are being found
 
     def addLink(self, n1, n2):
         self.links.append(UnitsLink(n1, n2))
 
-    def upgradeEligible(self, e) -> bool:
-        return not str(e.upgrade_type_name).startswith(self.OMIT_UNITS_UPGRADES)
-    
-    def statsEligible(self, e) -> bool:
-        return e._str_prefix().strip().endswith(self.STATS_TIMES)
-    
-    def buildingsEligible(self, e) -> bool:
-        return not str(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building
-
-    def unitEligble(self, e) -> bool:
-        return (e.player != None and
-                not e.unit.is_building and 
-                not e.time == "00:00" and 
-                not e.unit.name.startswith(self.OMIT_UNITS))
 
     def addBuilding(self, e, seq):
-        node = BuildingNode(e, seq)
+        node = BuildingNode(e, self.unitsInfoDict[str(e.unit)]['Build Time'], seq)
         node.index = self.getBuildingIndex(node)
         self.buildingsByPlayer[e.player].append(node)
 
@@ -320,12 +394,12 @@ class SimpleDetector(EventsDetector):
         buildingName = node.getNodeName()
         
         # append building index so that building dont have the same name
-        if self.buildingNameIndex.get(buildingName) == None:
-            self.buildingNameIndex[buildingName] = 0
+        if buildingName not in self.buildingNameIndex[node.event.player]:
+            self.buildingNameIndex[node.event.player][buildingName] = 0
         else:
-            self.buildingNameIndex[buildingName] = self.buildingNameIndex[buildingName] + 1
+            self.buildingNameIndex[node.event.player][buildingName] = self.buildingNameIndex[node.event.player][buildingName] + 1
 
-        return self.buildingNameIndex[buildingName]
+        return self.buildingNameIndex[node.event.player][buildingName]
     
     def addUnit(self, e):
         try:
@@ -359,24 +433,54 @@ class SimpleDetector(EventsDetector):
 #TODO if there is events get cg select set cg count is as add to CG
 class ControlGroupDetector(EventsDetector):
     
+    UPDATE_EVENT_THRESHOLD = 2 #how long after target event is the update event the same? 
+
+
     def __init__(self, replay) -> None:
         super().__init__(replay)
         
         self.CONTROL_GROUPS = self.initDictByPlayer(2)
+        self.replay = replay
                 
         self.lastSelection = {}
-        self.lastGetEvent = {0:None, 1:None}
+        self.lastGetEvent = {}
+        self.lastTargetEvent = {}
 
+        self.et = EnergyTracker(self.player1, self.player2)
+
+        self.analyseSelectionAndCommands()
+
+        print("\n\n ---History--- \n")
+        for key, ehist in self.et.energyHistory.items():
+            for ee in ehist:
+                print(ee)
+
+                
+        print("\n\n ---excesss--- \n")
+        for key, esur in self.et.excessEnergy.items():
+            for ee in esur:
+                #if ee.unitID == 69206017:
+                print(ee)
+                
+        self.excessEnergy = self.et.excessEnergy[self.player1] + self.et.excessEnergy[self.player2]
+
+    def analyseSelectionAndCommands(self):
         #TODO ideally there should be one big loop and detector should be called per event
-        for e in [e for e in replay.events if 
-                  isinstance(e, SelectionEvent) or  
-                  isinstance(e, StealControlGroupEvent) or 
-                  isinstance(e, AddToControlGroupEvent) or 
-                  isinstance(e, SetControlGroupEvent) or 
-                  isinstance(e, GetControlGroupEvent) or 
-                  isinstance(e, TargetPointCommandEvent) or 
-                  isinstance(e, UnitDiedEvent) or 
-                  isinstance(e, TargetUnitCommandEvent)]:
+        for e in [e for e in self.replay.events if 
+                isinstance(e, SelectionEvent) or  
+                isinstance(e, StealControlGroupEvent) or 
+                isinstance(e, AddToControlGroupEvent) or 
+                isinstance(e, SetControlGroupEvent) or 
+                isinstance(e, GetControlGroupEvent) or 
+                isinstance(e, TargetPointCommandEvent) or 
+                isinstance(e, UnitDiedEvent) or 
+                isinstance(e, UnitDoneEvent) or 
+                isinstance(e, UnitBornEvent) or 
+                isinstance(e, TargetPointCommandEvent) or
+                isinstance(e, UpdateTargetPointCommandEvent) or
+                isinstance(e, TargetUnitCommandEvent) or 
+                isinstance(e, UpdateTargetUnitCommandEvent) or 
+                isinstance(e, UnitTypeChangeEvent)]:
             
             #hold last selection event for a player
             #when control grp command comes create control group object
@@ -384,20 +488,58 @@ class ControlGroupDetector(EventsDetector):
             # selection event is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
             
             if isinstance(e, SelectionEvent) and e.new_units:
-                self.lastSelection[e.player] = e
-            elif isinstance(e, SetControlGroupEvent):
+                self.setSelection(e)
+            elif isinstance(e, AddToControlGroupEvent) or isinstance(e, SetControlGroupEvent) :
                 self.updateCG(e)
+
             elif isinstance(e, StealControlGroupEvent):
                 self.removeUnitsFromOtherCGs(e.player, "")
                 self.updateCG(e)
+
             elif isinstance(e, GetControlGroupEvent):
-                self.lastGetEvent[e.player] = e
+                self.setSelection(e)
+
+            elif isinstance(e, UnitTypeChangeEvent):
+                if self.et.isEnergyUpgrade(e.unit):
+                    self.et.registerEnergyUnit(e.unit, e.time)  
+
+            elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
+                if self.et.isEnergyUnit(e.unit):
+                    self.et.removeEnergyUnit(e.unit.id)
+
+            elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
+                if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
+                    self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name)
+
+            elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
+                if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
+                    self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
+                    self.lastTargetEvent[e.player] = e
+                #else:
+                #    self.lastTargetEvent[e.player] = e      
+
+            elif ((isinstance(e, UnitDoneEvent) or isinstance(e, UnitBornEvent) and self.buildingsEligible(e)) 
+                    or
+                (isinstance(e, UnitBornEvent) or isinstance(e, UnitDoneEvent)) and self.unitEligble(e)):
+                if self.et.isEnergyUnit(e.unit):
+                    self.et.registerEnergyUnit(e.unit, e.time)  
         
+    def getLastSelection(self, player) -> list:
+        if isinstance(self.lastSelection[player], SelectionEvent):
+            return self.lastSelection[player].new_units
+        elif isinstance(self.lastSelection[player], GetControlGroupEvent):
+            return self.CONTROL_GROUPS[player][self.lastSelection[player].control_group].getLatestUnits()
+
+    def setSelection(self, e):
+        self.lastSelection[e.player] = e
+        if e.player in self.lastTargetEvent:
+            del self.lastTargetEvent[e.player]
+
 
     def getCgUnits(self, player, cgNo, second):
 
         if cgNo in self.CONTROL_GROUPS[player]:
-            return self.CONTROL_GROUPS[player][cgNo].getUnits(second)
+            return self.CONTROL_GROUPS[player][cgNo].getUnitsStr(second)
         else:
             return None
 
@@ -409,12 +551,12 @@ class ControlGroupDetector(EventsDetector):
        # for id in unitIDs:
             #self.CONTROL_GROUPS[player].
 
-    def updateCG(self, e : SetControlGroupEvent):
+    def updateCG(self, e):
         
         if e.control_group in self.CONTROL_GROUPS[e.player]:
-            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.lastSelection[e.player])
+            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.getLastSelection(e.player))
         else:
-            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.lastSelection[e.player])
+            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.getLastSelection(e.player))
 
             
     def __str__(self) -> str:
@@ -576,16 +718,17 @@ class BattleDetector(EventsDetector):
                         if deathEvent.unit.is_building:
                             if deathEvent.unit.doneEvent == None:
                                 self.unitLinks.append(InitBuildingBattleLink(self.battles[-1], deathEvent.unit.initNode))
-                            else:
-                                self.unitLinks.append(BuildingBattleLink(self.battles[-1], deathEvent.unit.unitsNode))
+                            #else:
+                            #    self.unitLinks.append(BuildingBattleLink(self.battles[-1], deathEvent.unit.unitsNode))
                         else:
                             if deathEvent.unit.unitsNode in self.unitNodesCounts:
                                 self.unitNodesCounts[deathEvent.unit.unitsNode] += 1
                             else:
                                 self.unitNodesCounts[deathEvent.unit.unitsNode] = 1
 
-                for unitsNode, count in self.unitNodesCounts.items():
-                    self.unitLinks.append(UnitBattleLink(self.battles[-1], unitsNode, count))
+                #for unitsNode, count in self.unitNodesCounts.items():
+                #    if unitsNode.name not in ("Drone", "Probe", "SCV"): # TODO definition of worker units is duplicate
+                #        self.unitLinks.append(UnitBattleLink(self.battles[-1], unitsNode, count))
                 
                 # add reference for abilities detected in simple detector
                 for e in self.battles[-1].allAbilities:
@@ -640,15 +783,25 @@ class BattleDetector(EventsDetector):
                 else:
                     allCoordinates[player] = battleCoordinates[player]
         
-            generateBattleHeatMap(self.replay.map,
-                                  "{}/{}.jpg".format(self.fh.mapsFolder, self.mapFileName), 
-                                  "{}/{}_{}{}".format(self.fh.imagesFolder, self.mapFileName, battle.getNodeID(), self.HEAT_MAP_APPENDIX),
-                                  battleCoordinates)
+            heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, battle.getNodeID(), self.player1, self.player2, self.HEAT_MAP_APPENDIX)
+
+            if not os.path.exists(heatmapFileName):
+                generateBattleHeatMap(self.replay.map,
+                                    "{}/{}.jpg".format(self.fh.mapsFolder, self.mapFileName), 
+                                    heatmapFileName,
+                                    battleCoordinates)
+            #else:
+            #    print("image {} exists on local".format(heatmapFileName))
         
-        generateBattleHeatMap(self.replay.map,
-                              "{}/{}.jpg".format(self.fh.mapsFolder, self.mapFileName), 
-                              "{}/{}_{}{}".format(self.fh.imagesFolder, self.mapFileName, None, self.HEAT_MAP_APPENDIX),
+        heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, None, self.player1, self.player2, self.HEAT_MAP_APPENDIX)
+        
+        if not os.path.exists(heatmapFileName):
+            generateBattleHeatMap(self.replay.map,
+                                "{}/{}.jpg".format(self.fh.mapsFolder, self.mapFileName), 
+                                heatmapFileName,
                                 allCoordinates)
+        #else:
+        #    print("image {} exists on local".format(heatmapFileName))
 
     def addImagesToBattles(self):        
         self.initImagesDict()
@@ -659,14 +812,15 @@ class BattleDetector(EventsDetector):
             for imageID in self.imagesDict[battle.getNodeID()]:
                 battle.addImage("{}{}".format(ImageUploader.RESOURCE_URL, imageID))
             
-            battle.addImageDivider("{}{}".format(ImageUploader.RESOURCE_URL, "669d3e3e7cca6900157ff898"), round(len(self.imagesDict[battle.getNodeID()])/2 + 1)) # player divider image ID. +1 because of the heatmap
+            # commented out because screenshots are now ordered by time primarily not player
+            #battle.addImageDivider("{}{}".format(ImageUploader.RESOURCE_URL, "669d3e3e7cca6900157ff898"), round(len(self.imagesDict[battle.getNodeID()])/2 + 1)) # player divider image ID. +1 because of the heatmap
 
     def addImageToBattle(self, imageName):
         if imageName in self.uploadedImagesTracker:
             imageInfo = {}
             imageInfo["id"] = self.uploadedImagesTracker[imageName]
             imageInfo["status"] = 777 #just some custom status
-            print("image {} existing as {}".format(imageName, imageInfo["id"]))
+            #print("image {} existing as {}".format(imageName, imageInfo["id"]))
         else:
             imageInfo = self.iu.uploadImage(self.fh.imagesFolder, imageName)
 
@@ -679,24 +833,28 @@ class BattleDetector(EventsDetector):
         imageInfo["newURL"] = "{},{}\n".format(imageName, imageInfo["id"])
         return imageInfo
 
+    # TODO
+    # TODO
+    # TODO rename this function and addImageToBattle they do all sort of toher things
     def uploadImagesToMediaServer(self):
         newlyUploadedImages = ""
 
         heatMaps = [file for file in os.listdir(self.fh.imagesFolder) if file.endswith(self.HEAT_MAP_APPENDIX)]
         for heatMapImg in heatMaps:
-            battleID = heatMapImg.split("_")[-2]
+            battleID = heatMapImg.split("_")[-3] 
 
             imgInfo = self.addImageToBattle(heatMapImg)
 
             if imgInfo["status"] == 201:
                 newlyUploadedImages += imgInfo["newURL"]
 
+            #one with battle None is used as a overall heatmap for the game
             if battleID != 'None':
                 self.imagesDict[battleID].append(imgInfo["id"])
             
-        pngScreenshots = [file for file in os.listdir(self.fh.imagesFolder) if file.startswith('Battle') and file.endswith('.png')]
+        pngScreenshots = [file for file in os.listdir(self.fh.imagesFolder) if "_Battle-" in file and file.endswith('.png') and not file.endswith(self.HEAT_MAP_APPENDIX)]
         for screenshotName in pngScreenshots:
-            battleID = screenshotName.split("_")[0]
+            battleID = screenshotName.split("_")[1]
             imgInfo = self.addImageToBattle(screenshotName)
             
             if imgInfo["status"] == 201:
@@ -759,8 +917,8 @@ class SecondOfDying():
     def __str__(self):
         return f"{self.second} : {self.deathCount} : {self.deathProximitySum} : {self.dyingUnits}"
             
-            
-            
+
+                    
 try:
     # Assume that we are on *nix or Mac
     import termios

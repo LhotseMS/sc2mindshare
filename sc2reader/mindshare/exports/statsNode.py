@@ -1,7 +1,6 @@
 from sc2reader.mindshare.exports.node import SimpleNode, X_LD
 from sc2reader.events.tracker import PlayerStatsEvent
 
-# TODO add UnitPositionsEvent heatmap once there is a map image
 class StatsNode(SimpleNode):
 
     def __init__(self, e : PlayerStatsEvent, seq) -> None:
@@ -14,20 +13,21 @@ class StatsNode(SimpleNode):
     
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
-        return "{} had these stats at {}:{}{}{}".format(self.getNodePlayer(),
-                           self.getNodeTime(),
-                           X_LD,X_LD,
-                           (
-                            f"Current: {self.event.minerals_current}m {self.event.vespene_current}g" + X_LD +   
-                            f"Rate: {self.event.minerals_collection_rate}m {self.event.vespene_collection_rate}g" + X_LD +  
-                            f"Work: {self.event.workers_active_count}" + X_LD +  
-                            f"Army: {self.event.minerals_used_current_army}m {self.event.vespene_used_current_army}g" + X_LD + 
-                            f"Eco: {self.event.minerals_used_current_economy}m {self.event.vespene_used_current_economy}g" + X_LD +  
-                            f"Tech: {self.event.minerals_used_current_technology}m {self.event.vespene_used_current_technology}g" 
-                        ))
+        return "{} had these stats at {}.".format(self.getNodePlayer(),
+                           self.getNodeTime())
+    
+        """X_LD,X_LD,
+        (
+        f"Current: {self.event.minerals_current}m {self.event.vespene_current}g" + X_LD +   
+        f"Rate: {self.event.minerals_collection_rate}m {self.event.vespene_collection_rate}g" + X_LD +  
+        f"Work: {self.event.workers_active_count}" + X_LD +  
+        f"Army: {self.event.minerals_used_current_army}m {self.event.vespene_used_current_army}g" + X_LD + 
+        f"Eco: {self.event.minerals_used_current_economy}m {self.event.vespene_used_current_economy}g" + X_LD +  
+        f"Tech: {self.event.minerals_used_current_technology}m {self.event.vespene_used_current_technology}g" 
+    ))"""
     
     def getProperties(self, sep):
-        return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(super().getProperties(sep),
+        return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(super().getProperties(sep),
                 self.event.minerals_current, sep,  
                 self.event.vespene_current, sep, 
                 self.event.minerals_collection_rate, sep, 
@@ -35,10 +35,10 @@ class StatsNode(SimpleNode):
                 self.event.workers_active_count, sep, 
                 self.event.minerals_used_current_army, sep, 
                 self.event.vespene_used_current_army, sep,
-                self.event.minerals_used_current_economy, sep, 
-                self.event.vespene_used_current_economy, sep, 
-                self.event.minerals_used_current_technology, sep, 
-                self.event.vespene_used_current_technology, sep)
+                self.event.minerals_used_current, sep, 
+                self.event.vespene_used_current, sep) 
+                #self.event.minerals_used_current_technology, sep, 
+                #self.event.vespene_used_current_technology, sep)
     
     # TODO link to related opponent upgrade, previous upgrade
     def getNodeLinks(self) -> str: pass

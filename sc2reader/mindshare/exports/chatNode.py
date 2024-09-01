@@ -15,10 +15,10 @@ class ChatNode(SimpleNode):
         self.type = "Chat"
 
     def getNodeName(self):
-        return "{}".format(self.text)
+        return "{}".format(self.text).replace(";",":")
 
     def getNodeDescription(self):
-        return "{}: {}".format(self.player, self.text)
+        return "{}: {}".format(self.player, self.text).replace(";",":")
     
     def getProperties(self, sep):
         return "{}".format(super().getProperties(sep))

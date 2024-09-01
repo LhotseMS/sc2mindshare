@@ -2,13 +2,14 @@ import re
 
 from sc2reader.mindshare.exports.node import SimpleNode
 from sc2reader.events.tracker import UpgradeCompleteEvent
+from sc2reader.mindshare.utils import MsUtils
 
 
 class UpgradeNode(SimpleNode):
     
     LEVELS_PATTERN = r'Level \d+$'
 
-    def __init__(self, e : UpgradeCompleteEvent, seq) -> None:
+    def __init__(self, e : UpgradeCompleteEvent, upgradeTime, seq) -> None:
         super().__init__(e, seq)
 
         name = self.getNodeName()
@@ -24,6 +25,8 @@ class UpgradeNode(SimpleNode):
             self.interaction = "Defence"
         else:
             self.interaction = None
+
+        self.upgradeTime = int(upgradeTime)
 
         self.propertiesCount = 3
         self.type = "Upgrade"
@@ -45,5 +48,5 @@ class UpgradeNode(SimpleNode):
     def getNodeLinks(self) -> str: pass
 
     def getNodeTime(self):
-        return "00:" + self.event._str_prefix().replace(".",":").strip()
+        return MsUtils.decrementSeconds("00:" + self.event._str_prefix().replace(".",":").strip(), self.upgradeTime)
     
