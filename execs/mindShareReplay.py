@@ -26,7 +26,8 @@ def parseReplay(filename):
                       sc2reader.mindshare.detectors.detectors.simpleDetector.abilities +  
                       sc2reader.mindshare.detectors.detectors.simpleDetector.messages +  
                       sc2reader.mindshare.detectors.detectors.simpleDetector.supplyBlocks +
-                      sc2reader.mindshare.detectors.detectors.controlGroupDetector.excessEnergy, 
+                      sc2reader.mindshare.detectors.detectors.controlGroupDetector.excessEnergy +
+                      sc2reader.mindshare.detectors.detectors.controlGroupDetector.injectDelays, 
                       sc2reader.mindshare.detectors.detectors.singlesDetector.links +
                       sc2reader.mindshare.detectors.detectors.battleDetector.links +
                       sc2reader.mindshare.detectors.detectors.simpleDetector.links)

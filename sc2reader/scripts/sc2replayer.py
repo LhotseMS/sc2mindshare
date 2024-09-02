@@ -163,7 +163,7 @@ def printSelectionsAndCommandsEvents(replay):
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            if "Wanky" in str(e.player):
+            if "SkippyJo" in str(e.player):
                 print(e)
 
 def printCommandEvents(replay):
@@ -294,8 +294,8 @@ if __name__ == "__main__":
     #parser.add_argument('--replay', type=str, help='Name of the replay file')
     
     #args = parser.parse_args()
-    processFile("Crimson Court LE Applejuice Wanky (2).SC2Replay")
-
+    processFile("Skippy_Oceanborn LE (24).SC2Replay")
+    # Crimson Court LE Applejuice Wanky (2).SC2Replay
 
 try:
     # Assume that we are on *nix or Mac

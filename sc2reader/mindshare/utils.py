@@ -62,8 +62,8 @@ class MsUtils:
     
     #TODO this should work on minutes and hours
     def isLater(firstTime, laterTime) -> bool:
-        ft = datetime.strptime(firstTime, "%M:%S")
-        lt = datetime.strptime(laterTime, "%M:%S")
+        ft = datetime.strptime(firstTime.replace(".",":"), "%M:%S")
+        lt = datetime.strptime(laterTime.replace(".",":"), "%M:%S")
 
         return lt > ft
 

@@ -21,7 +21,7 @@ from sc2reader.mindshare.exports.abilityNode import AbilityNode
 from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
  
-from sc2reader.mindshare.detectors.trackers import EnergyTracker, SupplyTracker
+from sc2reader.mindshare.detectors.trackers import EnergyTracker, SupplyTracker, InjectTracker
 
 from sc2reader.mindshare.mindshare import Base
 from sc2reader.mindshare.utils import MsUtils
@@ -447,22 +447,12 @@ class ControlGroupDetector(EventsDetector):
         self.lastTargetEvent = {}
 
         self.et = EnergyTracker(self.player1, self.player2)
+        self.it = InjectTracker(self.player1, self.player2)
 
-        self.analyseSelectionAndCommands()
-
-        print("\n\n ---History--- \n")
-        for key, ehist in self.et.energyHistory.items():
-            for ee in ehist:
-                print(ee)
-
-                
-        print("\n\n ---excesss--- \n")
-        for key, esur in self.et.excessEnergy.items():
-            for ee in esur:
-                #if ee.unitID == 69206017:
-                print(ee)
+        self.analyseSelectionAndCommands()       
                 
         self.excessEnergy = self.et.excessEnergy[self.player1] + self.et.excessEnergy[self.player2]
+        self.injectDelays = self.it.injectDelays[self.player1] + self.it.injectDelays[self.player2]
 
     def analyseSelectionAndCommands(self):
         #TODO ideally there should be one big loop and detector should be called per event
@@ -472,7 +462,7 @@ class ControlGroupDetector(EventsDetector):
                 isinstance(e, AddToControlGroupEvent) or 
                 isinstance(e, SetControlGroupEvent) or 
                 isinstance(e, GetControlGroupEvent) or 
-                isinstance(e, TargetPointCommandEvent) or 
+                isinstance(e, WeirdControlGroupEvent) or 
                 isinstance(e, UnitDiedEvent) or 
                 isinstance(e, UnitDoneEvent) or 
                 isinstance(e, UnitBornEvent) or 
@@ -489,12 +479,14 @@ class ControlGroupDetector(EventsDetector):
             
             if isinstance(e, SelectionEvent) and e.new_units:
                 self.setSelection(e)
-            elif isinstance(e, AddToControlGroupEvent) or isinstance(e, SetControlGroupEvent) :
+            elif isinstance(e, AddToControlGroupEvent) or isinstance(e, SetControlGroupEvent) or isinstance(e, WeirdControlGroupEvent) :
                 self.updateCG(e)
 
             elif isinstance(e, StealControlGroupEvent):
                 self.removeUnitsFromOtherCGs(e.player, "")
                 self.updateCG(e)
+
+                #if larva is a selection event after cg get its a hatch build 
 
             elif isinstance(e, GetControlGroupEvent):
                 self.setSelection(e)
@@ -511,10 +503,17 @@ class ControlGroupDetector(EventsDetector):
                 if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
                     self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name)
 
+                    if self.it.isInjectAbility(e.ability_name):
+                        self.it.processInject(e)
+
             elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
                 if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
                     self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
                     self.lastTargetEvent[e.player] = e
+
+                    if self.it.isInjectAbility(e.ability_name):
+                        self.it.processInject(e)
+
                 #else:
                 #    self.lastTargetEvent[e.player] = e      
 
@@ -523,6 +522,9 @@ class ControlGroupDetector(EventsDetector):
                 (isinstance(e, UnitBornEvent) or isinstance(e, UnitDoneEvent)) and self.unitEligble(e)):
                 if self.et.isEnergyUnit(e.unit):
                     self.et.registerEnergyUnit(e.unit, e.time)  
+
+                if self.it.isHatchery(e.unit):
+                    self.it.addHatchery(e.unit)
         
     def getLastSelection(self, player) -> list:
         if isinstance(self.lastSelection[player], SelectionEvent):
@@ -637,6 +639,19 @@ class BaseDetector(EventsDetector):
                         minDistance = dist
 
         return minDistBase
+    
+    def printEnergyInfo(self):
+        print("\n\n ---History--- \n")
+        for key, ehist in self.et.energyHistory.items():
+            for ee in ehist:
+                print(ee)
+
+                
+        print("\n\n ---excesss--- \n")
+        for key, esur in self.et.excessEnergy.items():
+            for ee in esur:
+                #if ee.unitID == 69206017:
+                print(ee)
 
     def __str__(self) -> str:
         printDict(self.bases)

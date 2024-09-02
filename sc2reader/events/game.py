@@ -54,6 +54,7 @@ class GameEvent(Event):
 
         return player_name
 
+
     def _str_time(self):
         return f"{Length(seconds=int(self.frame / 22.4))}"
 
@@ -597,7 +598,9 @@ def create_control_group_event(frame, pid, data):
         # TODO: What could this be?!?
         return ControlGroupEvent(frame, pid, data)
     elif update_type == 4:
-        return StealControlGroupEvent(frame, pid, data)
+        return StealControlGroupEvent(frame, pid, data) 
+    elif update_type == 5:
+        return WeirdControlGroupEvent(frame, pid, data) 
     else:
         # No idea what this is but we're seeing update_types of 4 and 5 in 3.0
         return ControlGroupEvent(frame, pid, data)
@@ -651,6 +654,14 @@ class StealControlGroupEvent(ControlGroupEvent):
     def __str__(self):
         return colored(self._str_prefix() + f" {self.playerName} CG {self.control_group} Steal","magenta")
 
+class WeirdControlGroupEvent(ControlGroupEvent):
+    """
+    Extends :class:`ControlGroupEvent`
+    """
+
+    def __str__(self):
+        return colored(self._str_prefix() + f" {self.playerName} CG {self.control_group} Weird Add?","magenta")
+    
 class SetControlGroupEvent(ControlGroupEvent):
     """
     Extends :class:`ControlGroupEvent`

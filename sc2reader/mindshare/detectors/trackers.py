@@ -1,8 +1,10 @@
 
 from sc2reader.mindshare.exports.supplyBlockNode import SupplyBlockNode 
 from sc2reader.mindshare.exports.energyNode import EnergyNode 
+from sc2reader.mindshare.exports.injectNode import InjecDelayNode 
 from sc2reader.mindshare.utils import MsUtils
 from sc2reader.utils import Length
+from datetime import datetime, timedelta
 
 from termcolor import colored
 
@@ -18,9 +20,62 @@ class Tracker:
 
 class InjectTracker(Tracker):
 
+    INJECT = "SpawnLarva"
+    INJECT_DURATION = 29
+    THRESHOLD = 10
+
     def __init__(self, player1, player2) -> None:
         super().__init__(player1, player2)
 
+        self.hatcheries = {}
+
+        self.injectDelays = {}
+        self.injectDelays[player1] = list()
+        self.injectDelays[player2] = list()
+
+        self.seq = 0
+
+    def addHatchery(self, unit):
+        self.hatcheries[unit.id] = list()
+
+    def isHatchery(self, unit):
+        return unit.name in ("Hatchery", "Lair", "Hive")
+
+    #TODO time handling should be optimized so that this layer gets the dates and the node one changes it to strings
+    def processInject(self, event):
+
+        currentInjectTime = datetime.strptime(event._str_time(), "%M.%S") 
+        injectDuration = timedelta(seconds=self.INJECT_DURATION)
+
+        if len(self.hatcheries[event.target.id]) > 0:
+
+            injectDurationUntil = self.hatcheries[event.target.id][-1].injectedUntil
+            injectLastingFor = currentInjectTime - injectDurationUntil
+
+            if currentInjectTime > injectDurationUntil:
+
+                if injectLastingFor > timedelta(seconds=self.THRESHOLD):
+                    self.injectDelays[event.player].append(InjecDelayNode(event.target, injectDurationUntil.strftime("%M.%S"), currentInjectTime.strftime("%M.%S"), injectLastingFor, self.THRESHOLD, self.seq))
+                    self.seq += 1
+                
+                injectDurationUntil = currentInjectTime + injectDuration
+            else:
+                injectDurationUntil = injectDurationUntil + (injectDuration - (-1) * injectLastingFor)
+        else:
+            injectDurationUntil = currentInjectTime + injectDuration
+
+        self.hatcheries[event.target.id].append(InjectStatus(datetime.strptime(event._str_time(),"%M.%S"), injectDurationUntil))
+
+    def isInjectAbility(self, abilityName):
+        return abilityName == self.INJECT
+
+class InjectStatus():
+
+    def __init__(self, injectTime, injectedUntil):
+        self.injectTime = injectTime
+        self.injectedUntil = injectedUntil
+
+        
 
 
 class EnergyTracker(Tracker):
@@ -86,8 +141,14 @@ class EnergyTracker(Tracker):
         #print("Not an energy ability: " + abilityName)
         return False
 
-    def getCurrentEnergy(self, unit, time): 
-        prevEnergyStatus = self.energyHistory[unit.id][-1]
+    def getEnergyAtTime(self, unit, time): 
+
+        prevEnergyStatus = None
+        for status in self.energyHistory[unit.id]:
+            if MsUtils.isLater(time, status.time):
+                break
+            prevEnergyStatus = status
+
         interval = MsUtils.intervalBetween(prevEnergyStatus.time.replace(".",":"), time.replace(".",":"))
         accEnergy = interval * self.ENERGY_REGEN_PS
 
@@ -166,7 +227,7 @@ class EnergyTracker(Tracker):
                 if (u.doneEvent != None and 
                     MsUtils.isLater(u.doneEvent.time, time.replace(".",":")) and 
                     u.id in self.energyHistory and 
-                    self.getCurrentEnergy(u, time) >= energyChange): # not done units are included in the control groups, and nexus gets picked up before the done event.
+                    self.getEnergyAtTime(u, time) >= energyChange): # not done units are included in the control groups, and nexus gets picked up before the done event.
                     unit = u
                     break
 
@@ -174,7 +235,7 @@ class EnergyTracker(Tracker):
             print(colored("No unit found {} {} {}".format(time, units, abilityName))) # probably double click before energy resolved
             return
 
-        currentEnergy = self.getCurrentEnergy(unit, time)
+        currentEnergy = self.getEnergyAtTime(unit, time)
 
         newEnergy = currentEnergy - energyChange
 
