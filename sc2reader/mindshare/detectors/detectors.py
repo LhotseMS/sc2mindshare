@@ -20,6 +20,7 @@ from sc2reader.mindshare.exports.initNode import InitNode
 from sc2reader.mindshare.exports.abilityNode import AbilityNode 
 from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
+import sc2reader.mindshare.detectors.detectors
  
 from sc2reader.mindshare.detectors.trackers import EnergyTracker, SupplyTracker, InjectTracker
 
@@ -32,17 +33,18 @@ from sc2reader.mindshare.imageUploader import ImageUploader
 from sc2reader.mindshare.imageGenerator import generateBattleHeatMap
 
 basesDetector = None
-controlGroupDetector = None
+actionsDetector = None
 battleDetector = None
 simpleDetector = None
 singlesDetector = None
 
 def createDetectors(replay):
-    global basesDetector, battleDetector, controlGroupDetector, simpleDetector, singlesDetector
+    global basesDetector, battleDetector, actionsDetector, simpleDetector, singlesDetector
 
     # order is improtant as many use data set up by base controler or CGc
+    # base detector first because batte.py uses it
     basesDetector = BaseDetector(replay)
-    controlGroupDetector = ControlGroupDetector(replay)
+    actionsDetector = ActionsDetector(replay)
     simpleDetector = SimpleDetector(replay)
     
     # battle detector expects units nodes link to units
@@ -431,7 +433,7 @@ class SimpleDetector(EventsDetector):
         
 
 #TODO if there is events get cg select set cg count is as add to CG
-class ControlGroupDetector(EventsDetector):
+class ActionsDetector(EventsDetector):
     
     UPDATE_EVENT_THRESHOLD = 2 #how long after target event is the update event the same? 
 
@@ -448,6 +450,8 @@ class ControlGroupDetector(EventsDetector):
 
         self.et = EnergyTracker(self.player1, self.player2)
         self.it = InjectTracker(self.player1, self.player2)
+
+        self.dronePulls = self.initDictByPlayer(2)
 
         self.analyseSelectionAndCommands()       
                 
@@ -499,6 +503,7 @@ class ControlGroupDetector(EventsDetector):
                 if self.et.isEnergyUnit(e.unit):
                     self.et.removeEnergyUnit(e.unit.id)
 
+            # TODO group the below two elifs together so code isn't duplicated
             elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
                 if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
                     self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name)
@@ -526,6 +531,13 @@ class ControlGroupDetector(EventsDetector):
                 if self.it.isHatchery(e.unit):
                     self.it.addHatchery(e.unit)
         
+    
+    def getPullEventForBase(self, player, secFrom, secTo, inputBase) -> CommandEvent:
+        for time, event in self.dronePulls[player].items():
+            base = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(e)
+            if secFrom <= MsUtils.timeToSeconds(time) <= secTo and inputBase == base:
+                return event
+
     def getLastSelection(self, player) -> list:
         if isinstance(self.lastSelection[player], SelectionEvent):
             return self.lastSelection[player].new_units
@@ -536,7 +548,6 @@ class ControlGroupDetector(EventsDetector):
         self.lastSelection[e.player] = e
         if e.player in self.lastTargetEvent:
             del self.lastTargetEvent[e.player]
-
 
     def getCgUnits(self, player, cgNo, second):
 
@@ -559,7 +570,19 @@ class ControlGroupDetector(EventsDetector):
             self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.getLastSelection(e.player))
         else:
             self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.getLastSelection(e.player))
+    
+    def printEnergyInfo(self):
+        print("\n\n ---History--- \n")
+        for key, ehist in self.et.energyHistory.items():
+            for ee in ehist:
+                print(ee)
 
+                
+        print("\n\n ---excesss--- \n")
+        for key, esur in self.et.excessEnergy.items():
+            for ee in esur:
+                #if ee.unitID == 69206017:
+                print(ee)
             
     def __str__(self) -> str:
         for player, cgs in self.CONTROL_GROUPS.items():
@@ -596,7 +619,7 @@ class BaseDetector(EventsDetector):
                     abs(ml[1] - e.y) < self.DISTANCE_FROM_MINERALS]) > 0
 
     def isBase(self, unit):
-        return unit.is_building and unit._type_class.name in {"Nexus","Hatchery","Hive","OrbitalCommand"} #main base unit born event has Hive for some reason
+        return unit.is_building and unit._type_class.name in {"Nexus","Hatchery","Lair", "Hive","OrbitalCommand"} #main base unit born event has Hive for some reason
                             
     def findBases(self):
         basesBuiltEvents = [e for e in self.replay.events if 
@@ -626,32 +649,27 @@ class BaseDetector(EventsDetector):
     
 
     # bases might not exist yet
-    def getBaseOnLocation(self, e) -> Base:
+    def getClosestBase(self, e) -> Base:
 
         minDistBase = None
         minDistance = 1000
         for player, bases in self.bases.items():
             for base in bases:
-                if base.isLocationInBase(e):
-                    dist = base.minDistance(e.location) < minDistance
-                    if dist < minDistance:
-                        minDistBase = base
-                        minDistance = dist
+                dist = base.minDistance(e.location) < minDistance
+                if dist < minDistance:
+                    minDistBase = base
+                    minDistance = dist
 
         return minDistBase
     
-    def printEnergyInfo(self):
-        print("\n\n ---History--- \n")
-        for key, ehist in self.et.energyHistory.items():
-            for ee in ehist:
-                print(ee)
-
+    def getBaseForEvent(self, e):
+        
+        for player, bases in self.bases.items():
+            for base in bases:
+                if base.isEventOnLocation(e):
+                    return base
                 
-        print("\n\n ---excesss--- \n")
-        for key, esur in self.et.excessEnergy.items():
-            for ee in esur:
-                #if ee.unitID == 69206017:
-                print(ee)
+        return None
 
     def __str__(self) -> str:
         printDict(self.bases)
@@ -881,7 +899,7 @@ class BattleDetector(EventsDetector):
 
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?
-        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath()] #not larva add drone deaths?
+        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath()]
         
         self.deathsByTime = {}
         for e in unitDeathEvents:

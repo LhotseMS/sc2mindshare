@@ -12,6 +12,9 @@ class UnitsNode(MultiNode):
             self.supply += e.unit.supply
             e.unit.unitsNode = self
 
+        # TODO unit or the event should provide the cleaned name, #
+        self.name = self.event.unit.nameC
+
         self.type = "Units"
         self.propertiesCount = 4
         self.currentUnits = 0
@@ -23,6 +26,12 @@ class UnitsNode(MultiNode):
                              self.supply, sep,
                              self.currentUnits, sep)
     
+    def getNodeDescription(self):
+        if self.count > 1:
+            return "{} {}s completed by {} in last 10s from {}".format(self.count, self.name, self.getNodePlayer(), self.startTime)
+        else:
+            return "{} completed by {} in last 10s from {}".format(self.name, self.getNodePlayer(), self.startTime)
+        
     # TODO link to related opponent upgrade, previous upgrade
     def getNodeLinks(self) -> str: pass
 

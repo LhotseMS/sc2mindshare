@@ -725,6 +725,8 @@ class CameraEvent(GameEvent):
         #: The current yaw of the camera
         self.yaw = data["yaw"]
 
+        self.timeLocation = None
+
     def isPlayer(self, names) -> bool:
         return self.playerName in names
 

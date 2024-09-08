@@ -128,9 +128,10 @@ def processFile(filename):
     print(toDict()(replay))
     print("\n")
     
-    printSelectionsAndCommandsEvents(replay)
+    #printSelectionsAndCommandsEvents(replay)
     #printCommandEvents(replay)
-    #printSomeEvents(replay)
+    printCameraEvents(replay)
+    printSomeEvents(replay)
     
 
 def printIntervalAll(start, finish, events):
@@ -180,16 +181,42 @@ def printCommandEvents(replay):
                 print(e)
 
 
-def printSomeEvents(replay):
+def printCameraEvents(replay):
+    ces = {}
+
     for e in replay.events:
-        if (isinstance(e, UnitTypeChangeEvent) or
+        if (isinstance(e, CameraEvent) or
             #isinstance(e, UpdateTargetUnitCommandEvent) or
-            isinstance(e, UnitTypeChangeEvent)):
+            isinstance(e, CameraEvent)):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            if "Wanky" in str(e.player):
+            if "SkippyJo" in str(e.player):
+                
+                cstr = str(e)[5:]
+                
+                if cstr in ces.keys():
+                    ces[cstr] += 1
+                else:
+                    ces[cstr] = 0
+
+                print(e)
+
+    for cstr, count in ces.items():
+        print(cstr + " " + str(count))
+
+                
+def printSomeEvents(replay):
+    for e in replay.events:
+        if (isinstance(e, UnitDoneEvent) or
+            #isinstance(e, UpdateTargetUnitCommandEvent) or
+            isinstance(e, UnitBornEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "SkippyJo" in str(e.player):
                 print(e)
             
 
@@ -210,29 +237,6 @@ def printEventsOfInterest(replay, events):
         
         if not e.unit.is_building and e.time != "00:00":
             print(e)
-       
-        #else:
-        #    if not e.control_pid in bases:
-        #       bases[e.control_pid] = list()
-        
-        
-        
-    
-        
-        #if not e.pid in d:
-        #    d[e.pid] = list()
-        #if not e.pid in cg:
-        #    cg[e.pid] = list()
-        
-        #d[e.pid].append(e)
-        
-        
-                
-                       
-            
-        
-    #printDict(d)
-
 
 
 def printControlGroups(events):
@@ -295,6 +299,7 @@ if __name__ == "__main__":
     
     #args = parser.parse_args()
     processFile("Skippy_Oceanborn LE (24).SC2Replay")
+    # MS_ Camera Events.SC2Replay
     # Crimson Court LE Applejuice Wanky (2).SC2Replay
 
 try:

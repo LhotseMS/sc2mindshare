@@ -9,10 +9,11 @@ from sc2reader.mindshare.mindshare import Base
 from sc2reader.events.game import *
 from sc2reader.events.tracker import *
 from sc2reader.mindshare import *
+from sc2reader.mindshare.exports.harrasmentNode import HarrasmentNode
 from termcolor import colored
 
 
-from sc2reader.mindshare.mindshare import Screen
+from sc2reader.mindshare.mindshare import TimeLocation
 
 
 class Battle(PlayerHandler):
@@ -20,6 +21,8 @@ class Battle(PlayerHandler):
     This event is recorded for each player at the very beginning of the game before the
     :class:`GameStartEvent`.
     """
+    CAMERA_CONTINUOUS_MOVE_LIMIT = 5
+    WORKING_WORKER_DEATH_DELAY = 3
 
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD):
         #:
@@ -51,17 +54,26 @@ class Battle(PlayerHandler):
         self.combatAbilitiesTypes = self.initDictByPlayer(2)
         self.nonCombatAbilitiesTypes = self.initDictByPlayer(2)
 
-        self.screens = self.initDictByPlayer()
+        self.harrasSeq = 0
+        self.workerDeathBases = self.initDictByPlayer(2)
+        self.harrasmentNodes = self.initDictByPlayer()
+
+        self.mapLocations = self.initDictByPlayer()
 
         self.supplyLost = self.initDictByPlayer(0)
         self.minLost = self.initDictByPlayer(0)
         self.gasLost = self.initDictByPlayer(0)
         
-        #/energy spending/
-        # larva injects
-        # not building workers in the first 
-        # larva count too low - relative to max supply
-        # creep spread - 
+
+        # battle results & evaluate battle
+        # - good trade
+        # - killed key units
+        # worker pulls - reaction times
+        #split battles by location - multiprone
+        # 1 Set up locations
+        # 2 check if event is in location
+        # 3 how many locations are used in interval 
+
         #unit positions
         # - damaged every 15s
         # - on selection
@@ -71,19 +83,28 @@ class Battle(PlayerHandler):
         # - target location vs buildings
         # - 
         #fog of war - list of all current visibility, range from file
+    
+        # camera locations if camera returns from far to the exact location of main base
+        # measure effective actions - how many screens x how many actions, how many different group selections
+        # count camera hotkeys usage - too few too many? When during multitasking? When macro when not?
+        # camera - was a player multitasking - no multitasking during battles, is macro falling behind in battles?
+        
+        #periods of activity - what is the player doing during this time % of micro actions vs % of macro actions, threshold for macro
+
+
+
+
+
         #builds
         #GameSummary
         #APMTracker
-        #camera locations if camera returns from far to the exact location of main base
-        #count camera hotkeys usage - too few too many? When during multitasking? When macro when not?
         # catching an observer, scan and kill or just kill
         # base blocks - creep, unit on hold, building
         # control of towers - tower coordinates, unit sent there, no other command and didn't die
+        # not building workers in the first - builds
+        # larva count too low - relative to max supply
+        # creep spread - 
 
-        #split battles by location - multiprone
-        #drone pulls - reaction times
-        # recognize screen shortcuts use
-        # camera - was a player multitasking - no multitasking during battles, is macro falling behind in battles?
         # fighting on/off creep
         # when player got attacked and wasn't watching - his unit was targetted - opponents camera was on that unit, the attack point
 
@@ -98,7 +119,6 @@ class Battle(PlayerHandler):
         # BACKLOG
         # - pair CGs to actions
         # TODO mention in battle that it was a cancellation
-        # TODO evaluate who won the battle, generate simple text descriptions based on numbers
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
         # creep spread tracker
 
@@ -156,7 +176,7 @@ class Battle(PlayerHandler):
         screenEventsBuffer = self.initDictByPlayer()
         
         # Dict of all locations that of selected event types
-        self.locations = self.initDictByPlayer()
+        self.locationEvents = self.initDictByPlayer()
                
         # print(f"minmax {minX} {maxX}, {minY} {maxY}")
         
@@ -202,7 +222,7 @@ class Battle(PlayerHandler):
                         minY = e.location[1]
                     if e.location[1] > maxY:
                         maxY = e.location[1]                 
-                    self.locations[e.player].append(e.location)
+                    self.locationEvents[e.player].append(e.location)
 
                     self.processLocationEvent(e)
                     self.processBaseEvent(e, self.basesWhereEvents)
@@ -214,13 +234,14 @@ class Battle(PlayerHandler):
             #  TODO: Don't create new screens if the user returned to the previous location, 
             # add function isView in screen to add new camera events to existing screen instead of adding a new one
             # piliskner has no camera events in battle bug    
+            # TODO TODO performance imp, .getLastEvent loops through all, just add var for last event
             elif isinstance(e, CameraEvent) and e.isPlayer(playerNames) and e.isUnique(self.getLastEvent(lambda x: isinstance(x,CameraEvent))):
                 self.cameraByPlayer[e.player].append(e)
                 self.eventsByPlayer[e.player].append(e)
 
                 # if the next camera event is futther than 3 TODO to constant
-                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > 3 and abs(prevCameraEvent[e.player].y - e.y) > 3):
-                    self.screens[e.player].append(Screen(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
+                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > self.CAMERA_CONTINUOUS_MOVE_LIMIT or abs(prevCameraEvent[e.player].y - e.y) > self.CAMERA_CONTINUOUS_MOVE_LIMIT):
+                    self.mapLocations[e.player].append(TimeLocation(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
 
                     screenEventsBuffer[e.player] = list()
 
@@ -258,6 +279,17 @@ class Battle(PlayerHandler):
                     self.processLocationEvent(e)
                     self.processBaseEvent(e, self.basesWhereDeaths)
 
+                    #first sort deaths by bases, later review them to determine pulls
+                    if e.unit.is_worker:
+                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(e)
+
+                        # worker died near a base
+                        if baseOfWorkerDeath != None:
+                            if baseOfWorkerDeath not in self.workerDeathBases[e.player]:
+                               self.workerDeathBases[e.player][baseOfWorkerDeath] = list() 
+
+                            self.workerDeathBases[e.player][baseOfWorkerDeath].append(e)
+
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","red"))
 
             elif isinstance(e, PlayerStatsEvent):
@@ -280,6 +312,12 @@ class Battle(PlayerHandler):
                          self.nonCombatAbilitiesByPlayer[self.player2] + 
                          self.combatAbilitiesByPlayer[self.player1] + 
                          self.combatAbilitiesByPlayer[self.player2])
+        
+        for base, deathEvents in self.workerDeathBases[e.player].items():
+            pullEvent = sc2reader.mindshare.detectors.detectors.actionsDetector.getPullEvent(e.player, self.startSec, self.endSec, base)
+            self.harrasmentNodes[e.player].append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
+            self.harrasSeq += 1
+              
 
     @property
     def deathCount(self):
@@ -301,12 +339,12 @@ class Battle(PlayerHandler):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseOnLocation(e)
+        locationBase = sc2reader.mindshare.detectors.detectors.basesDetector.getClosestBase(e)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)
 
-    #categorize events get numbers by type
+    #categorize events get numbers by types
     #TODO use this logic to group control group units on output
     def processLocationEvent(self, e):
         if isinstance(e, TargetPointCommandEvent) or isinstance(e, TargetUnitCommandEvent):
@@ -323,7 +361,7 @@ class Battle(PlayerHandler):
                 MsUtils.iterateType(self.deadTypes[e.player], e.replaceStrings(e.unit, True)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
 
     def assignEventToScreen(self, event) -> bool:
-        for s in self.screens[event.player]:
+        for s in self.mapLocations[event.player]:
             if s.tryAddEvent(event):
                 return True
         
@@ -357,11 +395,11 @@ class Battle(PlayerHandler):
     
 
     def _strActionsMap(self):
-        orderedLocs1 = self.locations[self.player1]
+        orderedLocs1 = self.locationEvents[self.player1]
         orderedLocs1.sort(key=takeFirst)
         # print(colored(orderedLocs1,"green"))
         
-        orderedLocs2 = self.locations[self.player2]
+        orderedLocs2 = self.locationEvents[self.player2]
         orderedLocs2.sort(key=takeFirst)
         # print(colored(orderedLocs2,"cyan"))
         

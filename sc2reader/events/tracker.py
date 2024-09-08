@@ -439,6 +439,9 @@ class UnitDiedEvent(TrackerEvent):
     def isCounted(self):
         return self.countableUnitDeath() #self.unit.type not in [845] #845=InvisibleTargetDummy
     
+    def isWorker(self):
+        return self.unit.is_worker
+
     def countableUnitDeath(self): 
         return ((self.unit.is_army or self.unit.is_building or
                  self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) and
@@ -660,8 +663,8 @@ class UnitDoneEvent(TrackerEvent):
         return self.unit.owner.pid
 
     def __str__(self):
-        return self._str_prefix() + "{: >15} - Unit {}({}) done".format(
-            str(self.unit.owner), self.unit, self.unit.id
+        return self._str_prefix() + "{: >15} - Unit {}({}) {} done".format(
+            str(self.unit.owner), self.unit, self.unit.id, self.unit.location
         )
 
 

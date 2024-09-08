@@ -117,7 +117,7 @@ class BattleNode(Battle, Node):
 
                 # player can press the CG get but there is no CG created for it 
                 # TODO the used CGs shouldnt record get if there is no prior set or steal CG
-                units = sc2reader.mindshare.detectors.detectors.controlGroupDetector.getCgUnits(player, cg, self.endSec)
+                units = sc2reader.mindshare.detectors.detectors.actionsDetector.getCgUnits(player, cg, self.endSec)
                 if units != None:
                     cgs += "{}{}: {}".format(X_LD, str(cg), units)
         

@@ -81,21 +81,12 @@ class MultiNode(Node):
         self.event = es[0]
         self.startTime = startTime
         self.count = self.events.__len__()
-
-        # TODO unit or the event should provide the cleaned name, #
-        self.name = self.event.unit.nameC
         
     def getNodeName(self) -> str: 
         if self.count > 1:
             return "{} {}s".format(self.count, self.name)
         else:
             return "{}".format(self.name)
-
-    def getNodeDescription(self):
-        if self.count > 1:
-            return "{} {}s completed by {} in last 10s from {}".format(self.count, self.name, self.getNodePlayer(), self.startTime)
-        else:
-            return "{} completed by {} in last 10s from {}".format(self.name, self.getNodePlayer(), self.startTime)
     
     def getProperties(self, separator) -> str: return super().getProperties(separator)
     def getNodeType(self) -> str:  return super().getNodeType()
