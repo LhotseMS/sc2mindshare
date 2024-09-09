@@ -436,7 +436,7 @@ class SimpleDetector(EventsDetector):
 class ActionsDetector(EventsDetector):
     
     UPDATE_EVENT_THRESHOLD = 2 #how long after target event is the update event the same? 
-
+    PULL_TIME_LIMIT = 3
 
     def __init__(self, replay) -> None:
         super().__init__(replay)
@@ -451,7 +451,7 @@ class ActionsDetector(EventsDetector):
         self.et = EnergyTracker(self.player1, self.player2)
         self.it = InjectTracker(self.player1, self.player2)
 
-        self.dronePulls = self.initDictByPlayer(2)
+        self.workerPulls = self.initDictByPlayer(2)
 
         self.analyseSelectionAndCommands()       
                 
@@ -506,21 +506,21 @@ class ActionsDetector(EventsDetector):
             # TODO group the below two elifs together so code isn't duplicated
             elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
                 if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name)
+                    self.et.processEnergyEvent(e.time, self.getLastSelection(e.player), e.ability_name)
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
 
             elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
                 if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e._str_time(), self.getLastSelection(e.player), e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
+                    self.et.processEnergyEvent(e.time, self.getLastSelection(e.player), e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
                     self.lastTargetEvent[e.player] = e
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
 
-                #else:
-                #    self.lastTargetEvent[e.player] = e      
+                if any(u.is_worker for u in self.getLastSelection(e.player)):
+                    self.workerPulls[e.player][e.time] = e 
 
             elif ((isinstance(e, UnitDoneEvent) or isinstance(e, UnitBornEvent) and self.buildingsEligible(e)) 
                     or
@@ -533,9 +533,10 @@ class ActionsDetector(EventsDetector):
         
     
     def getPullEventForBase(self, player, secFrom, secTo, inputBase) -> CommandEvent:
-        for time, event in self.dronePulls[player].items():
-            base = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(e)
-            if secFrom <= MsUtils.timeToSeconds(time) <= secTo and inputBase == base:
+        for time, event in self.workerPulls[player].items():
+            # TODO this should be set just once on save of the value
+            base = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(event)
+            if secFrom - self.PULL_TIME_LIMIT <= MsUtils.timeToSeconds(time) <= secTo + self.PULL_TIME_LIMIT and inputBase == base:
                 return event
 
     def getLastSelection(self, player) -> list:
@@ -703,6 +704,8 @@ class BattleDetector(EventsDetector):
         self.battleLinks = list() 
         self.abilityLinks = list() 
 
+        self.harrasmentNodes = list()
+
         self.battles = []   
         self.findBattles()
         
@@ -743,6 +746,9 @@ class BattleDetector(EventsDetector):
                             e.second<= self.previousSecond + self.BATTLE_UPPER_BOUND], 
                         self.secondsOfBattle,
                         len(self.battles)))
+                
+                if len(self.battles[-1].harrasmentNodes) > 0:
+                    self.harrasmentNodes.append(self.battles[-1].harrasmentNodes)
                 
                 #link units that died in battle
                 self.unitNodesCounts = {}

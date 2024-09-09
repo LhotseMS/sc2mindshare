@@ -56,7 +56,7 @@ class Battle(PlayerHandler):
 
         self.harrasSeq = 0
         self.workerDeathBases = self.initDictByPlayer(2)
-        self.harrasmentNodes = self.initDictByPlayer()
+        self.harrasmentNodes = list()
 
         self.mapLocations = self.initDictByPlayer()
 
@@ -195,7 +195,7 @@ class Battle(PlayerHandler):
         
         # go through all events assign them to respective dictionaries by type, compute battle properties
         for e in self.events:
-            if isinstance(e, CommandEvent) and not isinstance(e, BasicCommandEvent):
+            if isinstance(e, CommandEvent) and not isinstance(e, BasicCommandEvent) and not isinstance(e, DataCommandEvent):
                 prevCommandEvent = e
 
                 # TODO this shouldnt be if else but classes of processors that determine what to do for each event, parent adding to the same array
@@ -313,10 +313,13 @@ class Battle(PlayerHandler):
                          self.combatAbilitiesByPlayer[self.player1] + 
                          self.combatAbilitiesByPlayer[self.player2])
         
-        for base, deathEvents in self.workerDeathBases[e.player].items():
-            pullEvent = sc2reader.mindshare.detectors.detectors.actionsDetector.getPullEvent(e.player, self.startSec, self.endSec, base)
-            self.harrasmentNodes[e.player].append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
-            self.harrasSeq += 1
+        for player, deathBaseEvents in self.workerDeathBases.items():
+            for base, deathEvents in deathBaseEvents.items():
+                pullEvent = sc2reader.mindshare.detectors.detectors.actionsDetector.getPullEventForBase(player, self.startSec, self.endSec, base)
+                self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
+                self.harrasSeq += 1 
+
+        a =1 
               
 
     @property

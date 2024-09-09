@@ -14,6 +14,7 @@ class HarrasmentNode(MultiNode):
         self.pull = pullEvent
         self.events = deathEvents
         self.end = deathEvents[-1].time
+        self.totalDeaths = len(deathEvents)
 
         if pullEvent != None:
             for event in deathEvents:
@@ -21,10 +22,9 @@ class HarrasmentNode(MultiNode):
                     self.diedBeforePull += 1
                     
             self.pullDelay = MsUtils.intervalBetween(self.event.time, pullEvent.time)
+            self.afterPull = self.totalDeaths - self.diedBeforePull
 
-        self.totalDeaths = len(deathEvents)
-        self.afterPull = self.totalDeaths - self.diedBeforePull
-
+        
         self.type = "Harrasment"
         self.propertiesCount = 6
             

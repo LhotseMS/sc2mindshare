@@ -445,7 +445,7 @@ class UnitDiedEvent(TrackerEvent):
     def countableUnitDeath(self): 
         return ((self.unit.is_army or self.unit.is_building or
                  self.unit.name in ["LurkerBurrowed","Drone","Probe","SCV"]) and
-                 not self.unit.name.startswith(tuple(["Broodling","RichMineral", "Mineral"]))) # and e.unit.type not in [189,1075,158,431,108]
+                 not self.unit.name.startswith(tuple(["Broodling","RichMineral", "Mineral","Force Field"]))) # and e.unit.type not in [189,1075,158,431,108]
     
     def buildingDeath(self):
         return self.unit.is_building

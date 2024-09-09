@@ -54,6 +54,6 @@ class AbilityNode(SimpleNode):
     def getNodeLinks(self) -> str: pass
 
     def getNodeTime(self):
-        return "00:" + self.event._str_time().replace(".",":").strip()
+        return "00:" + self.event.time.replace(".",":").strip()
     
     

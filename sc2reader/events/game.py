@@ -54,8 +54,8 @@ class GameEvent(Event):
 
         return player_name
 
-
-    def _str_time(self):
+    @property
+    def time(self):
         return f"{Length(seconds=int(self.frame / 22.4))}"
 
     #maybe this can be used on more places, more event types

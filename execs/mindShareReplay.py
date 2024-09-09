@@ -18,6 +18,7 @@ def parseReplay(filename):
 
     exp = CSVExporter(sc2reader.mindshare.detectors.detectors.singlesDetector.nodes +
                       sc2reader.mindshare.detectors.detectors.battleDetector.battles + 
+                      sc2reader.mindshare.detectors.detectors.battleDetector.harrasmentNodes + 
                       sc2reader.mindshare.detectors.detectors.simpleDetector.upgrades + 
                       sc2reader.mindshare.detectors.detectors.simpleDetector.buildings + 
                       sc2reader.mindshare.detectors.detectors.simpleDetector.initializations + 

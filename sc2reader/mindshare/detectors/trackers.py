@@ -44,7 +44,7 @@ class InjectTracker(Tracker):
     #TODO time handling should be optimized so that this layer gets the dates and the node one changes it to strings
     def processInject(self, event):
 
-        currentInjectTime = datetime.strptime(event._str_time(), "%M.%S") 
+        currentInjectTime = datetime.strptime(event.time, "%M.%S") 
         injectDuration = timedelta(seconds=self.INJECT_DURATION)
 
         if len(self.hatcheries[event.target.id]) > 0:
@@ -64,7 +64,7 @@ class InjectTracker(Tracker):
         else:
             injectDurationUntil = currentInjectTime + injectDuration
 
-        self.hatcheries[event.target.id].append(InjectStatus(datetime.strptime(event._str_time(),"%M.%S"), injectDurationUntil))
+        self.hatcheries[event.target.id].append(InjectStatus(datetime.strptime(event.time,"%M.%S"), injectDurationUntil))
 
     def isInjectAbility(self, abilityName):
         return abilityName == self.INJECT
