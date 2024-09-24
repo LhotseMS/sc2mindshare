@@ -5,12 +5,12 @@ from sc2reader.events import *
 
 class Location():
     
-    VIEW_SIZE = 15 #distance from the center to corner of the screen, exprimentaly determined
+    VIEW_SIZE_RADIUS = 15 #distance from the center to corner of the screen, exprimentaly determined
     
-    def isLocationOnLocation(self, ex, ey, vx, vy, aspect_ratio=1.0):
+    def isLocationOnLocation(ex, ey, vx, vy, viewSize = VIEW_SIZE_RADIUS, aspect_ratio=1.0):
         # Assume the rectangle's width to height ratio is w:h
         # Calculate width and height using the given distance d
-        w = self.VIEW_SIZE / math.sqrt(1 + (1/aspect_ratio)**2)
+        w = viewSize / math.sqrt(1 + (1/aspect_ratio)**2)
         h = w * aspect_ratio
 
         # Check bounds
@@ -20,7 +20,7 @@ class Location():
         return inside_x and inside_y
     
     
-    def isEventOnLocation(self, event) -> bool: pass
+    def isLocationOnScreen(self, x, y) -> bool: print("DONT CALL")
     
 class TimeLocation(Location):
 
@@ -56,16 +56,16 @@ class TimeLocation(Location):
         return self.cameraEvents[len(self.cameraEvents) - 1]
     
     def tryAddEvent(self, event) -> bool:
-        if self.isEventOnLocation(event):
+        if self.isLocationOnScreen(event.x, event.y):
             self.events.append(event)
             event.timeLocation = self
             return True
 
         return False
 
-    def isEventOnLocation(self, event) -> bool:
+    def isLocationOnScreen(self, x, y) -> bool:
         for c in self.cameraEvents:
-            if self.isLocationOnLocation(event.x, event.y, c.x, c.y):
+            if Location.isLocationOnLocation(x, y, c.x, c.y, self.VIEW_SIZE_RADIUS):
                 return True
             
         return False
@@ -80,12 +80,14 @@ class TimeLocation(Location):
 class Base(Location):
 
     BASE_NAMES_ORDER = ["Main base", "Natural", "3rd base", "4th base", "5th base", "6th base", "7th base", "8th base", "9th base", "10th base", "11th base", "12th base", "13th base", "14th base", "15th base", "16th base"]
+    MINING_SIZE_RADIUS = 9
 
     #TODO check for when bases id destroyed
     def __init__(self, baseInitEvent : UnitInitEvent, order):
         
         # !!! CORRECTING and rewriting event unit name
         self.name = self.BASE_NAMES_ORDER[order]
+        self.order = order  
         if order == 0 and self.name == "Hive":
             self.name = "Hatchery"
             baseInitEvent.unit.baseName = self.name
@@ -112,10 +114,13 @@ class Base(Location):
         self.location = e.location
 
     def isBaseUpAtEvent(self, e):
-        return self.raisedSec < e.second and self.isEventOnLocation(e)
+        return self.raisedSec < e.second and self.isLocationOnScreen(e.x, e.y)
 
-    def isEventOnLocation(self, e):
-        return self.isLocationOnLocation(e.x, e.y, self.location[0], self.location[1])
+    def isLocationInMiningRange(self, x, y):
+        return Location.isLocationOnLocation(x, y, self.location[0], self.location[1], self.MINING_SIZE_RADIUS)
+
+    def isLocationOnScreen(self, x, y):
+        return Location.isLocationOnLocation(x, y, self.location[0], self.location[1], self.VIEW_SIZE_RADIUS)
 
     def minDistance(self, loc):
         return math.sqrt(abs(self.location[0] - loc[0]) ** 2 + abs(self.location[1] - loc[1]) ** 2) 

@@ -130,7 +130,7 @@ def processFile(filename):
     
     #printSelectionsAndCommandsEvents(replay)
     #printCommandEvents(replay)
-    printCameraEvents(replay)
+    #printCameraEvents(replay)
     printSomeEvents(replay)
     
 
@@ -209,14 +209,15 @@ def printCameraEvents(replay):
                 
 def printSomeEvents(replay):
     for e in replay.events:
-        if (isinstance(e, UnitDoneEvent) or
-            #isinstance(e, UpdateTargetUnitCommandEvent) or
-            isinstance(e, UnitBornEvent)):
+        if (isinstance(e, TargetUnitCommandEvent) or
+            isinstance(e, SelectionEvent) or
+            isinstance(e, CameraEvent) or
+            isinstance(e, TargetPointCommandEvent)):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            if "SkippyJo" in str(e.player):
+            if "Piliskner" in str(e.player):
                 print(e)
             
 
@@ -298,7 +299,8 @@ if __name__ == "__main__":
     #parser.add_argument('--replay', type=str, help='Name of the replay file')
     
     #args = parser.parse_args()
-    processFile("Skippy_Oceanborn LE (24).SC2Replay")
+    processFile("MS_ Scouting Paths.SC2Replay")
+    # Skippy_Oceanborn LE (24).SC2Replay
     # MS_ Camera Events.SC2Replay
     # Crimson Court LE Applejuice Wanky (2).SC2Replay
 

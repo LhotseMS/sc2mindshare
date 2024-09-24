@@ -23,8 +23,9 @@ from sc2reader.mindshare.game import ControlGroup
 import sc2reader.mindshare.detectors.detectors
  
 from sc2reader.mindshare.detectors.trackers import EnergyTracker, SupplyTracker, InjectTracker
+from sc2reader.mindshare.detectors.trackers import PositionAccuracy, UnitPosition, UnitMoveCommand
 
-from sc2reader.mindshare.mindshare import Base
+from sc2reader.mindshare.mindshare import Base, Location
 from sc2reader.mindshare.utils import MsUtils
 
 from sc2reader.resources import Replay
@@ -137,7 +138,7 @@ class EventsDetector(Detector):
     def statsEligible(self, e) -> bool:
         return e._str_prefix().strip().endswith(self.STATS_TIMES)
 
-    def unitEligble(self, e) -> bool:
+    def unitFinishedEligble(self, e) -> bool:
         return (e.player != None and
                 not e.unit.is_building and 
                 (not e.time == "00:00" or e.unit.name.startswith(("SCV","Drone","Probe","Overlord"))) and 
@@ -324,7 +325,7 @@ class SimpleDetector(EventsDetector):
 
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
-                  self.unitEligble(e)):
+                  self.unitFinishedEligble(e)):
                                 
                 #print("new unit: " + str(e.unit))
                 if self.st.isSupplyProvider(str(e.unit)):
@@ -437,6 +438,7 @@ class ActionsDetector(EventsDetector):
     
     UPDATE_EVENT_THRESHOLD = 2 #how long after target event is the update event the same? 
     PULL_TIME_LIMIT = 3
+    EARLY_GAME_THRESHOLD = 4 #min
 
     def __init__(self, replay) -> None:
         super().__init__(replay)
@@ -445,6 +447,7 @@ class ActionsDetector(EventsDetector):
         self.replay = replay
                 
         self.lastSelection = {}
+        self.lastCamera = {}
         self.lastGetEvent = {}
         self.lastTargetEvent = {}
 
@@ -453,12 +456,121 @@ class ActionsDetector(EventsDetector):
 
         self.workerPulls = self.initDictByPlayer(2)
 
-        self.analyseSelectionAndCommands()       
+        self.unitsPositions = {}
+        self.unitsCommands = {}
+
+        self.processSelectionsAndCommands()       
                 
         self.excessEnergy = self.et.excessEnergy[self.player1] + self.et.excessEnergy[self.player2]
         self.injectDelays = self.it.injectDelays[self.player1] + self.it.injectDelays[self.player2]
 
-    def analyseSelectionAndCommands(self):
+    def analyseScouting(self):
+        # is the target location confirmed ? within any camera range selection? or there is no other location before arival
+
+        # units are from the same selection on the screen and getting the same target command 
+        for unitId, commands in self.unitsCommands.items():
+            for command in [c for c in commands if not c.processed]:
+                unitPressenceAtLocationConfirmed = False
+                #just one unit was selected
+                if len(command.selUnits) == 1:
+                    # the target is opponents base
+                    if command.targetBase != None and command.targetBase.player != command.player: 
+                        
+                        # get confirmation of arrival 
+                        # has the unit been detected at the target location
+                        for position in self.unitsPositions[command.unit.id]:
+                            if (MsUtils.isLater(command.time, position.time) and
+                                Location.isLocationOnLocation(command.targetBase.location.x, command.targetBase.location.y, position.x, position.y)):
+                                unitPressenceAtLocationConfirmed = True
+
+                        # the unit didn't die within the time of travel to PATH location
+                        
+                        # was the move cancelled, where was the unit selected next
+                        
+                        #differentiate based on time, early scouting
+                        pass #create couting event
+
+
+                    if unitPressenceAtLocationConfirmed:
+                        pass 
+                        #create scouted event
+                        # check which building has been scouted - building locations, units vision
+
+
+                command.processed = True
+
+
+
+        pass
+
+    def getTravelTime(self, unit, startPosition):
+        #by unit type
+        #has to start in the source area
+        pass
+
+    def addUnitsCommand(self, units, e):
+            
+        selectionEvent = self.getLastSelectionEvent(units[0].player)
+        # if the command is for selection, there is a record for unit position at the screen of the selection
+        # when we know the start we can calculate the time of travel. 
+        if isinstance(selectionEvent, SelectionEvent):
+            
+            # if the unit started the move in main or natural, the travel times are experimentally determined
+            baseAtSelection = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForLocation(selectionEvent.cameraLocation.x, selectionEvent.cameraLocation.y)
+            if baseAtSelection != None and baseAtSelection.name in ["Main base", "Natural"]:
+                travelTime = self.getTravelTime(unit, baseAtSelection.location, (e.x, e.y))
+                # later check if there are no other command before the expected arrival time, unit didn't die, 
+
+        # if the selectin is by control group: You don't do selection by control group when you scout??
+        else:
+            pass
+
+        newCommand = UnitMoveCommand(
+                    unit, 
+                    e.time, 
+                    e.x, 
+                    e.y,  
+                    travelTime, 
+                    units, 
+                    selectionEvent)
+
+        for unit in units: 
+            self.initUnitCommands(unit.id)
+            self.unitsCommands[unit.id].append(newCommand) # add duration
+            
+
+
+
+            self.addUnitsPosition(unit.id, e.location, e.time, PositionAccuracy.PATH) # add estimate time
+    
+    def initUnitCommands(self, unitId):
+        if unitId not in self.unitsCommands:
+            self.unitsCommands[e.unit.id] = list()
+
+
+    def processUnitPositionEvent(self, e):
+        if isinstance(e, SelectionEvent):
+            e.cameraLocation = self.lastCamera[e.player].location
+            self.addUnitsPosition(e.new_units, self.lastCamera[e.player].location, e.time, PositionAccuracy.SCREEN)
+        elif isinstance(e, UnitPositionsEvent):
+            self.addUnitsPositions(e.positions, e.time, PositionAccuracy.EXACT)
+
+    def initUnitPositions(self, unitId):
+        if unitId not in self.unitsPositions:
+            self.unitsPositions[e.unit.id] = list()
+
+    # same position to all units
+    def addUnitsPosition(self, units, loc, time, accuracy):
+        for unit in units: 
+            self.initUnitPositions(unit.id)
+            self.unitsPositions[unit.id].append(UnitPosition(unit.id, time, loc.x, loc.y, accuracy))
+
+    def addUnitsPositions(self, unitsPositions, time, accuracy):
+        for unidId, position in unitsPositions.items():
+            self.initUnitPositions(unidId)
+            self.unitsPositions[unidId].append(UnitPosition(unidId, time, position[0], position[1], accuracy))
+
+    def processSelectionsAndCommands(self):
         #TODO ideally there should be one big loop and detector should be called per event
         for e in [e for e in self.replay.events if 
                 isinstance(e, SelectionEvent) or  
@@ -470,18 +582,24 @@ class ActionsDetector(EventsDetector):
                 isinstance(e, UnitDiedEvent) or 
                 isinstance(e, UnitDoneEvent) or 
                 isinstance(e, UnitBornEvent) or 
+                isinstance(e, UnitPositionsEvent) or
+                isinstance(e, CameraEvent) or
                 isinstance(e, TargetPointCommandEvent) or
                 isinstance(e, UpdateTargetPointCommandEvent) or
                 isinstance(e, TargetUnitCommandEvent) or 
                 isinstance(e, UpdateTargetUnitCommandEvent) or 
                 isinstance(e, UnitTypeChangeEvent)]:
             
-            #hold last selection event for a player
-            #when control grp command comes create control group object
-
             # selection event is generated after the get control group occurs??! Check replay if selection happens or why is there a selection after a CG get
             
-            if isinstance(e, SelectionEvent) and e.new_units:
+# - at target location after not being killed and not having other command 
+            
+            if isinstance(e, CameraEvent):
+                self.lastCamera[e.player] = e
+            elif isinstance(e, UnitPositionsEvent):
+                self.processUnitPositionEvent(e)
+            elif isinstance(e, SelectionEvent) and e.new_units:
+                self.processUnitPositionEvent(e)
                 self.setSelection(e)
             elif isinstance(e, AddToControlGroupEvent) or isinstance(e, SetControlGroupEvent) or isinstance(e, WeirdControlGroupEvent) :
                 self.updateCG(e)
@@ -490,7 +608,7 @@ class ActionsDetector(EventsDetector):
                 self.removeUnitsFromOtherCGs(e.player, "")
                 self.updateCG(e)
 
-                #if larva is a selection event after cg get its a hatch build 
+                #TODO CASE if larva is a selection event after cg get its a hatch build 
 
             elif isinstance(e, GetControlGroupEvent):
                 self.setSelection(e)
@@ -505,41 +623,59 @@ class ActionsDetector(EventsDetector):
 
             # TODO group the below two elifs together so code isn't duplicated
             elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
+                # TODO the self.lastTargetEvent is always there, maybe have it missing as an exception?
                 if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e.time, self.getLastSelection(e.player), e.ability_name)
+                    self.et.processEnergyEvent(e.time, self.getLastSelectionUnits(e.player), e.ability_name)
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
+                
+                if isinstance(e, UpdateTargetPointCommandEvent):
+                    self.lastTargetEvent[e.player].registerUpdateEvent(e)
+                    self.addUnitsCommand(self.getLastSelectionUnits(e.player), e)
 
             elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
+                comandedUnits = self.getLastSelectionUnits(e.player)
                 if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e.time, self.getLastSelection(e.player), e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
+                    self.et.processEnergyEvent(e.time, comandedUnits, e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
                     self.lastTargetEvent[e.player] = e
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
 
-                if any(u.is_worker for u in self.getLastSelection(e.player)):
+
+                if any(u.is_worker for u in comandedUnits):
                     self.workerPulls[e.player][e.time] = e 
+
+                if isinstance(e, TargetPointCommandEvent):
+                    self.addUnitsCommand(self.getLastSelectionUnits(e.player), e)
+
+                
+                
 
             elif ((isinstance(e, UnitDoneEvent) or isinstance(e, UnitBornEvent) and self.buildingsEligible(e)) 
                     or
-                (isinstance(e, UnitBornEvent) or isinstance(e, UnitDoneEvent)) and self.unitEligble(e)):
+                (isinstance(e, UnitBornEvent) or isinstance(e, UnitDoneEvent)) and self.unitFinishedEligble(e)):
                 if self.et.isEnergyUnit(e.unit):
                     self.et.registerEnergyUnit(e.unit, e.time)  
 
                 if self.it.isHatchery(e.unit):
                     self.it.addHatchery(e.unit)
+
+        self.analyseScouting()
         
     
     def getPullEventForBase(self, player, secFrom, secTo, inputBase) -> CommandEvent:
         for time, event in self.workerPulls[player].items():
             # TODO this should be set just once on save of the value
-            base = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(event)
+            base = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForLocation(event.x, event.y)
             if secFrom - self.PULL_TIME_LIMIT <= MsUtils.timeToSeconds(time) <= secTo + self.PULL_TIME_LIMIT and inputBase == base:
                 return event
 
-    def getLastSelection(self, player) -> list:
+    def getLastSelectionEvent(self, player):
+        return self.lastSelection[player]
+    
+    def getLastSelectionUnits(self, player) -> list:
         if isinstance(self.lastSelection[player], SelectionEvent):
             return self.lastSelection[player].new_units
         elif isinstance(self.lastSelection[player], GetControlGroupEvent):
@@ -568,9 +704,9 @@ class ActionsDetector(EventsDetector):
     def updateCG(self, e):
         
         if e.control_group in self.CONTROL_GROUPS[e.player]:
-            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.getLastSelection(e.player))
+            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.getLastSelectionUnits(e.player))
         else:
-            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.getLastSelection(e.player))
+            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.getLastSelectionUnits(e.player))
     
     def printEnergyInfo(self):
         print("\n\n ---History--- \n")
@@ -663,11 +799,20 @@ class BaseDetector(EventsDetector):
 
         return minDistBase
     
-    def getBaseForEvent(self, e):
+
+    def getBaseForMining(self, x, y) -> Base:
         
         for player, bases in self.bases.items():
             for base in bases:
-                if base.isEventOnLocation(e):
+                if base.isEventInMiningRange(x, y):
+                    return base
+
+
+    def getBaseForLocation(self, x, y) -> Base:
+        
+        for player, bases in self.bases.items():
+            for base in bases:
+                if base.isLocationOnScreen(x, y):
                     return base
                 
         return None

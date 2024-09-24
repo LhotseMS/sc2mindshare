@@ -6,6 +6,9 @@ from sc2reader.mindshare.utils import MsUtils
 from sc2reader.utils import Length
 from datetime import datetime, timedelta
 
+import sc2reader.mindshare.detectors.detectors
+
+from enum import Enum
 from termcolor import colored
 
 class Tracker: 
@@ -74,6 +77,56 @@ class InjectStatus():
     def __init__(self, injectTime, injectedUntil):
         self.injectTime = injectTime
         self.injectedUntil = injectedUntil
+
+class UnitInfo():
+
+    def __init__(self, unitId, time, x, y):
+        self.unitId = unitId
+        self.time = time
+        self.position = (x, y)
+        self.x = x
+        self.y = y
+
+class UnitMoveCommand(UnitInfo):
+
+    def __init__(self, unit, time, x, y, travelTime, selectedUnits, selectionEvent):
+        super.__init__(self, unit.id, time, x, y)
+        
+        self.unit = unit
+        self.selUnits = selectedUnits
+        self.selEvent = selectionEvent
+        self.travelTime = travelTime
+
+        self.processed = False
+        self.targetBase = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForLocation(x, y)
+
+    @property
+    def player(self):
+        return self.unit.player
+        
+class UnitPosition(UnitInfo):
+
+    def __init__(self, unitId, time, x, y, accuracy):
+        super.__init__(self, unitId, time, x, y)
+        self.accuracy = accuracy
+
+    @property
+    def x(self):
+        return self.position[0]
+
+    @property
+    def y(self):
+        return self.position[1]
+    
+class PositionAccuracy(Enum):
+    EXACT = 1
+    SCREEN = 2
+    PATH = 3
+        
+class UnitCommandStatus(UnitPosition):
+
+    def __init__(self, unitId, time, x, y, accuracy):
+        super().__init__(unitId, time, x, y, accuracy)
 
         
 

@@ -14,6 +14,7 @@ class ContextLoader:
 
         # keep track of last TargetUnitCommandEvent for UpdateTargetUnitCommandEvent
         self.last_target_ability_event = {}
+        self.last_point_command_event = {}
 
     def handleGameEvent(self, event, replay):
         self.load_message_game_player(event, replay)
@@ -96,6 +97,19 @@ class ContextLoader:
             ].ability_name
 
         self.handleTargetUnitCommandEvent(event, replay)
+
+    
+    def handleTargetPointCommandEvent(self, event, replay):
+        self.last_point_command_event[event.player.pid] = event
+
+    def handleUpdateTargetPointCommandEvent(self, event, replay):
+        
+        if event.player.pid in self.last_point_command_event:
+            event.queued = self.last_point_command_event[event.player.pid].queued
+            event.minimap = self.last_point_command_event[event.player.pid].minimap
+            event.repeated = self.last_point_command_event[event.player.pid].repeated
+
+        self.handleTargetPointCommandEvent(event, replay)
 
     def handleSelectionEvent(self, event, replay):
         if not replay.datapack:

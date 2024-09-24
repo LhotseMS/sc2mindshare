@@ -715,4 +715,5 @@ class UnitPositionsEvent(TrackerEvent):
 
     def __str__(self):
         print(self.units)
+        print(self.positions)
         return self._str_prefix() + "Unit positions update"

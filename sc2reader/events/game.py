@@ -54,6 +54,7 @@ class GameEvent(Event):
 
         return player_name
 
+    # TODO TODO TODO exposure time as datetime and get rid of all the parsing
     @property
     def time(self):
         return f"{Length(seconds=int(self.frame / 22.4))}"
@@ -250,9 +251,14 @@ class CommandEvent(GameEvent):
         self.other_unit = None
 
         self.abilityNode = None
+        
+        self.queued = bool(self.flag["queued"])
+        self.minimap = bool(self.flag["minimap"])
+        self.repeated = bool(self.flag["repeat"])
 
     def isCombat(self):
         return self.ability_name in COMBAT_ABILITIES
+    
 
     def getJson(self):
 
@@ -346,6 +352,12 @@ class TargetPointCommandEvent(CommandEvent):
         #: The location of the target. Available for TargetPoint and TargetUnit type events
         self.location = (self.x, self.y, self.z)
 
+        self.updateEvents = list()
+
+    def registerUpdateEvent(self, e):
+        self.updateEvents.append(e)
+        e.targetCommandEvent = self
+
 
 class TargetUnitCommandEvent(CommandEvent):
     """
@@ -400,6 +412,8 @@ class TargetUnitCommandEvent(CommandEvent):
         self.location = (self.x, self.y, self.z)
 
 
+
+
 class UpdateTargetPointCommandEvent(TargetPointCommandEvent):
     """
     Extends :class: 'TargetPointCommandEvent'
@@ -411,6 +425,7 @@ class UpdateTargetPointCommandEvent(TargetPointCommandEvent):
     """
 
     name = "UpdateTargetPointCommandEvent"
+    targetCommandEvent = None
 
 
 class UpdateTargetUnitCommandEvent(TargetUnitCommandEvent):
@@ -427,7 +442,6 @@ class UpdateTargetUnitCommandEvent(TargetUnitCommandEvent):
     """
 
     name = "UpdateTargetUnitCommandEvent"
-    sinceTargetAbility = None
 
 
 class DataCommandEvent(CommandEvent):
@@ -568,6 +582,9 @@ class SelectionEvent(GameEvent):
 
         #: Deprecated, see new_units
         self.objects = None
+
+        #MS camera location during the selection event
+        self.cameraLocation = None
     
     def isPlayer(self, playerNames):
         return self.playerName in playerNames

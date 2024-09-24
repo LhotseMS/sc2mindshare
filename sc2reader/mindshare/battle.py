@@ -23,6 +23,8 @@ class Battle(PlayerHandler):
     """
     CAMERA_CONTINUOUS_MOVE_LIMIT = 5
     WORKING_WORKER_DEATH_DELAY = 3
+    BIG_UNIT_SUPPLY_THRESHOLD = 3
+    GOOD_BATTLE_SUPPLY_COEFICIENT = 1.5
 
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD):
         #:
@@ -57,6 +59,8 @@ class Battle(PlayerHandler):
         self.harrasSeq = 0
         self.workerDeathBases = self.initDictByPlayer(2)
         self.harrasmentNodes = list()
+        
+        self.bigUnitsLost = self.initDictByPlayer(0)
 
         self.mapLocations = self.initDictByPlayer()
 
@@ -68,16 +72,13 @@ class Battle(PlayerHandler):
         # battle results & evaluate battle
         # - good trade
         # - killed key units
-        # worker pulls - reaction times
         #split battles by location - multiprone
         # 1 Set up locations
         # 2 check if event is in location
         # 3 how many locations are used in interval 
 
         #unit positions
-        # - damaged every 15s
-        # - on selection
-        # - at target location after not being killed and not having other command 
+        
         #any units cross the map? - segments of map
         #have we scouted anything at all? 
         # - target location vs buildings
@@ -136,6 +137,8 @@ class Battle(PlayerHandler):
         self.losses = {}
         self.losses[self.player1] = SummaryOfDeath(0,0,0)
         self.losses[self.player2] = SummaryOfDeath(0,0,0)
+
+        self.bigUnitsLost = self.initDictByPlayer()
         
         for secOfDying in self.secondsOD:
             for e in secOfDying.events:       
@@ -151,6 +154,9 @@ class Battle(PlayerHandler):
                     self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + e.unit.vespene
                     self.losses[e.unit.owner].supply = self.losses[e.unit.owner].supply + e.unit.supply
                 
+                    if e.unit.supply >= self.BIG_UNIT_SUPPLY_THRESHOLD:
+                        self.bigUnitsLost[e.player] += 1
+
                     # print(f"Adding {secOfDying.second} {unit} {unit.killing_unit} {unit.type}")
                     if not isinstance(e.unit.killing_unit, Unit):
                         print(colored(f"++++++++++++++ NO KILLING UNIT {datetime.timedelta(seconds=secOfDying.second)}  {e.unit} {e.unit.killing_unit} {e.unit.type}","red"))
@@ -281,9 +287,9 @@ class Battle(PlayerHandler):
 
                     #first sort deaths by bases, later review them to determine pulls
                     if e.unit.is_worker:
-                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForEvent(e)
+                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForMining(e)
 
-                        # worker died near a base
+                        # worker died in mining range
                         if baseOfWorkerDeath != None:
                             if baseOfWorkerDeath not in self.workerDeathBases[e.player]:
                                self.workerDeathBases[e.player][baseOfWorkerDeath] = list() 
@@ -319,8 +325,15 @@ class Battle(PlayerHandler):
                 self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
                 self.harrasSeq += 1 
 
-        a =1 
-              
+        # player 2 killed more
+        if self.supplyLost[self.player1] > self.GOOD_BATTLE_SUPPLY_COEFICIENT * self.supplyLost[self.player2]:
+            pass
+        # player 1 killed more
+        elif self.supplyLost[self.player2] > self.GOOD_BATTLE_SUPPLY_COEFICIENT * self.supplyLost[self.player1]:
+            pass
+        
+        #if self.bigUnitsLost[self.player1] 
+        
 
     @property
     def deathCount(self):

@@ -150,6 +150,10 @@ class Unit(Renamer):
                     return unit_type is None
 
     @property
+    def isScout(self):
+        return self.unit.name in ("Drone", "Probe", "SCV", "Zergling", "Reaper", "Marine", "Oracle", "Phoenix")
+
+    @property
     def player(self):
         return self.owner
 
