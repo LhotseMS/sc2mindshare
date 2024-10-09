@@ -18,6 +18,7 @@ from sc2reader.mindshare.exports.gameNode import GameNode
 from sc2reader.mindshare.exports.playerNode import PlayerNode 
 from sc2reader.mindshare.exports.initNode import InitNode 
 from sc2reader.mindshare.exports.abilityNode import AbilityNode 
+from sc2reader.mindshare.exports.scoutNode import ScoutNode 
 from sc2reader.mindshare.battle import printDict 
 from sc2reader.mindshare.game import ControlGroup
 import sc2reader.mindshare.detectors.detectors
@@ -449,7 +450,8 @@ class ActionsDetector(EventsDetector):
         self.lastSelection = {}
         self.lastCamera = {}
         self.lastGetEvent = {}
-        self.lastTargetEvent = {}
+        self.lastUnitCommandEvent = {}
+        self.lastPointCommandEvent = {}
 
         self.et = EnergyTracker(self.player1, self.player2)
         self.it = InjectTracker(self.player1, self.player2)
@@ -459,10 +461,14 @@ class ActionsDetector(EventsDetector):
         self.unitsPositions = {}
         self.unitsCommands = {}
 
+        self.scoutIndex = 0
+        self.scoutedBases = self.initDictByPlayer()
+
         self.processSelectionsAndCommands()       
-                
+
         self.excessEnergy = self.et.excessEnergy[self.player1] + self.et.excessEnergy[self.player2]
         self.injectDelays = self.it.injectDelays[self.player1] + self.it.injectDelays[self.player2]
+        self.scouting = self.scoutedBases[self.player1] + self.scoutedBases[self.player2]
 
     def analyseScouting(self):
         # is the target location confirmed ? within any camera range selection? or there is no other location before arival
@@ -479,8 +485,9 @@ class ActionsDetector(EventsDetector):
                         # get confirmation of arrival 
                         # has the unit been detected at the target location
                         for position in self.unitsPositions[command.unit.id]:
-                            if (MsUtils.isLater(command.time, position.time) and
-                                Location.isLocationOnLocation(command.targetBase.location.x, command.targetBase.location.y, position.x, position.y)):
+                            if (MsUtils.isLater(command.time, position.time.strftime("%M.%S")) and
+                                Location.isLocationOnLocation(command.targetBase.location[0], command.targetBase.location[1], position.x, position.y)):
+                                
                                 unitPressenceAtLocationConfirmed = True
 
                         # the unit didn't die within the time of travel to PATH location
@@ -492,83 +499,89 @@ class ActionsDetector(EventsDetector):
 
 
                     if unitPressenceAtLocationConfirmed:
+
+                        self.scoutedBases[command.player].append(ScoutNode(command.unit, command.time, command.targetBase, [], self.scoutIndex))
+                        self.scoutIndex += 1
+
                         pass 
                         #create scouted event
                         # check which building has been scouted - building locations, units vision
 
-
                 command.processed = True
-
-
-
         pass
 
-    def getTravelTime(self, unit, startPosition):
+    def getTravelTime(self, unit, startPosition, endPosition):
         #by unit type
         #has to start in the source area
-        pass
+        return 7
 
-    def addUnitsCommand(self, units, e):
+    def addUnitsPointCommand(self, units, e):
             
+        travelTimeAvailable = False
         selectionEvent = self.getLastSelectionEvent(units[0].player)
         # if the command is for selection, there is a record for unit position at the screen of the selection
         # when we know the start we can calculate the time of travel. 
         if isinstance(selectionEvent, SelectionEvent):
             
             # if the unit started the move in main or natural, the travel times are experimentally determined
-            baseAtSelection = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForLocation(selectionEvent.cameraLocation.x, selectionEvent.cameraLocation.y)
+            baseAtSelection = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForLocation(selectionEvent.cameraLocation[0], selectionEvent.cameraLocation[1])
             if baseAtSelection != None and baseAtSelection.name in ["Main base", "Natural"]:
-                travelTime = self.getTravelTime(unit, baseAtSelection.location, (e.x, e.y))
+                travelTimeAvailable = True
+                 # TODO loop through units unit? pick some unit
                 # later check if there are no other command before the expected arrival time, unit didn't die, 
 
-        # if the selectin is by control group: You don't do selection by control group when you scout??
+        # if the selection is by control group: You don't do selection by control group when you scout??
         else:
             pass
 
-        newCommand = UnitMoveCommand(
-                    unit, 
-                    e.time, 
-                    e.x, 
-                    e.y,  
-                    travelTime, 
-                    units, 
-                    selectionEvent)
 
         for unit in units: 
             self.initUnitCommands(unit.id)
-            self.unitsCommands[unit.id].append(newCommand) # add duration
+            if travelTimeAvailable:
+                travelTime = self.getTravelTime(unit, baseAtSelection.location, (e.x, e.y))
+                self.addUnitsPosition([unit], e.location, datetime.strptime(e.time, "%M.%S") + timedelta(seconds=travelTime), PositionAccuracy.PATH)
+            else:
+                travelTime = None
+                self.addUnitsPosition([unit], e.location, datetime.strptime(e.time, "%M.%S"), PositionAccuracy.MAYBE)
+
+            newCommand = UnitMoveCommand(
+                        unit, 
+                        e.time, 
+                        e.x, 
+                        e.y,   
+                        travelTime,
+                        units, 
+                        selectionEvent)
+
+            self.unitsCommands[unit.id].append(newCommand)
             
-
-
-
-            self.addUnitsPosition(unit.id, e.location, e.time, PositionAccuracy.PATH) # add estimate time
     
     def initUnitCommands(self, unitId):
         if unitId not in self.unitsCommands:
-            self.unitsCommands[e.unit.id] = list()
+            self.unitsCommands[unitId] = list()
 
 
     def processUnitPositionEvent(self, e):
         if isinstance(e, SelectionEvent):
             e.cameraLocation = self.lastCamera[e.player].location
-            self.addUnitsPosition(e.new_units, self.lastCamera[e.player].location, e.time, PositionAccuracy.SCREEN)
+            self.addUnitsPosition(e.new_units, self.lastCamera[e.player].location, datetime.strptime(e.time, "%M.%S"), PositionAccuracy.SCREEN)
         elif isinstance(e, UnitPositionsEvent):
-            self.addUnitsPositions(e.positions, e.time, PositionAccuracy.EXACT)
+            self.addUnitsPositions(e.positions, datetime.strptime(e.time, "%M:%S"), PositionAccuracy.EXACT)
 
     def initUnitPositions(self, unitId):
         if unitId not in self.unitsPositions:
-            self.unitsPositions[e.unit.id] = list()
+            self.unitsPositions[unitId] = list()
 
     # same position to all units
     def addUnitsPosition(self, units, loc, time, accuracy):
         for unit in units: 
             self.initUnitPositions(unit.id)
-            self.unitsPositions[unit.id].append(UnitPosition(unit.id, time, loc.x, loc.y, accuracy))
+            self.unitsPositions[unit.id].append(UnitPosition(unit.id, time, loc[0], loc[1], accuracy))
 
     def addUnitsPositions(self, unitsPositions, time, accuracy):
-        for unidId, position in unitsPositions.items():
+        for unidId, (x, y) in unitsPositions:
             self.initUnitPositions(unidId)
-            self.unitsPositions[unidId].append(UnitPosition(unidId, time, position[0], position[1], accuracy))
+            self.unitsPositions[unidId].append(UnitPosition(unidId, time, x, y, accuracy))
 
     def processSelectionsAndCommands(self):
         #TODO ideally there should be one big loop and detector should be called per event
@@ -624,33 +637,37 @@ class ActionsDetector(EventsDetector):
             # TODO group the below two elifs together so code isn't duplicated
             elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
                 # TODO the self.lastTargetEvent is always there, maybe have it missing as an exception?
-                if e.player in self.lastTargetEvent and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e.time, self.getLastSelectionUnits(e.player), e.ability_name)
+                if e.player in self.lastUnitCommandEvent and self.et.isEnergyAbility(e.ability_name):
+                    self.et.processEnergyEvent(e.time, self.getLastSelectionUnits(e.player), e.ability_name) 
+
+                    # TODO
+                    # TODO
+                    # TODO
+                    # TODO there is no target commant event for this update event, check if not removing the selection has any impact, check if selection should break command - update command pairs
+                    # 03.20 Fluffy Right Click - TargetUnit; Target: MineralField750 [00900001]; Location: (161.0, 72.5, 40944)<class 'sc2reader.events.game.UpdateTargetUnitCommandEvent'>
+
+
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
                 
-                if isinstance(e, UpdateTargetPointCommandEvent):
-                    self.lastTargetEvent[e.player].registerUpdateEvent(e)
-                    self.addUnitsCommand(self.getLastSelectionUnits(e.player), e)
-
             elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
                 comandedUnits = self.getLastSelectionUnits(e.player)
                 if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
                     self.et.processEnergyEvent(e.time, comandedUnits, e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
-                    self.lastTargetEvent[e.player] = e
+                    #self.lastTargetEvent[e.player] = e
 
                     if self.it.isInjectAbility(e.ability_name):
                         self.it.processInject(e)
-
 
                 if any(u.is_worker for u in comandedUnits):
                     self.workerPulls[e.player][e.time] = e 
 
                 if isinstance(e, TargetPointCommandEvent):
-                    self.addUnitsCommand(self.getLastSelectionUnits(e.player), e)
-
-                
+                    self.addUnitsPointCommand(self.getLastSelectionUnits(e.player), e)
+                    self.lastPointCommandEvent[e.player] = e
+                elif isinstance(e, TargetUnitCommandEvent):
+                    self.lastUnitCommandEvent[e.player] = e
                 
 
             elif ((isinstance(e, UnitDoneEvent) or isinstance(e, UnitBornEvent) and self.buildingsEligible(e)) 
@@ -683,8 +700,8 @@ class ActionsDetector(EventsDetector):
 
     def setSelection(self, e):
         self.lastSelection[e.player] = e
-        if e.player in self.lastTargetEvent:
-            del self.lastTargetEvent[e.player]
+        #if e.player in self.lastTargetEvent: # UpdateEvents continue with the same target event even after selection changes
+        #    del self.lastTargetEvent[e.player]
 
     def getCgUnits(self, player, cgNo, second):
 
@@ -804,7 +821,7 @@ class BaseDetector(EventsDetector):
         
         for player, bases in self.bases.items():
             for base in bases:
-                if base.isEventInMiningRange(x, y):
+                if base.isLocationInMiningRange(x, y):
                     return base
 
 
@@ -893,7 +910,7 @@ class BattleDetector(EventsDetector):
                         len(self.battles)))
                 
                 if len(self.battles[-1].harrasmentNodes) > 0:
-                    self.harrasmentNodes.append(self.battles[-1].harrasmentNodes)
+                    self.harrasmentNodes = self.harrasmentNodes + self.battles[-1].harrasmentNodes
                 
                 #link units that died in battle
                 self.unitNodesCounts = {}

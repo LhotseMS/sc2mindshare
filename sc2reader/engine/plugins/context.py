@@ -92,9 +92,14 @@ class ContextLoader:
         if event.player.pid in self.last_target_ability_event:
             # store corresponding TargetUnitCommandEvent data in this event
             # currently using for *MacroTracker only, so only need ability name
-            event.ability_name = self.last_target_ability_event[
-                event.player.pid
-            ].ability_name
+            event.ability_name = self.last_target_ability_event[event.player.pid].ability_name
+            event.has_ability = self.last_target_ability_event[event.player.pid].has_ability
+            event.ability_type = self.last_target_ability_event[event.player.pid].ability_type
+            event.ability_data = self.last_target_ability_event[event.player.pid].ability_data
+            event.ability_id = self.last_target_ability_event[event.player.pid].ability_id
+            event.ability = self.last_target_ability_event[event.player.pid].ability
+
+            self.last_target_ability_event[event.player.pid].registerUpdateEvent(event)
 
         self.handleTargetUnitCommandEvent(event, replay)
 
@@ -108,6 +113,15 @@ class ContextLoader:
             event.queued = self.last_point_command_event[event.player.pid].queued
             event.minimap = self.last_point_command_event[event.player.pid].minimap
             event.repeated = self.last_point_command_event[event.player.pid].repeated
+            
+            event.ability_name = self.last_point_command_event[event.player.pid].ability_name
+            event.has_ability = self.last_point_command_event[event.player.pid].has_ability
+            event.ability_type = self.last_point_command_event[event.player.pid].ability_type
+            event.ability_data = self.last_point_command_event[event.player.pid].ability_data
+            event.ability_id = self.last_point_command_event[event.player.pid].ability_id
+            event.ability = self.last_point_command_event[event.player.pid].ability
+            
+            self.last_point_command_event[event.player.pid].registerUpdateEvent(event)
 
         self.handleTargetPointCommandEvent(event, replay)
 
@@ -160,6 +174,14 @@ class ContextLoader:
             units.append(unit)
 
         event.new_units = event.objects = units
+
+        # reset target events as there can be update event without a previous target one
+        # selection change means that there should be new command
+        if event.player.pid in self.last_target_ability_event:
+            del self.last_target_ability_event[event.player.pid]
+            
+        if event.player.pid in self.last_point_command_event:
+            del self.last_point_command_event[event.player.pid]
 
     def handleResourceTradeEvent(self, event, replay):
         event.sender = event.player

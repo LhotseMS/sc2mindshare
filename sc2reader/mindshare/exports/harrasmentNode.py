@@ -40,6 +40,8 @@ class HarrasmentNode(MultiNode):
         
         if self.pull != None:
             str += "\nPull occured after {}s with {} workers dead.".format(self.pullDelay, self.diedBeforePull)
+
+        return str
     
     def getProperties(self, sep):
         return "{}{}{}{}{}".format(super().getProperties(sep),

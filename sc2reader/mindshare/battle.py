@@ -92,7 +92,8 @@ class Battle(PlayerHandler):
         
         #periods of activity - what is the player doing during this time % of micro actions vs % of macro actions, threshold for macro
 
-
+        # game advanced stats:
+        # - number of actions queues vs all actions
 
 
 
@@ -287,7 +288,7 @@ class Battle(PlayerHandler):
 
                     #first sort deaths by bases, later review them to determine pulls
                     if e.unit.is_worker:
-                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForMining(e)
+                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForMining(e.x, e.y)
 
                         # worker died in mining range
                         if baseOfWorkerDeath != None:

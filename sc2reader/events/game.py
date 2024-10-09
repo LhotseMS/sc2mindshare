@@ -256,6 +256,12 @@ class CommandEvent(GameEvent):
         self.minimap = bool(self.flag["minimap"])
         self.repeated = bool(self.flag["repeat"])
 
+        self.updateEvents = list()
+
+    def registerUpdateEvent(self, e):
+        self.updateEvents.append(e)
+        e.targetCommandEvent = self
+
     def isCombat(self):
         return self.ability_name in COMBAT_ABILITIES
     
@@ -351,12 +357,6 @@ class TargetPointCommandEvent(CommandEvent):
 
         #: The location of the target. Available for TargetPoint and TargetUnit type events
         self.location = (self.x, self.y, self.z)
-
-        self.updateEvents = list()
-
-    def registerUpdateEvent(self, e):
-        self.updateEvents.append(e)
-        e.targetCommandEvent = self
 
 
 class TargetUnitCommandEvent(CommandEvent):
@@ -598,9 +598,9 @@ class SelectionEvent(GameEvent):
             #     "2:" + str(u[2]) + " " + 
             #     "1:" + str(u[1]) + " " + 
              #    UNIT_TYPES[u[0]] for u in self.new_unit_types]), "yellow")
-             return colored(f"Selection {self.player} " + str(self.new_units) + " --- " + str(self.new_unit_info) +"---"+ str(self.new_unit_types) + " CG: " + str(self.control_group) ,"yellow")
+            return colored(f"{self.time} {self.player} Selection             " + str(self.new_units) + " --- " + str(self.new_unit_info) +"---"+ str(self.new_unit_types) + " CG: " + str(self.control_group) ,"yellow")
         else:
-            return colored(f"Selection {self.player} " + GameEvent.__str__(self) + " CG: " + str(self.control_group), "blue")  
+            return colored(f"{self.time} {self.player} Selection             " + GameEvent.__str__(self) + " CG: " + str(self.control_group), "blue")  
 
 
 def create_control_group_event(frame, pid, data):

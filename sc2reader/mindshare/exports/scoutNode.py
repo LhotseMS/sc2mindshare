@@ -1,40 +1,44 @@
 from datetime import datetime
-from sc2reader.mindshare.exports.node import Node
+from sc2reader.mindshare.exports.node import Node, X_LD
 from sc2reader.mindshare.utils import MsUtils
 
 class ScoutNode(Node):
     
-    def __init__(self, unit, time, targetLocation, scoutedBuildings, delayThreshold, seq):
+    
+    #TODO which player scouted who
+    #TODO links to buildings that have been scouted
+    
+    def __init__(self, unit, time, scoutedBase, scoutedBuildings, seq):
         super().__init__(seq)
 
         self.player = unit.player
-        self.unitName = unit.name
-        self.unitID = unit.id
-        self.start = "00:" + start.replace(".",":")
-        self.end = "00:" + end.replace(".",":")
-        self.threshold = delayThreshold
+        self.unit = unit
+        self.scoutedBase = scoutedBase
+        self.scoutedBuildings = scoutedBuildings
 
-        self.duration = duration.total_seconds()
+        self.time = time
 
-        self.type = "Inject Delay"
-        self.propertiesCount = 6
+        self.type = "Scouting"
+        self.propertiesCount = 4
             
     def getNodeName(self):
-        return "{}s No Injects".format(self.duration)
+        return "{} scouted {}".format(self.unit.name, self.scoutedBase)
     
-    # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
-        return "{} didn't get injects for {}s from {} to {}".format(self.unitName, self.duration, self.start, self.end)
+        str = "At {} the following was scouted:".format(self.time, X_LD)
+
+        for building in self.scoutedBuildings:
+            str += "   {}{}".format(building.name, X_LD)
+
+        return str
     
     def getProperties(self, sep):
         return "{}{}{}{}{}".format(super().getProperties(sep),
-                               self.end, sep,
-                               self.duration, sep,
-                               self.threshold, sep,
-                               self.unitName, sep)
+                               self.unit.name, sep,
+                               self.scoutedBase, sep)
         
     def getNodePlayer(self):
         return MsUtils.replaceStrings(self.player)
     
     def getNodeTime(self):
-        return self.start.replace(".",":").strip()
+        return self.time.replace(".",":").strip()

@@ -21,8 +21,7 @@ class InjecDelayNode(Node):
             
     def getNodeName(self):
         return "{}s No Injects".format(self.duration)
-    
-    # TODO time from last upgrade, player completed upgrade at time 
+     
     def getNodeDescription(self):
         return "{} didn't get injects for {}s from {} to {}".format(self.unitName, self.duration, self.start, self.end)
     

@@ -90,7 +90,7 @@ class UnitInfo():
 class UnitMoveCommand(UnitInfo):
 
     def __init__(self, unit, time, x, y, travelTime, selectedUnits, selectionEvent):
-        super.__init__(self, unit.id, time, x, y)
+        super().__init__(unit.id, time, x, y)
         
         self.unit = unit
         self.selUnits = selectedUnits
@@ -103,25 +103,18 @@ class UnitMoveCommand(UnitInfo):
     @property
     def player(self):
         return self.unit.player
-        
+            
 class UnitPosition(UnitInfo):
 
     def __init__(self, unitId, time, x, y, accuracy):
-        super.__init__(self, unitId, time, x, y)
+        super().__init__(unitId, time, x, y)
         self.accuracy = accuracy
-
-    @property
-    def x(self):
-        return self.position[0]
-
-    @property
-    def y(self):
-        return self.position[1]
     
 class PositionAccuracy(Enum):
     EXACT = 1
     SCREEN = 2
     PATH = 3
+    MAYBE = 4
         
 class UnitCommandStatus(UnitPosition):
 
@@ -276,7 +269,7 @@ class EnergyTracker(Tracker):
             unit = units[0]
         else:
             for u in units:
-                # TODO time her is still with ".", it should be replaced for ":" sooner, before it comes here. Refactor time calcualtions add property
+                # TODO time here is still with ".", it should be replaced for ":" sooner, before it comes here. Refactor time calcualtions add property
                 if (u.doneEvent != None and 
                     MsUtils.isLater(u.doneEvent.time, time.replace(".",":")) and 
                     u.id in self.energyHistory and 

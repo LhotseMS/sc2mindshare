@@ -44,6 +44,8 @@ class Screenshotter():
         self.duration = None
         self.readIntervals()
 
+
+    #TODO read should go to FH
     def readIntervals(self):    
         """Read time intervals from a CSV file and return a list of tuples (start, end, id)."""
         try:
