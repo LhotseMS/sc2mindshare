@@ -14,3 +14,7 @@ scripts/py-env .venv/bin/pytest -p no:cacheprovider --import-mode=importlib scri
 ```
 
 - **Adding or updating a package:** add the direct name to `requirements/*.in`, install through `scripts/py-env` (the cutoff applies to the whole tree), `pip freeze --all --exclude pip` into the matching `.lock`, and paste the `scripts/package_ages.py` table into the task record. Any package under 14 days old stops the task.
+
+## Legacy environment (until T24)
+
+`scripts/legacy-env` (re)creates `<root>/.tools/venvs/legacy` from `requirements/legacy.lock` and puts this checkout's fork tree on its `sys.path` with a `.pth` file. It is used only to run the old code for the legacy golden; never install the new package into it. Baseline counts: `docs/dev/baselines.md`.
