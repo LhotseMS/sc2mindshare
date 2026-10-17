@@ -1,0 +1,53 @@
+#!/bin/sh
+# Run a command with every Python, pip and test-tool cache and temp path inside
+# the project root's .tools/ folder, and with pip's 14-day upload cutoff.
+#
+#   scripts/py-env .venv/bin/python -m pytest
+#
+# The project root is the nearest parent of this checkout that has a .tools/
+# folder. Shell state does not persist between agent calls, so every command
+# that runs Python goes through this wrapper.
+set -eu
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+dir=$script_dir
+while [ "$dir" != "/" ] && [ ! -d "$dir/.tools" ]; do
+    dir=$(dirname -- "$dir")
+done
+if [ ! -d "$dir/.tools" ]; then
+    echo "py-env: no .tools/ folder found above $script_dir" >&2
+    exit 2
+fi
+tools="$dir/.tools"
+
+# The interpreter the venvs were built from. A changed interpreter (for example
+# a Homebrew upgrade) must be noticed, not silently used.
+expected_python="3.14.5"
+base_python="/opt/homebrew/bin/python3.14"
+if [ -x "$base_python" ]; then
+    actual=$("$base_python" -I -S -c 'import platform; print(platform.python_version())')
+    if [ "$actual" != "$expected_python" ]; then
+        echo "py-env: $base_python is $actual, expected $expected_python" >&2
+        exit 3
+    fi
+fi
+
+mkdir -p "$tools/tmp" "$tools/cache/pip" "$tools/cache/pycache" \
+    "$tools/cache/ruff" "$tools/cache/mypy" "$tools/cache/xdg" "$tools/pip"
+if [ ! -f "$tools/pip/pip.conf" ]; then
+    printf '[global]\ndisable-pip-version-check = true\n\n[install]\nuploaded-prior-to = P14D\n' \
+        > "$tools/pip/pip.conf"
+fi
+
+export SC2MS_TOOLS_DIR="$tools"
+export TMPDIR="$tools/tmp"
+export PIP_CACHE_DIR="$tools/cache/pip"
+export PIP_CONFIG_FILE="$tools/pip/pip.conf"
+export PIP_DISABLE_PIP_VERSION_CHECK=1
+export PIP_UPLOADED_PRIOR_TO=P14D
+export PYTHONPYCACHEPREFIX="$tools/cache/pycache"
+export RUFF_CACHE_DIR="$tools/cache/ruff"
+export MYPY_CACHE_DIR="$tools/cache/mypy"
+export XDG_CACHE_HOME="$tools/cache/xdg"
+
+exec "$@"
