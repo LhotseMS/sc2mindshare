@@ -1,4 +1,4 @@
-from  execs.mindshareReplay import parseReplay
+from execs.mindShareReplay import parseReplay
 
 
 if __name__ == "__main__":

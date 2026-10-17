@@ -11,8 +11,9 @@ from sc2reader.mindshare.fileHandler import FileHandler
 from sc2reader.events import *
 import sc2reader.mindshare.exports.exporter
 
-def parseReplay(filename):
-    replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
+def parseReplay(filename, load_map=True):
+    # load_map=False skips the Battle.net map download; the map is only used for heatmaps (pass 2). CR-003
+    replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=load_map)
             
     sc2reader.mindshare.detectors.detectors.createDetectors(replay)
 

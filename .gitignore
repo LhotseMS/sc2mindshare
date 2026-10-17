@@ -13,3 +13,4 @@ sc2reader/lib
 
 # Local virtual environment (one per checkout; tools and caches live in the project root .tools/)
 .venv/
+.venv-legacy/

@@ -1,9 +1,10 @@
 #!/bin/sh
-# (Re)create the legacy environment: the old sc2reader fork with the Mindshare
-# layer, used only to produce the legacy golden output (T03) until T24 deletes
-# the fork. Shared by every checkout, in <root>/.tools/venvs/legacy.
+# (Re)create this checkout's legacy environment: the old sc2reader fork with the
+# Mindshare layer, used only to produce the legacy golden output (CR-003) until
+# T24 deletes the fork. One per checkout, in <checkout>/.venv-legacy, so its
+# .pth file can never point at another checkout's fork tree.
 #
-#   scripts/legacy-env            # create or update, install requirements/legacy.lock
+#   scripts/legacy-env            # create or update from requirements/legacy.lock
 #
 # The fork is not pip-installed (its setup.py and pyproject.toml disagree on the
 # package name); a .pth file puts this checkout's fork tree on sys.path instead.
@@ -13,12 +14,7 @@ set -eu
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
-
-dir=$checkout
-while [ "$dir" != "/" ] && [ ! -d "$dir/.tools" ]; do
-    dir=$(dirname -- "$dir")
-done
-venv="$dir/.tools/venvs/legacy"
+venv="$checkout/.venv-legacy"
 
 if [ -d "$checkout/legacy/sc2reader" ]; then
     fork_root="$checkout/legacy"
@@ -30,4 +26,4 @@ fi
 "$py_env" "$venv/bin/python" -m pip install --quiet -r "$checkout/requirements/legacy.lock"
 site=$("$py_env" "$venv/bin/python" -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 printf '%s\n' "$fork_root" > "$site/sc2mindshare_legacy.pth"
-"$py_env" "$venv/bin/python" -c 'import sc2reader, sys; print("legacy sc2reader", sc2reader.__version__, "from", sc2reader.__file__)'
+"$py_env" "$venv/bin/python" -c 'import sc2reader; print("legacy sc2reader", sc2reader.__version__, "from", sc2reader.__file__)'

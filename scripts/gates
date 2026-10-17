@@ -1,0 +1,33 @@
+#!/bin/sh
+# Run the batch gates on the files the current task owns (G3 is scoped to added
+# or changed files; the fork's 984 ruff findings are a frozen baseline, see
+# docs/dev/baselines.md).
+#
+#   scripts/gates [PATH ...]      # default: scripts
+#
+# - ruff check and ruff format --check, with the repository's ruff.toml passed
+#   explicitly (line length 129);
+# - mypy --strict on the non-test Python files among PATH (tests are not typed);
+# - pytest on the tests under PATH, in importlib mode, without a cache.
+set -eu
+
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+checkout=$(dirname -- "$script_dir")
+py_env="$script_dir/py-env"
+venv="$checkout/.venv"
+[ "$#" -gt 0 ] || set -- "$checkout/scripts"
+
+status=0
+echo "== ruff check"
+"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@" || status=1
+echo "== ruff format --check"
+"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" "$@" || status=1
+echo "== mypy --strict (non-test files)"
+typed=$(find "$@" -name '*.py' -not -path '*/tests/*' -not -name 'test_*.py' | sort)
+if [ -n "$typed" ]; then
+    # shellcheck disable=SC2086
+    "$py_env" "$venv/bin/mypy" --strict $typed || status=1
+fi
+echo "== pytest"
+"$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
+exit $status
