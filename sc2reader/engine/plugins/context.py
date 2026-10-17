@@ -14,6 +14,7 @@ class ContextLoader:
 
         # keep track of last TargetUnitCommandEvent for UpdateTargetUnitCommandEvent
         self.last_target_ability_event = {}
+        self.last_point_command_event = {}
 
     def handleGameEvent(self, event, replay):
         self.load_message_game_player(event, replay)
@@ -91,11 +92,38 @@ class ContextLoader:
         if event.player.pid in self.last_target_ability_event:
             # store corresponding TargetUnitCommandEvent data in this event
             # currently using for *MacroTracker only, so only need ability name
-            event.ability_name = self.last_target_ability_event[
-                event.player.pid
-            ].ability_name
+            event.ability_name = self.last_target_ability_event[event.player.pid].ability_name
+            event.has_ability = self.last_target_ability_event[event.player.pid].has_ability
+            event.ability_type = self.last_target_ability_event[event.player.pid].ability_type
+            event.ability_data = self.last_target_ability_event[event.player.pid].ability_data
+            event.ability_id = self.last_target_ability_event[event.player.pid].ability_id
+            event.ability = self.last_target_ability_event[event.player.pid].ability
+
+            self.last_target_ability_event[event.player.pid].registerUpdateEvent(event)
 
         self.handleTargetUnitCommandEvent(event, replay)
+
+    
+    def handleTargetPointCommandEvent(self, event, replay):
+        self.last_point_command_event[event.player.pid] = event
+
+    def handleUpdateTargetPointCommandEvent(self, event, replay):
+        
+        if event.player.pid in self.last_point_command_event:
+            event.queued = self.last_point_command_event[event.player.pid].queued
+            event.minimap = self.last_point_command_event[event.player.pid].minimap
+            event.repeated = self.last_point_command_event[event.player.pid].repeated
+            
+            event.ability_name = self.last_point_command_event[event.player.pid].ability_name
+            event.has_ability = self.last_point_command_event[event.player.pid].has_ability
+            event.ability_type = self.last_point_command_event[event.player.pid].ability_type
+            event.ability_data = self.last_point_command_event[event.player.pid].ability_data
+            event.ability_id = self.last_point_command_event[event.player.pid].ability_id
+            event.ability = self.last_point_command_event[event.player.pid].ability
+            
+            self.last_point_command_event[event.player.pid].registerUpdateEvent(event)
+
+        self.handleTargetPointCommandEvent(event, replay)
 
     def handleSelectionEvent(self, event, replay):
         if not replay.datapack:
@@ -147,6 +175,14 @@ class ContextLoader:
 
         event.new_units = event.objects = units
 
+        # reset target events as there can be update event without a previous target one
+        # selection change means that there should be new command
+        if event.player.pid in self.last_target_ability_event:
+            del self.last_target_ability_event[event.player.pid]
+            
+        if event.player.pid in self.last_point_command_event:
+            del self.last_point_command_event[event.player.pid]
+
     def handleResourceTradeEvent(self, event, replay):
         event.sender = event.player
         event.recipient = replay.player[event.recipient_id]
@@ -180,6 +216,9 @@ class ContextLoader:
         event.unit.location = event.location
         event.unit.started_at = event.frame
         event.unit.finished_at = event.frame
+        
+        #MS: create practical links for tracing event for units 
+        event.unit.doneEvent = event
 
         if event.unit_upkeeper:
             event.unit.owner = event.unit_upkeeper
@@ -201,6 +240,9 @@ class ContextLoader:
                         event.unit_id_index, Length(seconds=event.second), event.frame
                     )
                 )
+            
+            #MS: create practical links for tracing event for units 
+            event.unit.deathEvent = event
         else:
             self.logger.error(
                 "Unit {} died at {} [{}] before it was born!".format(
@@ -289,6 +331,9 @@ class ContextLoader:
             )
             replay.objects[event.unit_id] = event.unit
 
+        #MS: create practical links for tracing event for units 
+        event.unit.initEvent = event
+
         replay.active_units[event.unit_id_index] = event.unit
         event.unit.location = event.location
         event.unit.started_at = event.frame
@@ -304,6 +349,9 @@ class ContextLoader:
         if event.unit_id in replay.objects:
             event.unit = replay.objects[event.unit_id]
             event.unit.finished_at = event.frame
+            
+            #MS: create practical links for tracing event for units 
+            event.unit.doneEvent = event
         else:
             self.logger.error(
                 "Unit {} done at {} [{}] before it was started!".format(
@@ -314,7 +362,7 @@ class ContextLoader:
     def handleUnitPositionsEvent(self, event, replay):
         if not replay.datapack:
             return
-
+        
         for unit_index, (x, y) in event.positions:
             if unit_index in replay.active_units:
                 unit = replay.active_units[unit_index]

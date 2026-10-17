@@ -5,16 +5,17 @@ from sc2reader.data import Unit
 from pprint import pprint
 from sc2reader.events import *
 from sc2reader.factories.plugins.replay import toDict
-from sc2reader.mindshare.detectors import *
+from sc2reader.mindshare.detectors.detectors import *
 from sc2reader.mindshare.exports.exporter import CSVExporter
 from termcolor import colored
 from pathlib import Path
+from sc2reader.events.tracker import UnitDiedEvent, UnitBornEvent
 
 import sys
 
 import argparse
 import sc2reader
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 from sc2reader.mindshare.fileHandler import FileHandler
 from sc2reader.events import *
 import sc2reader.mindshare.exports.exporter
@@ -118,32 +119,20 @@ def printDict(dict):
         for e in value:
             print(e)   
 
+#TODO
+#TODO
+#TODO get some nice inital call and remove from scripts
 def processFile(filename):
     replay = sc2reader.load_replay(FileHandler.REPLAYS_FOLDER + "/" + filename, debug=True, load_map=True)
         
     print(toDict()(replay))
-
-    print(replay.map.map_info)
+    print("\n")
     
-
-    sc2reader.mindshare.detectors.createDetectors(replay)
-
-    #TODO Messages gl hf and ggs
-    exp = CSVExporter(sc2reader.mindshare.detectors.battleDetector.battles + 
-                       sc2reader.mindshare.detectors.simpleDetector.upgrades + 
-                       sc2reader.mindshare.detectors.simpleDetector.buildings + 
-                       sc2reader.mindshare.detectors.simpleDetector.units + 
-                       sc2reader.mindshare.detectors.simpleDetector.stats, 
-                       sc2reader.mindshare.detectors.simpleDetector.links)
-
-    export = exp.getExport()
+    #printSelectionsAndCommandsEvents(replay)
+    printCommandEvents(replay)
+    #printCameraEvents(replay)
+    #printSomeEvents(replay)
     
-    #printSomeEvents(replay.events)
-    print(replay.active_units)
-
-    fh = FileHandler(replay)
-    fh.createEventsFile(export)
-
 
 def printIntervalAll(start, finish, events):
 
@@ -159,15 +148,79 @@ def printIntervalAll(start, finish, events):
             if event.pid == 0:
                 print(str(event))
 
-def printSomeEvents(events):
-    for event in events:
-
-        if isinstance(event, PlayerStatsEvent):
+def printSelectionsAndCommandsEvents(replay):
+    for e in replay.events:
+        if  (isinstance(e, TargetUnitCommandEvent) 
+             or isinstance(e, TargetPointCommandEvent) 
+             or isinstance(e, UpdateTargetPointCommandEvent) 
+             or isinstance(e, UpdateTargetUnitCommandEvent)
+             or isinstance(e, SelectionEvent) 
+             or isinstance(e, DataCommandEvent) 
+             or isinstance(e, BasicCommandEvent)
+             or isinstance(e, ControlGroupEvent)):
+       # if (isinstance(event, UnitInitEvent) or
+        #    isinstance(event, UnitBornEvent)):
             # or isinstance(event, PlayerLeaveEvent)
             # or isinstance(event, GameStartEvent)
             # or (args.hotkeys and isinstance(event, HotkeyEvent))
             # or (args.cameras and isinstance(event, CameraEvent))
-            print(event)
+            if "SkippyJo" in str(e.player):
+                print(e)
+
+def printCommandEvents(replay):
+    for e in replay.events:
+        if (isinstance(e, TargetUnitCommandEvent) or
+            isinstance(e, TargetPointCommandEvent) or
+            isinstance(e, SelectionEvent) or
+            isinstance(e, UpdateTargetPointCommandEvent) or
+            isinstance(e, UpdateTargetUnitCommandEvent) or 
+            isinstance(e, ControlGroupEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "Piliskner" in str(e.player):
+                print(e)
+
+
+def printCameraEvents(replay):
+    ces = {}
+
+    for e in replay.events:
+        if (isinstance(e, CameraEvent) or
+            #isinstance(e, UpdateTargetUnitCommandEvent) or
+            isinstance(e, CameraEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "SkippyJo" in str(e.player):
+                
+                cstr = str(e)[5:]
+                
+                if cstr in ces.keys():
+                    ces[cstr] += 1
+                else:
+                    ces[cstr] = 0
+
+                print(e)
+
+    for cstr, count in ces.items():
+        print(cstr + " " + str(count))
+
+                
+def printSomeEvents(replay):
+    for e in replay.events:
+        if (isinstance(e, TargetUnitCommandEvent) or
+            isinstance(e, SelectionEvent) or
+            isinstance(e, CameraEvent) or
+            isinstance(e, TargetPointCommandEvent)):
+            # or isinstance(event, PlayerLeaveEvent)
+            # or isinstance(event, GameStartEvent)
+            # or (args.hotkeys and isinstance(event, HotkeyEvent))
+            # or (args.cameras and isinstance(event, CameraEvent))
+            if "Piliskner" in str(e.player):
+                print(e)
             
 
 def printEventsOfInterest(replay, events):
@@ -187,29 +240,6 @@ def printEventsOfInterest(replay, events):
         
         if not e.unit.is_building and e.time != "00:00":
             print(e)
-       
-        #else:
-        #    if not e.control_pid in bases:
-        #       bases[e.control_pid] = list()
-        
-        
-        
-    
-        
-        #if not e.pid in d:
-        #    d[e.pid] = list()
-        #if not e.pid in cg:
-        #    cg[e.pid] = list()
-        
-        #d[e.pid].append(e)
-        
-        
-                
-                       
-            
-        
-    #printDict(d)
-
 
 
 def printControlGroups(events):
@@ -266,8 +296,15 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-
+    #main()
+    #parser = argparse.ArgumentParser(description='Script to create capture game video for a player and create screenshots from that')
+    #parser.add_argument('--replay', type=str, help='Name of the replay file')
+    
+    #args = parser.parse_args()
+    processFile("El Dorado Piliskner_vs_Rory.SC2Replay")
+    # Skippy_Oceanborn LE (24).SC2Replay
+    # MS_ Camera Events.SC2Replay
+    # Crimson Court LE Applejuice Wanky (2).SC2Replay
 
 try:
     # Assume that we are on *nix or Mac

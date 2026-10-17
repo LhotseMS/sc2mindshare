@@ -1,6 +1,6 @@
 # add focus fire, a moves, abilities
 import datetime
-import sc2reader.mindshare.detectors
+import sc2reader.mindshare.detectors.detectors
 
 from sc2reader.data import *
 from sc2reader.events.eventTypes import *
@@ -9,10 +9,11 @@ from sc2reader.mindshare.mindshare import Base
 from sc2reader.events.game import *
 from sc2reader.events.tracker import *
 from sc2reader.mindshare import *
+from sc2reader.mindshare.exports.harrasmentNode import HarrasmentNode
 from termcolor import colored
 
 
-from sc2reader.mindshare.mindshare import Screen
+from sc2reader.mindshare.mindshare import TimeLocation
 
 
 class Battle(PlayerHandler):
@@ -20,6 +21,10 @@ class Battle(PlayerHandler):
     This event is recorded for each player at the very beginning of the game before the
     :class:`GameStartEvent`.
     """
+    CAMERA_CONTINUOUS_MOVE_LIMIT = 5
+    WORKING_WORKER_DEATH_DELAY = 3
+    BIG_UNIT_SUPPLY_THRESHOLD = 3
+    GOOD_BATTLE_SUPPLY_COEFICIENT = 1.5
 
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD):
         #:
@@ -51,19 +56,73 @@ class Battle(PlayerHandler):
         self.combatAbilitiesTypes = self.initDictByPlayer(2)
         self.nonCombatAbilitiesTypes = self.initDictByPlayer(2)
 
-        self.screens = self.initDictByPlayer()
+        self.harrasSeq = 0
+        self.workerDeathBases = self.initDictByPlayer(2)
+        self.harrasmentNodes = list()
+        
+        self.bigUnitsLost = self.initDictByPlayer(0)
+
+        self.mapLocations = self.initDictByPlayer()
 
         self.supplyLost = self.initDictByPlayer(0)
+        self.minLost = self.initDictByPlayer(0)
+        self.gasLost = self.initDictByPlayer(0)
         
+
+        # battle results & evaluate battle
+        # - good trade
+        # - killed key units
+        #split battles by location - multiprone
+        # 1 Set up locations
+        # 2 check if event is in location
+        # 3 how many locations are used in interval 
+
+        #unit positions
+        
+        #any units cross the map? - segments of map
+        #have we scouted anything at all? 
+        # - target location vs buildings
+        # - 
+        #fog of war - list of all current visibility, range from file
+    
+        # camera locations if camera returns from far to the exact location of main base
+        # measure effective actions - how many screens x how many actions, how many different group selections
+        # count camera hotkeys usage - too few too many? When during multitasking? When macro when not?
+        # camera - was a player multitasking - no multitasking during battles, is macro falling behind in battles?
+        
+        #periods of activity - what is the player doing during this time % of micro actions vs % of macro actions, threshold for macro
+
+        # game advanced stats:
+        # - number of actions queues vs all actions
+
+
+
+        #builds
+        #GameSummary
+        #APMTracker
+        # catching an observer, scan and kill or just kill
+        # base blocks - creep, unit on hold, building
+        # control of towers - tower coordinates, unit sent there, no other command and didn't die
+        # not building workers in the first - builds
+        # larva count too low - relative to max supply
+        # creep spread - 
+
+        # fighting on/off creep
+        # when player got attacked and wasn't watching - his unit was targetted - opponents camera was on that unit, the attack point
+
+
+        #staring at a screen for a long time. link camera events with movement vectors - measure how much player moves, 
+        # ...recognize when camera just moved and when was the screen shifter to new screen - length of the shift
+        # 
+        
+
+        # battle desctiption units building and workers died specifically
+
         # BACKLOG
         # - pair CGs to actions
-        # TODO create comparators for each event type, so that we can limit multi events and duplicated events
-        # TODO evaluate who won the battle, generate simple text descriptions based on numbers
+        # TODO mention in battle that it was a cancellation
         # TODO use chat GPT to generate text overviews of the battles based on learnt data about battles and SC, integration
         # creep spread tracker
-        # TODO drone pulls
-        # map images
-        # player view images - screenshoting timer app
 
         # details 
         # UnitTypeChangeEvent - buildings upgrading
@@ -73,18 +132,14 @@ class Battle(PlayerHandler):
 
         # TODO EDGE CASE too long battle 1248-1382 Player 2 - Piliskner (Zerg)
         # Zergling burrows - death?
+        # add all burrow type units to deaths
         # For each battle: action in battle  Ability (5C0) - Attack TargetUnit; TargetPoint;
-        # Link CG to selected units, and attack with these units
-        # link camera events with movement vectors - measure how much player moves
-        # recognize when camera just moved and when was the screen shifter to new screen - length of the shift
 
-        # camera - was a player multitasking, which abilities were cast in the battle
-        # Highlight a move - count it Ability (5C0) - Attack; Location: (57.5927734375, 57.080078125, 40920)
-        # store locations of creep tumors and check if someone is on creep - how many are there, remove if dead? BASE onCreep(), dying bases and tumors
-        
         self.losses = {}
         self.losses[self.player1] = SummaryOfDeath(0,0,0)
         self.losses[self.player2] = SummaryOfDeath(0,0,0)
+
+        self.bigUnitsLost = self.initDictByPlayer()
         
         for secOfDying in self.secondsOD:
             for e in secOfDying.events:       
@@ -93,11 +148,16 @@ class Battle(PlayerHandler):
                 try:            
                     self.deadUnitsByPlayer[e.unit.owner].append(e)
                     self.supplyLost[e.unit.owner] += e.unit.supply
+                    self.minLost[e.unit.owner] += e.unit.minerals
+                    self.gasLost[e.unit.owner] += e.unit.vespene
 
                     self.losses[e.unit.owner].minerals = self.losses[e.unit.owner].minerals + e.unit.minerals
                     self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + e.unit.vespene
                     self.losses[e.unit.owner].supply = self.losses[e.unit.owner].supply + e.unit.supply
                 
+                    if e.unit.supply >= self.BIG_UNIT_SUPPLY_THRESHOLD:
+                        self.bigUnitsLost[e.player] += 1
+
                     # print(f"Adding {secOfDying.second} {unit} {unit.killing_unit} {unit.type}")
                     if not isinstance(e.unit.killing_unit, Unit):
                         print(colored(f"++++++++++++++ NO KILLING UNIT {datetime.timedelta(seconds=secOfDying.second)}  {e.unit} {e.unit.killing_unit} {e.unit.type}","red"))
@@ -105,7 +165,6 @@ class Battle(PlayerHandler):
                         if self.killersByPlayer.get(e.unit.killing_unit.owner) == None:
                             self.killersByPlayer[e.unit.killing_unit.owner] = list()
                         self.killersByPlayer[e.unit.killing_unit.owner].append(e.unit.killing_unit)
-
                 
                 except:
                     print(colored(f"++++++++++++++ ERR NO KILLING UNIT {e}", "red"))
@@ -124,7 +183,7 @@ class Battle(PlayerHandler):
         screenEventsBuffer = self.initDictByPlayer()
         
         # Dict of all locations that of selected event types
-        self.locations = self.initDictByPlayer()
+        self.locationEvents = self.initDictByPlayer()
                
         # print(f"minmax {minX} {maxX}, {minY} {maxY}")
         
@@ -143,7 +202,7 @@ class Battle(PlayerHandler):
         
         # go through all events assign them to respective dictionaries by type, compute battle properties
         for e in self.events:
-            if isinstance(e, CommandEvent) and not isinstance(e, BasicCommandEvent):
+            if isinstance(e, CommandEvent) and not isinstance(e, BasicCommandEvent) and not isinstance(e, DataCommandEvent):
                 prevCommandEvent = e
 
                 # TODO this shouldnt be if else but classes of processors that determine what to do for each event, parent adding to the same array
@@ -170,7 +229,7 @@ class Battle(PlayerHandler):
                         minY = e.location[1]
                     if e.location[1] > maxY:
                         maxY = e.location[1]                 
-                    self.locations[e.player].append(e.location)
+                    self.locationEvents[e.player].append(e.location)
 
                     self.processLocationEvent(e)
                     self.processBaseEvent(e, self.basesWhereEvents)
@@ -182,13 +241,14 @@ class Battle(PlayerHandler):
             #  TODO: Don't create new screens if the user returned to the previous location, 
             # add function isView in screen to add new camera events to existing screen instead of adding a new one
             # piliskner has no camera events in battle bug    
+            # TODO TODO performance imp, .getLastEvent loops through all, just add var for last event
             elif isinstance(e, CameraEvent) and e.isPlayer(playerNames) and e.isUnique(self.getLastEvent(lambda x: isinstance(x,CameraEvent))):
                 self.cameraByPlayer[e.player].append(e)
                 self.eventsByPlayer[e.player].append(e)
 
                 # if the next camera event is futther than 3 TODO to constant
-                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > 3 and abs(prevCameraEvent[e.player].y - e.y) > 3):
-                    self.screens[e.player].append(Screen(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
+                if prevCameraEvent and e.player in prevCameraEvent and (abs(prevCameraEvent[e.player].x - e.x) > self.CAMERA_CONTINUOUS_MOVE_LIMIT or abs(prevCameraEvent[e.player].y - e.y) > self.CAMERA_CONTINUOUS_MOVE_LIMIT):
+                    self.mapLocations[e.player].append(TimeLocation(cameraEventsBuffer[e.player], screenEventsBuffer[e.player]))
 
                     screenEventsBuffer[e.player] = list()
 
@@ -226,13 +286,16 @@ class Battle(PlayerHandler):
                     self.processLocationEvent(e)
                     self.processBaseEvent(e, self.basesWhereDeaths)
 
-                # TODO TODOOOO 
-                # TODO TODOOOO 
-                # TODO TODOOOO 
-                # TODO TODOOOO Building deaths do not initiate creation of battle, maybe they should be countable deaths.
-                elif e.buildingDeath(): #TODO this condition repeats in the processLocEvent
-                    self.processLocationEvent(e)
+                    #first sort deaths by bases, later review them to determine pulls
+                    if e.unit.is_worker:
+                        baseOfWorkerDeath = sc2reader.mindshare.detectors.detectors.basesDetector.getBaseForMining(e.x, e.y)
 
+                        # worker died in mining range
+                        if baseOfWorkerDeath != None:
+                            if baseOfWorkerDeath not in self.workerDeathBases[e.player]:
+                               self.workerDeathBases[e.player][baseOfWorkerDeath] = list() 
+
+                            self.workerDeathBases[e.player][baseOfWorkerDeath].append(e)
 
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","red"))
 
@@ -252,6 +315,27 @@ class Battle(PlayerHandler):
         
         self.battleArea = (minX,minY,maxX,maxY,abs(minX-maxX),abs(minY-maxY))
 
+        self.allAbilities = (self.nonCombatAbilitiesByPlayer[self.player1] + 
+                         self.nonCombatAbilitiesByPlayer[self.player2] + 
+                         self.combatAbilitiesByPlayer[self.player1] + 
+                         self.combatAbilitiesByPlayer[self.player2])
+        
+        for player, deathBaseEvents in self.workerDeathBases.items():
+            for base, deathEvents in deathBaseEvents.items():
+                pullEvent = sc2reader.mindshare.detectors.detectors.actionsDetector.getPullEventForBase(player, self.startSec, self.endSec, base)
+                self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
+                self.harrasSeq += 1 
+
+        # player 2 killed more
+        if self.supplyLost[self.player1] > self.GOOD_BATTLE_SUPPLY_COEFICIENT * self.supplyLost[self.player2]:
+            pass
+        # player 1 killed more
+        elif self.supplyLost[self.player2] > self.GOOD_BATTLE_SUPPLY_COEFICIENT * self.supplyLost[self.player1]:
+            pass
+        
+        #if self.bigUnitsLost[self.player1] 
+        
+
     @property
     def deathCount(self):
         return self.p1dc + self.p2dc
@@ -264,16 +348,20 @@ class Battle(PlayerHandler):
     def overallSupply(self):
         return self.supplyLost[self.player1] + self.supplyLost[self.player2]
 
+    def getCountableDeaths(self):
+        return [e for e in self.events if isinstance(e, UnitDiedEvent) and e.countableUnitDeath()] 
+                
+    # TODO duplicate with detectors
     def otherPlayer(self, player):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = sc2reader.mindshare.detectors.basesDetector.getBaseOnLocation(e)
+        locationBase = sc2reader.mindshare.detectors.detectors.basesDetector.getClosestBase(e)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)
 
-    #categorize events get numbers by type
+    #categorize events get numbers by types
     #TODO use this logic to group control group units on output
     def processLocationEvent(self, e):
         if isinstance(e, TargetPointCommandEvent) or isinstance(e, TargetUnitCommandEvent):
@@ -290,7 +378,7 @@ class Battle(PlayerHandler):
                 MsUtils.iterateType(self.deadTypes[e.player], e.replaceStrings(e.unit, True)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
 
     def assignEventToScreen(self, event) -> bool:
-        for s in self.screens[event.player]:
+        for s in self.mapLocations[event.player]:
             if s.tryAddEvent(event):
                 return True
         
@@ -324,11 +412,11 @@ class Battle(PlayerHandler):
     
 
     def _strActionsMap(self):
-        orderedLocs1 = self.locations[self.player1]
+        orderedLocs1 = self.locationEvents[self.player1]
         orderedLocs1.sort(key=takeFirst)
         # print(colored(orderedLocs1,"green"))
         
-        orderedLocs2 = self.locations[self.player2]
+        orderedLocs2 = self.locationEvents[self.player2]
         orderedLocs2.sort(key=takeFirst)
         # print(colored(orderedLocs2,"cyan"))
         

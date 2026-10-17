@@ -99,6 +99,13 @@ class Unit(Renamer):
 
         self.baseName = None
         self.baseType = None
+        
+        self.unitsNode = None
+        self.initNode = None
+
+        self.deathEvent = None
+        self.doneEvent = None
+        self.initEvent = None
 
         self.flags = 0
 
@@ -143,6 +150,10 @@ class Unit(Renamer):
                     return unit_type is None
 
     @property
+    def isScout(self):
+        return self.unit.name in ("Drone", "Probe", "SCV", "Zergling", "Reaper", "Marine", "Oracle", "Phoenix")
+
+    @property
     def player(self):
         return self.owner
 
@@ -153,7 +164,7 @@ class Unit(Renamer):
     @property
     def name(self):
         """The name of the unit type currently active. None if no type is assigned"""
-        return self.baseName if self.baseName != None else (self._type_class.name if self._type_class else None)
+        return (self._type_class.name if self._type_class else None) # self.baseName if self.baseName != None else
 
     # TODO use this clean name everywhere instead of just name and postprocess
     @property

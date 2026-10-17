@@ -3,7 +3,6 @@ from sc2reader.engine.engine import GameEngine
 from sc2reader.engine.events import PluginExit
 from sc2reader.engine.utils import GameState
 from sc2reader.engine import plugins
-from sc2reader.engine.plugins import SelectionTracker, CreepTracker
 
 
 def setGameEngine(engine):
@@ -17,6 +16,7 @@ def setGameEngine(engine):
 _default_engine = GameEngine()
 _default_engine.register_plugin(plugins.GameHeartNormalizer())
 _default_engine.register_plugin(plugins.ContextLoader())
-_default_engine.register_plugin(SelectionTracker())
-_default_engine.register_plugin(CreepTracker())
+_default_engine.register_plugin(plugins.SelectionTracker())
+_default_engine.register_plugin(plugins.CreepTracker())
+#_default_engine.register_plugin(plugins.SupplyTracker())
 setGameEngine(_default_engine)
