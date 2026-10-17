@@ -1,0 +1,54 @@
+{
+  "format": "sc2mindshare.decoding/1",
+  "gamemetadata": {
+    "base_build": 81433,
+    "data_build": 81433,
+    "data_version": "5FD8D4B6B52723B44862DF29F232CF31",
+    "duration_game_seconds": 2032,
+    "extra": {},
+    "game_version": "5.0.2.81433",
+    "players": [
+      {
+        "apm_client": 144.0,
+        "assigned_race": "Prot",
+        "extra": {},
+        "mmr": 4337,
+        "player_id": 1,
+        "result": "Loss",
+        "selected_race": "Prot"
+      },
+      {
+        "apm_client": 195.0,
+        "assigned_race": "Zerg",
+        "extra": {},
+        "mmr": 4284,
+        "player_id": 2,
+        "result": "Win",
+        "selected_race": "Zerg"
+      }
+    ],
+    "title": "Golden Wall LE",
+    "warnings": []
+  },
+  "mmr": [
+    {
+      "agree": true,
+      "gamemetadata": 4337,
+      "init_data": 4337,
+      "mmr": 4337,
+      "player_id": 1
+    },
+    {
+      "agree": true,
+      "gamemetadata": 4284,
+      "init_data": 4284,
+      "mmr": 4284,
+      "player_id": 2
+    }
+  ],
+  "replay": {
+    "base_build": 81433,
+    "game_loops": 32511
+  },
+  "warnings": []
+}

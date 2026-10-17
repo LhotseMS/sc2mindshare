@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Any
 
 import sc2reader  # type: ignore[import-untyped]  # sc2reader ships no type information
+from sc2mindshare.decoding.metadata import GameMetadata
 
 __all__ = ["DecodedReplay", "load"]
 
@@ -22,10 +23,12 @@ class DecodedReplay:
     """A loaded replay plus what the decoders found in it."""
 
     replay: Any  # sc2reader.resources.Replay
+    metadata: GameMetadata
     warnings: tuple[str, ...] = ()
 
 
 def load(path: str) -> DecodedReplay:
     """Load a replay with the pinned sc2reader (no map download) and run the decoders."""
     replay = sc2reader.load_replay(path, load_level=4, load_map=False)
-    return DecodedReplay(replay=replay)
+    metadata = GameMetadata.from_replay(replay)
+    return DecodedReplay(replay=replay, metadata=metadata, warnings=metadata.warnings)

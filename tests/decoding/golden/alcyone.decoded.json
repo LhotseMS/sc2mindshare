@@ -1,0 +1,54 @@
+{
+  "format": "sc2mindshare.decoding/1",
+  "gamemetadata": {
+    "base_build": 92440,
+    "data_build": 92440,
+    "data_version": "79F6D78E27ED069D2D84FB14288B88B9",
+    "duration_game_seconds": 1398,
+    "extra": {},
+    "game_version": "5.0.13.92440",
+    "players": [
+      {
+        "apm_client": 286.0,
+        "assigned_race": "Zerg",
+        "extra": {},
+        "mmr": 3098,
+        "player_id": 1,
+        "result": "Loss",
+        "selected_race": "Zerg"
+      },
+      {
+        "apm_client": 142.0,
+        "assigned_race": "Prot",
+        "extra": {},
+        "mmr": 3115,
+        "player_id": 2,
+        "result": "Win",
+        "selected_race": "Prot"
+      }
+    ],
+    "title": "Alcyone LE",
+    "warnings": []
+  },
+  "mmr": [
+    {
+      "agree": true,
+      "gamemetadata": 3098,
+      "init_data": 3098,
+      "mmr": 3098,
+      "player_id": 1
+    },
+    {
+      "agree": true,
+      "gamemetadata": 3115,
+      "init_data": 3115,
+      "mmr": 3115,
+      "player_id": 2
+    }
+  ],
+  "replay": {
+    "base_build": 92440,
+    "game_loops": 22369
+  },
+  "warnings": []
+}

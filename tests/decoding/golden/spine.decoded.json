@@ -1,0 +1,54 @@
+{
+  "format": "sc2mindshare.decoding/1",
+  "gamemetadata": {
+    "base_build": 83830,
+    "data_build": 83830,
+    "data_version": "B4745D6A4F982A3143C183D8ACB6C3E3",
+    "duration_game_seconds": 925,
+    "extra": {},
+    "game_version": "5.0.6.83830",
+    "players": [
+      {
+        "apm_client": 148.0,
+        "assigned_race": "Zerg",
+        "extra": {},
+        "mmr": 3884,
+        "player_id": 1,
+        "result": "Win",
+        "selected_race": "Zerg"
+      },
+      {
+        "apm_client": 142.0,
+        "assigned_race": "Prot",
+        "extra": {},
+        "mmr": 3822,
+        "player_id": 2,
+        "result": "Loss",
+        "selected_race": "Prot"
+      }
+    ],
+    "title": "Jagannatha LE",
+    "warnings": []
+  },
+  "mmr": [
+    {
+      "agree": true,
+      "gamemetadata": 3884,
+      "init_data": 3884,
+      "mmr": 3884,
+      "player_id": 1
+    },
+    {
+      "agree": true,
+      "gamemetadata": 3822,
+      "init_data": 3822,
+      "mmr": 3822,
+      "player_id": 2
+    }
+  ],
+  "replay": {
+    "base_build": 83830,
+    "game_loops": 14805
+  },
+  "warnings": []
+}
