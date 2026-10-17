@@ -10,6 +10,8 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+# src/ holds only the sc2mindshare namespace (no src/sc2mindshare/__init__.py before T09, TD-8).
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from decoding_support import replay_paths
 
