@@ -1,0 +1,6 @@
+# Stream 3 (decoding) environment, TD-8: lives here until T09 creates the decode-dev extra.
+# Install through scripts/py-env (pip cutoff P14D), then freeze into requirements.lock.
+# s2protocol 5.0.17.98310.0 (2026-10-08) is under 14 days old; the cutoff picks 5.0.16.97563.0.
+-r ../../requirements/dev.lock
+s2protocol
+sc2reader==1.9.0
