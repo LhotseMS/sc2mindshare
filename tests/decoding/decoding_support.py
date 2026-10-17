@@ -3,6 +3,7 @@
 import importlib.util
 import os
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 from types import ModuleType
 
@@ -33,11 +34,16 @@ def project_root() -> Path:
     raise RuntimeError("no project root with .tools/ above " + str(CHECKOUT))
 
 
+def _single(found: Iterable[Path], pattern: Path) -> Path:
+    matches = sorted(found)
+    return matches[0] if len(matches) == 1 else pattern  # a missing or ambiguous match fails the fixture
+
+
 def replay_paths() -> dict[str, Path]:
     """The three replays in MS SC/ (D5a: data points, never committed, D7a)."""
     ms_sc = Path(os.environ.get("MS_SC_ROOT", project_root() / "MS SC"))
     return {
-        "alcyone": ms_sc / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
+        "alcyone": _single(ms_sc.glob("Alcyone LE__*/*.SC2Replay"), ms_sc / "Alcyone LE__*"),
         "spores": ms_sc / "1000 spores ZvP.SC2Replay",
         "spine": ms_sc / "200k dmg spine crawler ZvP.SC2Replay",
     }
