@@ -26,7 +26,7 @@ class HarrasmentNode(MultiNode):
 
         
         self.type = "Harrasment"
-        self.propertiesCount = 6
+        self.propertiesCount = 4
             
     def getNodeName(self):
         if self.pull == None:

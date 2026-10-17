@@ -3,8 +3,8 @@ import json
 
 class ImageUploader():
 
-    RESOURCE_URL = "https://media.api.mindshare.touch4dev.net/media/resource/"
-    SERVER_URL = "https://media.api.mindshare.touch4dev.net/media"
+    RESOURCE_URL = "https://media.api.mindshareapp.com/media/resource"
+    SERVER_URL = "https://media.api.mindshareapp.com/media"
     SCREENSHOT_WIDTH = "2558"
     SCREENSHOT_HEIGHT = "1598"
 

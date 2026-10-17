@@ -188,17 +188,22 @@ class EnergyTracker(Tracker):
         return False
 
     def getEnergyAtTime(self, unit, time): 
+        
+        try:
+            prevEnergyStatus = None
+            for status in self.energyHistory[unit.id]:
+                if MsUtils.isLater(time, status.time):
+                    break
+                prevEnergyStatus = status
 
-        prevEnergyStatus = None
-        for status in self.energyHistory[unit.id]:
-            if MsUtils.isLater(time, status.time):
-                break
-            prevEnergyStatus = status
+            interval = MsUtils.intervalBetween(prevEnergyStatus.time.replace(".",":"), time.replace(".",":"))
+            accEnergy = interval * self.ENERGY_REGEN_PS
 
-        interval = MsUtils.intervalBetween(prevEnergyStatus.time.replace(".",":"), time.replace(".",":"))
-        accEnergy = interval * self.ENERGY_REGEN_PS
+            return prevEnergyStatus.energy + accEnergy
 
-        return prevEnergyStatus.energy + accEnergy
+        except:
+            print(f"ERROR unit:{unit}-{unit.id} time: {time}" )
+            raise
         
     def registerEnergyUnit(self, unit, time):
         if unit.id not in self.energyHistory:
