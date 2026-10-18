@@ -18,6 +18,7 @@ venv="$checkout/.venv"
 [ "$#" -gt 0 ] || set -- "$checkout/scripts"
 
 status=0
+export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
 "$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@" || status=1
 echo "== ruff format --check"
