@@ -79,5 +79,17 @@ def build_document(
     }
 
 
+def _vba_numbers(value: Any) -> Any:
+    """Whole-number floats as integers, as VBA-JSON writes a Double (``2``, not ``2.0``; D7a A12)."""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)  # -0.0 becomes 0
+    if isinstance(value, dict):
+        return {k: _vba_numbers(v) for k, v in value.items()}
+    if isinstance(value, list | tuple):
+        return [_vba_numbers(v) for v in value]
+    return value
+
+
 def to_json(document: dict[str, Any]) -> str:
-    return json.dumps(document, ensure_ascii=False, indent=1) + "\n"
+    """The document as text, numbers in VBA-JSON's format (after the 4-decimal rounding of ``_num``)."""
+    return json.dumps(_vba_numbers(document), ensure_ascii=False, indent=1) + "\n"

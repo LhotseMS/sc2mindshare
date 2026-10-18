@@ -6,6 +6,7 @@ compares the bytes: such a change fails here until the golden is regenerated und
 """
 
 import importlib.util
+import json
 import pathlib
 import sys
 
@@ -41,6 +42,20 @@ def test_each_non_frozen_golden_is_what_the_code_makes_byte_for_byte(name):
         f"{name} differs from the current code's output: write a CHANGES.md entry, then "
         f"scripts/regen_golden.py --entry <id> --golden {name} --write"
     )
+
+
+@pytest.mark.parametrize("name", sorted(regen.REGENERABLE))
+def test_whole_numbers_have_no_decimal_part(name):
+    """D7a A12 (VBA-JSON's number format): no number literal in a non-frozen golden is a whole number
+    written with a decimal part. Strings such as "50.0" are text and are not looked at."""
+    literals = []
+
+    def keep(text):
+        literals.append(text)
+        return float(text)
+
+    json.loads((regen.GOLDEN / name).read_text(encoding="utf-8"), parse_float=keep)
+    assert literals and [t for t in literals if float(t).is_integer()] == []
 
 
 def test_a_frozen_golden_is_never_regenerated(capsys):
