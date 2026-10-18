@@ -91,3 +91,22 @@ def test_data_types_keep_the_first_position_of_a_repeated_key():
 def test_data_types_source_matches_the_vba():
     pairs = ewc.parse_vba_data_types(VBA_TRH.read_text(encoding="utf-8", errors="replace"))
     assert tuple(pairs) == ewc.DATA_TYPES_SOURCE
+
+
+class _FakeBook:
+    def __init__(self, cells):
+        self._cells = cells
+
+    def cells(self, sheet):
+        return self._cells
+
+
+def test_a_theme_coloured_detail_cell_fails_loudly():
+    book = _FakeBook({(2, 1): ("Battle", None), (2, 2): ("time", ewc.THEME_FILL)})
+    with pytest.raises(ValueError, match="theme-coloured"):
+        ewc.details(book)
+
+
+def test_green_cells_are_details_and_others_are_not():
+    book = _FakeBook({(2, 1): ("Units", None), (2, 2): ("time", ewc.DETAIL_GREEN), (2, 3): ("count", "FF0000")})
+    assert ewc.details(book) == [{"nodeType": "Units", "properties": ["time"]}]

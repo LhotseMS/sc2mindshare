@@ -14,7 +14,10 @@ not replay data, exactly as the VBA builds them:
 - ``details.json``: ``readNodes`` (Details sheet): rows 1 to the last row with a
   value in column A; per row the non-empty cells of columns B to J whose fill
   is RGB(0, 100, 0), as ``{nodeType: A, properties: [...]}``, rows without one
-  left out;
+  left out (a theme-coloured fill in that range fails loudly). The VBA first runs
+  ``updateTypesSheet "Details"``, which deletes rows of absent types and appends
+  new types without fills; on today's data that changes no green cell, so the
+  saved sheet is read as it is;
 - ``data_types.json``: the hard-coded ``dataTypes`` dictionary of
   ``MindshareTRH__1_2.readNodes``, in insertion order (a repeated key keeps its
   first position, as a Scripting.Dictionary does).
@@ -36,6 +39,7 @@ from xml.etree import ElementTree as ET
 NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 REL_NS = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
 DETAIL_GREEN = "006400"  # VBA rgb(0, 100, 0)
+THEME_FILL = "<theme>"
 
 # MindshareTRH__1_2.bas, readNodes: dataTypes("<name>") = "<type>", in source order.
 DATA_TYPES_SOURCE: tuple[tuple[str, str], ...] = (
@@ -116,7 +120,12 @@ class Workbook:
         for fill in root.findall("m:fills/m:fill", NS):
             fg = fill.find("m:patternFill/m:fgColor", NS)
             rgb = fg.get("rgb") if fg is not None else None
-            fills.append(rgb[-6:].upper() if rgb else None)
+            if rgb:
+                fills.append(rgb[-6:].upper())
+            elif fg is not None and (fg.get("theme") is not None or fg.get("indexed") not in (None, "64")):
+                fills.append(THEME_FILL)  # a theme or palette colour: its RGB is not in the cell's style
+            else:
+                fills.append(None)
         return [fills[int(xf.get("fillId", "0"))] for xf in root.findall("m:cellXfs/m:xf", NS)]
 
     def _sheet_paths(self) -> dict[str, str]:
@@ -174,6 +183,11 @@ def details(book: Workbook) -> list[dict[str, Any]]:
     cells = book.cells("Details")
     out: list[dict[str, Any]] = []
     for row in range(1, _last_row_in_a(cells) + 1):
+        for col in range(2, 11):
+            if (row, col) in cells and cells[(row, col)][0] != "" and cells[(row, col)][1] == THEME_FILL:
+                raise ValueError(
+                    f"Details row {row} column {col}: a theme-coloured fill; cannot tell whether it is RGB(0,100,0)"
+                )
         props = [
             cells[(row, col)][0]
             for col in range(2, 11)

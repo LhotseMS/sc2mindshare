@@ -108,7 +108,13 @@ def _comma_decimal(text: str) -> float:
 
 
 def vba_integer(text: str) -> int:
-    """Assigning cell text to a VBA ``Integer`` (16-bit, banker's rounding)."""
+    """Assigning cell text to a VBA ``Integer`` (16-bit, banker's rounding).
+
+    Not exact for decimal-point text: on Stefan's decimal-comma locale VBA would read
+    ``"4.5"`` differently (the point is not a decimal separator there), while this port
+    reads 4.5. It cannot fire on today's data: every Integer field in the CSV is a whole
+    number (the decimals, supply values, go through ``vba_double_from_point_text``).
+    """
     value = vba_round_half_even(_comma_decimal(text))
     if not VBA_INTEGER_MIN <= value <= VBA_INTEGER_MAX:
         raise VbaError(f"overflow: {text!r} does not fit a VBA Integer")
