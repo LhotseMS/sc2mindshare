@@ -107,7 +107,8 @@ def test_an_entry_never_applied_is_not_reported_as_applied(tmp_path, monkeypatch
 def _git(repo, *args):
     import subprocess
 
-    subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args], check=True, capture_output=True)
+    cmd = ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args]
+    subprocess.run(cmd, check=True, capture_output=True, env=regen.check_golden_delta.git_env())  # never a caller's GIT_DIR
 
 
 def test_the_history_lookup(tmp_path):
@@ -128,3 +129,25 @@ def test_the_history_lookup(tmp_path):
     not_a_repo = tmp_path.parent / (tmp_path.name + "-plain")
     not_a_repo.mkdir()
     assert regen._was_in_history("G.json", v1, repo=not_a_repo) is False
+
+
+def test_the_history_lookup_ignores_a_set_git_dir(tmp_path, monkeypatch, capsys):
+    """A GIT_DIR naming another repository must not change which history is read (incident 2026-10-18)."""
+    import hashlib
+
+    golden_file = tmp_path / "real" / "tests" / "golden" / "alcyone" / "G.json"
+    golden_file.parent.mkdir(parents=True)
+    real = tmp_path / "real"
+    _git(real, "init", "-q")
+    golden_file.write_text("v1\n", encoding="utf-8")
+    _git(real, "add", ".")
+    _git(real, "commit", "-qm", "v1")
+    decoy = tmp_path / "decoy"
+    decoy.mkdir()
+    _git(decoy, "init", "-q")
+    monkeypatch.setenv("GIT_DIR", str(decoy / ".git"))
+    assert regen._was_in_history("G.json", hashlib.sha256(b"v1\n").hexdigest(), repo=real) is True
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert regen._was_in_history("G.json", "0" * 64, repo=plain) is False
+    assert "history unavailable (not a git repository): checking against the entry's base" in capsys.readouterr().out

@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import os
 import re
 import subprocess
 import sys
@@ -122,8 +123,17 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
     return problems
 
 
+def git_env() -> dict[str, str]:
+    """The environment without any GIT_* variable, for every git call of the golden tooling and its tests.
+
+    A GIT_DIR (or GIT_WORK_TREE, GIT_INDEX_FILE, ...) in the caller's environment overrides ``git -C``:
+    on 2026-10-18 a test run with GIT_DIR set made the throwaway test repositories commit into the
+    checkout's own .git (incident, decision D1a). Without these variables ``-C`` decides the repository."""
+    return {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+
+
 def _git(repo: Path, *args: str) -> str:
-    return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True).stdout
+    return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True, env=git_env()).stdout
 
 
 def _adds(repo: Path, sha: str, changes_rel: str, marker: str) -> bool:
@@ -131,7 +141,7 @@ def _adds(repo: Path, sha: str, changes_rel: str, marker: str) -> bool:
     if marker not in _git(repo, "show", f"{sha}:{changes_rel}"):
         return False
     before = subprocess.run(
-        ["git", "-C", str(repo), "show", f"{sha}^:{changes_rel}"], check=False, capture_output=True, text=True
+        ["git", "-C", str(repo), "show", f"{sha}^:{changes_rel}"], check=False, capture_output=True, text=True, env=git_env()
     )
     return before.returncode != 0 or marker not in before.stdout
 
