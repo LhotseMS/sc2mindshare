@@ -259,4 +259,6 @@ def test_the_retired_single_shift_form_is_refused(paths, retired):
     entry = _entry(old)
     entry["renumber"] = retired
     problems = _problems(entry, old, new)
-    assert problems == ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], problems
+    assert problems == ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], (
+        problems
+    )
