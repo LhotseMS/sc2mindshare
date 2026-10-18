@@ -115,3 +115,55 @@ The 1000 spores replay has no model fixture: its analysis fails in the legacy la
 New frozen goldens, pinned in `PARITY.sha256`; no existing golden changes: `spine/G-CSV-1.csv` (456 lines) and `spine/Intervals-1.csv` (17 lines), the live legacy run's output for `200k dmg spine crawler ZvP`, written by `freeze_parity_fixtures.py legacy-csv` only after the frozen spine models rendered exactly them. The spine models are now tied to the legacy output without the legacy venv, as Alcyone's are to G-CSV-1.
 
 The done-when (tests pass with the legacy venv absent) as measured, always with `SC2MS_REQUIRE_GOLDEN=1` (a missing input fails, never skips), on a `git archive` copy without `.venv-legacy`, `-m "not legacy"`: at `cd5dea5` 427 passed, 9 deselected, 3 xfailed; at `105b1d9` 449 passed, 9 deselected, 3 xfailed. Unfiltered, the only failures are the 9 legacy-marked items.
+
+
+### P1: a battle is named after the base nearest to its first death (CR-023, T22)
+
+`BaseDetector.getClosestBase` stored a boolean (`dist = base.minDistance(...) < minDistance`) instead of the distance, so it returned the second base it iterated, lilTiGGer's Natural, for every battle: all 30 Alcyone battles read "... near lilTiGGer Natural". Fix: compare the real distances; the nearest of the bases the layer found to the battle's first countable death wins (the first one on a tie). Applied inside the analysis layer, switched by its ledger id (`analysis.fixes.LAYER_FIXES`), so the bug-faithful run (`fixes=()`) and its CSV oracle are unchanged. Only the Battle names change, in the three current goldens; nothing feeds the layout, so no position moves. Predicted, before the change, by an independent nearest-base computation on the bug-faithful layer (`.scratch/rex/cr023/probe_p1.py`):
+
+| Battle | Was near | Now near |
+|---|---|---|
+| `Battle-1` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-2` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-3` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-4` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-5` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-6` | lilTiGGer Natural | lilTiGGer 3rd base |
+| `Battle-7` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-8` | lilTiGGer Natural | blacksquall 3rd base |
+| `Battle-9` | lilTiGGer Natural | blacksquall 5th base |
+| `Battle-10` | lilTiGGer Natural | blacksquall 5th base |
+| `Battle-11` | lilTiGGer Natural | blacksquall 3rd base |
+| `Battle-12` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-13` | lilTiGGer Natural | blacksquall 3rd base |
+| `Battle-14` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-15` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-16` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-17` | lilTiGGer Natural | lilTiGGer 4th base |
+| `Battle-18` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-19` | lilTiGGer Natural | lilTiGGer 8th base |
+| `Battle-20` | lilTiGGer Natural | lilTiGGer 5th base |
+| `Battle-21` | lilTiGGer Natural | lilTiGGer 5th base |
+| `Battle-22` | lilTiGGer Natural | lilTiGGer Main base |
+| `Battle-23` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-24` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-25` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-26` | lilTiGGer Natural | blacksquall 5th base |
+| `Battle-27` | lilTiGGer Natural | blacksquall Natural |
+| `Battle-28` | lilTiGGer Natural | blacksquall Main base |
+| `Battle-29` | lilTiGGer Natural | blacksquall 6th base |
+| `Battle-30` | lilTiGGer Natural | blacksquall 6th base |
+
+The bases are every Hatchery, Nexus or Orbital the layer found near minerals over the whole game, so a battle can be named after a base built later (the ledger fix is the distance only; a base that is not up yet is a separate question for the wording, A10).
+
+```json
+{"entry": "P1-view", "task": "CR-023", "defect": "P1 getClosestBase stores a boolean: every battle near lilTiGGer Natural", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "a131bb9d0a54c5ccd8c1b730291f95374d2479c778c226ad029d30d5721d704b", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 30}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1-snap-compressed", "task": "CR-023", "defect": "P1 getClosestBase stores a boolean: every battle near lilTiGGer Natural", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "f6bfbd02c25f09da77b3968d088ea003ec99e975e09060f35d0c306f41138b5c", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 30}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1-snap-linear", "task": "CR-023", "defect": "P1 getClosestBase stores a boolean: every battle near lilTiGGer Natural", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 30}], "added": [], "removed": []}
+```
