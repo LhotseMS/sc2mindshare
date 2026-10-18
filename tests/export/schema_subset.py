@@ -41,33 +41,6 @@ _LIST = {"anyOf", "allOf"}
 _MAP = {"properties", "$defs"}
 
 
-def _walk(schema: Any, path: str) -> None:
-    """Every keyword of every subschema is one this checker implements, and every type name is known.
-
-    Checked once over the whole schema, so a keyword in a branch a value never visits (an anyOf
-    alternative after a match, an else when then is taken, an unreferenced $defs entry, the schema of
-    an absent property) is refused as well."""
-    if isinstance(schema, bool):
-        return
-    if not isinstance(schema, dict):
-        raise UnsupportedKeyword(f"{path}: a schema must be an object or a boolean")
-    unknown = set(schema) - SUPPORTED
-    if unknown:
-        raise UnsupportedKeyword(f"{sorted(unknown)} at {path}")
-    if "type" in schema:
-        names = schema["type"] if isinstance(schema["type"], list) else [schema["type"]]
-        if bad := [n for n in names if n not in TYPES]:
-            raise UnsupportedKeyword(f"type {bad} at {path}")
-    for key in _ONE & set(schema):
-        _walk(schema[key], f"{path}/{key}")
-    for key in _LIST & set(schema):
-        for i, sub in enumerate(schema[key]):
-            _walk(sub, f"{path}/{key}/{i}")
-    for key in _MAP & set(schema):
-        for name, sub in schema[key].items():
-            _walk(sub, f"{path}/{key}/{name}")
-
-
 def _is_type(value: Any, name: str) -> bool:
     if name not in TYPES:
         raise UnsupportedKeyword(f"type {name!r}")
@@ -105,8 +78,44 @@ def _same(a: Any, b: Any) -> bool:
 
 class Checker:
     def __init__(self, schema: dict[str, Any]) -> None:
-        _walk(schema, "#")  # refuse any keyword this checker does not implement, wherever it is
         self.root = schema
+        self._walk(schema, "#")  # refuse anything this checker cannot evaluate, wherever it is
+
+    def _walk(self, schema: Any, path: str, boolean_ok: bool = False) -> None:
+        """Every subschema is one this checker can evaluate: implemented keywords, known type names,
+        every $ref resolvable to a schema object, well-formed properties/$defs/anyOf/allOf, and a
+        boolean subschema only where _check handles one (additionalProperties).
+
+        Checked once over the whole schema, so a branch a value never visits (an anyOf alternative
+        after a match, an else when then is taken, an unreferenced $defs entry, the schema of an
+        absent property) is refused as well."""
+        if isinstance(schema, bool):
+            if not boolean_ok:
+                raise UnsupportedKeyword(f"{path}: a boolean subschema (only additionalProperties may be one)")
+            return
+        if not isinstance(schema, dict):
+            raise UnsupportedKeyword(f"{path}: a schema must be an object")
+        unknown = set(schema) - SUPPORTED
+        if unknown:
+            raise UnsupportedKeyword(f"{sorted(unknown)} at {path}")
+        if "type" in schema:
+            names = schema["type"] if isinstance(schema["type"], list) else [schema["type"]]
+            if bad := [n for n in names if n not in TYPES]:
+                raise UnsupportedKeyword(f"type {bad} at {path}")
+        if "$ref" in schema:
+            self._resolve(schema["$ref"])
+        for key in _ONE & set(schema):
+            self._walk(schema[key], f"{path}/{key}", boolean_ok=key == "additionalProperties")
+        for key in _LIST & set(schema):
+            if not isinstance(schema[key], list):
+                raise UnsupportedKeyword(f"{path}/{key}: must be a list of schemas")
+            for n, sub in enumerate(schema[key]):
+                self._walk(sub, f"{path}/{key}/{n}")
+        for key in _MAP & set(schema):
+            if not isinstance(schema[key], dict):
+                raise UnsupportedKeyword(f"{path}/{key}: must map names to schemas")
+            for name, sub in schema[key].items():
+                self._walk(sub, f"{path}/{key}/{name}")
 
     def errors(self, value: Any) -> list[str]:
         return self._check(value, self.root, "$")
@@ -116,6 +125,8 @@ class Checker:
             raise UnsupportedKeyword(f"$ref {ref!r} (only local #/... references)")
         node: Any = self.root
         for part in ref[2:].split("/"):
+            if not isinstance(node, dict) or part not in node:
+                raise UnsupportedKeyword(f"$ref {ref!r} does not resolve")
             node = node[part]
         if not isinstance(node, dict):
             raise UnsupportedKeyword(f"$ref {ref!r} does not name a schema object")
