@@ -61,3 +61,20 @@ The two main bases start at -71 s (signed `start_seconds`, B9); their legacy `ti
 ```json
 {"entry": "P3d-snap-linear", "task": "CR-014b", "defect": "P3 display: pre-game time wraps to 23:58:49 (A9)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "0a5fe62d26539b95386102e03a2af98398e47252991f3fe5eeac33a5e4a492ee", "changes": [{"select": {"type": "Building"}, "fields": ["properties.time", "properties.pre-game time"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### A12: numbers written as VBA-JSON writes them (CR-014b; D7a A12)
+
+A12: the Mindshare import follows VBA-JSON's number format. VBA-JSON writes a Double as VBA's string conversion does, so a whole number has no decimal part (`2`, not `2.0`); Python's `json` writes every float with one. `export.mindshare_json.to_json` now writes whole-number floats as integers, after the 4-decimal rounding of layout-spec.md §2 (unchanged: round to 4 dp first, then write). Text only: every value stays the same number, so `diff_json` (which compares numbers as numbers) reports no change, and `changes` is empty. The text delta, counted with a `parse_float` hook (strings such as an Inject Delay's `"50.0"` are text and stay): whole-number float literals 208 → 0 in G-VIEW-current, 1,044 → 0 in G-SNAP-1-compressed, 1,081 → 0 in G-SNAP-1-linear; no other byte changes. `scripts/tests/test_regen_golden.py` holds the goldens byte-identical to the code's output. The frozen G-VIEW-1 (written by the Python VBA view port) keeps its `.0` literals.
+
+```json
+{"entry": "A12-view", "task": "CR-014b", "defect": "A12 number format: whole numbers written as 2.0, VBA-JSON writes 2", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "15d829ecb06b7e0c92671fab2b5ed10c296564d063e9bfbd7f9360bf61124405", "changes": [], "added": [], "removed": []}
+```
+
+```json
+{"entry": "A12-snap-compressed", "task": "CR-014b", "defect": "A12 number format: whole numbers written as 2.0, VBA-JSON writes 2", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "9563d11f89ed1d2fe3d4b2d0298b5728f78965974dbbd76a214b979a4b9827f9", "changes": [], "added": [], "removed": []}
+```
+
+```json
+{"entry": "A12-snap-linear", "task": "CR-014b", "defect": "A12 number format: whole numbers written as 2.0, VBA-JSON writes 2", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "021880a2587a15e020165bb8b3a6f6e11371fba6a9922dbee758247ed6f9566b", "changes": [], "added": [], "removed": []}
+```
