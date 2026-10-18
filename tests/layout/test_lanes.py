@@ -53,6 +53,18 @@ def test_3_battles():
     assert over.positions["Battle-2"][1] == pytest.approx(-(9.3 + 4 - 5.76))
 
 
+def test_3_battle_collision_depends_on_the_mode():
+    """Leo's CR-017 check: the collision distance is measured along x, so an empty window between two
+    battles changes it. Windows 0 and 2 (window 1 empty): radii 1.2 (supply lost 10) and 2.5 (50), so
+    r1 + r2 = 3.7. Compressed: rows 0 and 1, d = 2.5 < 3.7, the smaller (first) battle moves to
+    sqrt((3.7 + 0.3)^2 - 2.5^2) = 3.1225. Linear: d = 5.0 >= 3.7, no shift."""
+    pair = [it("Battle-1", "Battle", 5, "Common", size_basis=10), it("Battle-2", "Battle", 25, "Common", size_basis=50)]
+    c, lin = lay(pair), lay(pair, "linear")
+    assert c.positions["Battle-1"] == pytest.approx((0, math.sqrt(4.0**2 - 2.5**2))) and c.positions["Battle-2"] == (2.5, 0)
+    assert math.sqrt(4.0**2 - 2.5**2) == pytest.approx(3.1225, abs=5e-5)
+    assert lin.positions["Battle-1"] == (0, 0) and lin.positions["Battle-2"] == (5.0, 0)
+
+
 def test_4_bau_stack():
     r = lay([it(f"Building-{k}", "Building", 1 + k) for k in range(3)] + [it("Upgrade-1", "Upgrade", 2, "B")])
     assert [r.positions[f"Building-{k}"][1] for k in range(3)] == pytest.approx([-8.0, -9.05, -10.1])
