@@ -128,7 +128,17 @@ def _key_lists_per_type(doc):
     return lists
 
 
-@pytest.mark.parametrize("name", ["G-VIEW-1.json", "G-VIEW-current.json", "G-SNAP-1-compressed.json", "G-SNAP-1-linear.json"])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "G-VIEW-1.json",
+        "G-VIEW-current.json",
+        "G-SNAP-1-compressed.json",
+        "G-SNAP-1-linear.json",
+        "G-SNAP-current-compressed.json",
+        "G-SNAP-current-linear.json",
+    ],
+)
 def test_every_node_of_a_type_has_the_same_property_keys(name):
     """Mindshare refuses an import where two nodes of one type have different parameters ("node
     'Building-4' has different parameters than node 'Building-1' but the same type", Stefan's import of
