@@ -51,7 +51,7 @@ def test_one_command_reproduces_the_goldens(tmp_path, mode):
     out = tmp_path / "game" / "graph.json"
     code, stdout, stderr = run("build", ALCYONE, "--out", out, "--timeline", mode, "--config-root", MS_SC)
     assert (code, stderr) == (0, "")
-    assert out.read_bytes() == (GOLDEN / f"G-SNAP-1-{mode}.json").read_bytes()
+    assert out.read_bytes() == (GOLDEN / f"G-SNAP-current-{mode}.json").read_bytes()
     assert (out.parent / "Intervals.csv").read_bytes() == (GOLDEN / "Intervals-1.csv").read_bytes()
     doc = json.loads((out.parent / "intervals.json").read_text(encoding="utf-8"))
     assert doc["graph"] == "graph.json" and len(doc["intervals"]) == 30 and doc["intervals"][0]["id"] == "Battle-1"
@@ -66,7 +66,7 @@ def test_compressed_is_the_default_and_the_config_root_can_come_from_the_environ
     out = tmp_path / "graph.json"
     code, _, stderr = run("build", ALCYONE, "--out", out, "--log", tmp_path / "run.log")
     assert (code, stderr) == (0, "")
-    assert out.read_bytes() == (GOLDEN / "G-SNAP-1-compressed.json").read_bytes()
+    assert out.read_bytes() == (GOLDEN / "G-SNAP-current-compressed.json").read_bytes()
     assert (tmp_path / "run.log").exists() and not (tmp_path / "graph.log").exists()
 
 
@@ -169,7 +169,7 @@ def test_with_analysis_adds_the_analysis_object_and_nothing_else(tmp_path):
     doc = json.loads(out.read_text(encoding="utf-8"))
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links", "analysis"]
     analysis = doc.pop("analysis")
-    assert doc == json.loads((GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8"))
+    assert doc == json.loads((GOLDEN / "G-SNAP-current-compressed.json").read_text(encoding="utf-8"))
     assert analysis["game"]["base_build"] == 92440 and len(analysis["units"]) == 1232
 
 
@@ -187,7 +187,7 @@ def test_the_exposed_values_are_computed_only_when_asked_for(tmp_path, monkeypat
     plain.parent.mkdir()
     code, _, stderr = run("build", ALCYONE, "--out", plain, "--config-root", MS_SC)
     assert (code, stderr) == (0, "")
-    assert plain.read_text(encoding="utf-8") == (GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8")
+    assert plain.read_text(encoding="utf-8") == (GOLDEN / "G-SNAP-current-compressed.json").read_text(encoding="utf-8")
     asked = tmp_path / "asked" / "graph.json"
     asked.parent.mkdir()
     code, _, stderr = run("build", ALCYONE, "--out", asked, "--config-root", MS_SC, "--with-analysis")
