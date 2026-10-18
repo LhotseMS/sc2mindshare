@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Any
 from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
+from sc2mindshare.decoding.target_flags import target_flag_summary
 
 if TYPE_CHECKING:
     from sc2mindshare.decoding import DecodedReplay
@@ -53,7 +54,24 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
         ],
         "camera_hotkeys": _camera_hotkeys(replay),
         "command_activity": [_activity(pid, a) for pid, a in command_activity(replay).items()],
+        "target_flags": _target_flags(replay),
         "warnings": list(decoded.warnings),
+    }
+
+
+def _target_flags(replay: Any) -> dict[str, Any]:
+    summary = target_flag_summary(replay)
+    return {
+        "by_kind_and_relation": [
+            {"kind": kind.value, "relation": relation, "count": count}
+            for (kind, relation), count in sorted(
+                summary.by_kind_and_relation.items(), key=lambda kv: (kv[0][0].value, kv[0][1])
+            )
+        ],
+        "resolved_in_tracker": {
+            kind.value: count for kind, count in sorted(summary.resolved.items(), key=lambda kv: kv[0].value)
+        },
+        "unknown_flags": {str(flags): count for flags, count in sorted(summary.unknown_flags.items())},
     }
 
 

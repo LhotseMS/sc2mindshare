@@ -310,5 +310,39 @@
     "base_build": 92440,
     "game_loops": 22369
   },
+  "target_flags": {
+    "by_kind_and_relation": [
+      {
+        "count": 7,
+        "kind": "snapshot",
+        "relation": "enemy"
+      },
+      {
+        "count": 9,
+        "kind": "snapshot",
+        "relation": "neutral"
+      },
+      {
+        "count": 138,
+        "kind": "unit",
+        "relation": "enemy"
+      },
+      {
+        "count": 252,
+        "kind": "unit",
+        "relation": "neutral"
+      },
+      {
+        "count": 450,
+        "kind": "unit",
+        "relation": "own"
+      }
+    ],
+    "resolved_in_tracker": {
+      "snapshot": 0,
+      "unit": 840
+    },
+    "unknown_flags": {}
+  },
   "warnings": []
 }
