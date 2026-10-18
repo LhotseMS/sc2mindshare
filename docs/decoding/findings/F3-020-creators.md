@@ -1,6 +1,7 @@
 # F3-020: unit creator attribution from SUnitBornEvent (CR-055, T3-14)
 
 **Status:** supported on all three replays; the hypothesis holds with two refinements. 2026-10-18, Morgan.
+**Corpus (E1, CR-056, `E1-corpus.md`):** the creator fields exist from build 55505; 8 of the 9 corpus replays with creators agree (other owners only for Changeling forms and one Assimilator → VespeneGeyser); the co-op mission `coop/CoA` does not (trigger-spawned units). Supported for ladder replays.
 Decoder: `src/sc2mindshare/decoding/creators.py` (`creations(replay)`); tests: `tests/decoding/test_creators.py`.
 Probe (read only, orchestrator `.scratch/stream3/creator_probe.py`): s2protocol 5.0.16.97563.0 decode of the tracker events, independent of sc2reader.
 

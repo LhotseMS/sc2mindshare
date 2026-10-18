@@ -1,6 +1,7 @@
 # F3-016 to F3-019: the small side members and the user options (CR-050, T3-10)
 
 **Status:** framing supported on all three replays; meanings as labelled below. 2026-10-18, Morgan.
+**Corpus (E1, CR-056, `E1-corpus.md`):** F3-016 holds on 42 of 45 corpus replays; the 3 others are vs-AI games, where the resume loop is the human's last dialog action, 45 to 95 loops before the leave. F3-017 holds on all 288 corpus replays with this framing. F3-018 holds on 95 of 101 (sc2reader misreads `base_build_num` on build 23925).
 Decoder: `src/sc2mindshare/decoding/side_members.py`; tests: `tests/decoding/test_side_members.py`.
 Probes (read only, in the orchestrator's `.scratch/stream3/`): `sidefiles_probe.py`, `sync_probe.py`, `resumable_probe.py`.
 The oracle is the raw archive bytes (mpyq) and s2protocol 5.0.16.97563.0's decode of `SUserOptionsEvent`, both independent of sc2reader.

@@ -2,7 +2,8 @@
 
 A save stores the current camera point in a hotkey slot (`slot`, 0-7). Recalling the slot moves
 the camera there, which the replay records as an ordinary camera update whose target is exactly
-the saved point. On the three replays every exact match belongs to one slot only (finding F3-009).
+the saved point. On the three replays every exact match belongs to one slot only (finding F3-009); in the
+corpus 3 of 40 replays save one point in two slots (E1), and then the lowest slot is reported.
 
 `CameraSaveEvent` is a direct GameEvent subclass (TD-12): not a CameraEvent, and without the
 generic `x`, `y`, `location`, `ability` or `unit` attributes, so no existing filter picks it up.
