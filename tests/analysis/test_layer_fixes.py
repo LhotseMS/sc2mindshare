@@ -414,9 +414,15 @@ CLEANING_WITHOUT_FIXES = {
         2,
         "SinglesDetector: the game heatmap name, a lookup key into the image tracker the legacy uploader wrote",
     ),
-    ("detectors/detectors.py", "buildingsEligible"): (1, "the OMIT_BUILDINGS prefix test, a predicate"),
+    ("detectors/detectors.py", "buildingsEligible"): (
+        1,
+        "the OMIT_BUILDINGS prefix test: P2 can't change it, no Zerg/Terran-named type is a building (Morgan)",
+    ),
     ("detectors/detectors.py", "findSimpleNodes"): (1, "a debug print"),
-    ("detectors/detectors.py", "addBuilding"): (1, "the unitsInfo.csv lookup key (the sheet's names)"),
+    ("detectors/detectors.py", "addBuilding"): (
+        1,
+        "the unitsInfo.csv Build Time key: P2 can't change it, no Zerg/Terran-named type is a building (Morgan)",
+    ),
     ("detectors/detectors.py", "createHeatMaps"): (4, "battle heatmap names, lookup keys into the image tracker"),
     ("detectors/trackers.py", "providerOf"): (1, "the bug-faithful provider lookup (S1 off)"),
     ("exports/energyNode.py", "__str__"): (1, "debug text"),
@@ -454,6 +460,31 @@ def test_every_name_cleaning_without_the_fixes_is_listed_with_a_reason():
                 if not passes:
                     found[(str(path.relative_to(root)), fn.name)] += 1
     assert dict(found) == {k: n for k, (n, _why) in CLEANING_WITHOUT_FIXES.items()}
+
+
+def test_no_fix_less_cleaning_is_left_on_the_fork_objects_or_read_by_the_layer():
+    """Morgan's G6 on P2 (N1): the guard above sees calls only, so the fork's ``nameC`` property and ``replaceStrings``
+    methods are deleted from ``reader.fork_api``, and the layer reads no ``.nameC`` attribute."""
+    import ast
+
+    from sc2mindshare.reader import fork_api
+
+    members = ("nameC", "replaceStrings")
+    on_objects = [
+        f"{cls.__name__}.{m}"
+        for cls in vars(fork_api).values()
+        if isinstance(cls, type) and cls.__module__ == fork_api.__name__
+        for m in members
+        if m in vars(cls)
+    ]
+    root = CHECKOUT / "src" / "sc2mindshare" / "analysis"
+    reads = [
+        f"{path.relative_to(root)}:{node.lineno}"
+        for path in sorted(root.rglob("*.py"))
+        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8")))
+        if isinstance(node, ast.Attribute) and node.attr == "nameC"
+    ]
+    assert (on_objects, reads) == ([], [])
 
 
 @pytest.mark.parametrize(
