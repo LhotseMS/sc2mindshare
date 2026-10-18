@@ -9,6 +9,7 @@ import pathlib
 import pytest
 from sc2mindshare.analysis.context import AnalysisContext
 from sc2mindshare.analysis.detectors import detectors
+from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.run import analyse, legacy_csv
 from sc2mindshare.reader.loader import load_replay
 
@@ -48,7 +49,7 @@ def test_two_replays_in_one_process_give_their_own_results():
     # With module globals, the second analysis would overwrite the first's detectors.
     first = _quiet(analyse, load_replay(ALCYONE), MS_SC, fixes=())  # the legacy CSV is a bug-faithful output
     first_csv = legacy_csv(first)
-    _quiet(analyse, load_replay(SPINE), MS_SC, fixes=())
+    _quiet(analyse, load_replay(SPINE), MS_SC, fixes=LAYER_FIXES)  # a ctx.fixes leak into the first would show (G6 N1)
     assert legacy_csv(first) == first_csv
 
 

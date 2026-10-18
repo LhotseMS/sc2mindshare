@@ -815,6 +815,9 @@ class BaseDetector(EventsDetector):
                 # CR-023 P1b (D8a): only a base whose init/born second is at or before the battle's start
                 if "P1b" in self.ctx.fixes and battleStart is not None and int(base.bornEvent.frame / 22.4) > battleStart:
                     continue
+                # CR-023 P1c (D10a): only a base whose town hall stands at the battle's start
+                if "P1c" in self.ctx.fixes and battleStart is not None and not base.standsAt(battleStart):
+                    continue
                 if "P1" in self.ctx.fixes:  # CR-023 P1: the distance itself
                     dist = base.minDistance(e.location)
                 else:  # bug-faithful: a boolean, so the second base iterated always wins

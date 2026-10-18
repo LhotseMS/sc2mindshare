@@ -194,3 +194,20 @@ Stefan's D8a on P1: skip bases started after the battle. "Existed" here: the bas
 ```json
 {"entry": "P1b-snap-linear", "task": "CR-023", "defect": "P1b (D8a): a battle named after a base built later", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "a5286770fa93adf9aaaddaaaffb3f2eaa0b7fc6662f845b961ce3811843fe5fb", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 7}], "added": [], "removed": []}
 ```
+
+
+### P1c: a base counts only while its town hall stands (CR-023, T22; D10a, amends P1b)
+
+Stefan's D10a on P1b: a base counts from its town hall's start until the town hall is destroyed, and again after a rebuild. A base's town halls are the one that founded it and every later town hall started at the same location (the layer's own rebuild rule, `BaseDetector.processNewMainBase`). A base stands in second S when one of its town halls was started (init or born) at or before S and has not died before S, all in whole seconds (`int(frame / 22.4)`) against `Battle.startSec`. As P1b keeps a town hall started in the battle's own start second, P1c keeps one that **dies in that second**: it still stood when the battle began. On Alcyone that is Battle-13 (starts at 486 s, blacksquall's 3rd Nexus dies at 486 s), which keeps "near blacksquall 3rd base". Applied inside the layer as ledger id `P1c`. Only one Battle name changes, in the three current goldens: `Battle-15` (starts at 514 s), 'VoidRay killed Roach near blacksquall 3rd base' -> 'VoidRay killed Roach near blacksquall Natural'; blacksquall's 3rd base had its Nexus from 340 s to 486 s and again from 567 s. Predicted before the change by an independent computation on the bug-faithful layer (`.scratch/rex/cr023/probe_p1c.py`, town halls found from the tracker events at each base's location, deaths from the UnitDiedEvents). On `200k dmg spine crawler ZvP` no name changes (no town hall dies or is rebuilt there; it has only frozen bug-faithful goldens).
+
+```json
+{"entry": "P1c-view", "task": "CR-023", "defect": "P1c (D10a): a battle named after a base whose town hall was destroyed", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "f845281f2aa0c995dcefaa0c3e1b2be68317ff5c921d14dece2fcb79ecc4bc6c", "changes": [{"select": {"ID": "Battle-15"}, "fields": ["name"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1c-snap-compressed", "task": "CR-023", "defect": "P1c (D10a): a battle named after a base whose town hall was destroyed", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "41955fbf5b35313be94b327285d3255bf7a77872f831154d36b8bf8a82f52e5a", "changes": [{"select": {"ID": "Battle-15"}, "fields": ["name"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1c-snap-linear", "task": "CR-023", "defect": "P1c (D10a): a battle named after a base whose town hall was destroyed", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "47a9f4f231f37c7d40f441ee139cd39da31bb210d3fe112ffe5c8590e1c2a72b", "changes": [{"select": {"ID": "Battle-15"}, "fields": ["name"], "count": 1}], "added": [], "removed": []}
+```
