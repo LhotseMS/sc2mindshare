@@ -103,6 +103,7 @@ def test_the_comparison_has_content(new_alcyone):
     assert all(set(links) == {"init", "done", "death"} for links in new_alcyone["units"].values())
 
 
+@pytest.mark.legacy  # runs the old fork in .venv-legacy (CR-019)
 @pytest.mark.parametrize("name", sorted(REPLAYS))
 def test_live_legacy_dump_equals_the_new_dump(name, tmp_path):
     need(LEGACY_PY, "this checkout's .venv-legacy (scripts/legacy-env)")
@@ -117,3 +118,18 @@ def test_live_legacy_dump_equals_the_new_dump(name, tmp_path):
     legacy = json.loads(out.read_text(encoding="utf-8"))
     new = dump_reader_state.dump(str(replay))
     assert legacy == new, _first_difference(legacy, new)
+
+
+@pytest.mark.parametrize("name", ["spine", "spores"])
+def test_the_new_dump_matches_the_pinned_legacy_dump(name):
+    """CR-019: the spine and spores legacy dumps are pinned like Alcyone's (frozen after a live run
+    agreed), so the reader parity holds on all three replays without the legacy venv."""
+    summary = json.loads((CHECKOUT / "tests" / "golden" / name / "reader-state-legacy.summary.json").read_text(encoding="utf-8"))
+    new = dump_reader_state.dump(str(need(REPLAYS[name], f"{name} replay")))
+    assert new["game_events"] == summary["game_events"]
+    assert new["class_counts"] == summary["class_counts"]
+    assert len(new["updates"]) == summary["updates"]
+    assert len(new["units"]) == summary["units"]
+    assert len(new["command_updates"]) == summary["command_updates"]
+    assert sum(1 for u in new["updates"] if u["target"] is not None) == summary["updates_with_target"]
+    assert hashlib.sha256(_canonical(new)).hexdigest() == summary["sha256"]

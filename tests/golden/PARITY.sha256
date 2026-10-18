@@ -1,0 +1,7 @@
+# The frozen parity fixtures (CR-019, T18): written once by scripts/freeze_parity_fixtures.py after a live legacy run
+# agreed; never regenerated. alcyone/reader-state-legacy.summary.json dates from CR-010 and is pinned here too.
+4103e12af4d137906dcc51a2226ef9e60224a302d8f4831960eaa7532f7df9ef  alcyone/models-faithful.json
+7135be56795a3d6835fad2cc58ca75ddc73814289eed23cc42818aa9a4d8e03c  alcyone/reader-state-legacy.summary.json
+828f69ddc303609e8b3f885bb499d5c65dbb5ded15ebae4da11c9f4a451ead38  spine/models-faithful.json
+f535ec9a7fc8cdbcad70d49a3e38dc3b63a4e9c88a8222c6dc81a9d35d0c55c5  spine/reader-state-legacy.summary.json
+2d7ecd0f089e776addb399995aa54a46c08469f4c522767848c420984ef0737b  spores/reader-state-legacy.summary.json

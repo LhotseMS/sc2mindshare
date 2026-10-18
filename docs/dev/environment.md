@@ -17,6 +17,8 @@ scripts/gates
 
 ## Legacy environment (until T24)
 
+**Without the legacy venv** (CR-019): the parity is held by frozen fixtures (`tests/golden/PARITY.sha256`: the bug-faithful models of Alcyone and the spine replay, and the legacy reader dumps of all three replays). The tests that run the old fork carry the `legacy` marker, so a checkout without `.venv-legacy` runs everything else with `scripts/gates` after `-m "not legacy"`, e.g. `scripts/py-env .venv/bin/pytest -m "not legacy"`.
+
 `scripts/legacy-env` (re)creates **this checkout's** `.venv-legacy/` from `requirements/legacy.lock` and puts this checkout's fork tree (`legacy/` since CR-009) on its `sys.path` with a `.pth` file (one per checkout, so it never points at another checkout's tree). It is used only to run the old code for the legacy golden; never install the new package into it. Baseline counts: `docs/dev/baselines.md`.
 
 Run the old parser offline on replays (pass 1: no heatmaps, no uploads, every network connection blocked):

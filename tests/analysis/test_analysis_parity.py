@@ -74,6 +74,7 @@ def test_alcyone_csv_is_g_csv_1_byte_for_byte():
     assert result.intervals == (GOLDEN / "Intervals-1.csv").read_text(encoding="utf-8")
 
 
+@pytest.mark.legacy  # runs the old fork in .venv-legacy (CR-019)
 def test_spine_csv_equals_a_live_legacy_run(tmp_path):
     need(LEGACY_PY, "this checkout's .venv-legacy (scripts/legacy-env)")
     replay = need(SPINE, "200k dmg replay")

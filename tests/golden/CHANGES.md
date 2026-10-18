@@ -95,3 +95,16 @@ Stefan's import of G-SNAP-1-compressed into Mindshare failed: "node 'Building-4'
 ```json
 {"entry": "P3e-snap-linear", "task": "CR-014c", "defect": "P3d follow-up: pre-game time property breaks the Mindshare import (D3c)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "d461347a78190e8b10a28221f87bf795fe4d0164dc4c7fa96212486b885a404e", "changes": [{"select": {"type": "Building"}, "fields": ["properties.pre-game time", "description"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### M0: the parity fixtures, first version (CR-019, T18)
+
+New frozen goldens, so the parity holds without the legacy venv (T24 deletes it). No existing golden changes. Each was written once by `scripts/freeze_parity_fixtures.py`, only after a live legacy run agreed, and is pinned in `PARITY.sha256` (never regenerated):
+
+| File | What | Proven by |
+|---|---|---|
+| `alcyone/models-faithful.json` | The bug-faithful domain graph (`fixes=()`): 665 nodes, 412 links, the intervals | It renders the live legacy CSV and intervals (and G-CSV-1, Intervals-1) |
+| `spine/models-faithful.json` | The same for `200k dmg spine crawler ZvP`: 302 nodes, 150 links | It renders the live legacy CSV and intervals |
+| `spine/reader-state-legacy.summary.json`, `spores/reader-state-legacy.summary.json` | The legacy reader-state dump's summary and sha256, as Alcyone's since CR-010 | The new reader's dump equals the legacy one |
+
+The 1000 spores replay has no model fixture: its analysis fails in the legacy layer (L1, CR-023). The tests that run the old fork carry the `legacy` marker; without the legacy venv, `-m "not legacy"` runs the rest.

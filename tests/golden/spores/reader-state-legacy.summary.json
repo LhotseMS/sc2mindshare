@@ -1,0 +1,26 @@
+{
+ "class_counts": {
+  "AddToControlGroupEvent": 20,
+  "BasicCommandEvent": 300,
+  "CameraEvent": 4932,
+  "CommandManagerStateEvent": 3172,
+  "ControlGroupEvent": 3,
+  "DataCommandEvent": 5,
+  "GetControlGroupEvent": 739,
+  "PlayerLeaveEvent": 2,
+  "SelectionEvent": 1799,
+  "SetControlGroupEvent": 75,
+  "StealControlGroupEvent": 13,
+  "TargetPointCommandEvent": 706,
+  "TargetUnitCommandEvent": 352,
+  "UpdateTargetPointCommandEvent": 1706,
+  "UpdateTargetUnitCommandEvent": 861,
+  "UserOptionsEvent": 2
+ },
+ "command_updates": 2270,
+ "game_events": 14687,
+ "sha256": "e163ffb4b3950ea9faaf0a549410713d9f0b16718485162af1b94f8467f2f4d5",
+ "units": 1935,
+ "updates": 2567,
+ "updates_with_target": 2270
+}
