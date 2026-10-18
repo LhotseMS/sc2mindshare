@@ -60,6 +60,9 @@ def type_at(unit: Any, frame: int) -> str:
 
 # --- names -------------------------------------------------------------------------------
 
+#: The two removals CR-023 P2 skips: a race word anywhere in a name.
+_BARE_RACE_WORDS = (("Terran", ""), ("Zerg", ""))
+
 #: The fork's ``MsUtils.replaceStrings`` table, in its order (python bug 2 included: "Zerg" and
 #: "Terran" are removed anywhere, so "Zergling" becomes "ling").
 _REPLACEMENTS = (
@@ -80,7 +83,7 @@ _REPLACEMENTS = (
 )
 
 
-def object_text(value: Any) -> str:
+def object_text(value: Any, fixes: frozenset[str] = frozenset()) -> str:
     """The text the fork's ``__str__`` gave a unit or a player, made explicit (CR-011c).
 
     The legacy layer built names and descriptions with ``str(unit)`` and ``"{}".format(player)``,
@@ -92,16 +95,22 @@ def object_text(value: Any) -> str:
     from sc2reader.objects import Player  # type: ignore[import-untyped]
 
     if isinstance(value, Unit):
-        return clean_name(f"{value.name} ", True)
+        return clean_name(f"{value.name} ", True, fixes)
     if isinstance(value, Player):
         return str(value.name)
     return str(value)
 
 
-def clean_name(value: Any, split: bool = False) -> str:
-    """The fork's ``MsUtils.replaceStrings`` / ``Renamer.replaceStrings`` (bug-faithful)."""
-    text = value if isinstance(value, str) else object_text(value)
+def clean_name(value: Any, split: bool = False, fixes: frozenset[str] = frozenset()) -> str:
+    """The fork's ``MsUtils.replaceStrings`` / ``Renamer.replaceStrings``: bug-faithful with no ``fixes``.
+
+    CR-023 P2 (in ``fixes``): the two bare race-word removals (``"Terran"``, ``"Zerg"`` anywhere, python
+    bug 2: "Zergling" -> "ling") are skipped. The layer passes its ``ctx.fixes`` at every site whose text
+    reaches the output; the default keeps the bug-faithful text (QA's oracle)."""
+    text = value if isinstance(value, str) else object_text(value, fixes)
     for old, new in _REPLACEMENTS:
+        if "P2" in fixes and (old, new) in _BARE_RACE_WORDS:
+            continue
         text = text.replace(old, new)
     text = re.sub(r"\[\w+\]", "", text)
     if split:

@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -180,7 +180,8 @@ def battle_names():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     names = {}
-    for label, fixes in (("faithful", ()), ("p1", ("P1",)), ("p1b", ("P1", "P1b")), ("fixed", LAYER_FIXES)):
+    rows = (("faithful", ()), ("p1", ("P1",)), ("p1b", ("P1", "P1b")), ("p1c", ("P1", "P1b", "P1c")), ("fixed", LAYER_FIXES))
+    for label, fixes in rows:  # one run per row, so each test sees its own row's names (P2 also renames battles)
         with contextlib.redirect_stdout(io.StringIO()):
             result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes)
             graph = to_graph(result, fixes=() if not fixes else None, mixed=fixes != LAYER_FIXES)  # P1 alone is a mix
@@ -190,9 +191,9 @@ def battle_names():
 
 def test_p1_on_alcyone_the_battles_name_their_nearest_base(battle_names):
     """The predicted renames of the P1 entry (CHANGES.md), a few pinned; the goldens hold all 30."""
-    assert len(battle_names["fixed"]) == 30
+    assert len(battle_names["p1"]) == 30
     assert all(name.endswith(" near lilTiGGer Natural") for name in battle_names["faithful"].values())
-    fixed = battle_names["fixed"]
+    fixed = battle_names["p1"]
     assert fixed["Battle-1"] == "Zealot killed ling near blacksquall Natural"
     assert fixed["Battle-6"] == "Adept killed Drone near lilTiGGer 3rd base"
     assert fixed["Battle-22"] == "lings Roachs Hydralisks Overseers Overlords died near lilTiGGer Main base"
@@ -216,7 +217,7 @@ def test_p1b_on_alcyone_seven_battles_name_a_base_that_existed(battle_names):
 def test_p1c_on_alcyone_battle_15_names_the_standing_natural(battle_names):
     """The P1c entry (CHANGES.md): only Battle-15 changes from P1b's names; Battle-13, which starts in the
     second blacksquall's 3rd Nexus dies, keeps the 3rd base."""
-    p1b, fixed = battle_names["p1b"], battle_names["fixed"]
+    p1b, fixed = battle_names["p1b"], battle_names["p1c"]
     assert {k for k in fixed if fixed[k] != p1b[k]} == {"Battle-15"}
     assert (p1b["Battle-15"], fixed["Battle-15"]) == (
         "VoidRay killed Roach near blacksquall 3rd base",
@@ -390,4 +391,108 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     ]
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 if "Alcyone" in replay else 0) + (
         2 if "spine" in replay else 0
+    )
+
+
+# --- P2: race words are no longer stripped from inside names -----------------------------------------------
+
+
+def test_p2_the_name_cleaning_takes_the_fixes_explicitly():
+    from sc2mindshare.reader.compat import clean_name
+
+    assert clean_name("Zergling", True) == "ling"  # bug-faithful without the fixes (python bug 2)
+    assert clean_name("Zergling", True, frozenset({"P2"})) == "Zergling"
+    assert clean_name("zerglingmovementspeed", True, frozenset({"P2"})) == "Zergling Movement Speed"
+    assert clean_name("zerglingmovementspeed", True) == "ling Movement Speed"
+    assert clean_name("Player 1 - lilTiGGer (Zerg)", False, frozenset({"P2"})) == "lilTiGGer"  # the explicit removals stay
+
+
+#: Every name cleaning in analysis/ that does not pass the layer fixes, by (file, function): its count and why
+#: its text never reaches the output (Morgan's ruling on P2). A new call without fixes fails here.
+CLEANING_WITHOUT_FIXES = {
+    ("detectors/detectors.py", "__init__"): (
+        2,
+        "SinglesDetector: the game heatmap name, a lookup key into the image tracker the legacy uploader wrote",
+    ),
+    ("detectors/detectors.py", "buildingsEligible"): (1, "the OMIT_BUILDINGS prefix test, a predicate"),
+    ("detectors/detectors.py", "findSimpleNodes"): (1, "a debug print"),
+    ("detectors/detectors.py", "addBuilding"): (1, "the unitsInfo.csv lookup key (the sheet's names)"),
+    ("detectors/detectors.py", "createHeatMaps"): (4, "battle heatmap names, lookup keys into the image tracker"),
+    ("detectors/trackers.py", "providerOf"): (1, "the bug-faithful provider lookup (S1 off)"),
+    ("exports/energyNode.py", "__str__"): (1, "debug text"),
+    ("fileHandler.py", "__init__"): (4, "local folder and video file names"),
+    ("game.py", "__str__"): (1, "debug text"),
+    ("utils.py", "replaceStrings"): (
+        2,
+        "Renamer.replaceStrings and MsUtils.replaceStrings, which nothing calls any more (Renamer has no subclass)",
+    ),
+}
+
+
+def test_every_name_cleaning_without_the_fixes_is_listed_with_a_reason():
+    import ast
+    from collections import Counter
+
+    root = CHECKOUT / "src" / "sc2mindshare" / "analysis"
+    found = Counter()
+    for path in sorted(root.rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for fn in (n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef | ast.AsyncFunctionDef)):
+            for call in (c for c in ast.walk(fn) if isinstance(c, ast.Call)):
+                func = call.func
+                name = func.id if isinstance(func, ast.Name) else func.attr if isinstance(func, ast.Attribute) else None
+                if name not in ("object_text", "clean_name", "replaceStrings", "nameC"):
+                    continue
+                if name == "replaceStrings" and not (
+                    isinstance(func, ast.Attribute) and isinstance(func.value, ast.Name) and func.value.id == "MsUtils"
+                ):
+                    found[(str(path.relative_to(root)), f"{fn.name} (.replaceStrings)")] += (
+                        1  # the fork's methods: no fixes at all
+                    )
+                    continue
+                passes = any(k.arg == "fixes" for k in call.keywords) or len(call.args) >= (2 if name == "object_text" else 3)
+                if not passes:
+                    found[(str(path.relative_to(root)), fn.name)] += 1
+    assert dict(found) == {k: n for k, (n, _why) in CLEANING_WITHOUT_FIXES.items()}
+
+
+@pytest.mark.parametrize(
+    "replay",
+    [
+        "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
+        "200k dmg spine crawler ZvP.SC2Replay",
+    ],
+)
+def test_p2_no_standalone_ling_and_the_unit_counts_per_type_are_kept(replay):
+    import re
+    from collections import Counter
+
+    path = MS_SC / replay
+    if not path.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {path} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {path}")
+    graphs = {}
+    without_p2 = tuple(f for f in LAYER_FIXES if f != "P2")  # P2 alone makes the difference (an explicit mix)
+    for label, fixes in (("faithful", without_p2), ("fixed", LAYER_FIXES)):
+        with contextlib.redirect_stdout(io.StringIO()):
+            graphs[label] = to_graph(analyse(load_replay(path), MS_SC, fixes=fixes), mixed=fixes != LAYER_FIXES)
+
+    def texts(g):
+        for n in g.nodes:
+            yield n.name
+            yield n.description
+            yield from (v for _, v in n.values if isinstance(v, str))
+
+    ling = re.compile(r"(?<![A-Za-z])lings?(?![a-z])")
+    assert any(ling.search(t) for t in texts(graphs["faithful"]))  # the bug, without the fix
+    assert not [t for t in texts(graphs["fixed"]) if ling.search(t)]
+
+    def per_type(g):
+        return Counter((n.value("player"), n.value("type")) for n in g.nodes if n.kind == "Units")
+
+    faithful, fixed = per_type(graphs["faithful"]), per_type(graphs["fixed"])
+    renamed = {k: k if k[1] != "ling" else (k[0], "Zergling") for k in faithful}
+    assert Counter({renamed[k]: c for k, c in faithful.items()}) == Counter(
+        {k: c for k, c in fixed.items() if k in renamed.values()}
     )

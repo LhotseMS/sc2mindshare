@@ -1,3 +1,5 @@
+from sc2mindshare.reader.compat import clean_name
+
 # line delimiter as csv doesn't like \n. Replaced back in excel
 X_LD = "X_LD"
 
@@ -10,9 +12,10 @@ class Node(Exportable):
     
     IMAGE_SEPARATOR = "|"
 
-    def __init__(self, seq) -> None:
+    def __init__(self, seq, *, fixes) -> None:
         
         self.seq = seq
+        self.fixes = fixes  # CR-023: the layer fixes, for the name cleaning (P2)
         self.id = None
         self.type = None
         self.images = list()   
@@ -50,13 +53,13 @@ class Node(Exportable):
     
     #TODO this shouldnt be in Node as node doesnt' have an event
     def getNodePlayer(self) -> str:
-        return self.event.replaceStrings(self.event.player)
+        return clean_name(self.event.player, False, self.fixes)
     
 
 class SimpleNode(Node):
 
-    def __init__(self, e, seq) -> None:
-        super().__init__(seq)
+    def __init__(self, e, seq, *, fixes) -> None:
+        super().__init__(seq, fixes=fixes)
 
         self.event = e
         self.type = None
@@ -74,8 +77,8 @@ class SimpleNode(Node):
 # multi event node
 class MultiNode(Node):
 
-    def __init__(self, es, startTime, seq) -> None:
-        super().__init__(seq)
+    def __init__(self, es, startTime, seq, *, fixes) -> None:
+        super().__init__(seq, fixes=fixes)
 
         self.events = es
         self.event = es[0]
@@ -96,4 +99,4 @@ class MultiNode(Node):
         return self.startTime
     
     def getNodePlayer(self):
-        return self.event.replaceStrings(self.event.player)
+        return clean_name(self.event.player, False, self.fixes)

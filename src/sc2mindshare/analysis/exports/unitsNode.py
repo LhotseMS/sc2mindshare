@@ -1,10 +1,11 @@
+from sc2mindshare.reader.compat import clean_name
 from sc2mindshare.analysis.exports.node import MultiNode
 from sc2mindshare.reader.fork_api import UnitDoneEvent, UnitBornEvent, TrackerEvent
 
 class UnitsNode(MultiNode):
 
-    def __init__(self, es : list, st, seq) -> None:
-        super().__init__(es, st, seq)
+    def __init__(self, es : list, st, seq, *, fixes) -> None:
+        super().__init__(es, st, seq, fixes=fixes)
 
         self.supply = 0
 
@@ -13,7 +14,7 @@ class UnitsNode(MultiNode):
             e.unit.unitsNode = self
 
         # TODO unit or the event should provide the cleaned name, #
-        self.name = self.event.unit.nameC
+        self.name = clean_name(self.event.unit.name, True, self.fixes)  # the fork's nameC, with the fixes (P2)
 
         self.type = "Units"
         self.propertiesCount = 4

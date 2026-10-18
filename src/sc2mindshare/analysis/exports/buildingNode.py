@@ -1,14 +1,15 @@
 from sc2mindshare.analysis.exports.node import SimpleNode
 from sc2mindshare.reader.fork_api import UnitDoneEvent
 from sc2mindshare.analysis.utils import MsUtils
+from sc2mindshare.reader.compat import clean_name
 
 #TODO add building deaths. Unit killed them. Tied to battle? Was that unit in battle? 
 class BuildingNode(SimpleNode):
 
-    def __init__(self, e : UnitDoneEvent, buildTime, seq) -> None:
-        super().__init__(e, seq)
+    def __init__(self, e : UnitDoneEvent, buildTime, seq, *, fixes) -> None:
+        super().__init__(e, seq, fixes=fixes)
 
-        self.subtype = self.event.replaceStrings(self.event.unit, False).strip()
+        self.subtype = clean_name(self.event.unit, False, self.fixes).strip()
 
         self.event.unit.unitsNode = self
         self.buildTime = int(buildTime)
@@ -21,9 +22,9 @@ class BuildingNode(SimpleNode):
     def getNodeName(self):
 
         if self.event.unit.baseName != None:
-            nameStr = self.event.replaceStrings(self.event.unit.baseName, True).strip()
+            nameStr = clean_name(self.event.unit.baseName, True, self.fixes).strip()
         else:
-            nameStr = self.event.replaceStrings(self.event.unit, True).strip()
+            nameStr = clean_name(self.event.unit, True, self.fixes).strip()
 
         if self.index != None and self.index > 0:
             nameStr += " " + str(self.index)

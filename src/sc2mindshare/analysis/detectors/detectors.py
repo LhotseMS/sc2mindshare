@@ -32,7 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
-from sc2mindshare.reader.compat import object_text
+from sc2mindshare.reader.compat import clean_name, object_text
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
@@ -259,7 +259,7 @@ class SimpleDetector(EventsDetector):
                 try:
                     upgradeCounter += 1
 
-                    newNode = UpgradeNode(e, self.upgradesInfoDict[str(e.upgrade_type_name)]['Upgrade Time'], upgradeCounter)
+                    newNode = UpgradeNode(e, self.upgradesInfoDict[str(e.upgrade_type_name)]['Upgrade Time'], upgradeCounter, fixes=self.ctx.fixes)
                     self.upgradesByPlayer[e.player].append(newNode)
 
                     if newNode.subtype in self.previousUpgradeLevels[e.player]:
@@ -279,7 +279,7 @@ class SimpleDetector(EventsDetector):
 
             elif isinstance(e, PlayerStatsEvent) and self.statsEligible(e):
                 statsCounter += 1
-                self.statsByPlayer[e.player].append(StatsNode(e, statsCounter))
+                self.statsByPlayer[e.player].append(StatsNode(e, statsCounter, fixes=self.ctx.fixes))
 
                 #TODO adding links should be in a separate class probably just as adding nodes
                 if (e.player in self.statsByPlayer and
@@ -303,23 +303,24 @@ class SimpleDetector(EventsDetector):
             # incomplete buildings
             elif isinstance(e, UnitInitEvent) and e.unit.is_building and e.unit.doneEvent == None:
                 initsCounter += 1
-                self.initsByPlayer[e.player].append(InitNode(e, initsCounter))
+                self.initsByPlayer[e.player].append(InitNode(e, initsCounter, fixes=self.ctx.fixes))
 
             # TODO, starts with put into separate eligible function
             elif isinstance(e, TargetUnitCommandEvent) and self.abilityEligible(e):
                 abilitiesCounter += 1
-                newAbilityNode = AbilityNode(e, abilitiesCounter)
+                newAbilityNode = AbilityNode(e, abilitiesCounter, fixes=self.ctx.fixes)
                 self.abilitiesByPlayer[e.player].append(newAbilityNode)
                 
                 e.abilityNode = newAbilityNode
 
             elif isinstance(e, ChatEvent):
                 chatCounter += 1
-                self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, object_text(e.player)))
+                self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, object_text(e.player, self.ctx.fixes), fixes=self.ctx.fixes))
 
             elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
-                if e.player != None and e.unit.nameC in self.unitTypeCount[e.player]:
-                    self.unitTypeCount[e.player][e.unit.nameC] -= 1     
+                nameC = clean_name(e.unit.name, True, self.ctx.fixes)  # the fork's nameC, with the fixes (P2)
+                if e.player != None and nameC in self.unitTypeCount[e.player]:
+                    self.unitTypeCount[e.player][nameC] -= 1     
                 
                 #print("unit died: " + object_text(e.unit))
                 provider = self.st.providerOf(e)
@@ -376,7 +377,7 @@ class SimpleDetector(EventsDetector):
 
                 # init the node with all events that have been captured for given type
                 unitsCounter += 1
-                node = UnitsNode(events, "00:" + currentInterval, unitsCounter)
+                node = UnitsNode(events, "00:" + currentInterval, unitsCounter, fixes=self.ctx.fixes)
                 nodeUnitType = node.name
 
                 # iterate unit type count
@@ -403,7 +404,7 @@ class SimpleDetector(EventsDetector):
 
 
     def addBuilding(self, e, seq):
-        node = BuildingNode(e, self.unitsInfoDict[object_text(e.unit)]['Build Time'], seq)
+        node = BuildingNode(e, self.unitsInfoDict[object_text(e.unit)]['Build Time'], seq, fixes=self.ctx.fixes)
         node.index = self.getBuildingIndex(node)
         self.buildingsByPlayer[e.player].append(node)
 
@@ -468,8 +469,8 @@ class ActionsDetector(EventsDetector):
         self.lastUnitCommandEvent = {}
         self.lastPointCommandEvent = {}
 
-        self.et = EnergyTracker(self.player1, self.player2)
-        self.it = InjectTracker(self.player1, self.player2)
+        self.et = EnergyTracker(self.player1, self.player2, self.ctx.fixes)
+        self.it = InjectTracker(self.player1, self.player2, self.ctx.fixes)
 
         self.workerPulls = self.initDictByPlayer(2)
 
@@ -515,7 +516,7 @@ class ActionsDetector(EventsDetector):
 
                     if unitPressenceAtLocationConfirmed:
 
-                        self.scoutedBases[command.player].append(ScoutNode(command.unit, command.time, command.targetBase, [], self.scoutIndex))
+                        self.scoutedBases[command.player].append(ScoutNode(command.unit, command.time, command.targetBase, [], self.scoutIndex, fixes=self.ctx.fixes))
                         self.scoutIndex += 1
 
                         pass 

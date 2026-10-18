@@ -201,8 +201,8 @@
    }
   },
   {
-   "name": "Zealot killed ling near blacksquall Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:02. \n\n====lilTiGGer====   \nCOMBAT: A move(13),  \nNON-COMBAT: Right Click(20),   \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(14), Build Gateway,  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:02. \n\n====lilTiGGer====   \nCOMBAT: A move(13),  \nNON-COMBAT: Right Click(20),   \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(14), Build Gateway,  ",
    "type": "Battle",
    "ID": "Battle-1",
    "size": 0.7,
@@ -222,8 +222,8 @@
    }
   },
   {
-   "name": "lings Zealots Probes died near blacksquall Natural",
-   "description": "lilTiGGer lost 3 units, 1.5 supply, 75 min 0 gas.\n\nblacksquall lost 2 units, 3 supply, 150 min 0 gas.\n\nFrom 0:02:10 to 0:02:18. \n\n====lilTiGGer==== \nKILLS(s): ling killed Zealot, ling killed Probe, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(41),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling(2), Probe killed ling, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(15),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "Zerglings Zealots Probes died near blacksquall Natural",
+   "description": "lilTiGGer lost 3 units, 1.5 supply, 75 min 0 gas.\n\nblacksquall lost 2 units, 3 supply, 150 min 0 gas.\n\nFrom 0:02:10 to 0:02:18. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Zealot, Zergling killed Probe, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(41),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling(2), Probe killed Zergling, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(15),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-2",
    "size": 1.2,
@@ -243,8 +243,8 @@
    }
   },
   {
-   "name": "Zealot killed ling near blacksquall Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:43. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(23),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Right Click(11),  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:43. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(23),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Right Click(11),  ",
    "type": "Battle",
    "ID": "Battle-3",
    "size": 0.7,
@@ -264,8 +264,8 @@
    }
   },
   {
-   "name": "Zealot killed ling near blacksquall Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:55. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(35),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(4),  \nNON-COMBAT: Right Click(10),  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:55. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(35),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(4),  \nNON-COMBAT: Right Click(10),  ",
    "type": "Battle",
    "ID": "Battle-4",
    "size": 0.7,
@@ -285,8 +285,8 @@
    }
   },
   {
-   "name": "Zealot killed ling near blacksquall Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:03:00. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(26),   \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:03:00. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(26),   \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-5",
    "size": 0.7,
@@ -348,8 +348,8 @@
    }
   },
   {
-   "name": "Adept killed ling near blacksquall Main base",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:05:38. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed ling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9), Build Nexus,  ",
+   "name": "Adept killed Zergling near blacksquall Main base",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:05:38. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed Zergling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9), Build Nexus,  ",
    "type": "Battle",
    "ID": "Battle-8",
    "size": 0.7,
@@ -390,8 +390,8 @@
    }
   },
   {
-   "name": "VoidRay killed ling near blacksquall Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:06:32. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed ling, \n   \nNON-COMBAT: Right Click(8),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "VoidRay killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:06:32. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Zergling, \n   \nNON-COMBAT: Right Click(8),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-10",
    "size": 0.7,
@@ -432,8 +432,8 @@
    }
   },
   {
-   "name": "Roachs lings Adepts Zealots Stalkers Probes died near blacksquall Natural",
-   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 16 units, 24 supply, 1375 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(2), Roach killed Probe(6), Ravager killed Stalker, \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed ling, \n \nLOST: Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
+   "name": "Roachs Zerglings Adepts Zealots Stalkers Probes died near blacksquall Natural",
+   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 16 units, 24 supply, 1375 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(2), Roach killed Probe(6), Ravager killed Stalker, \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed Zergling, \n \nLOST: Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
    "type": "Battle",
    "ID": "Battle-12",
    "size": 2.345,
@@ -642,8 +642,8 @@
    }
   },
   {
-   "name": "lings Roachs Hydralisks Overseers Overlords died near lilTiGGer Main base",
-   "description": "lilTiGGer lost 22 units, 13.5 supply, 1000 min 175 gas.\nblacksquall lost an Pylon.\n\nFrom 0:12:48 to 0:13:18. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move(11),  \nNON-COMBAT: Right Click(81), Spawn Larva(54), Build Baneling Nest,  \n\nCONTROL GROUPS: \n0: \n9:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed ling(11), Zealot killed ling(2), Stalker killed ling(2), Zealot killed Roach, Zealot killed Hydralisk(2), Void Ray killed Overseer, Stalker killed Overlord(2), \n \nLOST: Pylon(3), Nexus,  \nCOMBAT: A move(10),  \nNON-COMBAT: Right Click(21), Warp In Stalker(4), Build Nexus,  \n\nCONTROL GROUPS: \n5: \n1: ",
+   "name": "Zerglings Roachs Hydralisks Overseers Overlords died near lilTiGGer Main base",
+   "description": "lilTiGGer lost 22 units, 13.5 supply, 1000 min 175 gas.\nblacksquall lost an Pylon.\n\nFrom 0:12:48 to 0:13:18. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move(11),  \nNON-COMBAT: Right Click(81), Spawn Larva(54), Build Baneling Nest,  \n\nCONTROL GROUPS: \n0: \n9:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Zergling(11), Zealot killed Zergling(2), Stalker killed Zergling(2), Zealot killed Roach, Zealot killed Hydralisk(2), Void Ray killed Overseer, Stalker killed Overlord(2), \n \nLOST: Pylon(3), Nexus,  \nCOMBAT: A move(10),  \nNON-COMBAT: Right Click(21), Warp In Stalker(4), Build Nexus,  \n\nCONTROL GROUPS: \n5: \n1: ",
    "type": "Battle",
    "ID": "Battle-22",
    "size": 1.6,
@@ -726,8 +726,8 @@
    }
   },
   {
-   "name": "lings Overseers Hydralisks Roachs Probes Stalkers Zealots died near blacksquall 5th base",
-   "description": "lilTiGGer lost 21 units, 38.5 supply, 2050 min 975 gas.\n\nblacksquall lost 36 units, 35 supply, 2475 min 50 gas.\n\nFrom 0:13:59 to 0:14:26. \n\n====lilTiGGer==== \nKILLS(s): ling killed Probe(26), Hydralisk killed Stalker, Hydralisk killed Probe(4), Baneling killed Probe, Hydralisk killed Zealot, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(83), Spawn Larva(35),  \n\nCONTROL GROUPS: \n0: \n5: \n9: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed ling, Photon Cannon killed Overseer, Photon Cannon killed Hydralisk(3), Zealot killed Hydralisk(12), Stalker killed Hydralisk, Immortal killed Hydralisk(2), Zealot killed Roach, \n \nLOST: Nexus, Photon Cannon(2),  \nCOMBAT: A move(7), Chrono Boost Energy Cost,  \nNON-COMBAT: Right Click(20), Warp In High Templar(13),  \n\nCONTROL GROUPS: \n1: \n4: ",
+   "name": "Zerglings Overseers Hydralisks Roachs Probes Stalkers Zealots died near blacksquall 5th base",
+   "description": "lilTiGGer lost 21 units, 38.5 supply, 2050 min 975 gas.\n\nblacksquall lost 36 units, 35 supply, 2475 min 50 gas.\n\nFrom 0:13:59 to 0:14:26. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe(26), Hydralisk killed Stalker, Hydralisk killed Probe(4), Baneling killed Probe, Hydralisk killed Zealot, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(83), Spawn Larva(35),  \n\nCONTROL GROUPS: \n0: \n5: \n9: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Zergling, Photon Cannon killed Overseer, Photon Cannon killed Hydralisk(3), Zealot killed Hydralisk(12), Stalker killed Hydralisk, Immortal killed Hydralisk(2), Zealot killed Roach, \n \nLOST: Nexus, Photon Cannon(2),  \nCOMBAT: A move(7), Chrono Boost Energy Cost,  \nNON-COMBAT: Right Click(20), Warp In High Templar(13),  \n\nCONTROL GROUPS: \n1: \n4: ",
    "type": "Battle",
    "ID": "Battle-26",
    "size": 2.735,
@@ -747,8 +747,8 @@
    }
   },
   {
-   "name": "lings Probes Zealots died near blacksquall Natural",
-   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 15 units, 3 supply, 1675 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): ling killed Probe, ling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed ling(41), Zealot killed ling(9), Immortal killed ling(3), Stalker killed ling(6), Void Ray killed ling(11), High Templar killed ling, \n \nLOST: Pylon(9), Assimilator(3), Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
+   "name": "Zerglings Probes Zealots died near blacksquall Natural",
+   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 15 units, 3 supply, 1675 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe, Zergling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed Zergling(41), Zealot killed Zergling(9), Immortal killed Zergling(3), Stalker killed Zergling(6), Void Ray killed Zergling(11), High Templar killed Zergling, \n \nLOST: Pylon(9), Assimilator(3), Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-27",
    "size": 2.385,
@@ -768,7 +768,7 @@
    }
   },
   {
-   "name": "ling killed Pylon near blacksquall Main base",
+   "name": "Zergling killed Pylon near blacksquall Main base",
    "description": "\nblacksquall lost an Pylon.\n\nAt 0:15:11. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n0: \n1: \n5:  \n\n====blacksquall====  \nLOST: Pylon,  \nCOMBAT: A move,  \nNON-COMBAT: Right Click,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-28",
@@ -789,8 +789,8 @@
    }
   },
   {
-   "name": "Overseers Mutalisks lings Roachs Probes Void Rays Stalkers Zealots died near blacksquall 6th base",
-   "description": "lilTiGGer lost 15 units, 26.5 supply, 1450 min 1275 gas.\n\nblacksquall lost 5 units, 9 supply, 675 min 200 gas.\n\nFrom 0:15:17 to 0:15:30. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Probe, Mutalisk killed Void Ray, Mutalisk killed Stalker, ling killed Zealot, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Spawn Larva(3), Right Click(56),  \n\nCONTROL GROUPS: \n0: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Overseer, Stalker killed Mutalisk(5), High Templar killed Mutalisk(3), Archon killed Mutalisk(4), Zealot killed ling, Zealot killed Roach, \n \nLOST: Warp Gate,  \nCOMBAT: A move(4), Feedback(2),  \nNON-COMBAT: Right Click(5), Build Pylon(5), Psionic Storm,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
+   "name": "Overseers Mutalisks Zerglings Roachs Probes Void Rays Stalkers Zealots died near blacksquall 6th base",
+   "description": "lilTiGGer lost 15 units, 26.5 supply, 1450 min 1275 gas.\n\nblacksquall lost 5 units, 9 supply, 675 min 200 gas.\n\nFrom 0:15:17 to 0:15:30. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Probe, Mutalisk killed Void Ray, Mutalisk killed Stalker, Zergling killed Zealot, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Spawn Larva(3), Right Click(56),  \n\nCONTROL GROUPS: \n0: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Overseer, Stalker killed Mutalisk(5), High Templar killed Mutalisk(3), Archon killed Mutalisk(4), Zealot killed Zergling, Zealot killed Roach, \n \nLOST: Warp Gate,  \nCOMBAT: A move(4), Feedback(2),  \nNON-COMBAT: Right Click(5), Build Pylon(5), Psionic Storm,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-29",
    "size": 2.355,
@@ -1097,8 +1097,8 @@
    }
   },
   {
-   "name": "ling Movement Speed",
-   "description": "lilTiGGer completed ling Movement Speed at 00:11:16",
+   "name": "Zergling Movement Speed",
+   "description": "lilTiGGer completed Zergling Movement Speed at 00:11:16",
    "type": "Upgrade",
    "ID": "Upgrade-9",
    "size": [
@@ -3609,15 +3609,15 @@
    }
   },
   {
-   "name": "6 lings",
-   "description": "6 lings completed by lilTiGGer in last 10s from 00:01:20",
+   "name": "6 Zerglings",
+   "description": "6 Zerglings completed by lilTiGGer in last 10s from 00:01:20",
    "type": "Units",
    "ID": "Units-13",
    "size": 0.75,
    "properties": {
     "time": "00:01:20",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 6,
     "total at time": 6,
     "supply": 3
@@ -3629,15 +3629,15 @@
    }
   },
   {
-   "name": "4 lings",
-   "description": "4 lings completed by lilTiGGer in last 10s from 00:01:40",
+   "name": "4 Zerglings",
+   "description": "4 Zerglings completed by lilTiGGer in last 10s from 00:01:40",
    "type": "Units",
    "ID": "Units-15",
    "size": 0.75,
    "properties": {
     "time": "00:01:40",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 4,
     "total at time": 10,
     "supply": 2
@@ -4889,15 +4889,15 @@
    }
   },
   {
-   "name": "16 lings",
-   "description": "16 lings completed by lilTiGGer in last 10s from 00:11:10",
+   "name": "16 Zerglings",
+   "description": "16 Zerglings completed by lilTiGGer in last 10s from 00:11:10",
    "type": "Units",
    "ID": "Units-143",
    "size": 1,
    "properties": {
     "time": "00:11:10",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 16,
     "total at time": 16,
     "supply": 8
@@ -4929,15 +4929,15 @@
    }
   },
   {
-   "name": "21 lings",
-   "description": "21 lings completed by lilTiGGer in last 10s from 00:11:30",
+   "name": "21 Zerglings",
+   "description": "21 Zerglings completed by lilTiGGer in last 10s from 00:11:30",
    "type": "Units",
    "ID": "Units-149",
    "size": 1.4,
    "properties": {
     "time": "00:11:30",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 21,
     "total at time": 37,
     "supply": 10.5
@@ -4969,15 +4969,15 @@
    }
   },
   {
-   "name": "30 lings",
-   "description": "30 lings completed by lilTiGGer in last 10s from 00:11:50",
+   "name": "30 Zerglings",
+   "description": "30 Zerglings completed by lilTiGGer in last 10s from 00:11:50",
    "type": "Units",
    "ID": "Units-154",
    "size": 1.4,
    "properties": {
     "time": "00:11:50",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 30,
     "total at time": 67,
     "supply": 15
@@ -5009,15 +5009,15 @@
    }
   },
   {
-   "name": "38 lings",
-   "description": "38 lings completed by lilTiGGer in last 10s from 00:12:20",
+   "name": "38 Zerglings",
+   "description": "38 Zerglings completed by lilTiGGer in last 10s from 00:12:20",
    "type": "Units",
    "ID": "Units-159",
    "size": 1.4,
    "properties": {
     "time": "00:12:20",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 38,
     "total at time": 105,
     "supply": 19

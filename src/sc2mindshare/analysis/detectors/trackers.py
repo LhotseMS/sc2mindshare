@@ -22,10 +22,11 @@ PROVIDERS_AT_EVENT = {
 
 class Tracker: 
 
-    def __init__(self, player1, player2) -> None:
+    def __init__(self, player1, player2, fixes) -> None:
 
         self.player1 = player1
         self.player2 = player2
+        self.fixes = fixes  # CR-023: the layer fixes (the nodes a tracker makes clean their names with them, P2)
 
         self.seq = 0
         pass
@@ -36,8 +37,8 @@ class InjectTracker(Tracker):
     INJECT_DURATION = 29
     THRESHOLD = 10
 
-    def __init__(self, player1, player2) -> None:
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2, fixes) -> None:
+        super().__init__(player1, player2, fixes)
 
         self.hatcheries = {}
 
@@ -67,7 +68,7 @@ class InjectTracker(Tracker):
             if currentInjectTime > injectDurationUntil:
 
                 if injectLastingFor > timedelta(seconds=self.THRESHOLD):
-                    self.injectDelays[event.player].append(InjecDelayNode(event.target, injectDurationUntil.strftime("%M.%S"), currentInjectTime.strftime("%M.%S"), injectLastingFor, self.THRESHOLD, self.seq))
+                    self.injectDelays[event.player].append(InjecDelayNode(event.target, injectDurationUntil.strftime("%M.%S"), currentInjectTime.strftime("%M.%S"), injectLastingFor, self.THRESHOLD, self.seq, fixes=self.fixes))
                     self.seq += 1
                 
                 injectDurationUntil = currentInjectTime + injectDuration
@@ -173,8 +174,8 @@ class EnergyTracker(Tracker):
     ENERGY_ANGLE = 38.33
     TOLLERABLE_excess_INTERVAL = 2
     
-    def __init__(self, player1, player2):
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2, fixes):
+        super().__init__(player1, player2, fixes)
         
         self.energyHistory = {}
         self.excessEnergy = {}
@@ -257,7 +258,7 @@ class EnergyTracker(Tracker):
         if energy >= excessThreshold:
             excessStart = MsUtils.calculateY1(MsUtils.timeToSeconds(time), excessThreshold, energy, self.ENERGY_ANGLE)
             if MsUtils.intervalBetween(str(Length(seconds=excessStart)), time) > self.TOLLERABLE_excess_INTERVAL:
-                self.excessEnergy[unit.player].append(EnergyNode(unit, str(Length(seconds=excessStart)), time, energy, excessThreshold, self.seq))
+                self.excessEnergy[unit.player].append(EnergyNode(unit, str(Length(seconds=excessStart)), time, energy, excessThreshold, self.seq, fixes=self.fixes))
                 self.seq += 1
                 return True
             else:
@@ -349,8 +350,7 @@ class SupplyTracker(Tracker):
         "Hatchery" : 15 
     }
     def __init__(self, player1, player2, fixes):
-        super().__init__(player1, player2)
-        self.fixes = fixes
+        super().__init__(player1, player2, fixes)
         self.addedProviders = set()  # CR-023 S1 (S5): the providers whose limit was added (finished)
 
         self.supplyHistory = {}
@@ -426,7 +426,7 @@ class SupplyTracker(Tracker):
                 blockStart = curStatus
 
             elif curStatus.supply < curStatus.limit and blockStart != None:
-                self.supplyBlocks[player].append(SupplyBlockNode(player, blockStart.time, curStatus.time, self.seq))
+                self.supplyBlocks[player].append(SupplyBlockNode(player, blockStart.time, curStatus.time, self.seq, fixes=self.fixes))
                 blockStart = None
                 self.seq += 1
 

@@ -3,8 +3,8 @@ from sc2mindshare.reader.fork_api import PlayerStatsEvent
 
 class StatsNode(SimpleNode):
 
-    def __init__(self, e : PlayerStatsEvent, seq) -> None:
-        super().__init__(e, seq)
+    def __init__(self, e : PlayerStatsEvent, seq, *, fixes) -> None:
+        super().__init__(e, seq, fixes=fixes)
         self.propertiesCount = 11
         self.type = "Stats"
 

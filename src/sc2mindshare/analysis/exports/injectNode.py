@@ -1,11 +1,12 @@
+from sc2mindshare.reader.compat import clean_name
 from datetime import datetime
 from sc2mindshare.analysis.exports.node import Node
 from sc2mindshare.analysis.utils import MsUtils
 
 class InjecDelayNode(Node):
     
-    def __init__(self, unit, start, end, duration, delayThreshold, seq):
-        super().__init__(seq)
+    def __init__(self, unit, start, end, duration, delayThreshold, seq, *, fixes):
+        super().__init__(seq, fixes=fixes)
 
         self.player = unit.player
         self.unitName = unit.name
@@ -33,7 +34,7 @@ class InjecDelayNode(Node):
                                self.unitName, sep)
         
     def getNodePlayer(self):
-        return MsUtils.replaceStrings(self.player)
+        return clean_name(self.player, False, self.fixes)
     
     def getNodeTime(self):
         return self.start.replace(".",":").strip()

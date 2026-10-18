@@ -1,25 +1,26 @@
+from sc2mindshare.reader.compat import clean_name
 from sc2mindshare.analysis.exports.node import SimpleNode
 from sc2mindshare.reader.fork_api import CommandEvent
 
 #TODO add building deaths. Unit killed them. Tied to battle? Was that unit in battle? 
 class AbilityNode(SimpleNode):
 
-    def __init__(self, e : CommandEvent, seq) -> None:
-        super().__init__(e, seq)
+    def __init__(self, e : CommandEvent, seq, *, fixes) -> None:
+        super().__init__(e, seq, fixes=fixes)
 
-        self.subtype = self.event.replaceStrings(self.event.ability.name, False).strip()
+        self.subtype = clean_name(self.event.ability.name, False, self.fixes).strip()
 
         self.queued = bool(self.event.flag["queued"])
         self.minimap = bool(self.event.flag["minimap"])
         self.combat = self.event.isCombat()
-        self.target = self.event.replaceStrings(self.event.target.name)
+        self.target = clean_name(self.event.target.name, False, self.fixes)
 
         self.propertiesCount = 5
         self.type = "Ability"
 
     # TODO get a clean name withou race in ()
     def getNodeName(self):
-        return self.event.replaceStrings(self.event.ability.name, True).strip()
+        return clean_name(self.event.ability.name, True, self.fixes).strip()
     
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
@@ -32,7 +33,7 @@ class AbilityNode(SimpleNode):
             desc += "Non-combat ability '{}'".format(self.getNodeName())
         
         if self.event.ability_type == "TargetUnit":
-            desc += " targetted {}".format(self.event.replaceStrings(self.target))
+            desc += " targetted {}".format(clean_name(self.target, False, self.fixes))
 
         if self.queued:
             desc += " queued"
