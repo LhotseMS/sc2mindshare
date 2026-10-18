@@ -92,6 +92,12 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1")
 
 
+#: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph
+#: (``Graph.export_fixes``) and on with the graph fixes: B3, an Ability's ``combat``, ``queued`` and
+#: ``minimap`` are emitted (the workbook never set ``combatSet``).
+EXPORT_FIXES: tuple[str, ...] = ("B3",)
+
+
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:
     """The layer fix ids as a set; an id that is not in ``LAYER_FIXES`` is refused (a misspelt id would
     otherwise switch nothing on, silently)."""

@@ -118,3 +118,6 @@ class Graph:
     nodes: tuple[Node, ...]
     links: tuple[Link, ...]
     intervals: str | None = field(default=None)  # the battle windows text (legacy Intervals.csv)
+    #: The export fixes the document is built with (``analysis.fixes.EXPORT_FIXES`` with the graph fixes on,
+    #: none for the bug-faithful graph): fixes of what the view emits, not of the graph itself (CR-023 B3).
+    export_fixes: frozenset[str] = field(default=frozenset())

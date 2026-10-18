@@ -89,6 +89,7 @@ VIEW_LEDGER = (
     "P2-view",
     "P11-view",
     "N1-view",
+    "B3-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -105,6 +106,8 @@ VIEW_NET_DELTA = [
     # (name, type, start), the main base a Hatchery, the Greater Spire a Spire and so the next Spire "Spire 1"
     {"select": {"type": "Building"}, "fields": ["name", "description", "properties.time", "properties.type"], "count": 23},
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
+    # B3: every Ability emits combat, queued and minimap
+    {"select": {"type": "Ability"}, "fields": ["properties.combat", "properties.queued", "properties.minimap"], "count": 215},
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
     {"select": {"type": "Battle"}, "fields": ["description"], "count": 12},
     {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1},
@@ -360,6 +363,40 @@ def test_ability_flags_are_never_emitted_b3_and_scouting_time_b9():
         )
     )
     assert ability["properties"] == {"time": "00:03:00", "player": "p", "type": "SpawnLarva", "target": "Hatchery"}
+    # CR-023 B3: with the export fix the three flags are emitted as booleans after type; target stays last
+    fixed = view.node_view(
+        _node(
+            "Ability",
+            [
+                ("time", "00:03:00"),
+                ("player", "p"),
+                ("type", "SpawnLarva"),
+                ("combat", "True"),
+                ("queued", "False"),
+                ("minimap", "False"),
+                ("target", "Hatchery"),
+            ],
+        ),
+        frozenset({"B3"}),
+    )
+    assert list(fixed["properties"].items()) == [
+        ("time", "00:03:00"),
+        ("player", "p"),
+        ("type", "SpawnLarva"),
+        ("combat", True),
+        ("queued", False),
+        ("minimap", False),
+        ("target", "Hatchery"),
+    ]
+
+
+def test_b3_the_graph_carries_its_export_fixes():
+    from sc2mindshare.analysis.fixes import EXPORT_FIXES, LAYER_FIXES
+    from sc2mindshare.analysis.run import AnalysisResult
+
+    assert EXPORT_FIXES == ("B3",)
+    assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
+    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3"})
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
 

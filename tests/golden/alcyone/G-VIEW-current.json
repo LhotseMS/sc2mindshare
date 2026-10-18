@@ -6087,6 +6087,9 @@
     "time": "00:02:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6103,6 +6106,9 @@
     "time": "00:03:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6119,6 +6125,9 @@
     "time": "00:03:12",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6135,6 +6144,9 @@
     "time": "00:04:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6151,6 +6163,9 @@
     "time": "00:05:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6167,6 +6182,9 @@
     "time": "00:05:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6183,6 +6201,9 @@
     "time": "00:05:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6199,6 +6220,9 @@
     "time": "00:05:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6215,6 +6239,9 @@
     "time": "00:05:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6231,6 +6258,9 @@
     "time": "00:05:39",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6247,6 +6277,9 @@
     "time": "00:06:08",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6263,6 +6296,9 @@
     "time": "00:06:18",
     "player": "lilTiGGer",
     "type": "QueenTransfusion",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Queen"
    }
   },
@@ -6279,6 +6315,9 @@
     "time": "00:06:36",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6295,6 +6334,9 @@
     "time": "00:07:03",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6311,6 +6353,9 @@
     "time": "00:07:08",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6327,6 +6372,9 @@
     "time": "00:07:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6343,6 +6391,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6359,6 +6410,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6375,6 +6429,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6391,6 +6448,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6407,6 +6467,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6423,6 +6486,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6439,6 +6505,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6455,6 +6524,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6471,6 +6543,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6487,6 +6562,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6503,6 +6581,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6519,6 +6600,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6535,6 +6619,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6551,6 +6638,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6567,6 +6657,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6583,6 +6676,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6599,6 +6695,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6615,6 +6714,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6631,6 +6733,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6647,6 +6752,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6663,6 +6771,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6679,6 +6790,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6695,6 +6809,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6711,6 +6828,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6727,6 +6847,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6743,6 +6866,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6759,6 +6885,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6775,6 +6904,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6791,6 +6923,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6807,6 +6942,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6823,6 +6961,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6839,6 +6980,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6855,6 +6999,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6871,6 +7018,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6887,6 +7037,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6903,6 +7056,9 @@
     "time": "00:08:47",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6919,6 +7075,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6935,6 +7094,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6951,6 +7113,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6967,6 +7132,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6983,6 +7151,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6999,6 +7170,9 @@
     "time": "00:09:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7015,6 +7189,9 @@
     "time": "00:09:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7031,6 +7208,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7047,6 +7227,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7063,6 +7246,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7079,6 +7265,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7095,6 +7284,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7111,6 +7303,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7127,6 +7322,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7143,6 +7341,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7159,6 +7360,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7175,6 +7379,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7191,6 +7398,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7207,6 +7417,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7223,6 +7436,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7239,6 +7455,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7255,6 +7474,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7271,6 +7493,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7287,6 +7512,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7303,6 +7531,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7319,6 +7550,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7335,6 +7569,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7351,6 +7588,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7367,6 +7607,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7383,6 +7626,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7399,6 +7645,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7415,6 +7664,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7431,6 +7683,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7447,6 +7702,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7463,6 +7721,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7479,6 +7740,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7495,6 +7759,9 @@
     "time": "00:10:58",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7511,6 +7778,9 @@
     "time": "00:11:02",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7527,6 +7797,9 @@
     "time": "00:11:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7543,6 +7816,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7559,6 +7835,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7575,6 +7854,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7591,6 +7873,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7607,6 +7892,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7623,6 +7911,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7639,6 +7930,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7655,6 +7949,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7671,6 +7968,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7687,6 +7987,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7703,6 +8006,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7719,6 +8025,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7735,6 +8044,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7751,6 +8063,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7767,6 +8082,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7783,6 +8101,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7799,6 +8120,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7815,6 +8139,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7831,6 +8158,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7847,6 +8177,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7863,6 +8196,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7879,6 +8215,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7895,6 +8234,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7911,6 +8253,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7927,6 +8272,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7943,6 +8291,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7959,6 +8310,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7975,6 +8329,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7991,6 +8348,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8007,6 +8367,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8023,6 +8386,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8039,6 +8405,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8055,6 +8424,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8071,6 +8443,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8087,6 +8462,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8103,6 +8481,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8119,6 +8500,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8135,6 +8519,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8151,6 +8538,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8167,6 +8557,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8183,6 +8576,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8199,6 +8595,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8215,6 +8614,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8231,6 +8633,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8247,6 +8652,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8263,6 +8671,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8279,6 +8690,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8295,6 +8709,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8311,6 +8728,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8327,6 +8747,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8343,6 +8766,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8359,6 +8785,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8375,6 +8804,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8391,6 +8823,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8407,6 +8842,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8423,6 +8861,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8439,6 +8880,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8455,6 +8899,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8471,6 +8918,9 @@
     "time": "00:13:51",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8487,6 +8937,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8503,6 +8956,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8519,6 +8975,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8535,6 +8994,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8551,6 +9013,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8567,6 +9032,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8583,6 +9051,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8599,6 +9070,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8615,6 +9089,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8631,6 +9108,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8647,6 +9127,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8663,6 +9146,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8679,6 +9165,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8695,6 +9184,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8711,6 +9203,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8727,6 +9222,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8743,6 +9241,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8759,6 +9260,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8775,6 +9279,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8791,6 +9298,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8807,6 +9317,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8823,6 +9336,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8839,6 +9355,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8855,6 +9374,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8871,6 +9393,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8887,6 +9412,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8903,6 +9431,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8919,6 +9450,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8935,6 +9469,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8951,6 +9488,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8967,6 +9507,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8983,6 +9526,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8999,6 +9545,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9015,6 +9564,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9031,6 +9583,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9047,6 +9602,9 @@
     "time": "00:14:43",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9063,6 +9621,9 @@
     "time": "00:15:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9079,6 +9640,9 @@
     "time": "00:15:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9095,6 +9659,9 @@
     "time": "00:15:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9111,6 +9678,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9127,6 +9697,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9143,6 +9716,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9159,6 +9735,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9175,6 +9754,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9191,6 +9773,9 @@
     "time": "00:16:16",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9207,6 +9792,9 @@
     "time": "00:00:23",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Nexus"
    }
   },
@@ -9223,6 +9811,9 @@
     "time": "00:01:40",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "WarpGate"
    }
   },
@@ -9239,6 +9830,9 @@
     "time": "00:02:07",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "WarpGate"
    }
   },
@@ -9255,6 +9849,9 @@
     "time": "00:04:42",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Nexus"
    }
   },
@@ -9271,6 +9868,9 @@
     "time": "00:05:00",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9287,6 +9887,9 @@
     "time": "00:05:25",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9303,6 +9906,9 @@
     "time": "00:05:44",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "CyberneticsCore"
    }
   },
@@ -9319,6 +9925,9 @@
     "time": "00:07:23",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9335,6 +9944,9 @@
     "time": "00:07:42",
     "player": "blacksquall",
     "type": "BatteryOvercharge",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "ShieldBattery"
    }
   },
@@ -9351,6 +9963,9 @@
     "time": "00:08:01",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9367,6 +9982,9 @@
     "time": "00:08:31",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9383,6 +10001,9 @@
     "time": "00:10:20",
     "player": "blacksquall",
     "type": "BatteryOvercharge",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "ShieldBattery"
    }
   },
@@ -9399,6 +10020,9 @@
     "time": "00:10:41",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9415,6 +10039,9 @@
     "time": "00:10:42",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9431,6 +10058,9 @@
     "time": "00:10:45",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9447,6 +10077,9 @@
     "time": "00:11:34",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9463,6 +10096,9 @@
     "time": "00:11:47",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9479,6 +10115,9 @@
     "time": "00:14:28",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9495,6 +10134,9 @@
     "time": "00:15:29",
     "player": "blacksquall",
     "type": "Feedback",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Overseer"
    }
   },
@@ -9511,6 +10153,9 @@
     "time": "00:15:29",
     "player": "blacksquall",
     "type": "Feedback",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Overseer"
    }
   },

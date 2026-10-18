@@ -13,7 +13,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
-from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
+from sc2mindshare.analysis.fixes import EXPORT_FIXES, FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult
 from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Graph, Link, Node, Value
 from sc2mindshare.domain.time import GameTime
@@ -126,6 +126,7 @@ def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] |
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),
         intervals=result.intervals,
+        export_fixes=frozenset(EXPORT_FIXES) if graph_fixes == FIXES else frozenset(),
     )
     for fix in graph_fixes:
         graph = fix(graph)

@@ -66,7 +66,7 @@ def build_document(
     prof = profile or Profile()
     nodes = []
     for node in graph.nodes:
-        view = node_view(node)
+        view = node_view(node, graph.export_fixes)
         if placed is not None:
             view["size"] = _size(placed.sizes[node.id])
             x, y = placed.positions[node.id]

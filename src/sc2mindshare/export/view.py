@@ -2,9 +2,9 @@
 
 The rules of the workbook's ``ScReplayNode.GetView``, ``getCircleSize`` and ``Link.GetView``,
 applied to the domain models instead of Excel cells, bug-faithful for now (G-VIEW-1 is the
-oracle): B3 (an Ability's ``combat``/``queued``/``minimap`` are never emitted), B9 (``01:42`` is
-read as ``01:42:00``), B11 (a Battle's ``end time`` is the raw text). The defect fixes change
-these later, each with a golden ledger entry.
+oracle): B3 (an Ability's ``combat``/``queued``/``minimap`` are never emitted; emitted with the
+export fix ``B3``, CR-023), B9 (``01:42`` is read as ``01:42:00``), B11 (a Battle's ``end time`` is
+the raw text). The defect fixes change these later, each with a golden ledger entry.
 """
 
 from __future__ import annotations
@@ -73,7 +73,7 @@ def units_size(supply: float) -> float:
     return 1.7
 
 
-def node_view(node: Node) -> dict[str, Any]:
+def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[str, Any]:
     v = dict(text_values(node))  # the workbook read the legacy text: its rules apply to that (CR-022)
     view: dict[str, Any] = {
         "name": node.name,
@@ -105,6 +105,8 @@ def node_view(node: Node) -> dict[str, Any]:
         props |= {"duration": vba_integer(v["duration"]), "end time": v["end time"]}
     elif kind == "Ability":
         props["type"] = v["type"]
+        if "B3" in export_fixes:  # CR-023 B3: the flags the workbook never emitted, as booleans
+            props |= {flag: v[flag] == "True" for flag in ("combat", "queued", "minimap")}
         if v["target"] != "":
             props["target"] = v["target"]
         view["size"] = [1.6, 0.88]
