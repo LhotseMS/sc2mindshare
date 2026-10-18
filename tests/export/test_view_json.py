@@ -120,10 +120,21 @@ def test_p3d_the_main_bases_show_00_00_00_and_keep_their_real_time(document):
 def test_to_json_writes_numbers_as_vba_json_does():
     """D7a A12: a whole number has no decimal part (VBA's string conversion of a Double); other
     numbers, strings that look like numbers, booleans and the key order are unchanged."""
-    doc = {"size": [2.65, 1.0], "x": -12.0, "zero": 0.0, "minus zero": -0.0, "z": 0.01, "n": 3, "text": "50.0", "flag": True}
+    doc = {
+        "size": [2.65, 1.0],
+        "x": -12.0,
+        "zero": 0.0,
+        "minus zero": -0.0,
+        "z": 0.01,
+        "small": 0.0001,  # the smallest non-zero value after the 4-dp rounding: no exponent form
+        "negative small": -0.0001,
+        "n": 3,
+        "text": "50.0",
+        "flag": True,
+    }
     assert to_json(doc) == (
         '{\n "size": [\n  2.65,\n  1\n ],\n "x": -12,\n "zero": 0,\n "minus zero": 0,\n "z": 0.01,\n'
-        ' "n": 3,\n "text": "50.0",\n "flag": true\n}\n'
+        ' "small": 0.0001,\n "negative small": -0.0001,\n "n": 3,\n "text": "50.0",\n "flag": true\n}\n'
     )
     assert json.loads(to_json(doc)) == doc  # the same numbers
 

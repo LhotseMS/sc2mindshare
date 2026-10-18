@@ -104,9 +104,15 @@ def regenerate(entry_id: str, name: str, write: bool) -> int:
         print(f"entry {entry_id} does not list alcyone/{name}")
         return 2
     clock_map = golden.load_clock_map(root() / "MS SC" / "TimeImageTracking.csv")
+    text = REGENERABLE[name]()
+    on_disk = GOLDEN / name
+    if text == on_disk.read_text(encoding="utf-8") and golden.sha256(on_disk) != entry["base_sha256"]:
+        # the golden is already the code's output and no longer the entry's base: applied before
+        print(f"{name}: entry {entry_id} is already applied (the golden is the code's output); nothing written")
+        return 0
     with tempfile.TemporaryDirectory() as tmp:
         new = Path(tmp) / name
-        new.write_text(REGENERABLE[name](), encoding="utf-8")
+        new.write_text(text, encoding="utf-8")
         problems = check_golden_delta.check_delta(entry, GOLDEN / name, new, clock_map)
         for p in problems:
             print(p)
