@@ -7,8 +7,9 @@ upstream's own values (``event.second`` as frame / 22.4; the ability fields an u
 from its target command). Here they live in a map keyed by the object's **identity**, so every sc2reader
 object keeps exactly upstream's attributes and values. Each entry belongs to the generation of the
 replay that adopted its object; the entries go together when that replay is collected, and the
-objects themselves are freed one collection pass after the replay (the stored values point back at
-keyed objects, so a single object's going cannot be what drops its entry).
+objects themselves are freed one collection pass after the replay. Entries go per replay, not per
+object, because the stored values point at other keyed objects (``initEvent``, ``doneEvent`` ...): the
+store itself would keep those objects alive, so they never go on their own.
 
 Identity, not equality: sc2reader's ``Unit`` compares and hashes by its unit id, so two replays' units
 with the same id are equal, and a ``WeakKeyDictionary`` would give one the other's fields.
