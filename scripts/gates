@@ -17,21 +17,29 @@ checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv"
 [ "$#" -gt 0 ] || set -- "$checkout/src" "$checkout/scripts" "$checkout/tests"
+# Absolute paths, so the tools below can run from fixed folders (D14a).
+abs=""
+for p in "$@"; do case $p in (/*) abs="$abs $p" ;; (*) abs="$abs $PWD/$p" ;; esac; done
+# shellcheck disable=SC2086
+set -- $abs
+# ruff resolves the relative `src` paths of a --config file against the folder it runs from, and
+# they decide whether `sc2mindshare` is first-party in the import order. The reviewed order is the
+# one ruff gives run from the checkout's parent folder, so ruff always runs from there (D14a).
+ruff_dir=$(dirname -- "$checkout")
 
 status=0
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
-"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+(cd "$ruff_dir" && "$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@") || status=1
 echo "== ruff format --check"
-"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+(cd "$ruff_dir" && "$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@") || status=1
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then
     # mypy puts the directory it runs from on its import path: run from the checkout root of a tree
     # that has the fork's sc2reader/ there (before CR-009), it read that instead of the pinned
-    # upstream package (2096 errors). So it runs from scripts/, on absolute paths, with the
-    # repository's config passed explicitly.
-    typed=$(for f in $typed; do case $f in (/*) echo "$f" ;; (*) echo "$PWD/$f" ;; esac; done)
+    # upstream package (2096 errors). So it runs from scripts/, with the repository's config
+    # passed explicitly.
     # shellcheck disable=SC2086
     (cd "$script_dir" && "$py_env" "$venv/bin/mypy" --config-file "$checkout/pyproject.toml" --strict $typed) || status=1
 fi
