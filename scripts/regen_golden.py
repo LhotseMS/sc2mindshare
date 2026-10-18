@@ -95,14 +95,16 @@ REGENERABLE: dict[str, Callable[[], str]] = {
 }
 
 
-def _was_in_history(name: str, sha256: str) -> bool:
-    """Whether some committed version of the golden had this sha256 (the entry's base, applied since)."""
+def _was_in_history(name: str, sha256: str, repo: Path = CHECKOUT) -> bool:
+    """Whether some committed version of the golden had this sha256 (the entry's base, applied since).
+    Outside a git repository (a ``git archive`` copy) the history cannot be read: False, so the entry
+    goes to the ordinary C3/C4 check."""
     rel = f"tests/golden/alcyone/{name}"
-    log = subprocess.run(
-        ["git", "-C", str(CHECKOUT), "log", "--format=%H", "--", rel], check=True, capture_output=True, text=True
-    ).stdout.split()
-    for sha in log:
-        blob = subprocess.run(["git", "-C", str(CHECKOUT), "show", f"{sha}:{rel}"], check=False, capture_output=True)
+    log = subprocess.run(["git", "-C", str(repo), "log", "--format=%H", "--", rel], check=False, capture_output=True, text=True)
+    if log.returncode != 0:
+        return False
+    for sha in log.stdout.split():
+        blob = subprocess.run(["git", "-C", str(repo), "show", f"{sha}:{rel}"], check=False, capture_output=True)
         if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == sha256:
             return True
     return False
