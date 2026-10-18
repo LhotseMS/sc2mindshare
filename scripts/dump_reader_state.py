@@ -44,6 +44,16 @@ def _class_name(event: Any) -> str:
     return fork_class_name(event)
 
 
+def _field(obj: Any, name: str) -> Any:
+    """A field the fork set on the object: on the fork itself; on the new pipeline in reader.side_fields
+    (CR-020), falling back to the object's own upstream attribute."""
+    if _flavour() == "legacy":
+        return getattr(obj, name, None)
+    from sc2mindshare.reader import side_fields
+
+    return side_fields.get(obj, name)
+
+
 def _link(event: Any) -> list[Any] | None:
     return None if event is None else [event.frame, type(event).__name__]
 
@@ -58,33 +68,33 @@ def dump(path: str) -> dict[str, Any]:
     for i, e in enumerate(events):
         name = type(e).__name__
         if name in ("UpdateTargetUnitCommandEvent", "UpdateTargetPointCommandEvent"):
-            ability = getattr(e, "ability", None)
-            target = getattr(e, "targetCommandEvent", None)
+            ability = _field(e, "ability")
+            target = _field(e, "targetCommandEvent")
             updates.append(
                 {
                     "i": i,
                     "frame": e.frame,
                     "pid": e.pid,
-                    "ability_name": getattr(e, "ability_name", None),
-                    "ability_id": getattr(e, "ability_id", None),
-                    "has_ability": getattr(e, "has_ability", None),
-                    "ability_type": getattr(e, "ability_type", None),
-                    "ability_data": repr(getattr(e, "ability_data", None)),
+                    "ability_name": _field(e, "ability_name"),
+                    "ability_id": _field(e, "ability_id"),
+                    "has_ability": _field(e, "has_ability"),
+                    "ability_type": _field(e, "ability_type"),
+                    "ability_data": repr(_field(e, "ability_data")),
                     "ability": None if ability is None else [ability.id, ability.name],
-                    "queued": getattr(e, "queued", None),
-                    "minimap": getattr(e, "minimap", None),
-                    "repeated": getattr(e, "repeated", None),
+                    "queued": _field(e, "queued"),
+                    "minimap": _field(e, "minimap"),
+                    "repeated": _field(e, "repeated"),
                     "target": None if target is None else index.get(id(target), "<not a game event>"),
                 }
             )
-        if hasattr(e, "updateEvents") and e.updateEvents:
-            commands[str(i)] = [index.get(id(u), "<not a game event>") for u in e.updateEvents]
+        if _field(e, "updateEvents"):
+            commands[str(i)] = [index.get(id(u), "<not a game event>") for u in _field(e, "updateEvents")]
     units = {}
     for unit_id, unit in sorted(replay.objects.items()):
         links = {
-            "init": _link(getattr(unit, "initEvent", None)),
-            "done": _link(getattr(unit, "doneEvent", None)),
-            "death": _link(getattr(unit, "deathEvent", None)),
+            "init": _link(_field(unit, "initEvent")),
+            "done": _link(_field(unit, "doneEvent")),
+            "death": _link(_field(unit, "deathEvent")),
         }
         if any(links.values()):
             units[str(unit_id)] = links
