@@ -265,3 +265,34 @@ The same supply change in both G-SNAP-1 files, written before the change and reg
 ```json
 {"entry": "S1-snap-linear", "task": "CR-023", "defect": "S1 the layer's supply history over-counts (S1-S4; TD-27's 57 s block from 0:00)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "551ee9f78bf73fffa129e80d95be9937fe3af3743a1cba018ca8fed4e28370c3", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 2, "links_dropped": 0}, "changes": [{"select": {"ID": "Supply Block-6"}, "fields": ["description", "name", "properties.duration", "properties.end time"], "count": 1}, {"select": {"ID": "Supply Block-7"}, "fields": ["description", "name", "properties.duration", "properties.end time"], "count": 1}], "added": ["Supply Block-0#1", "Supply Block-1#1", "Supply Block-2#1", "Supply Block-3#1", "Supply Block-4#1", "Supply Block-5#1", "Supply Block-8#1"], "removed": ["Supply Block-0#1", "Supply Block-1#1", "Supply Block-2#1", "Supply Block-3#1", "Supply Block-4#1", "Supply Block-5#1", "Supply Block-6#1", "Supply Block-7#1", "Supply Block-10#1"]}
 ```
+
+
+### S1b: supersedes the S1 entries' root-cause claim and prediction; adds S5 (CR-023, T22; D9a; Morgan's G6 on 5932f93)
+
+**Correction.** The S1 entries above say that no death subtracts what was never added. That was measured for supply only, and it is wrong for the limit: the layer lowers the limit when a supply provider dies **before it finished**, although an unfinished provider never raised it. On Alcyone blacksquall's two Nexuses killed under construction (13:06 and 14:01) each take 15 off the limit, which gives blacksquall three blocks that PlayerStats does not show (`food_used` stays below `food_made` there; Morgan's model `.scratch/morgan/prop-audit/supply_check.py`). **S5** (Kevin's call, from D9a's "finished units against the limit"): a provider that dies before it finished does not lower the limit; the tracker lowers it only for a provider whose limit it added. Applied under the same ledger id `S1`.
+
+**New prediction**, from the bug-faithful layer by the independent recomputation (`.scratch/rex/cr023/probe_supply_fixed.py`, now with S5), matching Morgan's model: over the whole row the Supply Block set goes from 11 to **7** (S1's entries predicted 9):
+
+| Player | Start | End | Duration |
+|---|---|---|---|
+| lilTiGGer | 00:00:38 | 00:00:57 | 19 s |
+| lilTiGGer | 00:02:08 | 00:02:13 | 5 s |
+| lilTiGGer | 00:06:42 | 00:06:50 | 8 s |
+| lilTiGGer | 00:12:40 | 00:12:48 | 8 s |
+| lilTiGGer | 00:13:18 | 00:13:43 | 25 s |
+| blacksquall | 00:00:32 | 00:00:38 | 6 s |
+| blacksquall | 00:14:47 | 00:15:36 | 49 s |
+
+Against the goldens as the S1 entries left them (on this branch): lilTiGGer's 5 blocks and blacksquall's at 00:00:32 stay as they are; blacksquall's at 00:14:01, 00:14:35 and 00:15:49 (`Supply Block-6`, `-7`, `-8`) are removed and one at 00:14:47 is added (as `Supply Block-6`); keyed on player and start time, no ID of a kept block changes. In both snapshots no other node moves. G-VIEW-current and G-SNAP-1 are regenerated on this branch only (TD-58). The final-type supply of a morphed unit (a Ravager counts 3) stays with the naming row.
+
+```json
+{"entry": "S1b-view", "task": "CR-023", "defect": "S1b: S5, a provider that dies unfinished lowers the limit (supersedes S1's claim and prediction)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "9b03ebd859ee6392ead8c1139d8b149cb1c0e24a4b09f6e44c8d4dd221ce2875", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 0, "links_dropped": 0}, "changes": [], "added": ["Supply Block-6#1"], "removed": ["Supply Block-6#1", "Supply Block-7#1", "Supply Block-8#1"]}
+```
+
+```json
+{"entry": "S1b-snap-compressed", "task": "CR-023", "defect": "S1b: S5, a provider that dies unfinished lowers the limit (supersedes S1's claim and prediction)", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "900f7d289d5b3bb46cdf3f1f62db384304b83794643266f67f082a2d480065f5", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 0, "links_dropped": 0}, "changes": [], "added": ["Supply Block-6#1"], "removed": ["Supply Block-6#1", "Supply Block-7#1", "Supply Block-8#1"]}
+```
+
+```json
+{"entry": "S1b-snap-linear", "task": "CR-023", "defect": "S1b: S5, a provider that dies unfinished lowers the limit (supersedes S1's claim and prediction)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "eba951d6b18b59c36b78b40950e0d286ebe8275b33cf248472e9da2bdca9e106", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 0, "links_dropped": 0}, "changes": [], "added": ["Supply Block-6#1"], "removed": ["Supply Block-6#1", "Supply Block-7#1", "Supply Block-8#1"]}
+```
