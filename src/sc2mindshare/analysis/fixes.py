@@ -81,5 +81,6 @@ def pre_game_display(graph: Graph) -> Graph:
 #: The fixes, in ledger order.
 FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_display)
 
-#: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances.
-LAYER_FIXES: tuple[str, ...] = ("P1",)
+#: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances;
+#: P1b (D8a), it skips a base whose init/born second is after the battle's start.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b")

@@ -298,7 +298,7 @@
    }
   },
   {
-   "name": "Adept killed ling near blacksquall 3rd base",
+   "name": "Adept killed ling near blacksquall Main base",
    "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:05:38. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed ling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9), Build Nexus,  ",
    "type": "Battle",
    "ID": "Battle-8",
@@ -314,7 +314,7 @@
    }
   },
   {
-   "name": "VoidRay killed Overlord near blacksquall 5th base",
+   "name": "VoidRay killed Overlord near blacksquall Natural",
    "description": "lilTiGGer lost an Overlord.\n\nAt 0:06:24. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Creep Tumor(2), Build Creep Tumor,  \n\nCONTROL GROUPS: \n5: \n4:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overlord, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(2),  ",
    "type": "Battle",
    "ID": "Battle-9",
@@ -330,7 +330,7 @@
    }
   },
   {
-   "name": "VoidRay killed ling near blacksquall 5th base",
+   "name": "VoidRay killed ling near blacksquall Natural",
    "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:06:32. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed ling, \n   \nNON-COMBAT: Right Click(8),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-10",
@@ -410,7 +410,7 @@
    }
   },
   {
-   "name": "VoidRay killed Roach near blacksquall 6th base",
+   "name": "VoidRay killed Roach near blacksquall 3rd base",
    "description": "lilTiGGer lost 1 units, 2 supply, 75 min 25 gas.\n\nAt 0:08:34. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Spawn Larva(35), Build Extractor(2),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(5),  \n\nCONTROL GROUPS: \n4: \n1: ",
    "type": "Battle",
    "ID": "Battle-15",
@@ -426,7 +426,7 @@
    }
   },
   {
-   "name": "Probes died near blacksquall 6th base",
+   "name": "Probes died near blacksquall 3rd base",
    "description": "\n\nblacksquall lost 2 units, 1 supply, 150 min 0 gas.\n\nFrom 0:09:56 to 0:09:58. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Probe, \n  \nCOMBAT: A move(6),  \nNON-COMBAT: Right Click(26),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall====  \nLOST: Pylon,  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(2), Build Gateway(2), Build Photon Cannon(2),  \n\nCONTROL GROUPS: \n4: \n1: ",
    "type": "Battle",
    "ID": "Battle-16",
@@ -458,7 +458,7 @@
    }
   },
   {
-   "name": "VoidRay killed Overseer near blacksquall 6th base",
+   "name": "VoidRay killed Overseer near lilTiGGer 5th base",
    "description": "lilTiGGer lost an Overseer.\n\nAt 0:10:35. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Spawn Larva(7),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overseer, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(2), Warp In Stalker(5),  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-18",
@@ -474,7 +474,7 @@
    }
   },
   {
-   "name": "Queen killed Oracle near lilTiGGer 8th base",
+   "name": "Queen killed Oracle near lilTiGGer 5th base",
    "description": "\n\nblacksquall lost 1 units, 3 supply, 150 min 150 gas.\n\nAt 0:11:05. \n\n====lilTiGGer==== \nKILLS(s): Queen killed Oracle, \n  \nCOMBAT: A move,  \nNON-COMBAT: Spawn Larva, Right Click(9),  \n\nCONTROL GROUPS: \n4:  \n\n====blacksquall====    \nNON-COMBAT: Warp In High Templar(6), Right Click(5),  \n\nCONTROL GROUPS: \n2: \n5: ",
    "type": "Battle",
    "ID": "Battle-19",

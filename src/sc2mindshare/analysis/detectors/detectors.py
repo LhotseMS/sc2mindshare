@@ -803,12 +803,15 @@ class BaseDetector(EventsDetector):
     
 
     # bases might not exist yet
-    def getClosestBase(self, e) -> Base:
+    def getClosestBase(self, e, battleStart=None) -> Base:
 
         minDistBase = None
         minDistance = 1000
         for player, bases in self.bases.items():
             for base in bases:
+                # CR-023 P1b (D8a): only a base whose init/born second is at or before the battle's start
+                if "P1b" in self.ctx.fixes and battleStart is not None and int(base.bornEvent.frame / 22.4) > battleStart:
+                    continue
                 if "P1" in self.ctx.fixes:  # CR-023 P1: the distance itself
                     dist = base.minDistance(e.location)
                 else:  # bug-faithful: a boolean, so the second base iterated always wins

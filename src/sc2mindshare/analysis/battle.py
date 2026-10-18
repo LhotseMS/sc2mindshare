@@ -358,7 +358,7 @@ class Battle(PlayerHandler):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = self.ctx.bases.getClosestBase(e)
+        locationBase = self.ctx.bases.getClosestBase(e, self.startSec)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)
