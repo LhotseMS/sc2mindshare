@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import pytest
 from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
-from sc2mindshare.analysis.fixes import LAYER_FIXES
+from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse, legacy_csv
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.reader.loader import load_replay
@@ -45,6 +45,21 @@ def test_a_result_carries_its_layer_fixes_and_a_fixed_one_cannot_feed_the_bug_fa
         to_graph(fixed, fixes=())
     assert to_graph(AnalysisResult((), (), None), fixes=()).nodes == ()  # no layer fix: fine
     assert AnalysisResult((), (), None).fixes == frozenset()
+
+
+def test_to_graph_takes_only_the_two_pure_combinations_unless_a_mix_is_asked_for():
+    """Morgan's G6 N1 on d6ca6b3: the other direction too. Layer and graph fixes all on, or all off;
+    any other combination (a faithful result with the graph fixes, a partial layer set, half the graph
+    fixes) needs ``mixed=True``."""
+    faithful = AnalysisResult((), (), None)
+    full = AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))
+    partial = AnalysisResult((), (), None, fixes=frozenset({"P1"}))
+    for result, fixes in ((faithful, None), (faithful, FIXES), (partial, None), (full, FIXES[:1]), (partial, ())):
+        with pytest.raises(ValueError, match="mixed|bug-faithful"):
+            to_graph(result, fixes=fixes)
+    assert to_graph(full).nodes == () and to_graph(full, fixes=FIXES).nodes == ()
+    assert to_graph(faithful, fixes=()).nodes == ()
+    assert to_graph(partial, mixed=True).nodes == () and to_graph(faithful, fixes=FIXES, mixed=True).nodes == ()
 
 
 def test_unknown_fix_ids_are_refused():
@@ -125,7 +140,7 @@ def battle_names():
     for label, fixes in (("faithful", ()), ("p1", ("P1",)), ("fixed", LAYER_FIXES)):
         with contextlib.redirect_stdout(io.StringIO()):
             result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes)
-            graph = to_graph(result, fixes=() if not fixes else None)  # the graph fixes leave Battle names alone
+            graph = to_graph(result, fixes=() if not fixes else None, mixed=fixes != LAYER_FIXES)  # P1 alone is a mix
         names[label] = {n.id: n.name for n in graph.nodes if n.kind == "Battle"}
     return names
 

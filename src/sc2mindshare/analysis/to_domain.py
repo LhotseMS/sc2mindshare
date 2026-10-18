@@ -13,7 +13,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
-from sc2mindshare.analysis.fixes import FIXES
+from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult
 from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Graph, Link, Node, Value
 from sc2mindshare.domain.time import GameTime
@@ -102,19 +102,31 @@ def link_model(link: Any) -> Link:
     )
 
 
-def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None) -> Graph:
-    """The domain graph of ``result``, with the ledger's fixes applied (``fixes=()`` for the
-    bug-faithful graph that renders the legacy CSV oracle; it refuses a result whose layer fixes were on,
-    so a bug-faithful graph is never half fixed)."""
-    if fixes is not None and not fixes and result.fixes:
+def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None, *, mixed: bool = False) -> Graph:
+    """The domain graph of ``result``, with the ledger's graph fixes applied (``fixes=()`` for the
+    bug-faithful graph that renders the legacy CSV oracle).
+
+    Only the two pure combinations are accepted: every layer and graph fix on (the default with a result
+    of ``analyse``'s default), or none (``fixes=()`` with ``analyse(..., fixes=())``). Any other mix, such as
+    a bug-faithful result with the graph fixes, a partial layer set, or some of the graph fixes, is refused
+    unless ``mixed=True`` asks for it, so neither output is ever half fixed by accident (CR-023)."""
+    graph_fixes = tuple(FIXES if fixes is None else fixes)
+    all_off = not graph_fixes and not result.fixes
+    all_on = graph_fixes == FIXES and result.fixes == frozenset(LAYER_FIXES)
+    if not mixed and not (all_off or all_on):
+        if not graph_fixes:
+            raise ValueError(
+                f"fixes=() asks for the bug-faithful graph; this result has layer fixes {sorted(result.fixes)} (analyse(..., fixes=()))"
+            )
         raise ValueError(
-            f"fixes=() asks for the bug-faithful graph; this result has layer fixes {sorted(result.fixes)} (analyse(..., fixes=()))"
+            f"a mixed run: layer fixes {sorted(result.fixes)} with {len(graph_fixes)} of {len(FIXES)} graph fixes; "
+            "use both all on or both off, or pass mixed=True"
         )
     graph = Graph(
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),
         intervals=result.intervals,
     )
-    for fix in FIXES if fixes is None else fixes:
+    for fix in graph_fixes:
         graph = fix(graph)
     return graph
