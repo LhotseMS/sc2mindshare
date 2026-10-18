@@ -3,8 +3,9 @@
 For each replay that plain sc2reader 1.9.0 loads, the replay is loaded again through
 ``sc2mindshare.decoding.load`` and checked against:
 
-- parity: the game-event classes are equal apart from CameraSaveEvent, and the tracker events are
-  equal (type and attributes), so stream 3's readers change nothing sc2reader exposes;
+- parity: the game events and the tracker events are equal event by event (class and every plain
+  attribute value), with no exemption, so stream 3's readers change nothing sc2reader exposes (camera
+  saves are kept in their own store since CR-044 part 2, so they must not appear in the event list);
 - F3-009: every camera update that lands exactly on a saved point matches one slot only;
 - F3-016: the resume loop in ``replay.resumable.events`` is one loop before the first PlayerLeaveEvent;
 - F3-017: ``replay.sync.events`` has the measured framing and game loops // 64 records;
@@ -48,8 +49,20 @@ def _imports() -> tuple[Any, ...]:
     return sc2reader, CameraEvent, load, camera_saves, creations, side_members, user_options
 
 
+def _plain(value: Any) -> Any:
+    """The value if it is plain data (numbers, text, None, and tuples, lists and dicts of them), else a marker:
+    objects such as units, players and abilities are other instances in each load, so only their presence counts."""
+    if value is None or isinstance(value, (bool, int, float, str, bytes)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [_plain(v) for v in value]
+    if isinstance(value, dict):
+        return {str(k): _plain(v) for k, v in value.items()}
+    return f"<{type(value).__name__}>"
+
+
 def _shape(events: Iterable[Any]) -> list[tuple[str, dict[str, Any]]]:
-    return [(type(e).__name__, {k: v for k, v in vars(e).items() if k not in _REFS}) for e in events]
+    return [(type(e).__name__, {k: _plain(v) for k, v in vars(e).items() if k not in _REFS}) for e in events]
 
 
 def _type_at(unit: Any, frame: int) -> str:
@@ -94,10 +107,9 @@ def check_replay(path: Path) -> dict[str, Any]:
         row["detail"] = {"parity": f"decoding.load failed: {exc!r}"[:200]}
         return row
     detail: dict[str, Any] = {}
-    plain_classes = Counter(type(e).__name__ for e in plain.game_events)
-    ours = Counter(type(e).__name__ for e in replay.game_events)
-    row["parity"] = not (plain_classes - ours) and not (set(ours - plain_classes) - {"CameraSaveEvent"})
-    row["parity"] = row["parity"] and _shape(plain.tracker_events) == _shape(replay.tracker_events)
+    row["parity"] = _shape(plain.game_events) == _shape(replay.game_events) and _shape(plain.tracker_events) == _shape(
+        replay.tracker_events
+    )
 
     exact, ambiguous = _camera(replay, camera_saves, camera_event)
     if exact:

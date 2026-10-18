@@ -7,7 +7,7 @@ Corpus: the 345 replays in `test_replays/` (upstream sc2reader's, builds 15405 t
 
 | Finding | Checked | Holds | Contradicts | Not applicable | Confidence now |
 |---|---|---|---|---|---|
-| Parity: `decoding.load` changes nothing sc2reader exposes (game-event classes apart from CameraSaveEvent; tracker events, type and attributes) | 343 | 343 | 0 | 0 | **confirmed** for builds 15405–80949 |
+| Parity: `decoding.load` changes nothing sc2reader exposes (game and tracker events equal event by event: class and every plain attribute value, no exemption; re-run after Rex's CR-056 review) | 343 | 343 | 0 | 0 | **confirmed** for builds 15405–80949 |
 | F3-009 every exact camera recall matches one slot | 40 | 37 | 3 | 303 | **refined**: a player can save the same point in two slots |
 | F3-016 resume loop = first leave − 1 | 45 | 42 | 3 | 298 | supported; in 3 vs-AI games it is the last dialog action instead |
 | F3-017 one sync record per 64 loops | 288 | 288 | 0 | 55 | **confirmed** where the framing is the measured one |
