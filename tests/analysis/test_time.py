@@ -196,3 +196,30 @@ def test_the_frozen_text_reads_into_times_and_prints_back_the_same(game):
         node = Node(n["kind"], n["id"], n["name"], n["description"], tuple(n["images"]), values, start)
         assert [list(v) for v in text_values(node)] == n["values"], n["id"]
         assert (None if start is None else start.seconds) == n["start_seconds"]
+
+
+# --- CR-023 P13 (B11): one time format in export --------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("kind", "legacy_70_min", "legacy_7_min"),
+    [
+        ("Battle", "1:10:00", "0:07:57"),
+        ("Scouting", "01:10:00", "07:57"),
+        ("Harrasment", "01:10:00", "07:57"),
+        ("Building", "01:10:00", "00:07:57"),
+    ],
+)
+def test_p13_every_time_is_hh_mm_ss_of_game_time_on_a_70_minute_timeline(kind, legacy_70_min, legacy_7_min):
+    from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Node
+
+    def node(seconds):
+        t = GameTime.from_seconds(seconds)
+        values = tuple((f, t if f in TIME_FIELDS else "x") for f in FIELDS[kind])
+        return Node(kind, f"{kind}-1", "n", "d", (), values, t)
+
+    for seconds, legacy in ((4200, legacy_70_min), (477, legacy_7_min)):
+        assert dict(text_values(node(seconds)))["time"] == legacy  # the legacy forms, bug-faithful
+    assert dict(text_values(node(4200), frozenset({"P13"})))["time"] == "01:10:00"
+    assert dict(text_values(node(477), frozenset({"P13"})))["time"] == "00:07:57"
+    assert dict(text_values(node(86400 + 5), frozenset({"P13"})))["time"] == "24:00:05"  # hours do not wrap

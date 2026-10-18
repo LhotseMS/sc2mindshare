@@ -74,7 +74,7 @@ def units_size(supply: float) -> float:
 
 
 def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[str, Any]:
-    v = dict(text_values(node))  # the workbook read the legacy text: its rules apply to that (CR-022)
+    v = dict(text_values(node, export_fixes))  # the workbook read the legacy text: its rules apply to that (CR-022)
     view: dict[str, Any] = {
         "name": node.name,
         "description": node.description.replace(X_LD, "\n"),

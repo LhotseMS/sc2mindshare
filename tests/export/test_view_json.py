@@ -91,6 +91,7 @@ VIEW_LEDGER = (
     "N1-view",
     "B3-view",
     "P10-view",
+    "P13-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -107,6 +108,8 @@ VIEW_NET_DELTA = [
     # (name, type, start), the main base a Hatchery, the Greater Spire a Spire and so the next Spire "Spire 1"
     {"select": {"type": "Building"}, "fields": ["name", "description", "properties.time", "properties.type"], "count": 23},
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
+    # P13: a Battle's end time is hh:mm:ss (the Harrasment and Scouting times are in their own net test)
+    {"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30},
     # B3: every Ability emits combat, queued and minimap
     {"select": {"type": "Ability"}, "fields": ["properties.combat", "properties.queued", "properties.minimap"], "count": 215},
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
@@ -170,8 +173,18 @@ def _doc(name):
     return json.loads((GOLDEN / name).read_text(encoding="utf-8"))
 
 
-def _by_player_and_time(name, typ):
-    return {(n["properties"]["player"], n["properties"]["time"]): n for n in _doc(name)["nodes"] if n["type"] == typ}
+def _by_player_and_time(name, typ, p13=False):
+    """Nodes of ``typ`` by (player, time) in G-VIEW-1's text: with ``p13`` the current document's ``00:mm:ss``
+    (P13: game time) is read back as the ``mm:ss:00`` the workbook rule made of the legacy text."""
+    out = {}
+    for n in _doc(name)["nodes"]:
+        if n["type"] == typ:
+            if p13:
+                h, m, sec = n["properties"]["time"].split(":")
+                assert h == "00"  # under an hour on Alcyone
+                n = dict(n, properties=dict(n["properties"], time=f"{m}:{sec}:00"))
+            out[(n["properties"]["player"], n["properties"]["time"])] = n
+    return out
 
 
 @pytest.mark.parametrize(
@@ -186,7 +199,7 @@ def _by_player_and_time(name, typ):
 )
 def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, descriptions, ids):
     """The net effect of H1 and P11 on the two types P11 renumbers, paired by (player, time) (QA design Addendum C)."""
-    old, new = _by_player_and_time("G-VIEW-1.json", typ), _by_player_and_time("G-VIEW-current.json", typ)
+    old, new = _by_player_and_time("G-VIEW-1.json", typ), _by_player_and_time("G-VIEW-current.json", typ, p13=True)
     assert sorted(set(old) - set(new)) == removed  # the legacy time text of these nodes reads mm:ss:00
     assert set(new) <= set(old)
     changed = {k: sorted(f for f in set(old[k]) | set(new[k]) if f != "ID" and old[k].get(f) != new[k].get(f)) for k in new}
@@ -396,9 +409,9 @@ def test_b3_the_graph_carries_its_export_fixes():
     from sc2mindshare.analysis.fixes import EXPORT_FIXES, LAYER_FIXES
     from sc2mindshare.analysis.run import AnalysisResult
 
-    assert EXPORT_FIXES == ("B3",)
+    assert EXPORT_FIXES == ("B3", "P13")
     assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
-    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3"})
+    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3", "P13"})
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
 

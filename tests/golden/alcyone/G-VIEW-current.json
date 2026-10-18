@@ -198,7 +198,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:02"
+    "end time": "00:02:02"
    }
   },
   {
@@ -214,7 +214,7 @@
     "p1 dead": 3,
     "p2 dead": 2,
     "supply dead": 4.5,
-    "end time": "0:02:18"
+    "end time": "00:02:18"
    }
   },
   {
@@ -230,7 +230,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:43"
+    "end time": "00:02:43"
    }
   },
   {
@@ -246,7 +246,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:55"
+    "end time": "00:02:55"
    }
   },
   {
@@ -262,7 +262,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:03:00"
+    "end time": "00:03:00"
    }
   },
   {
@@ -278,7 +278,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 1,
-    "end time": "0:03:56"
+    "end time": "00:03:56"
    }
   },
   {
@@ -294,7 +294,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:05:09"
+    "end time": "00:05:09"
    }
   },
   {
@@ -310,7 +310,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:05:38"
+    "end time": "00:05:38"
    }
   },
   {
@@ -326,7 +326,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:06:24"
+    "end time": "00:06:24"
    }
   },
   {
@@ -342,7 +342,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:06:32"
+    "end time": "00:06:32"
    }
   },
   {
@@ -358,7 +358,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:06:55"
+    "end time": "00:06:55"
    }
   },
   {
@@ -374,7 +374,7 @@
     "p1 dead": 6,
     "p2 dead": 16,
     "supply dead": 34.5,
-    "end time": "0:07:57"
+    "end time": "00:07:57"
    }
   },
   {
@@ -390,7 +390,7 @@
     "p1 dead": 3,
     "p2 dead": 3,
     "supply dead": 10,
-    "end time": "0:08:18"
+    "end time": "00:08:18"
    }
   },
   {
@@ -406,7 +406,7 @@
     "p1 dead": 4,
     "p2 dead": 1,
     "supply dead": 9,
-    "end time": "0:08:28"
+    "end time": "00:08:28"
    }
   },
   {
@@ -422,7 +422,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 2,
-    "end time": "0:08:34"
+    "end time": "00:08:34"
    }
   },
   {
@@ -438,7 +438,7 @@
     "p1 dead": 0,
     "p2 dead": 2,
     "supply dead": 1,
-    "end time": "0:09:58"
+    "end time": "00:09:58"
    }
   },
   {
@@ -454,7 +454,7 @@
     "p1 dead": 31,
     "p2 dead": 2,
     "supply dead": 65,
-    "end time": "0:10:28"
+    "end time": "00:10:28"
    }
   },
   {
@@ -470,7 +470,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:10:35"
+    "end time": "00:10:35"
    }
   },
   {
@@ -486,7 +486,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 3,
-    "end time": "0:11:05"
+    "end time": "00:11:05"
    }
   },
   {
@@ -502,7 +502,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 1,
-    "end time": "0:12:15"
+    "end time": "00:12:15"
    }
   },
   {
@@ -518,7 +518,7 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:12:23"
+    "end time": "00:12:23"
    }
   },
   {
@@ -534,7 +534,7 @@
     "p1 dead": 22,
     "p2 dead": 4,
     "supply dead": 13.5,
-    "end time": "0:13:18"
+    "end time": "00:13:18"
    }
   },
   {
@@ -550,7 +550,7 @@
     "p1 dead": 2,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:13:32"
+    "end time": "00:13:32"
    }
   },
   {
@@ -566,7 +566,7 @@
     "p1 dead": 14,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:13:47"
+    "end time": "00:13:47"
    }
   },
   {
@@ -582,7 +582,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 0,
-    "end time": "0:13:54"
+    "end time": "00:13:54"
    }
   },
   {
@@ -598,7 +598,7 @@
     "p1 dead": 21,
     "p2 dead": 36,
     "supply dead": 73.5,
-    "end time": "0:14:26"
+    "end time": "00:14:26"
    }
   },
   {
@@ -614,7 +614,7 @@
     "p1 dead": 71,
     "p2 dead": 15,
     "supply dead": 38.5,
-    "end time": "0:15:05"
+    "end time": "00:15:05"
    }
   },
   {
@@ -630,7 +630,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 0,
-    "end time": "0:15:11"
+    "end time": "00:15:11"
    }
   },
   {
@@ -646,7 +646,7 @@
     "p1 dead": 15,
     "p2 dead": 5,
     "supply dead": 35.5,
-    "end time": "0:15:30"
+    "end time": "00:15:30"
    }
   },
   {
@@ -662,7 +662,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 2,
-    "end time": "0:15:42"
+    "end time": "00:15:42"
    }
   },
   {
@@ -675,7 +675,7 @@
     1
    ],
    "properties": {
-    "time": "06:28:00",
+    "time": "00:06:28",
     "player": "lilTiGGer"
    }
   },
@@ -689,7 +689,7 @@
     1
    ],
    "properties": {
-    "time": "07:43:00",
+    "time": "00:07:43",
     "player": "lilTiGGer"
    }
   },
@@ -703,7 +703,7 @@
     1
    ],
    "properties": {
-    "time": "07:49:00",
+    "time": "00:07:49",
     "player": "blacksquall"
    }
   },
@@ -717,7 +717,7 @@
     1
    ],
    "properties": {
-    "time": "10:04:00",
+    "time": "00:10:04",
     "player": "lilTiGGer"
    }
   },
@@ -731,7 +731,7 @@
     1
    ],
    "properties": {
-    "time": "10:06:00",
+    "time": "00:10:06",
     "player": "lilTiGGer"
    }
   },
@@ -745,7 +745,7 @@
     1
    ],
    "properties": {
-    "time": "12:50:00",
+    "time": "00:12:50",
     "player": "lilTiGGer"
    }
   },
@@ -759,7 +759,7 @@
     1
    ],
    "properties": {
-    "time": "14:15:00",
+    "time": "00:14:15",
     "player": "lilTiGGer"
    }
   },
@@ -773,7 +773,7 @@
     1
    ],
    "properties": {
-    "time": "13:59:00",
+    "time": "00:13:59",
     "player": "blacksquall"
    }
   },
@@ -787,7 +787,7 @@
     1
    ],
    "properties": {
-    "time": "14:07:00",
+    "time": "00:14:07",
     "player": "blacksquall"
    }
   },
@@ -801,7 +801,7 @@
     1
    ],
    "properties": {
-    "time": "14:08:00",
+    "time": "00:14:08",
     "player": "blacksquall"
    }
   },
@@ -815,7 +815,7 @@
     1
    ],
    "properties": {
-    "time": "14:20:00",
+    "time": "00:14:20",
     "player": "blacksquall"
    }
   },
@@ -829,7 +829,7 @@
     1
    ],
    "properties": {
-    "time": "14:45:00",
+    "time": "00:14:45",
     "player": "blacksquall"
    }
   },
@@ -843,7 +843,7 @@
     1
    ],
    "properties": {
-    "time": "15:17:00",
+    "time": "00:15:17",
     "player": "blacksquall"
    }
   },
@@ -10708,7 +10708,7 @@
     1
    ],
    "properties": {
-    "time": "01:42:00",
+    "time": "00:01:42",
     "player": "lilTiGGer"
    }
   },
@@ -10722,7 +10722,7 @@
     1
    ],
    "properties": {
-    "time": "01:43:00",
+    "time": "00:01:43",
     "player": "lilTiGGer"
    }
   },
@@ -10736,7 +10736,7 @@
     1
    ],
    "properties": {
-    "time": "02:59:00",
+    "time": "00:02:59",
     "player": "lilTiGGer"
    }
   },
@@ -10750,7 +10750,7 @@
     1
    ],
    "properties": {
-    "time": "04:46:00",
+    "time": "00:04:46",
     "player": "lilTiGGer"
    }
   },
@@ -10764,7 +10764,7 @@
     1
    ],
    "properties": {
-    "time": "04:49:00",
+    "time": "00:04:49",
     "player": "lilTiGGer"
    }
   },
@@ -10778,7 +10778,7 @@
     1
    ],
    "properties": {
-    "time": "09:59:00",
+    "time": "00:09:59",
     "player": "lilTiGGer"
    }
   },
@@ -10792,7 +10792,7 @@
     1
    ],
    "properties": {
-    "time": "03:42:00",
+    "time": "00:03:42",
     "player": "blacksquall"
    }
   },
@@ -10806,7 +10806,7 @@
     1
    ],
    "properties": {
-    "time": "03:48:00",
+    "time": "00:03:48",
     "player": "blacksquall"
    }
   },
@@ -10820,7 +10820,7 @@
     1
    ],
    "properties": {
-    "time": "03:52:00",
+    "time": "00:03:52",
     "player": "blacksquall"
    }
   }
