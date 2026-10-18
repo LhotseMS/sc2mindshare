@@ -103,6 +103,33 @@ def test_the_forks_fields_are_still_there_through_the_flavoured_classes(loads):
     assert "second" in vars(event) and vars(event)["second"] == event.frame >> 4  # upstream's own value, kept
 
 
+class _Owner:
+    """Stands in for a replay: the owner of side fields (weak-referenceable)."""
+
+
+def test_a_write_needs_an_owner():
+    """An object no replay adopted cannot get side fields by accident (they would belong to no replay)."""
+    from sc2reader.data import Unit
+
+    with pytest.raises(LookupError, match="pass the replay"):
+        side_fields.set(Unit(1), "baseName", "x")
+
+
+def test_the_owner_takes_its_entries_with_it():
+    import gc
+
+    from sc2reader.data import Unit
+
+    owner, units = _Owner(), [Unit(i) for i in range(3)]
+    for u in units:
+        side_fields.set(u, "initEvent", units[0], owner)  # values pointing at keyed objects, as in a replay
+    keys = {id(u) for u in units}
+    assert keys <= set(side_fields._STORE)
+    del owner
+    gc.collect()
+    assert not keys & set(side_fields._STORE)
+
+
 def test_side_fields_follow_identity_not_equality():
     """sc2reader's Unit compares and hashes by unit id, so units of two replays with the same id are
     equal; their fork fields must stay apart (a WeakKeyDictionary mixed them, CR-020)."""
@@ -110,10 +137,11 @@ def test_side_fields_follow_identity_not_equality():
 
     a, b = Unit(42), Unit(42)
     assert a == b and hash(a) == hash(b)
-    side_fields.set(a, "baseName", "Main")
+    owner = _Owner()
+    side_fields.set(a, "baseName", "Main", owner)
     assert side_fields.get(a, "baseName") == "Main"
     assert side_fields.get(b, "baseName") is None and not side_fields.has(b, "baseName")
-    side_fields.set(b, "baseName", "Natural")
+    side_fields.set(b, "baseName", "Natural", owner)
     assert (side_fields.get(a, "baseName"), side_fields.get(b, "baseName")) == ("Main", "Natural")
 
 
@@ -123,9 +151,38 @@ def test_an_entry_goes_with_its_object():
     from sc2reader.data import Unit
 
     unit = Unit(7)
-    side_fields.set(unit, "baseName", "x")
+    owner = _Owner()
+    side_fields.set(unit, "baseName", "x", owner)
     key = id(unit)
     assert key in side_fields._STORE
     del unit
     gc.collect()
     assert key not in side_fields._STORE
+
+
+def _load_analyse_drop(path):
+    """Load and analyse a replay, keep a weak reference to one event and one unit, drop everything."""
+    import gc
+    import weakref
+
+    replay = load_replay(path)
+    with contextlib.redirect_stdout(io.StringIO()):
+        analyse(replay, MS_SC)
+    event, unit = weakref.ref(replay.events[100]), weakref.ref(next(iter(replay.objects.values())))
+    del replay
+    gc.collect()
+    return event, unit
+
+
+def test_a_dropped_replay_leaves_nothing_in_the_store():
+    """Morgan's CR-020 P1: the stored values point back at the keyed objects (initEvent -> event -> unit),
+    so per-object weak references never fired and every replay stayed alive. The store now belongs to the
+    replay: when the replay goes, its entries go, and so do its objects."""
+    for name in ("alcyone", "spine", "alcyone"):
+        path = GAMES[name]
+        if not path.exists():
+            pytest.fail(f"missing input {path}")
+        before = len(side_fields._STORE)  # other tests' replays may still be alive
+        event, unit = _load_analyse_drop(path)
+        assert event() is None and unit() is None, name  # the replay's objects are gone
+        assert len(side_fields._STORE) == before, (name, before, len(side_fields._STORE))  # and the store does not grow

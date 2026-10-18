@@ -18,20 +18,46 @@ for the fork-flavoured classes (``fork_api``), so the ported layer's ``unit.init
 
 from __future__ import annotations
 
+import builtins
+import itertools
 import weakref
 from collections.abc import Callable
 from typing import Any
 
-#: id(obj) -> (a weak reference to obj, its fields). The weak reference's callback removes the entry when
-#: obj dies, before its id can be reused; reads also check that the entry still belongs to obj.
-_STORE: dict[int, tuple[weakref.ref[Any], dict[str, Any]]] = {}
+#: id(obj) -> (a weak reference to obj, its fields, the generation it belongs to). Reads check that the entry
+#: still belongs to obj (an id can be reused once its object is gone).
+_STORE: dict[int, tuple[weakref.ref[Any], dict[str, Any], int]] = {}
+#: generation -> the ids of its entries; id(replay) -> its generation.
+_GENERATIONS: dict[int, builtins.set[int]] = {}
+_OWNERS: dict[int, int] = {}
+_NEXT = itertools.count(1)
 
 
-def _forget(key: int) -> Callable[[weakref.ref[Any]], None]:
-    """The weak reference's callback: drop the entry of the object that has just died."""
+def _drop(generation: int, owner_id: int) -> None:
+    """The replay is gone: its entries go, so the objects they hold can go too."""
+    for key in _GENERATIONS.pop(generation, ()):
+        _STORE.pop(key, None)
+    _OWNERS.pop(owner_id, None)
+
+
+def owner(replay: Any) -> int:
+    """The generation of ``replay``: every entry of its objects belongs to it, and all are dropped when the
+    replay is collected (weakref.finalize). The stored values point back at the keyed objects (initEvent
+    -> event -> unit), so per-object weak references alone would keep every replay alive (CR-020 P1)."""
+    generation = _OWNERS.get(id(replay))
+    if generation is None:
+        generation = _OWNERS[id(replay)] = next(_NEXT)
+        _GENERATIONS[generation] = builtins.set()
+        weakref.finalize(replay, _drop, generation, id(replay))
+    return generation
+
+
+def _forget(key: int, generation: int) -> Callable[[weakref.ref[Any]], None]:
+    """The weak reference's callback: an object that dies on its own takes its entry with it."""
 
     def callback(_ref: weakref.ref[Any]) -> None:
         _STORE.pop(key, None)
+        _GENERATIONS.get(generation, builtins.set()).discard(key)
 
     return callback
 
@@ -41,6 +67,14 @@ def _fields(obj: Any) -> dict[str, Any] | None:
     if entry is None or entry[0]() is not obj:
         return None
     return entry[1]
+
+
+def adopt(obj: Any, replay: Any) -> None:
+    """Give ``obj`` an (empty) entry in ``replay``'s generation, unless it has one."""
+    if _fields(obj) is None:
+        key, generation = id(obj), owner(replay)
+        _STORE[key] = (weakref.ref(obj, _forget(key, generation)), {}, generation)
+        _GENERATIONS[generation].add(key)
 
 
 #: The fork's extra Unit fields (its ``Unit.__init__``), None until set.
@@ -66,13 +100,16 @@ def has(obj: Any, name: str) -> bool:
     return fields is not None and name in fields
 
 
-def set(obj: Any, name: str, value: Any) -> None:  # the module is used as side_fields.set
-    """Set the fork field ``name`` of ``obj``: in the map, never on the object."""
+def set(obj: Any, name: str, value: Any, replay: Any = None) -> None:  # the module is used as side_fields.set
+    """Set the fork field ``name`` of ``obj``: in the map, never on the object. An object without an entry
+    must name its ``replay`` (whose generation the entry joins); otherwise this is a programming error."""
     fields = _fields(obj)
     if fields is None:
-        key = id(obj)
-        fields = {}
-        _STORE[key] = (weakref.ref(obj, _forget(key)), fields)
+        if replay is None:
+            raise LookupError(f"{type(obj).__name__} has no side fields yet: pass the replay it belongs to")
+        adopt(obj, replay)
+        fields = _fields(obj)
+        assert fields is not None
     fields[name] = value
 
 

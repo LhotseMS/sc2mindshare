@@ -381,11 +381,14 @@ def flavour_event(event: Any) -> None:
 
 def flavour_replay(replay: Any) -> Any:
     """Give a loaded replay's events, units and players the fork's API (see the module docstring)."""
+    entities = list(replay.players) + list(getattr(replay, "observers", []))
+    for obj in [*replay.events, *replay.objects.values(), *entities]:
+        side_fields.adopt(obj, replay)  # their fork fields belong to this replay and go with it
     for event in replay.events:
         flavour_event(event)
     for unit in replay.objects.values():
         _swap(unit)
-    for entity in list(replay.players) + list(getattr(replay, "observers", [])):
+    for entity in entities:
         _swap(entity)
     for name in ("end_time", "start_time", "date"):
         value = getattr(replay, name, None)
