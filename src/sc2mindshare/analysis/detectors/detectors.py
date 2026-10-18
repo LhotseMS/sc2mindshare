@@ -345,34 +345,14 @@ class SimpleDetector(EventsDetector):
                 if currentInterval == newInterval:
                     self.addUnit(e)
                 else:
-                    for player, types in self.currentIntervalEvents.items():
-                        for type, events in types.items():
-
-                            # init the node with all events that have been captured for given type
-                            unitsCounter += 1
-                            node = UnitsNode(events, "00:" + currentInterval, unitsCounter)
-                            nodeUnitType = node.name
-
-                            # iterate unit type count
-                            if not nodeUnitType in self.unitTypeCount[player]:
-                                self.unitTypeCount[player][nodeUnitType] = 0
-
-                            # set unit count type
-                            self.unitTypeCount[player][nodeUnitType] += node.count
-                            node.setCurrenCount(self.unitTypeCount[player][nodeUnitType])
-
-                            self.unitsByPlayerAndType[player].append(node)
-
-                            # save last unit node by type for links and create links
-                            if nodeUnitType in self.lastUnitsByType[player]:
-                                self.addLink(self.lastUnitsByType[player][nodeUnitType], node) 
-
-                            self.lastUnitsByType[player][nodeUnitType] = node
-                    
-                    self.currentIntervalEvents = self.initDictByPlayer(2)
+                    unitsCounter = self.flushUnitInterval(currentInterval, unitsCounter)
                     currentInterval = newInterval
 
                     self.addUnit(e)
+
+        # CR-023 P8: the last interval's units, which no later interval flushes
+        if "P8" in self.ctx.fixes:
+            unitsCounter = self.flushUnitInterval(currentInterval, unitsCounter)
 
         #create upgrade links
         for level in self.upgradesByLevels:
@@ -387,6 +367,36 @@ class SimpleDetector(EventsDetector):
         self.supplyBlocks = self.st.getSupplyBlocks()
 
     # TODO seems like no units are being found
+
+    def flushUnitInterval(self, currentInterval, unitsCounter):
+        """Write the units collected for ``currentInterval`` as Units nodes (the loop's own code, moved
+        here unchanged for CR-023 P8) and start a new interval; returns the Units counter."""
+        for player, types in self.currentIntervalEvents.items():
+            for type, events in types.items():
+
+                # init the node with all events that have been captured for given type
+                unitsCounter += 1
+                node = UnitsNode(events, "00:" + currentInterval, unitsCounter)
+                nodeUnitType = node.name
+
+                # iterate unit type count
+                if not nodeUnitType in self.unitTypeCount[player]:
+                    self.unitTypeCount[player][nodeUnitType] = 0
+
+                # set unit count type
+                self.unitTypeCount[player][nodeUnitType] += node.count
+                node.setCurrenCount(self.unitTypeCount[player][nodeUnitType])
+
+                self.unitsByPlayerAndType[player].append(node)
+
+                # save last unit node by type for links and create links
+                if nodeUnitType in self.lastUnitsByType[player]:
+                    self.addLink(self.lastUnitsByType[player][nodeUnitType], node) 
+
+                self.lastUnitsByType[player][nodeUnitType] = node
+
+        self.currentIntervalEvents = self.initDictByPlayer(2)
+        return unitsCounter
 
     def addLink(self, n1, n2):
         self.links.append(UnitsLink(n1, n2))

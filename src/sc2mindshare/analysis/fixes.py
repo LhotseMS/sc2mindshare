@@ -85,8 +85,8 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: P1b (D8a), it skips a base whose init/born second is after the battle's start; P1c (D10a), and one
 #: whose town hall is not standing then (destroyed, not yet rebuilt); S1 (D9a, TD-27), the supply
 #: tracker: no double count of the starting units and providers, real provider values by the type at
-#: the event, and a block judged once per loop.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1")
+#: the event, and a block judged once per loop; P8, the last Units interval is written.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8")
 
 
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:

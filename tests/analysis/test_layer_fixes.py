@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -335,3 +335,51 @@ def test_s5_an_unfinished_provider_does_not_lower_the_limit():
     assert tracker.providerOf(died) == "Nexus"
     vars(died).update(unit_id=2)  # another Nexus, killed while building: never added
     assert tracker.providerOf(died) is None
+
+
+# --- P8: the last Units interval is written ----------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("replay", "node_id", "player", "unit_type", "time", "total", "previous"),
+    [
+        (
+            "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
+            "Units-193",
+            "blacksquall",
+            "Probe",
+            1000,
+            "47",
+            "Units-192",
+        ),
+        ("200k dmg spine crawler ZvP.SC2Replay", "Units-129", "serega", "Probe", 660, "68", "Units-124"),
+    ],
+)
+def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_type, time, total, previous):
+    """The P8 entry (CHANGES.md): the units of the last 10 s interval get their node and its link to the
+    type's previous group; the bug-faithful run has neither."""
+    path = MS_SC / replay
+    if not path.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {path} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {path}")
+    graphs = {}
+    for label, fixes in (("faithful", ()), ("fixed", LAYER_FIXES)):
+        with contextlib.redirect_stdout(io.StringIO()):
+            graphs[label] = to_graph(analyse(load_replay(path), MS_SC, fixes=fixes), fixes=() if not fixes else None)
+    fixed = {n.id: n for n in graphs["fixed"].nodes}
+    assert node_id not in {n.id for n in graphs["faithful"].nodes}
+    node = fixed[node_id]
+    assert (node.value("player"), node.value("type"), node.value("count"), node.value("total at time")) == (
+        player,
+        unit_type,
+        "1",
+        total,
+    )
+    assert node.start.seconds == time
+    assert [(lk.node1, lk.node2, lk.name1) for lk in graphs["fixed"].links if lk.node2 == node_id] == [
+        (previous, node_id, "previous")
+    ]
+    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 if "Alcyone" in replay else 0) + (
+        2 if "spine" in replay else 0
+    )

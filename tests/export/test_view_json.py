@@ -75,7 +75,7 @@ def test_the_current_document_equals_g_view_current(document):
 
 
 #: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
-VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view")
+VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view", "P8-view")
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
 #: are removed again by P3e, and A12 changes only the number text, so neither shows in the net delta.
@@ -115,7 +115,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "entry": "+".join(VIEW_LEDGER),
         "base_sha256": cgd.golden.sha256(old_rest),
         "changes": VIEW_NET_DELTA,
-        "added": [],
+        "added": ["Units-193#1", "Units-192>Units-193#1"],  # P8
         "removed": [],
     }
     assert cgd.check_delta(net, old_rest, new_rest) == []

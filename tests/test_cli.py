@@ -75,7 +75,9 @@ def test_another_replay_builds(tmp_path):
     need(SPINE)
     out = tmp_path / "graph.json"
     code, _, stderr = run("build", SPINE, "--out", out, "--config-root", MS_SC)
-    assert (code, stderr) == (0, "")
+    # CR-023 P8 writes spine's last Units node (serega's Probe at 11:00), alone in its window: the layout
+    # places it by its lag-flush rule (layout-spec §5.8) and says so
+    assert (code, stderr) == (0, "sc2mindshare: layout warning: units left in the buffer at the end: flushed in window 65\n")
     doc = json.loads(out.read_text(encoding="utf-8"))
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
     assert all("position" in n for n in doc["nodes"])
