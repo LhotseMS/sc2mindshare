@@ -149,3 +149,20 @@ def test_c2_changes_md_is_append_only(tmp_path):
     changes.write_text(changes.read_text().replace("# ledger", "# rewritten"))
     _git(repo, "commit", "-qam", "rewrite")
     assert any(p.startswith("C2") for p in cgd.check_git(repo, "HEAD~3..HEAD", "P1"))
+
+
+def test_c1_entry_and_change_in_the_same_commit_fails(tmp_path):
+    repo = tmp_path / "repo"
+    (repo / "tests" / "golden").mkdir(parents=True)
+    _git(repo, "init", "-q")
+    changes = repo / "tests" / "golden" / "CHANGES.md"
+    changes.write_text("# ledger\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "base")
+    changes.write_text(changes.read_text() + '```json\n{"entry": "P1"}\n```\n')
+    (repo / "tests" / "golden" / "g.json").write_text("{}")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "entry and change together")
+    assert cgd.check_git(repo, "HEAD~1..HEAD", "P1") == [
+        "C1 the entry was not committed before the first golden or product change"
+    ]

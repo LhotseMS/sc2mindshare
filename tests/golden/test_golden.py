@@ -340,3 +340,33 @@ def test_h21_urls_outside_column_5_are_not_masked(csv_golden):
 def test_line_endings_and_final_newline_are_differences(csv_golden):
     assert not golden.diff_csv(csv_golden, csv_golden.replace("\n", "\r\n")).ok
     assert not golden.diff_csv(csv_golden, csv_golden.rstrip("\n")).ok
+
+
+def test_non_url_text_in_the_image_column_is_still_compared(csv_golden):
+    # The second half of a row split by a raw newline (P7) is a "node row" on its own line;
+    # its column 5 holds a time, which must stay compared (Vera, G7 of CR-007).
+    lines = _lines(csv_golden)
+    i = next(n for n, line in enumerate(lines) if line.startswith("Pull occured after 18.0s"))
+    assert lines[i].split(";")[4] == "10:04"
+    report = golden.diff_csv(csv_golden, _csv_mutate(csv_golden, "Pull occured after 18.0s", 4, "10:05"))
+    assert not report.ok
+    assert report.budget_actual == report.budget_expected == {"M1": 1}
+
+
+@pytest.mark.parametrize(
+    "host",
+    ["https://media.api.mindshareapp.com/media/resource/", "https://media.api.mindshareapp.com/media/resource"],
+)
+def test_m2_reads_the_trailing_media_id_whatever_the_host(view_golden, clock_map, host):
+    by_name = {name: mid for mid, name in clock_map.items()}
+    ref = _with_clock(view_golden, by_name["0-10.png"], "1", host=host)
+    report = golden.diff_json(ref, _with_clock(view_golden, by_name["0-10.png"], "1"), clock_map)
+    assert report.ok
+    assert report.budget_expected["M2"] == 1 and report.budget_expected["M2 unknown"] == 0
+    wrong = golden.diff_json(ref, _with_clock(view_golden, by_name["0-20.png"], "1", host=host), clock_map)
+    assert not wrong.ok
+
+
+def test_an_unknown_clock_is_counted(view_golden, clock_map):
+    report = golden.diff_json(_with_clock(view_golden, "f" * 24, "1"), _with_clock(view_golden, "f" * 24, "1"), clock_map)
+    assert report.budget_expected["M2 unknown"] == 1
