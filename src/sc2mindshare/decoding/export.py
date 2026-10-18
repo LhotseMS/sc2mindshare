@@ -14,6 +14,7 @@ from sc2mindshare.decoding.camera_hotkeys import camera_recalls, camera_saves
 from sc2mindshare.decoding.command_flags import command_flag_summary, zoom_events
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.control_groups import control_group_activity
+from sc2mindshare.decoding.creators import creations
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
 from sc2mindshare.decoding.side_members import side_members, user_options
 from sc2mindshare.decoding.target_flags import target_flag_summary
@@ -67,9 +68,27 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
             for pid, counts in control_group_activity(replay).items()
             for (kind, source), count in sorted(counts.items(), key=lambda kv: (kv[0][0].name, kv[0][1]))
         ],
+        "creators": _creators(replay),
         "side_members": _side_members(replay),
         "user_options": [dataclasses.asdict(row) for row in user_options(replay)],
         "warnings": list(decoded.warnings),
+    }
+
+
+def _creators(replay: Any) -> dict[str, Any]:
+    """Counts only: births per (player, creator ability), and births with no creator (CR-055)."""
+    by_ability: dict[tuple[int, str], int] = {}
+    without: dict[tuple[int, bool], int] = {}
+    for row in creations(replay):
+        if row.creator_id is None:
+            key = (row.player_id, row.frame == 0)
+            without[key] = without.get(key, 0) + 1
+        else:
+            ability = (row.player_id, row.creator_ability or "")
+            by_ability[ability] = by_ability.get(ability, 0) + 1
+    return {
+        "by_ability": [{"player_id": p, "creator_ability": a, "count": n} for (p, a), n in sorted(by_ability.items())],
+        "without_creator": [{"player_id": p, "at_game_start": start, "count": n} for (p, start), n in sorted(without.items())],
     }
 
 

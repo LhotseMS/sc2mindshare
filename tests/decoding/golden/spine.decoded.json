@@ -211,6 +211,72 @@
       "source": "player"
     }
   ],
+  "creators": {
+    "by_ability": [
+      {
+        "count": 8,
+        "creator_ability": "ForceField",
+        "player_id": 0
+      },
+      {
+        "count": 169,
+        "creator_ability": "",
+        "player_id": 1
+      },
+      {
+        "count": 171,
+        "creator_ability": "LarvaTrain",
+        "player_id": 1
+      },
+      {
+        "count": 3,
+        "creator_ability": "TrainQueen",
+        "player_id": 1
+      },
+      {
+        "count": 25,
+        "creator_ability": "AdeptPhaseShift",
+        "player_id": 2
+      },
+      {
+        "count": 6,
+        "creator_ability": "GatewayTrain",
+        "player_id": 2
+      },
+      {
+        "count": 58,
+        "creator_ability": "NexusTrain",
+        "player_id": 2
+      },
+      {
+        "count": 8,
+        "creator_ability": "RoboticsFacilityTrain",
+        "player_id": 2
+      }
+    ],
+    "without_creator": [
+      {
+        "at_game_start": true,
+        "count": 153,
+        "player_id": 0
+      },
+      {
+        "at_game_start": false,
+        "count": 6,
+        "player_id": 1
+      },
+      {
+        "at_game_start": true,
+        "count": 29,
+        "player_id": 1
+      },
+      {
+        "at_game_start": true,
+        "count": 28,
+        "player_id": 2
+      }
+    ]
+  },
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 83830,

@@ -21,7 +21,7 @@ from sc2reader.resources import Replay  # type: ignore[import-untyped]
 
 # isort: split
 # (sc2mindshare is first-party once pyproject.toml exists, CR-009; before that ruff sees it as third-party)
-from sc2mindshare.decoding import camera_hotkeys
+from sc2mindshare.decoding import camera_hotkeys, creators
 from sc2mindshare.decoding.metadata import GameMetadata
 
 __all__ = ["DecodedReplay", "load", "register_readers"]
@@ -30,6 +30,7 @@ __all__ = ["DecodedReplay", "load", "register_readers"]
 def register_readers(replay: Any) -> None:
     """Every stream 3 reader registration, for stream 1's `reader/extensions.register_readers` (TD-2)."""
     camera_hotkeys.register_readers(replay)
+    creators.register_readers(replay)
 
 
 class _DecodingReplay(Replay):  # type: ignore[misc]  # sc2reader is untyped
