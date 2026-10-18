@@ -244,8 +244,13 @@ def alcyone_items():
 
     with (MS_SC / "TimeImageTracking.csv").open(encoding="utf-8") as f:
         clock_map = {r["imageName"]: r["imageID"] for r in csv.DictReader(f)}
+    from sc2mindshare.analysis.fixes import LAYER_FIXES
+
+    # the input Leo measured the maxima on: every fix but CR-023's P10, which came later and drops the spell
+    # effects' Units lanes (blacksquall's Adept Phase Shift), so side B's maximum is lower with it
+    fixes = tuple(f for f in LAYER_FIXES if f != "P10")
     with contextlib.redirect_stdout(io.StringIO()):
-        graph = to_graph(analyse(load_replay(ALCYONE), MS_SC))
+        graph = to_graph(analyse(load_replay(ALCYONE), MS_SC, fixes=fixes), mixed=True)
     return items(graph), clock_map
 
 

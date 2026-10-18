@@ -98,7 +98,9 @@ def test_everything_is_filled_on_alcyone(x):
         783,
         65,
         283,
-        1114,  # CR-023 S1: the main base, born a Hatchery, is now counted as a supply provider (one more point)
+        # CR-023 S1: the main base, born a Hatchery, is now counted as a supply provider (one more point);
+        # P10: 8 points less, the spell effects' zero changes (the sequence of supply/limit states is the same)
+        1106,
         15,
     )
     assert x.game == ex.GameContext(

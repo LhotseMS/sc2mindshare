@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -354,14 +354,15 @@ def test_the_supply_tracker_takes_its_fixes_explicitly():
     [
         (
             "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
-            "Units-182",  # Units-193 before N1 merged 11 groups
+            "Units-175",  # Units-193 before N1 merged 11 groups and P10 dropped 7
             "blacksquall",
             "Probe",
             1000,
             "47",
-            "Units-181",
+            "Units-174",
         ),
-        ("200k dmg spine crawler ZvP.SC2Replay", "Units-129", "serega", "Probe", 660, "68", "Units-124"),
+        # Units-129 before P10 dropped spine's 7 spell-effect groups
+        ("200k dmg spine crawler ZvP.SC2Replay", "Units-122", "serega", "Probe", 660, "68", "Units-117"),
     ],
 )
 def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_type, time, total, previous):
@@ -391,8 +392,9 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
         (previous, node_id, "previous")
     ]
     # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer, P11 drops 3 nodes (Harrasment-7, Scouting-0
-    # and Scouting-1) and N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there)
-    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 + 3 + 11 if "Alcyone" in replay else 0) + (
+    # and Scouting-1), N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there); on both
+    # P10 drops 7 spell-effect groups
+    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (4 + 3 + 11 if "Alcyone" in replay else 0) + (
         2 if "spine" in replay else 0
     )
 
@@ -641,10 +643,39 @@ def test_n1_on_alcyone_units_buildings_and_killers_take_the_type_at_the_time(n1_
     """The N1 entry's prediction (CHANGES.md), a few pinned; the goldens hold all of it."""
     before, after = n1_graphs["without N1"], n1_graphs["fixed"]
     units = {label: [n for n in g.values() if n.kind == "Units"] for label, g in n1_graphs.items()}
-    assert (len(units["without N1"]), len(units["fixed"])) == (193, 182)
+    assert (len(units["without N1"]), len(units["fixed"])) == (186, 175)  # 193 -> 182 before P10 dropped 7
     assert (before["Units-24"].value("type"), after["Units-24"].value("type")) == ("Overseer", "Overlord")
     assert (before["Building-6"].name, after["Building-6"].name) == ("Warp Gate", "Gateway")
     assert after["Building-6"].value("type") == "Gateway" and after["Building-6"].start.seconds == 41
     assert (before["Building-1"].value("type"), after["Building-1"].value("type")) == ("Hive", "Hatchery")
     assert "Ravager killed Stalker" in before["Battle-12"].description
     assert "Ravager killed" not in after["Battle-12"].description and "Roach killed Stalker(3)" in after["Battle-12"].description
+
+
+# --- P10: spell effects are not counted as units -------------------------------------------------------------
+
+
+def _finished(name_now, history, fixes):
+    unit = SimpleNamespace(name=name_now, is_building=False, type_history={f: SimpleNamespace(name=n) for f, n in history})
+    event = SimpleNamespace(player="p", unit=unit, time="03:00", frame=4000)
+    detector = SimpleNamespace(
+        OMIT_UNITS=detectors.EventsDetector.OMIT_UNITS,
+        P10_OMIT_UNITS=detectors.EventsDetector.P10_OMIT_UNITS,
+        ctx=SimpleNamespace(fixes=frozenset(fixes)),
+    )
+    return detectors.EventsDetector.unitFinishedEligble(detector, event)
+
+
+@pytest.mark.parametrize(
+    ("name_now", "history", "faithful", "fixed"),
+    [
+        ("DisruptorPhased", [(3990, "DisruptorPhased")], True, False),  # the Purification Nova
+        ("AdeptPhaseShift", [(3990, "AdeptPhaseShift")], True, False),  # the Adept's shade
+        ("RavagerCocoon", [(3990, "Roach"), (6000, "RavagerCocoon")], True, True),  # a Roach when it hatched
+        ("SiegeTankSieged", [(3990, "SiegeTank"), (5000, "SiegeTankSieged")], False, True),  # a tank, sieged later
+        ("Zealot", [(3990, "Zealot")], True, True),
+    ],
+)
+def test_p10_eligibility_by_the_type_at_the_event_without_the_spell_effects(name_now, history, faithful, fixed):
+    assert _finished(name_now, history, ()) is faithful
+    assert _finished(name_now, history, ("P10",)) is fixed

@@ -90,6 +90,7 @@ VIEW_LEDGER = (
     "P11-view",
     "N1-view",
     "B3-view",
+    "P10-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -135,7 +136,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
     assert all(e in entries for e in VIEW_LEDGER)
     assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
-    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view", "N1-view"]
+    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view", "N1-view", "P10-view"]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
         doc = _doc(name)
@@ -194,14 +195,15 @@ def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, descriptions, i
 
 
 def test_units_net_of_the_ledger():
-    """The net effect of P2, P8 and N1 on the Units nodes: N1 regroups an interval's units by their type at the
-    time, so per player and interval the unit count is kept; P8 adds the last interval (blacksquall's Probe at
-    16:40); 192 + 1 - 11 merged = 182 nodes, and the previous/next chains are rebuilt (163 + 1 -> 158 links)."""
+    """The net effect of P2, P8, N1 and P10 on the Units nodes: N1 regroups an interval's units by their type at
+    the time, so per player and interval the unit count is kept, apart from P10's spell effects (Disruptor
+    Phased, Adept Phase Shift: 7 groups), which are no units; P8 adds the last interval (blacksquall's Probe at
+    16:40); 192 + 1 - 11 merged - 7 = 175 nodes, and the previous/next chains are rebuilt (163 -> 153 links)."""
 
     def counts(name):
         out = {}
         for n in _doc(name)["nodes"]:
-            if n["type"] == "Units":
+            if n["type"] == "Units" and n["properties"]["type"] not in ("Disruptor Phased", "Adept Phase Shift"):
                 key = (n["properties"]["player"], n["properties"]["time"])
                 out[key] = out.get(key, 0) + int(n["properties"]["count"])
         return out
@@ -211,8 +213,8 @@ def test_units_net_of_the_ledger():
     assert len(p8) == 1 and p8[0][0] == "blacksquall" and new[p8[0]] == 1
     assert old == {k: v for k, v in new.items() if k != p8[0]}
     units = {name: [n for n in _doc(name)["nodes"] if n["type"] == "Units"] for name in ("G-VIEW-1.json", "G-VIEW-current.json")}
-    assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 182)
-    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 158 - 163
+    assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 175)
+    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 153 - 163
 
 
 def test_document_key_order_and_config_parts(document):

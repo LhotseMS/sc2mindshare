@@ -105,6 +105,8 @@ class EventsDetector(Detector):
     OMIT_UNITS_UPGRADES = ("Reward","Spray","Game","ShieldWall","PunisherGrenades")
     OMIT_BUILDINGS = ("Creep","Mineral Field","Vespene Geyser","Unbuildable Plates","Destructible Rock","Beacon")
     OMIT_UNITS = ("Larva", "Broodling","Shield battery","Extractor Rich","Egg","SiegeTankSieged","InfestorBurrowed","RefineryRich","ParasiticBombDummy","InvisibleTargetDummy")
+    # CR-023 P10: spell effects born as units of their own, and a morph's cocoon
+    P10_OMIT_UNITS = ("DisruptorPhased", "AdeptPhaseShift", "RavagerCocoon")
     OMIT_ABILITIES = ("Build", "Attack", "Gather")
 
     # TODO duplicate declaration exists
@@ -142,10 +144,15 @@ class EventsDetector(Detector):
         return e._str_prefix().strip().endswith(self.STATS_TIMES)
 
     def unitFinishedEligble(self, e) -> bool:
+        if "P10" in self.ctx.fixes:  # CR-023 P10: by the type at the event, without the spell effects
+            name = type_at(e.unit, e.frame)
+            omit = self.OMIT_UNITS + self.P10_OMIT_UNITS
+        else:
+            name, omit = e.unit.name, self.OMIT_UNITS
         return (e.player != None and
                 not e.unit.is_building and 
-                (not e.time == "00:00" or e.unit.name.startswith(("SCV","Drone","Probe","Overlord"))) and 
-                not e.unit.name.startswith(self.OMIT_UNITS))
+                (not e.time == "00:00" or name.startswith(("SCV","Drone","Probe","Overlord"))) and 
+                not name.startswith(omit))
     
     def buildingsEligible(self, e) -> bool:
         return not object_text(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building

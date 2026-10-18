@@ -242,6 +242,7 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # clocks), so they are asserted here (Morgan's CR-014 P2): every one of the 665 graph nodes has a
     # position, and the 136 clock nodes (68 occupied windows without Stats, x 2 sides) are all present.
     assert (view_report.budget_expected["M4 clock"], view_report.budget_expected["M4 position"]) == (0, 0)
-    # 648 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
-    # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (136, 648)
+    # 641 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
+    # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
+    # less the 7 spell-effect Units nodes P10 drops
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (136, 641)

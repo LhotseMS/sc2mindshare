@@ -88,8 +88,10 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: the event, and a block judged once per loop; P8, the last Units interval is written; P2, race words
 #: are no longer stripped from inside names (the name cleaning takes the fixes explicitly); P11 (D11a),
 #: ``BaseDetector.isNearMinerals`` needs a mineral field within 7 cells on both axes; N1 (D6a), units,
-#: buildings and battle killers are named by their type at the time of the event, not their final type.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1")
+#: buildings and battle killers are named by their type at the time of the event, not their final type;
+#: P10, spell effects (Disruptor Phased, Adept Phase Shift) are no units, and eligibility reads the type at
+#: the event.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10")
 
 
 #: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph
