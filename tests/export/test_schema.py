@@ -214,3 +214,28 @@ def test_json_equality_is_recursive(schema, value, ok):
 def test_an_unknown_type_name_raises_even_for_a_boolean():
     with pytest.raises(subset.UnsupportedKeyword):
         subset.Checker({"type": "bool"})
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        {"items": False},  # a boolean subschema where _check cannot evaluate one (Morgan's 926003c probe)
+        {"anyOf": [True]},
+        {"properties": {"a": True}},
+        {"anyOf": [{"type": "number"}, {"$ref": "#/$defs/nope"}]},  # a dangling $ref in an unvisited branch
+        {"$ref": "#/$defs/nope"},
+        {"$ref": "#/properties"},  # resolves, but not to a schema object
+        {"properties": ["a"]},  # malformed containers: refused, not an AttributeError
+        {"$defs": "x"},
+        {"anyOf": {"type": "number"}},
+        {"allOf": "x"},
+    ],
+)
+def test_schemas_the_checker_cannot_evaluate_are_refused_at_construction(schema):
+    with pytest.raises(subset.UnsupportedKeyword):
+        subset.Checker(schema)
+
+
+def test_additional_properties_false_is_the_one_boolean_subschema():
+    assert subset.Checker({"additionalProperties": False}).errors({}) == []
+    assert subset.Checker({"additionalProperties": False}).errors({"a": 1}) != []

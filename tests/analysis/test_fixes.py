@@ -63,3 +63,19 @@ def test_the_pre_game_note_follows_an_existing_description():
     fixed = pre_game_display(Graph((node,), ())).nodes[0]
     assert fixed.description == "built firstX_LDX_LDStarted 3725 s before the game (real start -01:02:05)."
     assert pre_game_note(-71) == "Started 71 s before the game (real start -00:01:11)."
+
+
+def test_the_time_is_reset_even_when_the_note_is_already_there():
+    """Morgan's CR-014c N0: the 00:00:00 reset does not depend on the description check."""
+    node = Node(
+        "Building",
+        "Building-1",
+        "b",
+        "Started 71 s before the game (real start -00:01:11).",
+        (),
+        (("time", "23:58:49"), ("player", "p"), ("type", "Hive")),
+        -71,
+    )
+    fixed = pre_game_display(Graph((node,), ())).nodes[0]
+    assert fixed.value("time") == "00:00:00"
+    assert fixed.description == "Started 71 s before the game (real start -00:01:11)."  # not added twice
