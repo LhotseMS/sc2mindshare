@@ -871,7 +871,12 @@ class Replay(Resource):
         )
         self.register_datapack(
             datapacks["LotV"]["80949"],
-            lambda r: r.expansion == "LotV" and 80949 <= r.build,
+            lambda r: r.expansion == "LotV" and 80949 <= r.build < 89634,
+        )
+        # CR-008: restore upstream's 89720 registration (#181), which the fork had dropped
+        self.register_datapack(
+            datapacks["LotV"]["89720"],
+            lambda r: r.expansion == "LotV" and 89634 <= r.build,
         )
 
     # Internal Methods
