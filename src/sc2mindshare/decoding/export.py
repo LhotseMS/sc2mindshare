@@ -10,7 +10,7 @@ import dataclasses
 import json
 from typing import TYPE_CHECKING, Any
 
-from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
+from sc2mindshare.decoding.camera_hotkeys import camera_recalls, camera_saves
 from sc2mindshare.decoding.command_flags import command_flag_summary, zoom_events
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.control_groups import control_group_activity
@@ -94,10 +94,7 @@ def _activity(pid: int, activity: CommandActivity) -> dict[str, Any]:
 
 
 def _camera_hotkeys(replay: Any) -> dict[str, Any]:
-    saves = sorted(
-        (e for e in replay.game_events if isinstance(e, CameraSaveEvent) and e.player is not None),
-        key=lambda e: e.frame,
-    )
+    saves = sorted((e for e in camera_saves(replay) if e.player is not None), key=lambda e: e.frame)
     recalls: dict[tuple[int, int], int] = {}
     for recall in camera_recalls(replay):
         recalls[(recall.player_id, recall.slot)] = recalls.get((recall.player_id, recall.slot), 0) + 1

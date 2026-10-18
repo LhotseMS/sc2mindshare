@@ -3,6 +3,9 @@
 Hypothesis: `which` is the hotkey slot and the target is the saved camera point; a later
 camera update of the same player landing exactly on a saved point is a recall of that slot.
 Literal values measured on the three replays.
+
+Part 2 (CR-010 review): the saves are kept out of ``replay.game_events`` and ``player.events`` in a
+separate store, so registering the reader changes nothing stream 1 sees.
 """
 
 from collections import Counter
@@ -11,11 +14,11 @@ from pathlib import Path
 import pytest
 import sc2reader
 from sc2mindshare.decoding import load
-from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
+from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls, camera_saves
 
 
 def saves_of(decoded):
-    return [e for e in decoded.replay.game_events if isinstance(e, CameraSaveEvent)]
+    return list(camera_saves(decoded.replay))
 
 
 def test_alcyone_has_27_typed_saves(alcyone):
@@ -41,12 +44,29 @@ def test_camera_save_event_is_a_plain_game_event(alcyone):
         assert not hasattr(event, attr), attr
 
 
-def test_other_game_events_are_unchanged(alcyone):
-    """Keeping event 14 adds only the 27 saves; every other event class count stays as sc2reader 1.9.0 gives it."""
-    plain = Counter(type(e).__name__ for e in sc2reader.load_replay(alcyone, load_level=4, load_map=False).game_events)
-    ours = Counter(type(e).__name__ for e in load(alcyone).replay.game_events)
-    assert ours - plain == Counter({"CameraSaveEvent": 27})
-    assert plain - ours == Counter()
+@pytest.mark.parametrize("name", ["alcyone", "spores", "spine"])
+def test_game_events_and_player_events_are_exactly_upstreams(replays, name):
+    """With the reader registered, replay.game_events, replay.events and player.events hold the same events,
+    in the same order, as plain sc2reader 1.9.0 gives them: no CameraSaveEvent reaches them."""
+    plain = sc2reader.load_replay(replays[name], load_level=4, load_map=False)
+    ours = load(replays[name]).replay
+
+    def shape(events):
+        return [(type(e).__name__, e.frame, getattr(e, "pid", None)) for e in events]
+
+    assert shape(ours.game_events) == shape(plain.game_events)
+    assert shape(ours.events) == shape(plain.events)
+    for mine, theirs in zip(ours.players, plain.players, strict=True):
+        assert shape(mine.events) == shape(theirs.events)
+    assert not any(isinstance(e, CameraSaveEvent) for e in ours.events)
+
+
+def test_saves_keep_their_place_in_the_event_stream(alcyone):
+    """Each save records how many game events came before it, so recalls are paired in stream order."""
+    saves = saves_of(load(alcyone))
+    positions = [s.stream_position for s in saves]
+    assert positions == sorted(positions)
+    assert all(0 <= p <= 11842 for p in positions)  # 11842 game events in Alcyone without the saves
 
 
 @pytest.mark.parametrize(
