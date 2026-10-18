@@ -52,10 +52,11 @@ def document():
             pytest.fail(str(exc))
         pytest.skip(str(exc))
     with contextlib.redirect_stdout(io.StringIO()):
-        result = analyse(load_replay(ALCYONE), MS_SC)
+        faithful = analyse(load_replay(ALCYONE), MS_SC, fixes=())  # no layer fix (CR-023) ...
+        current = analyse(load_replay(ALCYONE), MS_SC)  # ... and every one: two loads, a replay is consumed
     return {
-        "faithful": build_document(to_graph(result, fixes=())),
-        "current": build_document(to_graph(result)),
+        "faithful": build_document(to_graph(faithful, fixes=())),
+        "current": build_document(to_graph(current)),
     }
 
 
@@ -74,14 +75,15 @@ def test_the_current_document_equals_g_view_current(document):
 
 
 #: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
-VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view")
+VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view", "P1-view")
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
-#: P3e moves their real start into the description. P3d's "pre-game time" property and dataTypes entry
+#: P3e moves their real start into the description; P1 renames the 30 battles (CR-023). P3d's "pre-game time" property and dataTypes entry
 #: are removed again by P3e, and A12 changes only the number text, so neither shows in the net delta.
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
     {"select": {"type": "Harrasment"}, "fields": ["ID"], "count": 14},
     {"select": {"type": "Building"}, "fields": ["properties.time", "description"], "count": 2},
+    {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
 ]
 
 

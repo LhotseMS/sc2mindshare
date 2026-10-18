@@ -61,7 +61,7 @@ def need(path, what):
 def render(replay_path):
     replay = load_replay(replay_path)
     with contextlib.redirect_stdout(io.StringIO()):
-        result = analyse(replay, MS_SC)
+        result = analyse(replay, MS_SC, fixes=())  # bug-faithful: no layer fix (CR-023)
     return legacy_csv(result), result
 
 

@@ -36,11 +36,12 @@ from sc2mindshare.reader.compat import object_text
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
-def createDetectors(replay):
-    """Build the five detectors in their fixed order and return the context that holds them."""
+def createDetectors(replay, fixes=frozenset()):
+    """Build the five detectors in their fixed order and return the context that holds them.
+    ``fixes``: the layer fixes to switch on, by ledger id (analysis.fixes.LAYER_FIXES)."""
     # order is improtant as many use data set up by base controler or CGc
     # base detector first because batte.py uses it
-    ctx = AnalysisContext(replay)
+    ctx = AnalysisContext(replay, fixes=frozenset(fixes))
     ctx.bases = BaseDetector(replay, ctx)
     ctx.actions = ActionsDetector(replay, ctx)
     ctx.simple = SimpleDetector(replay, ctx)
@@ -808,7 +809,10 @@ class BaseDetector(EventsDetector):
         minDistance = 1000
         for player, bases in self.bases.items():
             for base in bases:
-                dist = base.minDistance(e.location) < minDistance
+                if "P1" in self.ctx.fixes:  # CR-023 P1: the distance itself
+                    dist = base.minDistance(e.location)
+                else:  # bug-faithful: a boolean, so the second base iterated always wins
+                    dist = base.minDistance(e.location) < minDistance
                 if dist < minDistance:
                     minDistBase = base
                     minDistance = dist

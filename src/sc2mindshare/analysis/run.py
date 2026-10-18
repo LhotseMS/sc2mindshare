@@ -11,6 +11,7 @@ support root and its pass-1 intervals are still class-level, so analyses run one
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ from typing import Any
 from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.exposed import expose
 from sc2mindshare.analysis.fileHandler import FileHandler
+from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.reader.fork_api import flavour_replay
 
@@ -36,19 +38,23 @@ def configure(support_root: str | Path) -> None:
     FileHandler.SOURCE_FOLDER = str(support_root)
 
 
-def analyse(replay: Any, support_root: str | Path, *, with_exposed: bool = False) -> AnalysisResult:
+def analyse(
+    replay: Any, support_root: str | Path, *, with_exposed: bool = False, fixes: Iterable[str] = LAYER_FIXES
+) -> AnalysisResult:
     """Run the layer on ``replay``. **Consumes the replay**: its events, units and players are
     switched to their fork-flavoured classes in place (``flavour_replay``), so hand ``analyse`` a
     replay of its own (stream 3's decoders read theirs first, or load it a second time).
 
     ``with_exposed`` also computes ``AnalysisResult.exposed`` (``analysis.exposed.expose``, which
     reads the support tables' bytes too); off by default, so nothing it does can break a build that
-    did not ask for it (Morgan's G6 N1 on CR-021)."""
+    did not ask for it (Morgan's G6 N1 on CR-021). ``fixes``: the layer fixes to apply, by ledger id
+    (``analysis.fixes.LAYER_FIXES``, all of them by default); ``()`` for the bug-faithful run, the one
+    the legacy CSV oracle and the frozen models describe."""
     configure(support_root)
     FileHandler.intervals = None
     flavour_replay(replay)
     layer: Any = detectors  # the ported layer is untyped
-    ctx: Any = layer.createDetectors(replay)
+    ctx: Any = layer.createDetectors(replay, frozenset(fixes))
     nodes = (
         ctx.singles.nodes
         + ctx.battles.battles

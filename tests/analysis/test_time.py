@@ -99,7 +99,7 @@ def alcyone_result():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     with contextlib.redirect_stdout(io.StringIO()):
-        return analyse(load_replay(ALCYONE), MS_SC)
+        return analyse(load_replay(ALCYONE), MS_SC, fixes=())  # the legacy layer's own times
 
 
 def test_an_event_nodes_time_is_its_loop_floored_to_the_second(alcyone_result):

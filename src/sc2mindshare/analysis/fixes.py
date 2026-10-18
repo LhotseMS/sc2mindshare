@@ -1,8 +1,11 @@
-"""Defect fixes applied to the domain graph (CR-014 onwards), one function per ledger entry.
+"""Defect fixes (CR-014 onwards), one per ledger entry, each with an entry in tests/golden/CHANGES.md
+written before it.
 
-The moved legacy layer stays bug-faithful, so its CSV oracle keeps proving the move changed
-nothing; each fix here changes the graph on purpose, with an entry in tests/golden/CHANGES.md
-written before it. ``to_domain.to_graph`` applies ``FIXES`` in order.
+Two kinds. A graph fix here is a function on the domain graph; ``to_domain.to_graph`` applies
+``FIXES`` in order. A layer fix (``LAYER_FIXES``) changes how the moved legacy layer computes
+something, so it lives at its call site in the layer, switched by its ledger id in
+``AnalysisContext.fixes``. Both are off for the bug-faithful run (``analyse(..., fixes=())`` and
+``to_graph(..., fixes=())``), so its CSV oracle keeps proving the move changed nothing.
 """
 
 from __future__ import annotations
@@ -74,3 +77,6 @@ def pre_game_display(graph: Graph) -> Graph:
 
 #: The fixes, in ledger order.
 FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_display)
+
+#: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances.
+LAYER_FIXES: tuple[str, ...] = ("P1",)
