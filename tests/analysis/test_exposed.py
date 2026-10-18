@@ -133,6 +133,16 @@ def test_c5_the_tables_are_keyed_by_the_ids_the_units_carry(x):
     assert dict(x.tables.build_times)["VoidRay"] == "43"
 
 
+def test_c5_two_rows_for_one_unit_type_are_refused():
+    """Morgan's G6 N0 on 071b4b1: keys stay unique (a second row for the same id would hide the first)."""
+    from sc2mindshare.analysis.exposed import _build_times
+
+    table = {"Void Ray": {"Build Time": "43"}, "VoidRay": {"Build Time": "60"}}
+    with pytest.raises(ValueError, match="VoidRay"):
+        _build_times(table, {"VoidRay"})
+    assert _build_times({"Void Ray": {"Build Time": "43"}}, {"VoidRay"}) == ((("VoidRay", "43"),), ())
+
+
 def test_every_morph_starts_from_the_type_before_it(x):
     """Morgan's G6 N1 on c312162: each TypeChange's ``before`` is the previous change's ``after``, or the
     unit's first type for its first change, for every unit (a wrong ``before`` anywhere shows here)."""
