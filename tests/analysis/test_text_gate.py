@@ -1,6 +1,7 @@
 """CR-011c grep gate: the layer's text never relies on an sc2reader object's ``__str__``.
 
-Units and players are turned into text by ``compat.object_text`` (the fork's ``__str__`` output,
+Units and players (and only those: ``object_text`` covers ``sc2reader.data.Unit`` and
+``sc2reader.objects.Player``; anything else is ``str()``) are turned into text by ``compat.object_text`` (the fork's ``__str__`` output,
 made explicit); ``reader/fork_api.py`` overrides no ``__str__``. This test scans the analysis
 package for ``str(x.unit)``, ``"...".format(x.player)``, ``f"{x.unit}"`` and the like, outside
 ``print(...)`` debug output. The golden (byte-identical CSV) catches what a name-based scan cannot.

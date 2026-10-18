@@ -122,3 +122,28 @@ def test_no_properties_count_in_the_domain_or_the_adapter():
         CHECKOUT / "src" / "sc2mindshare" / "analysis" / "to_domain.py",
     ):
         assert "propertiesCount" not in path.read_text(encoding="utf-8")
+
+
+def test_named_values_are_pinned(alcyone):
+    # Swapping two names in FIELDS (e.g. "count" and "supply") must fail here.
+    units = next(n for n in alcyone.nodes if n.kind == "Units" and n.name == "12 Drones")
+    assert (units.value("type"), units.value("count"), units.value("supply"), units.value("total at time")) == (
+        "Drone",
+        "12",
+        "12",
+        "12",
+    )
+    battle = next(n for n in alcyone.nodes if n.id == "Battle-1")
+    assert (battle.value("dead"), battle.value("p1 dead"), battle.value("p2 dead"), battle.value("supply dead")) == (
+        "1",
+        "1",
+        "0",
+        "0.5",
+    )
+    stats = next(n for n in alcyone.nodes if n.id == "Stats-1")
+    assert (stats.value("cur. Min"), stats.value("col. rate Min"), stats.value("workers"), stats.value("used Min")) == (
+        "330",
+        "839",
+        "14",
+        "1250",
+    )
