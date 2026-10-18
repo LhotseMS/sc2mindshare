@@ -154,7 +154,7 @@ class EnergyTracker(Tracker):
         "Viper": {"BlindingCloud": 100, "ParasiticBomb": 125}
     }
 
-    UNITS_FROM_STATE_CHANGE = ("OrbitalCommand")
+    UNITS_FROM_STATE_CHANGE = ("OrbitalCommand",)  # CR-023 P12: a tuple (it was a string: a substring test)
 
     UNIT_SURPLAS = {
         "Nexus": {3:50, 6:50, 12:100},

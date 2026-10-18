@@ -679,3 +679,15 @@ def _finished(name_now, history, fixes):
 def test_p10_eligibility_by_the_type_at_the_event_without_the_spell_effects(name_now, history, faithful, fixed):
     assert _finished(name_now, history, ()) is faithful
     assert _finished(name_now, history, ("P10",)) is fixed
+
+
+# --- P12: UNITS_FROM_STATE_CHANGE is a tuple ---------------------------------------------------------------
+
+
+def test_p12_units_from_state_change_is_a_tuple_and_tests_whole_names():
+    from sc2mindshare.analysis.detectors.trackers import EnergyTracker
+
+    assert EnergyTracker.UNITS_FROM_STATE_CHANGE == ("OrbitalCommand",)
+    tracker = SimpleNamespace(UNITS_FROM_STATE_CHANGE=EnergyTracker.UNITS_FROM_STATE_CHANGE)
+    assert EnergyTracker.isEnergyUpgrade(tracker, SimpleNamespace(name="OrbitalCommand"))
+    assert not EnergyTracker.isEnergyUpgrade(tracker, SimpleNamespace(name="Orbital"))  # a substring, not a name
