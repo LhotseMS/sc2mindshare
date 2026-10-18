@@ -6,6 +6,7 @@ Literal values measured on the three replays.
 """
 
 from collections import Counter
+from pathlib import Path
 
 import pytest
 import sc2reader
@@ -73,3 +74,22 @@ def test_recalls_point_at_the_latest_save_of_their_slot(alcyone):
         earlier = [s for s in saves if s.player.pid == recall.player_id and s.slot == recall.slot and s.frame <= recall.frame]
         assert earlier, recall
         assert (earlier[-1].saved_x, earlier[-1].saved_y) == (recall.x, recall.y)
+
+
+CHECKOUT_ROOT = Path(__file__).resolve().parents[2]
+
+
+# Rex's CR-044 review (P2): readers older than GameEventsReader_24247 have no event id 14, and the
+# registration applies to every replay. Wings of Liberty replays from the upstream corpus must load.
+CORPUS = CHECKOUT_ROOT / "test_replays"
+OLD_READER_REPLAYS = ["1.2.2.17811/13.SC2Replay", "1.2.2.17811/1.SC2Replay"]
+
+
+@pytest.mark.parametrize("relative", OLD_READER_REPLAYS)
+def test_replays_whose_reader_has_no_camera_save_event_still_load(relative):
+    path = CORPUS / relative
+    if not path.exists():
+        pytest.skip(f"corpus replay not in this checkout: {relative}")
+    decoded = load(str(path))
+    assert decoded.replay.game_events
+    assert saves_of(decoded) == []

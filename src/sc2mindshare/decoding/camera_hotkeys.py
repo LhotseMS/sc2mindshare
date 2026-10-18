@@ -47,6 +47,9 @@ class _KeepCameraSaves:
         default = next(
             reader for accepts, reader in replay.registered_readers[GAME_EVENTS] if reader is not self and accepts(replay)
         )
+        if EVENT_ID not in default.EVENT_DISPATCH:
+            # Readers before GameEventsReader_24247 (Wings of Liberty) have no camera save event (CR-044 review).
+            return default(data, replay)
         reader = type(default)()
         _cls, parser = reader.EVENT_DISPATCH[EVENT_ID]
         reader.EVENT_DISPATCH[EVENT_ID] = (CameraSaveEvent, parser)
