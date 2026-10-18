@@ -348,7 +348,7 @@ class SupplyTracker(Tracker):
         "Nexus" : 15,
         "Hatchery" : 15 
     }
-    def __init__(self, player1, player2, fixes=frozenset()):
+    def __init__(self, player1, player2, fixes):
         super().__init__(player1, player2)
         self.fixes = fixes
         self.addedProviders = set()  # CR-023 S1 (S5): the providers whose limit was added (finished)

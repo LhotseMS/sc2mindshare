@@ -335,3 +335,11 @@ def test_s5_an_unfinished_provider_does_not_lower_the_limit():
     assert tracker.providerOf(died) == "Nexus"
     vars(died).update(unit_id=2)  # another Nexus, killed while building: never added
     assert tracker.providerOf(died) is None
+
+
+def test_the_supply_tracker_takes_its_fixes_explicitly():
+    """Morgan's G6 N0 on 93ec494: no default, like createDetectors."""
+    from sc2mindshare.analysis.detectors.trackers import SupplyTracker
+
+    with pytest.raises(TypeError):
+        SupplyTracker("p1", "p2")  # type: ignore[call-arg]
