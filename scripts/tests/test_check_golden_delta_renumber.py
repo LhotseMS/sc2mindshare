@@ -203,3 +203,29 @@ def test_an_entry_without_renumber_is_unchanged(paths):
     entry = _entry(old)
     del entry["renumber"]
     assert any(p.startswith("unlisted change") for p in _problems(entry, old, new))
+
+
+def test_r5_pairs_nodes_by_id_not_by_position(tmp_path):
+    """An added node right before a changed, renumbered one: R5 compares the changed node with its own new
+    record (by ID), not with the added neighbour (sequence alignment would pair them)."""
+    old = {"nodes": [_units("Units-1", "00:00:10", "Drone")], "links": []}
+    new = {"nodes": [_units("Units-1", "00:00:05", "Drone"), _units("Units-2", "00:00:10", "Drone", count=2)], "links": []}
+    old_path, new_path = _write(tmp_path / "o.json", old), _write(tmp_path / "n.json", new)
+    entry = {
+        "entry": "N2",
+        "task": "CR-023",
+        "golden": ["x"],
+        "base_sha256": cgd.golden.sha256(old_path),
+        "renumber": {
+            "type": "Units",
+            "key": ["properties.player", "properties.time"],
+            "retype": {},
+            "merged": {},
+            "ids_changed": 1,
+            "links_dropped": 0,
+        },
+        "changes": [{"select": {"ID": "Units-2"}, "fields": ["properties.count"], "count": 1}],
+        "added": ["Units-1#1"],
+        "removed": [],
+    }
+    assert cgd.check_delta(entry, old_path, new_path) == []

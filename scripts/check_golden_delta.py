@@ -21,7 +21,7 @@ field paths that identify a node on both sides), ``retype`` (old ID -> its new `
 ``merged`` (old ID -> the old ID of the node it joins), ``ids_changed`` and ``links_dropped``. The
 checker derives the ID map by aligning the nodes on their keys and must find exactly what the entry
 states (R1 keys and consistency, R2 pairing, R3 merges, R6 other types and ``ids_changed``, R4 the
-rewrite of the old golden and its dropped links), then runs C3 on the rewritten old golden (R5).
+rewrite of the old golden and its dropped links), then runs C3 on the rewritten old golden (R5), pairing records by ID (``diff_by_key``).
 The rest of a renumber entry is written in the new IDs; a link the rewrite drops is listed in
 ``removed`` by its old IDs or counted in ``links_dropped``.
 """
@@ -233,6 +233,49 @@ def renumber_map(
     return id_map, [], {"old_doc": rewritten, "consumed": consumed}
 
 
+def diff_by_key(old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_map: Mapping[str, str] | None) -> Any:
+    """R5's diff: nodes paired by their ``ID#n`` key and links by their ``node1>node2#n`` key, with the
+    same masks as ``golden.diff_json`` (which pairs records by sequence alignment, so after a renumber a
+    changed node next to an added one would be compared with its neighbour). The order of records is
+    not compared: after a renumber it follows the IDs."""
+    report = golden.Report()
+    old_nodes, budget_old = golden.normalise_nodes(old_doc.get("nodes", []), clock_map, False)
+    new_nodes, budget_new = golden.normalise_nodes(new_doc.get("nodes", []), clock_map, False)
+    if budget_old != budget_new:
+        report.lines.append(f"mask budget differs: expected {dict(budget_old)}, actual {dict(budget_new)}")
+    for key in sorted((set(old_doc) | set(new_doc)) - {"nodes", "links"}):
+        if key not in old_doc or key not in new_doc or golden._canon(old_doc[key], key) != golden._canon(new_doc[key], key):
+            report.lines.append(f"{key}: differs")
+            report.changed.append((key, ""))
+    old_links, new_links = list(old_doc.get("links", [])), list(new_doc.get("links", []))
+    pairs = (
+        (
+            dict(zip(golden.node_keys(old_nodes), old_nodes, strict=True)),
+            dict(zip(golden.node_keys(new_nodes), new_nodes, strict=True)),
+        ),
+        (
+            dict(zip(_occurrences([f"{x.get('node1')}>{x.get('node2')}" for x in old_links]), old_links, strict=True)),
+            dict(zip(_occurrences([f"{x.get('node1')}>{x.get('node2')}" for x in new_links]), new_links, strict=True)),
+        ),
+    )
+    for before, after in pairs:
+        for key in before:
+            if key not in after:
+                report.changed.append((key, "<removed>"))
+                report.lines.append(f"{key}: removed")
+        for key, record in after.items():
+            if key not in before:
+                report.changed.append((key, "<added>"))
+                report.lines.append(f"{key}: added")
+                continue
+            fields: list[tuple[str, Any, Any]] = []
+            golden._field_diff(dict(before[key]), dict(record), "", fields)
+            for path, _old, _new in fields:
+                report.changed.append((key, path))
+                report.lines.append(f"{key}: {path}")
+    return report
+
+
 def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mapping[str, str] | None = None) -> list[str]:
     """C3 and C4 for one golden file; returns the problems (empty = ok). A ``renumber`` entry first
     runs R1, R2, R3, R6 and R4 (``renumber_map``), then C3 on the rewritten old golden (R5)."""
@@ -254,7 +297,9 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
             for o, n in id_map.items():
                 if o != n:
                     print(f"  {o} -> {n}" + (" (merged)" if o in spec.get("merged", {}) else ""))
-        report = golden.diff_json(old_doc, new_doc, clock_map)
+        report = (
+            diff_by_key(old_doc, new_doc, clock_map) if entry.get("renumber") else golden.diff_json(old_doc, new_doc, clock_map)
+        )
         types: dict[str, str | None] = {}
         for doc in (old_doc, new_doc):
             for key, node in zip(golden.node_keys(doc.get("nodes", [])), doc.get("nodes", []), strict=True):
