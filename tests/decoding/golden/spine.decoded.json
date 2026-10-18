@@ -75,6 +75,38 @@
       "unpaired_states": 125
     }
   ],
+  "command_flags": [
+    {
+      "commands": 300,
+      "data": 0,
+      "minimap": 53,
+      "minimap_far": 52,
+      "minimap_near": 1,
+      "other_far": 1,
+      "other_near": 103,
+      "player_id": 1,
+      "queued": 15,
+      "repeat": 0,
+      "smart": 133,
+      "smart_with_ability": 0,
+      "smart_without_ability": 133
+    },
+    {
+      "commands": 301,
+      "data": 3,
+      "minimap": 14,
+      "minimap_far": 14,
+      "minimap_near": 0,
+      "other_far": 0,
+      "other_near": 164,
+      "player_id": 2,
+      "queued": 12,
+      "repeat": 0,
+      "smart": 101,
+      "smart_with_ability": 0,
+      "smart_without_ability": 101
+    }
+  ],
   "control_groups": [
     {
       "count": 13,
@@ -264,5 +296,6 @@
     },
     "unknown_flags": {}
   },
-  "warnings": []
+  "warnings": [],
+  "zoom_events": []
 }

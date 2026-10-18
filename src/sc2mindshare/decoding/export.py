@@ -11,6 +11,7 @@ import json
 from typing import TYPE_CHECKING, Any
 
 from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
+from sc2mindshare.decoding.command_flags import command_flag_summary, zoom_events
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.control_groups import control_group_activity
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
@@ -56,6 +57,10 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
         "camera_hotkeys": _camera_hotkeys(replay),
         "command_activity": [_activity(pid, a) for pid, a in command_activity(replay).items()],
         "target_flags": _target_flags(replay),
+        "command_flags": [
+            {"player_id": pid, **dataclasses.asdict(summary)} for pid, summary in command_flag_summary(replay).items()
+        ],
+        "zoom_events": [{"player_id": pid, "count": n} for pid, n in sorted(zoom_events(replay).items())],
         "control_groups": [
             {"player_id": pid, "kind": kind.name.lower(), "source": source, "count": count}
             for pid, counts in control_group_activity(replay).items()
