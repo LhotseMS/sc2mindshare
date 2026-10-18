@@ -7,7 +7,7 @@ plugins (GameHeartNormalizer, ContextLoader, SelectionTracker). The fork's field
 ``reader.side_fields``, a map keyed by the object, read and written through the fork-flavoured
 classes' properties.
 
-Still swapped (a later step, not T19's done-when): each object's ``__class__`` is a fork-flavoured
+Still swapped (CR-064, not T19's done-when): each object's ``__class__`` is a fork-flavoured
 subclass of its upstream class, and the replay's datetimes are made naive.
 """
 
@@ -41,20 +41,50 @@ GAMES = {
 }
 
 
-def _plain(value):
-    """Plain data compared by value; objects (units, players, events, abilities) by their class only,
-    since each load has its own instances."""
-    if value is None or isinstance(value, (bool, int, float, str, bytes)):
-        return value
-    if isinstance(value, (list, tuple)):
-        return [_plain(v) for v in value]
-    if isinstance(value, dict):
-        return {str(k): _plain(v) for k, v in value.items()}
-    return "<object>"  # the flavoured class differs from upstream's by design (still swapped, see above)
+def _upstream_class(cls):
+    """The nearest sc2reader class: the flavoured subclass differs from upstream's by design (CR-064)."""
+    base = next((c for c in cls.__mro__ if c.__module__.startswith("sc2reader")), cls)
+    return f"{base.__module__}.{base.__qualname__}"
 
 
-def _state(obj):
-    return {k: _plain(v) for k, v in vars(obj).items()}
+class _Canon:
+    """Each load has its own instances, so a reference is compared by what it points to in its replay:
+    an event by its index, a unit by its id, an entity or player by its index (Vera's G7 on 303898b).
+    Any other object compares by its nearest sc2reader class and its own attributes."""
+
+    def __init__(self, replay):
+        roles = {id(replay): ("replay",)}
+        for i, e in enumerate(replay.events):
+            roles[id(e)] = ("event", i)
+        for uid, u in replay.objects.items():
+            roles[id(u)] = ("unit", uid)
+        for i, p in enumerate(replay.entities):
+            roles.setdefault(id(p), ("entity", i))
+        for i, p in enumerate(replay.players):
+            roles.setdefault(id(p), ("player", i))
+        self._roles = roles
+
+    def __call__(self, value, depth=0):
+        if value is None or isinstance(value, (bool, int, float, str, bytes)):
+            return value
+        role = self._roles.get(id(value))
+        if role is not None:
+            return role
+        if isinstance(value, (list, tuple)):
+            return [self(v, depth + 1) for v in value]
+        if isinstance(value, (set, frozenset)):
+            return sorted((self(v, depth + 1) for v in value), key=repr)
+        if isinstance(value, dict):
+            return {repr(self(k, depth + 1)): self(v, depth + 1) for k, v in value.items()}
+        if not hasattr(value, "__dict__"):
+            return (_upstream_class(type(value)), repr(value))
+        if depth >= 3:
+            return (_upstream_class(type(value)),)
+        return (_upstream_class(type(value)), {k: self(v, depth + 1) for k, v in sorted(vars(value).items())})
+
+
+def _state(obj, canon):
+    return {k: canon(v) for k, v in vars(obj).items()}
 
 
 @pytest.fixture(scope="module", params=sorted(GAMES))
@@ -75,21 +105,40 @@ def loads(request):
 def test_events_keep_upstreams_attributes_and_values(loads):
     upstream, ours = loads
     assert len(ours.events) == len(upstream.events)
+    co, cu = _Canon(ours), _Canon(upstream)
     for i, (mine, theirs) in enumerate(zip(ours.events, upstream.events, strict=True)):
-        assert _state(mine) == _state(theirs), f"event {i} ({type(theirs).__name__})"
+        assert _state(mine, co) == _state(theirs, cu), f"event {i} ({type(theirs).__name__})"
+
+
+@pytest.mark.parametrize("attribute", ["unit", "player"])
+def test_the_comparison_sees_a_repointed_reference(loads, attribute):
+    """Vera's G7 control on 303898b: an event whose unit (or player) points at another one of the same
+    replay must not compare equal to upstream's, though the class and every plain value still match."""
+    import copy
+
+    upstream, ours = loads
+    co, cu = _Canon(ours), _Canon(upstream)
+    targets = list(ours.objects.values()) if attribute == "unit" else list(ours.players)
+    i, mine = next((i, e) for i, e in enumerate(ours.events) if vars(e).get(attribute) is not None)
+    moved = copy.copy(mine)
+    vars(moved)[attribute] = next(t for t in targets if t is not vars(mine)[attribute])
+    assert _state(mine, co) == _state(upstream.events[i], cu)
+    assert _state(moved, co) != _state(upstream.events[i], cu)
 
 
 def test_units_keep_upstreams_attributes_and_values(loads):
     upstream, ours = loads
     assert ours.objects.keys() == upstream.objects.keys()
+    co, cu = _Canon(ours), _Canon(upstream)
     for unit_id, unit in ours.objects.items():
-        assert _state(unit) == _state(upstream.objects[unit_id]), f"unit {unit_id}"
+        assert _state(unit, co) == _state(upstream.objects[unit_id], cu), f"unit {unit_id}"
 
 
 def test_players_keep_upstreams_attributes_and_values(loads):
     upstream, ours = loads
+    co, cu = _Canon(ours), _Canon(upstream)
     for mine, theirs in zip(ours.players, upstream.players, strict=True):
-        assert _state(mine) == _state(theirs)
+        assert _state(mine, co) == _state(theirs, cu)
 
 
 def test_the_forks_fields_are_still_there_through_the_flavoured_classes(loads):
