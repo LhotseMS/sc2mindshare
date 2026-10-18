@@ -229,3 +229,34 @@ def test_r5_pairs_nodes_by_id_not_by_position(tmp_path):
         "removed": [],
     }
     assert cgd.check_delta(entry, old_path, new_path) == []
+
+
+def test_r6_another_types_order_swap_is_not_an_id_change(paths, tmp_path):
+    """Vera's G7 (1) on e780214: R6 compares the other types' IDs as a multiset; their order is C3's."""
+    old = copy.deepcopy(OLD)
+    old["nodes"].append({"ID": "Battle-2", "type": "Battle", "name": "b2", "description": "d", "properties": {}})
+    new = copy.deepcopy(NEW)
+    new["nodes"].insert(4, {"ID": "Battle-2", "type": "Battle", "name": "b2", "description": "d", "properties": {}})
+    old_path, new_path = _write(tmp_path / "o2.json", old), _write(tmp_path / "n2.json", new)
+    problems = _problems(_entry(old_path), old_path, new_path)
+    assert not any(p.startswith("R6") for p in problems), problems
+
+
+@pytest.mark.parametrize("field", ["ids_changed", "links_dropped"])
+def test_ids_changed_and_links_dropped_are_required(paths, field):
+    """Vera's G7 (2) on e780214: a missing count is not read as 0."""
+    old, new, _ = paths
+    entry = _entry(old)
+    del entry["renumber"][field]
+    problems = _problems(entry, old, new)
+    assert any(field in p and "required" in p for p in problems), problems
+
+
+@pytest.mark.parametrize("retired", [{"type": "Units", "from_position": 3, "shift": -1}, {"type": "Units", "shift": 1}])
+def test_the_retired_single_shift_form_is_refused(paths, retired):
+    """Morgan's G6 N1 on e780214: the single-shift form of QA design §5.1 is refused, not half-read."""
+    old, new, _ = paths
+    entry = _entry(old)
+    entry["renumber"] = retired
+    problems = _problems(entry, old, new)
+    assert problems == ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], problems
