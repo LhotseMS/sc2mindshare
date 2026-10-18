@@ -108,3 +108,10 @@ New frozen goldens, so the parity holds without the legacy venv (T24 deletes it)
 | `spine/reader-state-legacy.summary.json`, `spores/reader-state-legacy.summary.json` | The legacy reader-state dump's summary and sha256, as Alcyone's since CR-010 | The new reader's dump equals the legacy one |
 
 The 1000 spores replay has no model fixture: its analysis fails in the legacy layer (L1, CR-023). The tests that run the old fork carry the `legacy` marker; without the legacy venv, `-m "not legacy"` runs the rest.
+
+
+### M1: spine's legacy CSV frozen; the done-when counts (CR-019 follow-ups, Morgan's review of cd5dea5)
+
+New frozen goldens, pinned in `PARITY.sha256`; no existing golden changes: `spine/G-CSV-1.csv` (456 lines) and `spine/Intervals-1.csv` (17 lines), the live legacy run's output for `200k dmg spine crawler ZvP`, written by `freeze_parity_fixtures.py legacy-csv` only after the frozen spine models rendered exactly them. The spine models are now tied to the legacy output without the legacy venv, as Alcyone's are to G-CSV-1.
+
+The done-when (tests pass with the legacy venv absent) as measured, always with `SC2MS_REQUIRE_GOLDEN=1` (a missing input fails, never skips), on a `git archive` copy without `.venv-legacy`, `-m "not legacy"`: at `cd5dea5` 427 passed, 9 deselected, 3 xfailed; at `105b1d9` 449 passed, 9 deselected, 3 xfailed. Unfiltered, the only failures are the 9 legacy-marked items.
