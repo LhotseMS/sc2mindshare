@@ -15,7 +15,7 @@ from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
-from sc2mindshare.layout.profile import BAU, OCCUPYING, SINGLE_POINT, Profile
+from sc2mindshare.layout.profile import BAU, CARDS, GHOSTS, OCCUPYING, RAIL, SINGLE_POINT, Profile
 
 Size = float | list[float]
 
@@ -30,8 +30,9 @@ class LayoutItem:
     t: float | None  # signed seconds; None for Game and Player
     order: int  # the tie-break: position in the node list
     player: str | None = None
-    t_end: float | None = None  # Supply Block only
+    t_end: float | None = None  # Supply Block and Scouting Gap only
     size_basis: float | None = None  # Battle: supply lost; Units: supply
+    step: int | None = None  # Missing Step and Checkpoint: the benchmark step index (ghost order, spec §13.3)
 
 
 @dataclass(frozen=True)
@@ -130,8 +131,27 @@ def layout(
     # buckets (spec §5.1); G3: a swept non-battle item of a player that is neither side goes to the grid
     swept: list[LayoutItem] = []
     grid: list[LayoutItem] = []
+    ghosts: list[LayoutItem] = []  # Missing Step, Checkpoint: never occupy a window (spec §13.3)
+    gaps: list[LayoutItem] = []  # Scouting Gap: the outer rail, never occupying (spec §13.4)
+
+    def neither_side(item: LayoutItem) -> bool:
+        if item.player in (side_a, side_b):
+            return False
+        result.warnings.append(f"{item.id}: player {item.player!r} is neither side: placed on the grid (G3)")
+        grid.append(item)
+        return True
+
     for item in items:
         if item.type in ANCHORS:
+            continue
+        if item.type in CARDS:  # player-column cards (spec §13.2); an absent card leaves the other in place
+            if not neither_side(item):
+                anchors = getattr(p, CARDS[item.type])
+                result.positions[item.id] = anchors[0 if item.player == side_a else 1]
+            continue
+        if (item.type in GHOSTS or item.type in RAIL) and item.t is not None:
+            if not neither_side(item):
+                (ghosts if item.type in GHOSTS else gaps).append(item)
             continue
         if item.type in SWEPT and item.t is not None:
             if item.type != "Battle" and item.player not in (side_a, side_b):
@@ -193,12 +213,34 @@ def layout(
 
     result.rows = [(row(w), w, x(w)) for w in ordered]
 
-    # buildings, upgrades, initiated (spec §5.6)
+    def span(item: LayoutItem) -> tuple[int, int]:
+        """The first and last window of an interval item (spec §5.10)."""
+        ws = w_of(item)
+        return ws, max(ws, win(item.t_end if item.t_end is not None else item.t or 0, p.window_s))
+
+    # buildings, upgrades, initiated (spec §5.6); top_slot[(row, side)] is the highest stack slot used
     bau_count: Counter[tuple[int, int]] = Counter()
+    top_slot: defaultdict[tuple[int, int], int] = defaultdict(lambda: -1)
     for item in (i for i in swept if i.type in BAU):
         w, s = w_of(item), sign(item.player)
         k = bau_count[(w, s)]
         bau_count[(w, s)] += 1
+        top_slot[(row(w), s)] = k
+        result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
+
+    # ghosts (spec §13.3): after the real items of their row, ordered by (time, Missing Step before
+    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the row
+    block_rows: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
+    for item in (i for i in swept if i.type == "Supply Block"):
+        ws, we = span(item)
+        block_rows[sign(item.player)].append((row(ws), row(we)))
+    for item in sorted(ghosts, key=lambda g: (g.t, GHOSTS.index(g.type), math.inf if g.step is None else g.step, g.order)):
+        w, s = w_of(item), sign(item.player)
+        ghost_row = row(w)
+        k = top_slot[(ghost_row, s)] + 1
+        if k == p.ghost_skip_slot and any(ra <= ghost_row <= rb for ra, rb in block_rows[s]):
+            k += 1
+        top_slot[(ghost_row, s)] = k
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
 
     # stats, chat, abilities (spec §5.7)
@@ -206,9 +248,10 @@ def layout(
         lane = getattr(p, SINGLE_POINT[item.type])
         result.positions[item.id] = (x(w_of(item)), sign(item.player) * lane)
 
-    # units (spec §5.8)
+    # units (spec §5.8); the pad counts every stack slot used in the row, ghosts too (spec §13.3 rule 4)
+    spread: dict[int, float] = {}  # per side, the widest unit row beyond the lane's inner edge (§13.4)
     for w, s, buffered in flushes:
-        pad = p.building_stack_step * max(0, bau_count[(w, s)] - p.building_stack_free)
+        pad = p.building_stack_step * max(0, top_slot[(row(w), s)] + 1 - p.building_stack_free)
         c = 0.0
         previous_r = 0.0
         for n, u in enumerate(buffered):
@@ -217,6 +260,7 @@ def layout(
             previous_r = r
             result.positions[u.id] = (x(w), s * (c + pad))
             result.sizes[u.id] = r
+        spread[s] = max(spread.get(s, 0.0), c + previous_r - p.lane_units + pad)
 
     # battles (spec §5.5)
     battles = [i for i in swept if i.type == "Battle"]
@@ -247,8 +291,7 @@ def layout(
     # supply blocks (spec §5.10, B8, G5)
     blocks = [i for i in swept if i.type == "Supply Block"]
     for item in blocks:
-        ws = w_of(item)
-        we = max(ws, win(item.t_end if item.t_end is not None else item.t or 0, p.window_s))
+        ws, we = span(item)
         if item.t_end is not None and item.t is not None and item.t_end < item.t:
             result.warnings.append(f"{item.id}: ends before it starts (G5)")
         xa, xb = x(ws), x(we)
@@ -259,6 +302,22 @@ def layout(
         by_side[sign(item.player)].append(item)
     for side_blocks in by_side.values():
         for a, b_ in itertools.pairwise(side_blocks):
+            if a.t_end is not None and b_.t is not None and b_.t < a.t_end:
+                result.warnings.append(f"{a.id} and {b_.id} overlap (G5)")
+
+    # the Scouting Gap rail (spec §13.4, TD-45): supply-block geometry, height 0.6, beyond the side's
+    # widest unit row over the whole game (floor 5.8), so it stays one straight band per side
+    gaps.sort(key=_key)
+    for item in gaps:
+        s = sign(item.player)
+        ws, we = span(item)
+        xa, xb = x(ws), x(we)
+        offset = p.lane_units + max(p.unit_spread_floor, spread.get(s, 0.0)) + p.rail_clearance + p.rail_height / 2
+        result.positions[item.id] = ((xa + xb) / 2, s * offset)
+        result.sizes[item.id] = [xb - xa + p.row_pitch, p.rail_height]
+    for side in (-1, 1):
+        side_gaps = [g for g in gaps if sign(g.player) == side]
+        for a, b_ in itertools.pairwise(side_gaps):
             if a.t_end is not None and b_.t is not None and b_.t < a.t_end:
                 result.warnings.append(f"{a.id} and {b_.id} overlap (G5)")
 

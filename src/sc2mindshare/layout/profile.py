@@ -32,6 +32,13 @@ class Profile:
     unit_max_lag_windows: int = 3  # the intent of P:478 (B1)
     anchor_game: tuple[float, float] = (-12.0, 0.0)  # P:271
     anchor_players: tuple[tuple[float, float], tuple[float, float]] = ((-6.0, -9.0), (-6.0, 9.0))  # P:272-273
+    # stream 2's node types (spec §13, CR-015; TD-44, TD-45)
+    anchor_coaching: tuple[tuple[float, float], tuple[float, float]] = ((-6.0, -11.5), (-6.0, 11.5))  # §13.2
+    anchor_build_comparison: tuple[tuple[float, float], tuple[float, float]] = ((-6.0, -14.0), (-6.0, 14.0))  # §13.2
+    ghost_skip_slot: int = 4  # §13.3 rule 5: slot 4 overlaps the supply-block band
+    rail_height: float = 0.6  # §13.4, P0-6 §4.5
+    rail_clearance: float = 0.5  # §13.4, beyond the widest unit row
+    unit_spread_floor: float = 5.8  # §13.4: M_side >= 5.8
     grid_origin: tuple[float, float] = (15.0, 0.0)  # P:688
     grid_step: float = 3.0  # P:749-767
     grid_columns: int = 4
@@ -43,6 +50,8 @@ class Profile:
             "Stats": [2.65, 1.28],  # SRN:149
             "Game": [10, 3.3],  # SRN:163
             "Player": [7.8, 2.2],  # SRN:166
+            "Coaching": [7.8, 2.2],  # spec §13.2 (the Player card's size)
+            "Build Comparison": [7.8, 2.2],  # spec §13.2
         }
     )
     default_size: tuple[float, float] = (2.65, 1)  # SRN:100
@@ -52,3 +61,7 @@ class Profile:
 BAU = frozenset({"Building", "Upgrade", "Initiated"})
 SINGLE_POINT = {"Stats": "lane_stats", "Chat": "lane_chat", "Ability": "lane_ability"}
 OCCUPYING = frozenset({"Battle", "Stats", "Chat", "Ability"}) | BAU
+#: Stream 2's node types (spec §13; TD-41): player-column cards, building-stack ghosts, the interval rail.
+CARDS = {"Coaching": "anchor_coaching", "Build Comparison": "anchor_build_comparison"}
+GHOSTS = ("Missing Step", "Checkpoint")  # in this order when they tie (§13.3 rule 3)
+RAIL = frozenset({"Scouting Gap"})
