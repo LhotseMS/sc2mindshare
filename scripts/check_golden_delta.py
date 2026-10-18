@@ -115,9 +115,17 @@ def renumber_map(
     new_doc: Mapping[str, Any],
     removed: set[str],
     added: set[str] | None = None,
+    clock_map: Mapping[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str], dict[str, Any] | None]:
     """Addendum A for one spec: ``renumber_maps`` with a list of one."""
-    return renumber_maps([spec], old_doc, new_doc, removed, added)
+    return renumber_maps([spec], old_doc, new_doc, removed, added, clock_map)
+
+
+def _keyed_as_c3(nodes: Sequence[Mapping[str, Any]], clock_map: Mapping[str, str] | None) -> list[tuple[str, str, Any]]:
+    """(ID, key, type) per node as C3 keys them: clock nodes by their clock (M2), when a clock map is given."""
+    if clock_map is not None and any(n.get("type") == "image" for n in nodes):
+        nodes, _ = golden.normalise_nodes(nodes, clock_map, False)
+    return [(str(n.get("ID")), key, n.get("type")) for n, key in zip(nodes, golden.node_keys(nodes), strict=True)]
 
 
 def _spec_map(
@@ -226,6 +234,7 @@ def renumber_maps(
     new_doc: Mapping[str, Any],
     removed: set[str],
     added: set[str] | None = None,
+    clock_map: Mapping[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str], dict[str, Any] | None]:
     """Addendum A as amended by Addendum C: ``specs`` is one spec or a list, one per node type (two naming
     the same type stop as R1). R1, R2 and R3 run per spec; then R6 once (the types no spec names keep their
@@ -253,8 +262,10 @@ def renumber_maps(
     # R6: no other type's ID changes; ids_changed as stated, per spec
     problems = []
     named = set(types)
-    other_old = [n["ID"] for n, occ in zip(old_nodes, old_occ, strict=True) if n.get("type") not in named and occ not in removed]
-    other_new = [n["ID"] for n, occ in zip(new_nodes, new_occ, strict=True) if n.get("type") not in named and occ not in added]
+    # other types' IDs as C3 keys them (clock nodes by their clock, M2), so a moved clock window is a removal
+    # and an addition in both
+    other_old = [i for i, occ, t in _keyed_as_c3(old_nodes, clock_map) if t not in named and occ not in removed]
+    other_new = [i for i, occ, t in _keyed_as_c3(new_nodes, clock_map) if t not in named and occ not in added]
     if Counter(other_old) != Counter(other_new):  # a multiset: the order of records is C3's to judge
         gone = sorted((Counter(other_old) - Counter(other_new)).elements())
         came = sorted((Counter(other_new) - Counter(other_old)).elements())
@@ -448,7 +459,7 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
             specs = entry["renumber"]
             spec_list = [specs] if isinstance(specs, Mapping) else list(specs)
             id_map, rproblems, result = renumber_maps(
-                spec_list, old_doc, new_doc, set(entry.get("removed", [])), set(entry.get("added", []))
+                spec_list, old_doc, new_doc, set(entry.get("removed", [])), set(entry.get("added", [])), clock_map
             )
             if rproblems or result is None:
                 return problems + rproblems
@@ -471,9 +482,9 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
             report = golden.diff_json(old_doc, aligned, clock_map)
         report.changed = [(k, p) for k, p in report.changed if p != "<order>"] + order_records(old_doc, new_doc, clock_map)
         types: dict[str, str | None] = {}
-        for doc in (old_doc, new_doc):
-            for key, node in zip(golden.node_keys(doc.get("nodes", [])), doc.get("nodes", []), strict=True):
-                types[key] = node.get("type")
+        for doc in (old_doc, new_doc):  # keyed as C3 keys them, so {"type": "image"} selects the clock records
+            for _id, key, typ in _keyed_as_c3(doc.get("nodes", []), clock_map):
+                types[key] = typ
     else:
         report = golden.diff_csv(old.read_text(encoding="utf-8"), new.read_text(encoding="utf-8"))
         types = {}

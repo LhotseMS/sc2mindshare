@@ -152,3 +152,34 @@ def test_a_single_dict_is_a_list_of_one():
     as_dict = cgd.renumber_maps(dict(UNITS, links_dropped=0), one, one_new, removed=set())
     as_list = cgd.renumber_maps([dict(UNITS, links_dropped=0)], one, one_new, removed=set())
     assert as_dict[:2] == as_list[:2] and as_dict[1] == []
+
+
+# --- clock nodes under a renumber (the naming row's snapshots): R6 and the selectors see them as C3 does (M2) ---
+
+_A, _B, _C = "a" * 24, "b" * 24, "c" * 24  # media ids: 0-50, 12-10 and 1-00 clocks
+CLOCKS = {_A: "0-50.png", _B: "12-10.png", _C: "1-00.png"}
+
+
+def _clock(media, side, x):
+    return {"ID": f"{media}{side}", "type": "image", "name": f"https://host/media/resource/{media}", "position": {"x": x}}
+
+
+def _with_clocks(doc, clocks):
+    out = copy.deepcopy(doc)
+    out["nodes"] = out["nodes"] + clocks
+    return out
+
+
+def test_a_clock_window_that_moves_is_a_removal_and_an_addition_by_its_clock(tmp_path):
+    """The 12:10 clock pair goes and a 0:50 pair comes (another media id), and the 1:00 pair moves on x: R6
+    compares other types' IDs as C3 keys them (M2: by clock), and {"type": "image"} selects the clock records."""
+    old = _write(tmp_path / "old.json", _with_clocks(OLD, [_clock(_B, 1, 180), _clock(_B, 2, 180), _clock(_C, 1, 20)]))
+    new = _write(tmp_path / "new.json", _with_clocks(NEW, [_clock(_A, 1, 10), _clock(_A, 2, 10), _clock(_C, 1, 30)]))
+    entry = _entry(old, [UNITS, SCOUTING], removed=("Scouting-0#1", "<clock:12-10.png>#1#1", "<clock:12-10.png>#2#1"))
+    entry["added"] = ["<clock:0-50.png>#1#1", "<clock:0-50.png>#2#1"]
+    entry["changes"].append({"select": {"type": "image"}, "fields": ["position.x"], "count": 1})
+    assert cgd.check_delta(entry, old, new, CLOCKS) == []
+    entry["added"] = []  # the 0:50 pair left out: R6 names it by its clock, as C3 would
+    assert cgd.check_delta(entry, old, new, CLOCKS) == [
+        "R6: IDs of other node types change: [] -> ['<clock:0-50.png>#1', '<clock:0-50.png>#2']"
+    ]
