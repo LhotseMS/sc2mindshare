@@ -12,7 +12,7 @@ Decoder: `creators.larva_sources(replay)`; tests: `tests/decoding/test_larva_sou
 
 ## Rule
 
-After loop 0, a run of 3 or more births at one hall, at most 4 loops apart, is an **inject pop**: 3 injected larvae, and any further birth in the run is natural. A single birth is natural. A run of exactly 2 is **unclassified** (spores: 8 larvae in 4 runs), never guessed. The 3 larvae at loop 0 are start larvae.
+After loop 0, a run of 3 or more births at one hall, at most 4 loops apart, is an **inject pop**: 3 injected larvae, and any further birth in the run is natural. A single birth is natural. A run of exactly 2 is **unclassified** (spores: 8 larvae in 4 runs), never guessed. The 3 larvae at loop 0 are start larvae. **Limit (Rex's review):** a natural larva born up to 4 loops before an inject's larvae joins their run, so that pop is dated up to 4 loops early; the counts stay right.
 
 ## Per hall (Alcyone)
 

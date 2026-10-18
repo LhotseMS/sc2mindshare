@@ -18,7 +18,7 @@ A production structure is the creator of a birth whose ability is its own train 
 
 ## F3-025: research (E5)
 
-- `UpgradeCompleteEvent` is not only research. Each player's unlocked cosmetics (`RewardDance*`, `Spray*`, 11 names) are reported at loop 0, and a `Spray*` entry each time a spray is used in game (27 on Alcyone). `research_completions` leaves them out: 22 / 32 / 4 research completions remain on the three replays.
+- `UpgradeCompleteEvent` is not only research. Each player's unlocked cosmetics (`RewardDance*`, `Spray*`, 11 names) are reported at loop 0, and a `Spray*` entry each time a spray is used in game (27 on Alcyone). `research_completions` leaves them out: 22 / 32 / 4 research completions remain on the three replays. In the upstream corpus, loop 0 also carries unit and structure skins (`MarineSkin`, `PylonSkin`, `SupplyDepotSkin`...: `*Skin`), left out as well, and co-op commander talents, which are kept (Rex's review).
 - A research is queued by a command named `Research*`, `Evolve*` or `Upgrade*`, but `UpgradeTo*` is a morph (`UpgradeToLair`, `UpgradeToHive`): 25 / 35 / 9 commands. Commands outnumber completions: a research can be cancelled, repeated after a cancel, or still running at the end (spine: `ResearchZergMissileWeaponsLevel1` twice, no completion).
 - The ability names come from sc2reader's datapack (s2protocol has only ability links).
 

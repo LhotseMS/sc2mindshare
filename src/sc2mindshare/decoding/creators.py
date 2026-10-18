@@ -241,6 +241,9 @@ class LarvaSources:
     After loop 0, a run of larva births at the hall with gaps of at most 4 loops is an inject pop when it
     has 3 or more births (3 injected, the rest natural); a single birth is natural; a run of exactly 2 is
     left unclassified, never guessed. ``pops`` are the loops of each pop's first larva.
+
+    Limit (Rex's CR-061 review): a natural larva born up to 4 loops before an inject's larvae joins their
+    run, so that pop is dated up to 4 loops early (the counts stay right: 3 injected, the rest natural).
     """
 
     player_id: int

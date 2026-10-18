@@ -4,7 +4,8 @@ Measured on the three replays (F3-025):
 
 - ``UpgradeCompleteEvent`` also reports cosmetics: every ``RewardDance*`` and ``Spray*`` entry at loop 0
   (the player's unlocked rewards), and a ``Spray*`` entry each time a spray is used in game. They are
-  not research and are left out here.
+  not research and are left out here. The upstream corpus adds unit and structure skins (``*Skin``, at
+  loop 0), left out too; co-op replays also report commander talents at loop 0, which are kept.
 - A research is queued by a command whose ability is named ``Research*``, ``Evolve*`` or ``Upgrade*``
   (but ``UpgradeTo*`` is a morph, such as ``UpgradeToLair``).
 
@@ -26,6 +27,8 @@ from sc2reader.events.game import (  # type: ignore[import-untyped]
 from sc2reader.events.tracker import UpgradeCompleteEvent  # type: ignore[import-untyped]
 
 COSMETIC_PREFIXES = ("RewardDance", "Spray")
+#: Unit and structure skins (``MarineSkin``, ``PylonSkin``...), seen at loop 0 in the upstream corpus (Rex's review).
+COSMETIC_SUFFIXES = ("Skin",)
 RESEARCH_PREFIXES = ("Research", "Evolve", "Upgrade")
 MORPH_PREFIX = "UpgradeTo"
 
@@ -38,6 +41,11 @@ class ResearchEvent:
     name: str
 
 
+def is_cosmetic(upgrade: str) -> bool:
+    """A reward, spray or skin that ``UpgradeCompleteEvent`` reports but that is not research."""
+    return upgrade.startswith(COSMETIC_PREFIXES) or upgrade.endswith(COSMETIC_SUFFIXES)
+
+
 def is_research_ability(name: str | None) -> bool:
     return name is not None and name.startswith(RESEARCH_PREFIXES) and not name.startswith(MORPH_PREFIX)
 
@@ -47,7 +55,7 @@ def research_completions(replay: Any) -> tuple[ResearchEvent, ...]:
     return tuple(
         ResearchEvent(int(e.frame), int(e.pid), str(e.upgrade_type_name))
         for e in replay.tracker_events
-        if isinstance(e, UpgradeCompleteEvent) and not str(e.upgrade_type_name).startswith(COSMETIC_PREFIXES)
+        if isinstance(e, UpgradeCompleteEvent) and not is_cosmetic(str(e.upgrade_type_name))
     )
 
 

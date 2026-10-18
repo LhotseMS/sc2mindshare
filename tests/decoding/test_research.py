@@ -10,6 +10,7 @@ from sc2mindshare.decoding import load
 from sc2mindshare.decoding.export import to_dict
 from sc2mindshare.decoding.research import (
     ResearchEvent,
+    is_cosmetic,
     is_research_ability,
     research_commands,
     research_completions,
@@ -68,3 +69,19 @@ def test_export_has_the_research(alcyone):
     doc = to_dict(load(alcyone))["research"]
     assert len(doc["completions"]) == 22 and len(doc["commands"]) == 25
     assert doc["completions"][0] == {"frame": 9728, "player_id": 2, "name": "WarpGateResearch"}
+
+
+@pytest.mark.parametrize(
+    ("upgrade", "expected"),
+    [
+        ("RewardDanceStalker", True),
+        ("SprayZerg", True),
+        ("MarineSkin", True),  # skins: seen at loop 0 in the upstream corpus (CR-060 review)
+        ("SupplyDepotSkin", True),
+        ("CausticSpray", False),  # a real upgrade that ends in "Spray"
+        ("zerglingmovementspeed", False),
+        ("ArtanisUnlockReaver", False),  # a co-op commander talent at loop 0: kept
+    ],
+)
+def test_cosmetic_names(upgrade, expected):
+    assert is_cosmetic(upgrade) is expected
