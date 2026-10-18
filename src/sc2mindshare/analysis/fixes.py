@@ -61,11 +61,12 @@ def pre_game_display(graph: Graph) -> Graph:
     nodes = []
     for node in graph.nodes:
         if node.start_seconds is not None and node.start_seconds < 0:
+            values = tuple((name, "00:00:00" if name == "time" else value) for name, value in node.values)
             note = pre_game_note(node.start_seconds)
-            if note not in node.description:
-                values = tuple((name, "00:00:00" if name == "time" else value) for name, value in node.values)
-                description = f"{node.description}X_LDX_LD{note}" if node.description else note
-                node = replace(node, values=values, description=description)
+            description = node.description
+            if note not in description:  # the note once, whatever the description held
+                description = f"{description}X_LDX_LD{note}" if description else note
+            node = replace(node, values=values, description=description)
         nodes.append(node)
     return replace(graph, nodes=tuple(nodes))
 
