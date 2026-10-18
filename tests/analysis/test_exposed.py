@@ -110,13 +110,27 @@ def test_everything_is_filled_on_alcyone(x):
         is_ladder=True,
         players=(ex.PlayerContext(1, 0, "Zerg", "Protoss"), ex.PlayerContext(2, 1, "Protoss", "Zerg")),
     )
-    assert (len(x.tables.build_times), len(x.tables.research_times)) == (128, 117)
+    assert (len(x.tables.build_times), len(x.tables.research_times)) == (120, 117)  # 128 rows less the 8 base rows
     assert len(x.tables.units_source_sha256) == len(x.tables.upgrades_source_sha256) == 64
     assert all(u.base is None for u in x.units)  # U9 waits for the fixed base detector (T22 P1)
     assert not any(u.hallucinated for u in x.units)
 
 
 # --- the done-when: type at birth, never the final type (TD-13) ----------------------------------------
+
+
+def test_c5_the_tables_are_keyed_by_the_ids_the_units_carry(x):
+    """Vera's G7 (a) on CR-021: the build times join with U3 (internal ids such as "VoidRay"), not the
+    sheet's display names ("Void Ray"); the five names that are not their id are aliased."""
+    keys = set(dict(x.tables.build_times))
+    assert {"VoidRay", "Hatchery", "SpawningPool", "Drone", "Zergling", "Overlord", "Gateway", "BattleHellion"} <= keys
+    assert {"LocustMPFlying", "Locust", "OverlordTransport", "OracleStasisTrap"} <= keys  # the other aliases
+    assert not keys & {"Void Ray", "Hellbat", "Natural", "3rd base"}  # no display name, no base row
+    assert x.tables.unmapped_units == ()
+    built = {u.first_type for u in x.units if u.init_loop is not None}  # every building the players placed
+    # no row in unitsInfo.csv for a Queen's creep tumor or a rich-gas extractor: gaps in the sheet, not in the keying
+    assert built - keys == {"CreepTumorQueen", "ExtractorRich"}
+    assert dict(x.tables.build_times)["VoidRay"] == "43"
 
 
 def test_every_morph_starts_from_the_type_before_it(x):
@@ -183,12 +197,29 @@ def test_the_ravager_cocoons_are_later_than_the_legacy_csv_suggests(x):
 
 
 def test_v3_a_drone_that_becomes_a_building_dies_at_the_buildings_completion(x):
-    """No death at the init: the Drone's UnitDiedEvent (no killer) comes at the building's done loop, at its position."""
+    """No death at the init: the Drone's UnitDiedEvent (no killer) comes at the building's done loop, at its
+    position. Each of the 30 buildings pairs with exactly one such Drone, within 2 loops and 2 cells (Vera's
+    G7 (c): the position is checked, from the death events, which UnitLife does not carry)."""
     drones = [u for u in x.units if u.first_type == "Drone" and u.owner == LIL and u.died_loop is not None and u.killer is None]
     built = [u for u in x.units if u.owner == LIL and u.init_loop is not None and not u.first_type.startswith("CreepTumor")]
     assert len(drones) == len(built) == 30
-    done = {(u.done_loop, u.x, u.y) for u in built}
-    assert all(any(abs(d.died_loop - dl) <= 2 for dl, _x, _y in done) for d in drones)
+    ids = {d.unit_id for d in drones}
+    died_at = {
+        e.unit_id: (e.x, e.y)
+        for e in load_replay(ALCYONE).tracker_events
+        if type(e).__name__ == "UnitDiedEvent" and e.unit_id in ids
+    }
+    unpaired = {d.unit_id: d for d in drones}
+    for b in sorted(built, key=lambda u: u.done_loop):
+        match = [
+            d
+            for d in unpaired.values()
+            if abs(d.died_loop - b.done_loop) <= 2
+            and max(abs(died_at[d.unit_id][0] - b.x), abs(died_at[d.unit_id][1] - b.y)) <= 2
+        ]
+        assert len(match) == 1, (b.first_type, b.done_loop, b.x, b.y, [(m.died_loop, died_at[m.unit_id]) for m in match])
+        del unpaired[match[0].unit_id]
+    assert not unpaired
 
 
 def test_v4_stats_samples_every_160_loops_and_food_used_can_be_fractional(x):

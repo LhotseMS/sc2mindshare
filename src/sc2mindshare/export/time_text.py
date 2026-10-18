@@ -1,4 +1,6 @@
-"""Times as the legacy layer wrote them (CR-022, T21): the one place a ``GameTime`` becomes text.
+"""Times as the legacy layer wrote them (CR-022, T21): the one place a time field becomes text (the one
+other time text, the pre-game note in a description, is ``analysis.fixes.signed_hhmmss``; see
+``domain.time``).
 
 Bug-faithful, per node kind (tests/analysis/test_time.py characterises every form):
 

@@ -12,7 +12,7 @@
   "dataTypes": {"type": "object", "additionalProperties": {"$ref": "#/$defs/dataType"}},
   "nodes": {"type": "array", "items": {"$ref": "#/$defs/node"}},
   "links": {"type": "array", "items": {"$ref": "#/$defs/link"}},
-  "analysis": {"type": "object", "description": "Opt-in (sc2mindshare build --with-analysis, CR-021): the analysis values stream 2 reads; not part of the Mindshare import format"}
+  "analysis": {"$ref": "#/$defs/analysis"}
  },
  "$defs": {
   "visual": {
@@ -160,6 +160,140 @@
     "node1": {"type": "string"},
     "node2": {"type": "string"},
     "description": {"type": "string"}
+   }
+  },
+  "analysis": {
+   "type": "object",
+   "description": "Opt-in (sc2mindshare build --with-analysis, CR-021): the analysis values stream 2 reads, as written by export.mindshare_json.analysis_doc from domain/exposed.py; not part of the Mindshare import format",
+   "required": ["game", "units", "type_changes", "upgrades", "stats", "supply", "chronos", "tables"],
+   "additionalProperties": false,
+   "properties": {
+    "game": {"$ref": "#/$defs/analysisGame"},
+    "units": {"type": "array", "items": {"$ref": "#/$defs/analysisUnit"}},
+    "type_changes": {"type": "array", "items": {"$ref": "#/$defs/analysisTypeChange"}},
+    "upgrades": {"type": "array", "items": {"$ref": "#/$defs/analysisUpgrade"}},
+    "stats": {"type": "array", "items": {"$ref": "#/$defs/analysisStats"}},
+    "supply": {"type": "array", "items": {"$ref": "#/$defs/analysisSupply"}},
+    "chronos": {"type": "array", "items": {"$ref": "#/$defs/analysisChrono"}},
+    "tables": {"$ref": "#/$defs/analysisTables"}
+   }
+  },
+  "analysisGame": {
+   "type": "object",
+   "required": ["base_build", "version", "loops", "game_type", "team_size", "is_ladder", "players"],
+   "additionalProperties": false,
+   "properties": {
+    "base_build": {"type": "integer"},
+    "version": {"type": "string"},
+    "loops": {"type": "integer"},
+    "game_type": {"type": "string"},
+    "team_size": {"type": "integer"},
+    "is_ladder": {"type": "boolean"},
+    "players": {"type": "array", "items": {"$ref": "#/$defs/analysisPlayer"}}
+   }
+  },
+  "analysisPlayer": {
+   "type": "object",
+   "required": ["pid", "order", "race", "opponent_race"],
+   "additionalProperties": false,
+   "properties": {
+    "pid": {"type": "integer"},
+    "order": {"type": "integer"},
+    "race": {"type": "string"},
+    "opponent_race": {"type": ["string", "null"]}
+   }
+  },
+  "analysisUnit": {
+   "type": "object",
+   "required": ["unit_id", "owner", "first_type", "born_loop", "init_loop", "done_loop", "died_loop", "killer", "killing_unit_id", "x", "y", "hallucinated", "base"],
+   "additionalProperties": false,
+   "properties": {
+    "unit_id": {"type": "integer"},
+    "owner": {"type": "integer"},
+    "first_type": {"type": "string"},
+    "born_loop": {"type": ["integer", "null"]},
+    "init_loop": {"type": ["integer", "null"]},
+    "done_loop": {"type": ["integer", "null"]},
+    "died_loop": {"type": ["integer", "null"]},
+    "killer": {"type": ["integer", "null"]},
+    "killing_unit_id": {"type": ["integer", "null"]},
+    "x": {"type": "integer"},
+    "y": {"type": "integer"},
+    "hallucinated": {"type": "boolean"},
+    "base": {"type": ["string", "null"]}
+   }
+  },
+  "analysisTypeChange": {
+   "type": "object",
+   "required": ["unit_id", "loop", "before", "after"],
+   "additionalProperties": false,
+   "properties": {
+    "unit_id": {"type": "integer"},
+    "loop": {"type": "integer"},
+    "before": {"type": "string"},
+    "after": {"type": "string"}
+   }
+  },
+  "analysisUpgrade": {
+   "type": "object",
+   "required": ["player", "upgrade", "loop", "count"],
+   "additionalProperties": false,
+   "properties": {
+    "player": {"type": "integer"},
+    "upgrade": {"type": "string"},
+    "loop": {"type": "integer"},
+    "count": {"type": "integer"}
+   }
+  },
+  "analysisStats": {
+   "type": "object",
+   "required": ["player", "loop", "food_used", "food_made", "workers_active", "minerals", "vespene", "minerals_rate", "vespene_rate", "army_minerals", "army_vespene"],
+   "additionalProperties": false,
+   "properties": {
+    "player": {"type": "integer"},
+    "loop": {"type": "integer"},
+    "food_used": {"type": "number"},
+    "food_made": {"type": "number"},
+    "workers_active": {"type": "integer"},
+    "minerals": {"type": "integer"},
+    "vespene": {"type": "integer"},
+    "minerals_rate": {"type": "integer"},
+    "vespene_rate": {"type": "integer"},
+    "army_minerals": {"type": "integer"},
+    "army_vespene": {"type": "integer"}
+   }
+  },
+  "analysisSupply": {
+   "type": "object",
+   "required": ["player", "time", "supply", "limit"],
+   "additionalProperties": false,
+   "properties": {
+    "player": {"type": "integer"},
+    "time": {"type": "string"},
+    "supply": {"type": "number"},
+    "limit": {"type": "number"}
+   }
+  },
+  "analysisChrono": {
+   "type": "object",
+   "required": ["player", "loop", "target_unit_id"],
+   "additionalProperties": false,
+   "properties": {
+    "player": {"type": "integer"},
+    "loop": {"type": "integer"},
+    "target_unit_id": {"type": "integer"}
+   }
+  },
+  "analysisTables": {
+   "type": "object",
+   "required": ["build_times", "research_times", "units_source_sha256", "upgrades_source_sha256", "unmapped_units"],
+   "additionalProperties": false,
+   "properties": {
+    "build_times": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}},
+    "research_times": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}},
+    "units_source_sha256": {"type": "string"},
+    "upgrades_source_sha256": {"type": "string"},
+    "unmapped_units": {"type": "array", "items": {"type": "string"}}
    }
   }
  }

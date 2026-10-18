@@ -1,6 +1,9 @@
 """Game time as a number: a count of game loops (CR-022, T21; TD-30).
 
-The domain carries every time as a ``GameTime``; only ``export/`` turns one into text. The real
+The domain carries every time as a ``GameTime``; only ``export/`` turns one into text, with one stated
+exception: ``analysis.fixes.signed_hhmmss`` writes a pre-game start into the main bases' description
+(P3d/P3e, D3c), because that graph fix composes the description and ``analysis`` may not import
+``export`` (tests/test_architecture.py); it is description prose, not a time field. The real
 second is computed with integers: 22.4 loops per second is 112 / 5, so ``seconds`` is exact for
 every loop. For every non-negative loop it equals the legacy ``int(frame / 22.4)`` (TD-26, proven
 over twelve hours of loops in tests/analysis/test_time.py), so an item at a window boundary stays in
