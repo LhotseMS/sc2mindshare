@@ -92,3 +92,84 @@ def register_readers(replay: Any) -> None:
 def creations(replay: Any) -> tuple[Creation, ...]:
     """Every birth in the tracker stream, in order; empty when the reader was not registered."""
     return _CREATIONS.get(replay, ())
+
+
+#: Zerg town halls: the creators of larvae (F3-020).
+TOWN_HALLS = frozenset({"Hatchery", "Lair", "Hive"})
+LARVA = "Larva"
+LARVA_TRAIN = "LarvaTrain"
+
+
+@dataclass(frozen=True)
+class LarvaProduction:
+    """A larva-made unit traced to its town hall: unit -> egg (the larva's own tag) -> the larva's creator (CR-057)."""
+
+    frame: int
+    unit_id: int
+    unit_type: str
+    player_id: int
+    larva_id: int
+    #: None when the larva's birth (or its creator) is not in the tracker stream.
+    town_hall_id: int | None
+    #: The town hall's type at the unit's birth loop (Hatchery, Lair or Hive), None with town_hall_id.
+    town_hall_type: str | None
+
+
+def _type_at(unit: Any, frame: int) -> str:
+    """A unit's type at a loop; sc2reader's ``name`` is its final type (F3-007)."""
+    name = unit.name
+    for loop, unit_type in sorted(unit.type_history.items()):
+        if loop <= frame:
+            name = unit_type.name
+    return str(name)
+
+
+def larva_production(replay: Any) -> tuple[LarvaProduction, ...]:
+    """Every ``LarvaTrain`` birth with its larva and town hall, in stream order."""
+    larva_creator = {c.unit_id: c.creator_id for c in creations(replay) if c.unit_type == LARVA}
+    rows = []
+    for c in creations(replay):
+        if c.creator_ability != LARVA_TRAIN or c.creator_id is None:
+            continue
+        hall_id = larva_creator.get(c.creator_id)
+        hall = None if hall_id is None else replay.objects.get(hall_id)
+        rows.append(
+            LarvaProduction(
+                frame=c.frame,
+                unit_id=c.unit_id,
+                unit_type=c.unit_type,
+                player_id=c.player_id,
+                larva_id=c.creator_id,
+                town_hall_id=None if hall is None else hall_id,
+                town_hall_type=None if hall is None else _type_at(hall, c.frame),
+            )
+        )
+    return tuple(rows)
+
+
+@dataclass(frozen=True)
+class LarvaUse:
+    """Per town hall: larvae it spawned, how many of them became an egg, and the units they made."""
+
+    player_id: int
+    town_hall_id: int
+    larvae: int
+    larvae_used: int
+    units: int
+
+
+def larva_use(replay: Any) -> tuple[LarvaUse, ...]:
+    """One row per town hall that spawned a larva, ordered by its id."""
+    larvae: dict[int, set[int]] = {}
+    owner: dict[int, int] = {}
+    for c in creations(replay):
+        if c.unit_type == LARVA and c.creator_id is not None:
+            larvae.setdefault(c.creator_id, set()).add(c.unit_id)
+            owner.setdefault(c.creator_id, c.player_id)
+    used: dict[int, set[int]] = {}
+    units: dict[int, int] = {}
+    for p in larva_production(replay):
+        if p.town_hall_id is not None:
+            used.setdefault(p.town_hall_id, set()).add(p.larva_id)
+            units[p.town_hall_id] = units.get(p.town_hall_id, 0) + 1
+    return tuple(LarvaUse(owner[h], h, len(larvae[h]), len(used.get(h, set())), units.get(h, 0)) for h in sorted(larvae))

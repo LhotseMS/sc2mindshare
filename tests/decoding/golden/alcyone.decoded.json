@@ -509,6 +509,64 @@
     "title": "Alcyone LE",
     "warnings": []
   },
+  "larva_use": [
+    {
+      "larvae": 112,
+      "larvae_used": 99,
+      "player_id": 1,
+      "town_hall_id": 54788097,
+      "units": 116
+    },
+    {
+      "larvae": 98,
+      "larvae_used": 89,
+      "player_id": 1,
+      "town_hall_id": 66322433,
+      "units": 98
+    },
+    {
+      "larvae": 72,
+      "larvae_used": 63,
+      "player_id": 1,
+      "town_hall_id": 76283905,
+      "units": 72
+    },
+    {
+      "larvae": 22,
+      "larvae_used": 19,
+      "player_id": 1,
+      "town_hall_id": 108527622,
+      "units": 24
+    },
+    {
+      "larvae": 35,
+      "larvae_used": 22,
+      "player_id": 1,
+      "town_hall_id": 127926294,
+      "units": 28
+    },
+    {
+      "larvae": 18,
+      "larvae_used": 15,
+      "player_id": 1,
+      "town_hall_id": 129499155,
+      "units": 22
+    },
+    {
+      "larvae": 18,
+      "larvae_used": 15,
+      "player_id": 1,
+      "town_hall_id": 130023440,
+      "units": 22
+    },
+    {
+      "larvae": 12,
+      "larvae_used": 0,
+      "player_id": 1,
+      "town_hall_id": 164102153,
+      "units": 0
+    }
+  ],
   "mmr": [
     {
       "agree": true,

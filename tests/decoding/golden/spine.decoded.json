@@ -308,6 +308,29 @@
     "title": "Jagannatha LE",
     "warnings": []
   },
+  "larva_use": [
+    {
+      "larvae": 72,
+      "larvae_used": 68,
+      "player_id": 1,
+      "town_hall_id": 47972353,
+      "units": 75
+    },
+    {
+      "larvae": 53,
+      "larvae_used": 48,
+      "player_id": 1,
+      "town_hall_id": 60030977,
+      "units": 52
+    },
+    {
+      "larvae": 44,
+      "larvae_used": 41,
+      "player_id": 1,
+      "town_hall_id": 64487425,
+      "units": 44
+    }
+  ],
   "mmr": [
     {
       "agree": true,

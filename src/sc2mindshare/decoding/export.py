@@ -14,7 +14,7 @@ from sc2mindshare.decoding.camera_hotkeys import camera_recalls, camera_saves
 from sc2mindshare.decoding.command_flags import command_flag_summary, zoom_events
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.control_groups import control_group_activity
-from sc2mindshare.decoding.creators import creations
+from sc2mindshare.decoding.creators import creations, larva_use
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
 from sc2mindshare.decoding.side_members import side_members, user_options
 from sc2mindshare.decoding.target_flags import target_flag_summary
@@ -69,6 +69,7 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
             for (kind, source), count in sorted(counts.items(), key=lambda kv: (kv[0][0].name, kv[0][1]))
         ],
         "creators": _creators(replay),
+        "larva_use": [dataclasses.asdict(row) for row in larva_use(replay)],
         "side_members": _side_members(replay),
         "user_options": [dataclasses.asdict(row) for row in user_options(replay)],
         "warnings": list(decoded.warnings),

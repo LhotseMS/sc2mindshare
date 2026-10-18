@@ -466,6 +466,57 @@
     "title": "Golden Wall LE",
     "warnings": []
   },
+  "larva_use": [
+    {
+      "larvae": 22,
+      "larvae_used": 11,
+      "player_id": 2,
+      "town_hall_id": 38273026,
+      "units": 12
+    },
+    {
+      "larvae": 113,
+      "larvae_used": 97,
+      "player_id": 2,
+      "town_hall_id": 63438849,
+      "units": 105
+    },
+    {
+      "larvae": 110,
+      "larvae_used": 91,
+      "player_id": 2,
+      "town_hall_id": 63963140,
+      "units": 96
+    },
+    {
+      "larvae": 88,
+      "larvae_used": 69,
+      "player_id": 2,
+      "town_hall_id": 75497474,
+      "units": 71
+    },
+    {
+      "larvae": 57,
+      "larvae_used": 39,
+      "player_id": 2,
+      "town_hall_id": 95158273,
+      "units": 44
+    },
+    {
+      "larvae": 50,
+      "larvae_used": 31,
+      "player_id": 2,
+      "town_hall_id": 118489090,
+      "units": 34
+    },
+    {
+      "larvae": 45,
+      "larvae_used": 34,
+      "player_id": 2,
+      "town_hall_id": 145489922,
+      "units": 35
+    }
+  ],
   "mmr": [
     {
       "agree": true,
