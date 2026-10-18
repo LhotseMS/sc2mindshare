@@ -1,4 +1,60 @@
 {
+  "camera_hotkeys": {
+    "recalls": [
+      {
+        "count": 52,
+        "player_id": 1,
+        "slot": 0
+      },
+      {
+        "count": 45,
+        "player_id": 1,
+        "slot": 1
+      },
+      {
+        "count": 24,
+        "player_id": 1,
+        "slot": 2
+      }
+    ],
+    "saves": [
+      {
+        "game_loop": 158,
+        "player_id": 1,
+        "slot": 0,
+        "x": 41.5,
+        "y": 32.76171875
+      },
+      {
+        "game_loop": 995,
+        "player_id": 1,
+        "slot": 1,
+        "x": 70.98046875,
+        "y": 33.5390625
+      },
+      {
+        "game_loop": 1014,
+        "player_id": 1,
+        "slot": 2,
+        "x": 100.98046875,
+        "y": 34.66796875
+      },
+      {
+        "game_loop": 1611,
+        "player_id": 1,
+        "slot": 2,
+        "x": 101.5,
+        "y": 31.76171875
+      },
+      {
+        "game_loop": 3023,
+        "player_id": 1,
+        "slot": 1,
+        "x": 69.5,
+        "y": 32.76171875
+      }
+    ]
+  },
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 83830,

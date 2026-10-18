@@ -1,4 +1,244 @@
 {
+  "camera_hotkeys": {
+    "recalls": [
+      {
+        "count": 104,
+        "player_id": 1,
+        "slot": 0
+      },
+      {
+        "count": 97,
+        "player_id": 1,
+        "slot": 1
+      },
+      {
+        "count": 32,
+        "player_id": 1,
+        "slot": 2
+      },
+      {
+        "count": 18,
+        "player_id": 1,
+        "slot": 3
+      },
+      {
+        "count": 2,
+        "player_id": 1,
+        "slot": 4
+      },
+      {
+        "count": 3,
+        "player_id": 2,
+        "slot": 0
+      },
+      {
+        "count": 2,
+        "player_id": 2,
+        "slot": 1
+      },
+      {
+        "count": 1,
+        "player_id": 2,
+        "slot": 2
+      },
+      {
+        "count": 16,
+        "player_id": 2,
+        "slot": 3
+      }
+    ],
+    "saves": [
+      {
+        "game_loop": 69,
+        "player_id": 2,
+        "slot": 3,
+        "x": 143.5,
+        "y": 136.7578125
+      },
+      {
+        "game_loop": 100,
+        "player_id": 1,
+        "slot": 0,
+        "x": 35.5,
+        "y": 28.7578125
+      },
+      {
+        "game_loop": 109,
+        "player_id": 2,
+        "slot": 2,
+        "x": 114.1796875,
+        "y": 133.60546875
+      },
+      {
+        "game_loop": 125,
+        "player_id": 2,
+        "slot": 1,
+        "x": 89.44921875,
+        "y": 131.93359375
+      },
+      {
+        "game_loop": 162,
+        "player_id": 2,
+        "slot": 0,
+        "x": 130.12109375,
+        "y": 109.60546875
+      },
+      {
+        "game_loop": 266,
+        "player_id": 1,
+        "slot": 1,
+        "x": 36.13671875,
+        "y": 59.375
+      },
+      {
+        "game_loop": 292,
+        "player_id": 1,
+        "slot": 2,
+        "x": 61.96875,
+        "y": 46.5390625
+      },
+      {
+        "game_loop": 322,
+        "player_id": 1,
+        "slot": 3,
+        "x": 41.6328125,
+        "y": 85.046875
+      },
+      {
+        "game_loop": 352,
+        "player_id": 1,
+        "slot": 4,
+        "x": 33.38671875,
+        "y": 112.95703125
+      },
+      {
+        "game_loop": 729,
+        "player_id": 1,
+        "slot": 1,
+        "x": 35.94140625,
+        "y": 60.19140625
+      },
+      {
+        "game_loop": 768,
+        "player_id": 1,
+        "slot": 2,
+        "x": 61.48828125,
+        "y": 45.38671875
+      },
+      {
+        "game_loop": 809,
+        "player_id": 1,
+        "slot": 3,
+        "x": 39.375,
+        "y": 86.03125
+      },
+      {
+        "game_loop": 853,
+        "player_id": 1,
+        "slot": 4,
+        "x": 33.38671875,
+        "y": 112.1875
+      },
+      {
+        "game_loop": 1281,
+        "player_id": 1,
+        "slot": 1,
+        "x": 35.80078125,
+        "y": 60.40625
+      },
+      {
+        "game_loop": 1320,
+        "player_id": 1,
+        "slot": 2,
+        "x": 61.03125,
+        "y": 45.3359375
+      },
+      {
+        "game_loop": 1377,
+        "player_id": 1,
+        "slot": 3,
+        "x": 38.80078125,
+        "y": 86.19921875
+      },
+      {
+        "game_loop": 1410,
+        "player_id": 1,
+        "slot": 4,
+        "x": 33.33984375,
+        "y": 112.1640625
+      },
+      {
+        "game_loop": 1828,
+        "player_id": 1,
+        "slot": 1,
+        "x": 35.5,
+        "y": 60.7578125
+      },
+      {
+        "game_loop": 4750,
+        "player_id": 1,
+        "slot": 2,
+        "x": 60.5,
+        "y": 45.7578125
+      },
+      {
+        "game_loop": 5611,
+        "player_id": 1,
+        "slot": 2,
+        "x": 60.5,
+        "y": 45.7578125
+      },
+      {
+        "game_loop": 6244,
+        "player_id": 2,
+        "slot": 1,
+        "x": 127.390625,
+        "y": 111.09765625
+      },
+      {
+        "game_loop": 11711,
+        "player_id": 1,
+        "slot": 3,
+        "x": 38.80078125,
+        "y": 86.19921875
+      },
+      {
+        "game_loop": 12025,
+        "player_id": 1,
+        "slot": 3,
+        "x": 38.5,
+        "y": 86.7578125
+      },
+      {
+        "game_loop": 12900,
+        "player_id": 1,
+        "slot": 3,
+        "x": 38.5,
+        "y": 86.7578125
+      },
+      {
+        "game_loop": 14681,
+        "player_id": 2,
+        "slot": 0,
+        "x": 150.0,
+        "y": 89.515625
+      },
+      {
+        "game_loop": 14694,
+        "player_id": 2,
+        "slot": 0,
+        "x": 148.5,
+        "y": 93.7578125
+      },
+      {
+        "game_loop": 15478,
+        "player_id": 1,
+        "slot": 4,
+        "x": 31.73828125,
+        "y": 110.1640625
+      }
+    ]
+  },
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 92440,

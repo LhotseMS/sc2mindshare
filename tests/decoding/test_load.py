@@ -11,7 +11,9 @@ from sc2mindshare.decoding.archive import read_member
 def test_load_returns_a_decoded_replay_on_the_pinned_sc2reader(any_replay):
     decoded = load(any_replay)
     assert isinstance(decoded, DecodedReplay)
-    assert type(decoded.replay).__module__ == "sc2reader.resources"
+    from sc2reader.resources import Replay
+
+    assert isinstance(decoded.replay, Replay)  # a Replay subclass that registers the stream 3 readers
     assert decoded.replay.frames > 0
 
 

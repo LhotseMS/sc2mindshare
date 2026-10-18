@@ -10,6 +10,7 @@ import dataclasses
 import json
 from typing import TYPE_CHECKING, Any
 
+from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
 
 if TYPE_CHECKING:
@@ -49,7 +50,24 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
             }
             for row in mmr_consistency(replay, decoded.metadata)
         ],
+        "camera_hotkeys": _camera_hotkeys(replay),
         "warnings": list(decoded.warnings),
+    }
+
+
+def _camera_hotkeys(replay: Any) -> dict[str, Any]:
+    saves = sorted(
+        (e for e in replay.game_events if isinstance(e, CameraSaveEvent) and e.player is not None),
+        key=lambda e: e.frame,
+    )
+    recalls: dict[tuple[int, int], int] = {}
+    for recall in camera_recalls(replay):
+        recalls[(recall.player_id, recall.slot)] = recalls.get((recall.player_id, recall.slot), 0) + 1
+    return {
+        "saves": [
+            {"game_loop": e.frame, "player_id": e.player.pid, "slot": e.slot, "x": e.saved_x, "y": e.saved_y} for e in saves
+        ],
+        "recalls": [{"player_id": pid, "slot": slot, "count": count} for (pid, slot), count in sorted(recalls.items())],
     }
 
 

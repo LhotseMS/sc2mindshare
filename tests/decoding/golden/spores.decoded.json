@@ -1,4 +1,218 @@
 {
+  "camera_hotkeys": {
+    "recalls": [
+      {
+        "count": 4,
+        "player_id": 1,
+        "slot": 0
+      },
+      {
+        "count": 4,
+        "player_id": 1,
+        "slot": 1
+      },
+      {
+        "count": 13,
+        "player_id": 1,
+        "slot": 4
+      },
+      {
+        "count": 76,
+        "player_id": 2,
+        "slot": 0
+      },
+      {
+        "count": 54,
+        "player_id": 2,
+        "slot": 1
+      },
+      {
+        "count": 22,
+        "player_id": 2,
+        "slot": 2
+      },
+      {
+        "count": 2,
+        "player_id": 2,
+        "slot": 3
+      },
+      {
+        "count": 1,
+        "player_id": 2,
+        "slot": 4
+      }
+    ],
+    "saves": [
+      {
+        "game_loop": 102,
+        "player_id": 2,
+        "slot": 0,
+        "x": 175.5,
+        "y": 48.76171875
+      },
+      {
+        "game_loop": 128,
+        "player_id": 2,
+        "slot": 1,
+        "x": 168.76171875,
+        "y": 75.421875
+      },
+      {
+        "game_loop": 147,
+        "player_id": 2,
+        "slot": 2,
+        "x": 135.41796875,
+        "y": 71.515625
+      },
+      {
+        "game_loop": 567,
+        "player_id": 1,
+        "slot": 4,
+        "x": 32.5,
+        "y": 48.76171875
+      },
+      {
+        "game_loop": 571,
+        "player_id": 1,
+        "slot": 4,
+        "x": 32.5,
+        "y": 48.76171875
+      },
+      {
+        "game_loop": 575,
+        "player_id": 1,
+        "slot": 4,
+        "x": 32.5,
+        "y": 48.76171875
+      },
+      {
+        "game_loop": 577,
+        "player_id": 1,
+        "slot": 4,
+        "x": 32.5,
+        "y": 48.76171875
+      },
+      {
+        "game_loop": 588,
+        "player_id": 1,
+        "slot": 0,
+        "x": 47.5703125,
+        "y": 72.1640625
+      },
+      {
+        "game_loop": 593,
+        "player_id": 1,
+        "slot": 0,
+        "x": 47.5703125,
+        "y": 72.1640625
+      },
+      {
+        "game_loop": 596,
+        "player_id": 1,
+        "slot": 0,
+        "x": 47.5703125,
+        "y": 72.1640625
+      },
+      {
+        "game_loop": 597,
+        "player_id": 1,
+        "slot": 0,
+        "x": 47.5703125,
+        "y": 72.1640625
+      },
+      {
+        "game_loop": 617,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 620,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 624,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 627,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 630,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 633,
+        "player_id": 1,
+        "slot": 0,
+        "x": 50.44921875,
+        "y": 78.59765625
+      },
+      {
+        "game_loop": 647,
+        "player_id": 1,
+        "slot": 1,
+        "x": 68.08984375,
+        "y": 68.91015625
+      },
+      {
+        "game_loop": 650,
+        "player_id": 1,
+        "slot": 1,
+        "x": 68.08984375,
+        "y": 68.91015625
+      },
+      {
+        "game_loop": 2250,
+        "player_id": 2,
+        "slot": 2,
+        "x": 136.5,
+        "y": 69.76171875
+      },
+      {
+        "game_loop": 5021,
+        "player_id": 2,
+        "slot": 1,
+        "x": 167.5,
+        "y": 75.76171875
+      },
+      {
+        "game_loop": 7645,
+        "player_id": 2,
+        "slot": 3,
+        "x": 165.5,
+        "y": 107.76171875
+      },
+      {
+        "game_loop": 10754,
+        "player_id": 2,
+        "slot": 4,
+        "x": 168.5,
+        "y": 139.76171875
+      },
+      {
+        "game_loop": 15435,
+        "player_id": 2,
+        "slot": 5,
+        "x": 132.5,
+        "y": 128.76171875
+      }
+    ]
+  },
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 81433,

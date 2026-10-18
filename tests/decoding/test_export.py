@@ -31,6 +31,20 @@ def test_export_has_the_metadata_with_neutral_and_named_units(alcyone):
     ]
 
 
+def test_export_has_camera_saves_and_recall_counts(alcyone):
+    hotkeys = to_dict(load(alcyone))["camera_hotkeys"]
+    assert len(hotkeys["saves"]) == 27
+    assert hotkeys["saves"][0] == {
+        "game_loop": 69,  # s2protocol: first SCameraSaveEvent at loop 69, user 1 (player 2)
+        "player_id": 2,
+        "slot": 3,
+        "x": 143.5,
+        "y": 136.7578125,
+    }
+    assert sum(r["count"] for r in hotkeys["recalls"] if r["player_id"] == 1) == 253
+    assert sum(r["count"] for r in hotkeys["recalls"] if r["player_id"] == 2) == 22
+
+
 def test_export_is_deterministic_json(alcyone):
     text = to_json(load(alcyone))
     assert text == to_json(load(alcyone))
