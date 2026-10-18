@@ -4,7 +4,8 @@ Stefan's layer (now ``sc2mindshare.analysis``) was written against a fork that e
 event, unit and player classes in place: extra properties (``second`` as ``frame / 22.4``,
 ``time``, ``playerName``, ``player``/``pid`` on tracker events, ``nameC`` ...), extra methods
 (``registerUpdateEvent``, ``isCombat``, ``countableUnitDeath`` ...), rewritten ``__str__`` methods
-(names and descriptions in the CSV come from them), and two control-group classes of its own.
+(CR-011c makes that text explicit: ``compat.object_text``; no ``__str__`` is overridden here), and
+two control-group classes of its own.
 
 ``flavour_replay(replay)`` gives a loaded upstream replay that API without touching sc2reader: each
 event, unit and player gets a **subclass** of its own upstream class that adds the fork's members
@@ -93,9 +94,6 @@ class _GameEventMixin(_EventMixin):
     def _str_prefix(self) -> str:
         return compat.game_time(self)
 
-    def __str__(self) -> str:
-        return self._str_prefix() + self.name
-
 
 class _CommandEventMixin(_GameEventMixin):
     def registerUpdateEvent(self, e: Any) -> None:
@@ -117,71 +115,23 @@ class _CommandEventMixin(_GameEventMixin):
             text += " M"
         return text
 
-    def __str__(self) -> str:
-        s: Any = self
-        string = self._str_prefix() + f" {s.player} "
-        if s.has_ability:
-            string += f"Ability ({s.ability_id:X})"
-            string += f" - {s.ability.name}({s.ability.id})" if s.ability else "No self.ability "
-        else:
-            string += "Right Click" + f" - {s.ability_type}"
-        if s.ability_type == "TargetUnit":
-            string += f"; Target: {s.target.name} [{s.target_unit_id:0>8X}]"
-        if bool(s.flag["queued"]):
-            string += " Q"
-        if bool(s.flag["minimap"]):
-            string += " M"
-        if s.ability_type in ("TargetPoint", "TargetUnit"):
-            string += f"; Location: {s.location!s}"
-        return string + str(self.__class__)
-
 
 class _CommandManagerStateEventMixin(_GameEventMixin):
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + self.name + f" {s.sequence} - {s.commandEvent}"
+    """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
 class _SelectionEventMixin(_GameEventMixin):
     def isPlayer(self, playerNames: Any) -> bool:
         return self.playerName in playerNames
 
-    def __str__(self) -> str:
-        s: Any = self
-        if s.new_units:
-            return (
-                f"{self.time} {s.player} Selection             "
-                + str(s.new_units)
-                + " --- "
-                + str(s.new_unit_info)
-                + "---"
-                + str(s.new_unit_types)
-                + " CG: "
-                + str(s.control_group)
-            )
-        return f"{self.time} {s.player} Selection             " + _GameEventMixin.__str__(self) + " CG: " + str(s.control_group)
-
 
 class _CameraEventMixin(_GameEventMixin):
     def isPlayer(self, names: Any) -> bool:
         return self.playerName in names
 
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{self.name} at ({s.x}, {s.y})"
-
 
 class _ControlGroupEventMixin(_GameEventMixin):
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + " " + self.name + f" : {s.control_group} : {s.update_type}"
-
-
-def _cg_str(label: str) -> Any:
-    def __str__(self: Any) -> str:
-        return str(self._str_prefix()) + f" {self.playerName} CG {self.control_group} {label}"
-
-    return __str__
+    """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
 class _MessageEventMixin(_EventMixin):
@@ -191,9 +141,6 @@ class _MessageEventMixin(_EventMixin):
     def _str_prefix(self) -> str:
         return f"{Length(seconds=int(self.frame / LOOPS_PER_SECOND))}\t "
 
-    def __str__(self) -> str:
-        return self._str_prefix() + self.name
-
 
 class _TrackerEventMixin(_EventMixin):
     frame: int
@@ -202,17 +149,13 @@ class _TrackerEventMixin(_EventMixin):
     def _str_prefix(self) -> str:
         return f"{Length(seconds=int(self.frame / LOOPS_PER_SECOND))}\t "
 
-    def __str__(self) -> str:
-        return self._str_prefix() + self.name
-
     @property
     def time(self) -> str:
         return self._str_prefix().replace(".", ":").split("\t")[0]
 
 
 class _PlayerStatsEventMixin(_TrackerEventMixin):
-    def __str__(self) -> str:
-        return f"\n Time: {self._str_prefix()}"
+    """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
 class _UnitBornEventMixin(_TrackerEventMixin):
@@ -229,10 +172,6 @@ class _UnitBornEventMixin(_TrackerEventMixin):
 
     def isCounted(self) -> bool:
         return self.unit.type not in [845]  # type: ignore[attr-defined]
-
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.unit_upkeeper!s: >15} - Unit born {s.unit} at {s.location} id {s.unit_id}"
 
 
 class _UnitDiedEventMixin(_TrackerEventMixin):
@@ -260,10 +199,6 @@ class _UnitDiedEventMixin(_TrackerEventMixin):
     def buildingDeath(self) -> bool:
         return bool(self.unit.is_building)  # type: ignore[attr-defined]
 
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.unit.name} - Unit died by {s.killing_unit} {s.unit.owner!s: >15} at {s.location}."
-
 
 class _UnitInitEventMixin(_TrackerEventMixin):
     @property
@@ -277,10 +212,6 @@ class _UnitInitEventMixin(_TrackerEventMixin):
     def isCounted(self) -> bool:
         return True
 
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.unit_upkeeper!s: >15} - Unit initiated {s.unit} at {s.location}"
-
 
 class _UnitDoneEventMixin(_TrackerEventMixin):
     @property
@@ -290,10 +221,6 @@ class _UnitDoneEventMixin(_TrackerEventMixin):
     @property
     def pid(self) -> Any:
         return self.unit.owner.pid  # type: ignore[attr-defined]
-
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.unit.owner!s: >15} - Unit {s.unit}({s.unit.id}) {s.unit.location} done"
 
 
 class _UnitTypeChangeEventMixin(_TrackerEventMixin):
@@ -305,15 +232,9 @@ class _UnitTypeChangeEventMixin(_TrackerEventMixin):
     def player(self) -> Any:
         return self.unit.owner  # type: ignore[attr-defined]
 
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.unit.owner!s: >15} - Unit {s.unit} type changed to {s.unit_type_name}"
-
 
 class _UpgradeCompleteEventMixin(_TrackerEventMixin):
-    def __str__(self) -> str:
-        s: Any = self
-        return self._str_prefix() + f"{s.player!s: >15} - {s.upgrade_type_name} upgrade completed"
+    """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
 class _UnitPositionsEventMixin(_TrackerEventMixin):
@@ -324,9 +245,6 @@ class _UnitPositionsEventMixin(_TrackerEventMixin):
     @property
     def pid(self) -> Any:
         return -1
-
-    def __str__(self) -> str:
-        return self._str_prefix() + "Unit positions update"
 
 
 class _UnitMixin:
@@ -350,9 +268,6 @@ class _UnitMixin:
     def replaceStrings(self, input: Any, split: bool = False) -> str:
         return compat.clean_name(input, split)
 
-    def __str__(self) -> str:
-        return compat.clean_name(f"{self.name} ", True)  # type: ignore[attr-defined]
-
 
 class _PlayerMixin:
     def replaceStrings(self, input: Any, split: bool = False) -> str:
@@ -360,11 +275,7 @@ class _PlayerMixin:
 
 
 class _ParticipantMixin(_PlayerMixin):
-    def __str__(self) -> str:
-        return str(self.name)  # type: ignore[attr-defined]
-
-    def __repr__(self) -> str:
-        return str(self)
+    """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
 # --- the fork's own control-group classes -----------------------------------------------------
@@ -408,14 +319,6 @@ _MIXINS: tuple[tuple[type, type], ...] = (
 
 _FLAVOURED: dict[type, type] = {}
 
-# The fork's __str__ labels of its control-group classes.
-_CG_LABELS: dict[type, str] = {
-    StealControlGroupEvent: "Steal",
-    WeirdControlGroupEvent: "Weird Add?",
-    SetControlGroupEvent: "Set",
-    AddToControlGroupEvent: "Add",
-    GetControlGroupEvent: "Get",
-}
 
 # Upstream control-group classes -> the fork's class for the same update type.
 _FORK_CONTROL_GROUP = {
@@ -435,8 +338,6 @@ def flavoured_class(cls: type) -> type:
         return _FLAVOURED.get(cls, cls)
     mixin = next(m for base, m in _MIXINS if issubclass(cls, base))
     members: dict[str, Any] = {"_fork_flavoured": True, "__module__": cls.__module__}
-    if cls in _CG_LABELS:
-        members["__str__"] = _cg_str(_CG_LABELS[cls])
     flavoured = type(cls.__name__, (mixin, cls), members)
     flavoured.__qualname__ = cls.__qualname__
     _FLAVOURED[cls] = flavoured

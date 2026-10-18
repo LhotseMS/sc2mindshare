@@ -1,4 +1,6 @@
 import re
+
+from sc2mindshare.reader.compat import object_text
 import math
 
 from datetime import datetime, timedelta
@@ -33,7 +35,7 @@ class MsUtils:
             "Zerg": ""
         }
 
-        source_string = str(input)
+        source_string = object_text(input)
 
         for old, new in replacements.items():
             source_string = source_string.replace(old, new)

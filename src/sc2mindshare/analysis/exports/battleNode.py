@@ -1,7 +1,8 @@
 import sc2mindshare.analysis
-from sc2mindshare.analysis.battle import Battle
 import sc2mindshare.analysis.detectors.detectors
-from sc2mindshare.analysis.exports.node import Node, X_LD
+from sc2mindshare.analysis.battle import Battle
+from sc2mindshare.analysis.exports.node import X_LD, Node
+from sc2mindshare.reader.compat import object_text
 
 # TODO ADD SUPPLY WON 
 # TODO WINNER PLAYER
@@ -47,7 +48,7 @@ class BattleNode(Battle, Node):
             unitPart = "{} units died".format(self.deathCount) 
 
         if len(self.basesWhereDeaths) > 0:
-            locationPart = " near {} {}".format(self.basesWhereDeaths[0].player, self.basesWhereDeaths[0])
+            locationPart = " near {} {}".format(object_text(self.basesWhereDeaths[0].player), self.basesWhereDeaths[0])
 
         return unitPart + locationPart
     
@@ -63,7 +64,7 @@ class BattleNode(Battle, Node):
                 self.minLost[self.player1],
                 self.gasLost[self.player1])
         elif self.p1dc > 0:
-            desc += "{} lost an {}.".format(self.player1.name, self.deadUnitsByPlayer[self.player1][0].unit)
+            desc += "{} lost an {}.".format(self.player1.name, object_text(self.deadUnitsByPlayer[self.player1][0].unit))
         
         if self.supplyLost[self.player2] > 0:
             desc += "{}{}{} lost {} units, {} supply, {} min {} gas.".format(
@@ -75,7 +76,7 @@ class BattleNode(Battle, Node):
                 self.minLost[self.player2],
                 self.gasLost[self.player2])
         elif self.p2dc > 0:
-            desc += "{}{} lost an {}.".format(X_LD,self.player2.name, self.deadUnitsByPlayer[self.player2][0].unit)
+            desc += "{}{} lost an {}.".format(X_LD,self.player2.name, object_text(self.deadUnitsByPlayer[self.player2][0].unit))
         
         if self.startTime == self.endTime:
             desc += "{}{}At {}.".format(X_LD, X_LD, self.startTime)

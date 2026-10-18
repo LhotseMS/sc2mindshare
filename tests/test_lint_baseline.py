@@ -9,7 +9,7 @@ from pathlib import Path
 
 CHECKOUT = Path(__file__).resolve().parents[1]
 LIST = CHECKOUT / "src" / "sc2mindshare" / "analysis" / "LEGACY_PORT.txt"
-BASELINE = 270  # at CR-011a (ruff 0.16.10, the repository's ruff.toml)
+BASELINE = 267  # 270 at CR-011a, 267 at CR-011c (ruff 0.16.10, the repository's ruff.toml)
 
 
 def ported_files():

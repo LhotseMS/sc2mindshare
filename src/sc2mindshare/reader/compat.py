@@ -68,9 +68,27 @@ _REPLACEMENTS = (
 )
 
 
+def object_text(value: Any) -> str:
+    """The text the fork's ``__str__`` gave a unit or a player, made explicit (CR-011c).
+
+    The legacy layer built names and descriptions with ``str(unit)`` and ``"{}".format(player)``,
+    which only worked because the fork rewrote ``Unit.__str__`` and ``Participant.__str__``. With
+    upstream objects, those calls would print ``Zealot [2C80001]`` and ``Player 1 - name (Zerg)``.
+    Every such call site now goes through this function; anything else is ``str()``.
+    """
+    from sc2reader.data import Unit  # type: ignore[import-untyped]
+    from sc2reader.objects import Player  # type: ignore[import-untyped]
+
+    if isinstance(value, Unit):
+        return clean_name(f"{value.name} ", True)
+    if isinstance(value, Player):
+        return str(value.name)
+    return str(value)
+
+
 def clean_name(value: Any, split: bool = False) -> str:
     """The fork's ``MsUtils.replaceStrings`` / ``Renamer.replaceStrings`` (bug-faithful)."""
-    text = str(value)
+    text = value if isinstance(value, str) else object_text(value)
     for old, new in _REPLACEMENTS:
         text = text.replace(old, new)
     text = re.sub(r"\[\w+\]", "", text)
