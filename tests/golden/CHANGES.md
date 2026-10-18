@@ -115,3 +115,19 @@ The 1000 spores replay has no model fixture: its analysis fails in the legacy la
 New frozen goldens, pinned in `PARITY.sha256`; no existing golden changes: `spine/G-CSV-1.csv` (456 lines) and `spine/Intervals-1.csv` (17 lines), the live legacy run's output for `200k dmg spine crawler ZvP`, written by `freeze_parity_fixtures.py legacy-csv` only after the frozen spine models rendered exactly them. The spine models are now tied to the legacy output without the legacy venv, as Alcyone's are to G-CSV-1.
 
 The done-when (tests pass with the legacy venv absent) as measured, always with `SC2MS_REQUIRE_GOLDEN=1` (a missing input fails, never skips), on a `git archive` copy without `.venv-legacy`, `-m "not legacy"`: at `cd5dea5` 427 passed, 9 deselected, 3 xfailed; at `105b1d9` 449 passed, 9 deselected, 3 xfailed. Unfiltered, the only failures are the 9 legacy-marked items.
+
+
+### freeze-snap: G-SNAP-1 frozen; the live snapshot goldens are G-SNAP-current (B2, D12a; QA design Addendum B)
+
+Stefan imported G-SNAP-1 into Mindshare and confirmed it (B2, D12a). Both files are frozen as confirmed at 066aa37 and pinned in `alcyone/FROZEN.sha256`: `alcyone/G-SNAP-1-compressed.json` sha256 `f6bfbd02c25f09da77b3968d088ea003ec99e975e09060f35d0c306f41138b5c`, `alcyone/G-SNAP-1-linear.json` sha256 `a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d`. The cut (the next commit, on `cr-022-time-as-a-number`) copies them byte for byte to `alcyone/G-SNAP-current-compressed.json` and `alcyone/G-SNAP-current-linear.json`, the live goldens from then on (as G-VIEW-1 and G-VIEW-current), and points the golden tests, `regen_golden.py` and the CLI comparisons at them. No golden's content changes. The snapshot entries written before the freeze move to the live copies with the lines below; their `base_sha256` still holds.
+
+```json
+{"entry": "freeze-snap", "task": "CR-023", "defect": "none: G-SNAP-1 frozen after Stefan's check (B2, D12a; QA design Addendum B)", "golden": ["alcyone/G-SNAP-1-compressed.json", "alcyone/G-SNAP-1-linear.json"], "frozen_sha256": {"alcyone/G-SNAP-1-compressed.json": "f6bfbd02c25f09da77b3968d088ea003ec99e975e09060f35d0c306f41138b5c", "alcyone/G-SNAP-1-linear.json": "a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d"}, "copies": {"alcyone/G-SNAP-1-compressed.json": "alcyone/G-SNAP-current-compressed.json", "alcyone/G-SNAP-1-linear.json": "alcyone/G-SNAP-current-linear.json"}, "changes": [], "added": [], "removed": []}
+```
+
+- `P3d-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P3d-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `A12-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `A12-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `P3e-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P3e-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
