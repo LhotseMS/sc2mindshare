@@ -451,3 +451,20 @@ The layer counts every finished non-building as a unit unless its name starts wi
 ### P12: `UNITS_FROM_STATE_CHANGE` is a tuple (CR-023, T22; no golden changes)
 
 `EnergyTracker.UNITS_FROM_STATE_CHANGE = ("OrbitalCommand")` is a string, not a tuple, so `name in UNITS_FROM_STATE_CHANGE` is a substring test. Fix: `("OrbitalCommand",)`. Of the names the tracker tests, only `OrbitalCommand` is a substring of "OrbitalCommand" (no unit id is "Orbital", "Command" or empty), so no output can change, the bug-faithful CSV included: a plain correction, not a switched layer fix. Predicted: none of the goldens changes (no entry block; a test pins the tuple and the membership).
+
+
+### P13: one time format, hh:mm:ss of game time (CR-023, T22; B11)
+
+The legacy layer writes times in three forms (`export/time_text.py`): a Battle's as Python's `timedelta` text (`0:07:57`), a Harrasment's and a Scouting's as sc2reader's `Length` text (`14:03`, and `01:00:05` from an hour on), every other one as the time of day. The workbook's rule then reformats a `time` it can read as a time of day, so a Battle's `time` reads `00:07:36` but its `end time` stays `0:07:57` (B11), and a Harrasment's or Scouting's `14:03` is read as 14 h 03 min, `14:03:00` (B9's display part; from 24 min on, `25:10` is not a time of day and is kept as it is). Fix: the current document writes every time property as `hh:mm:ss` of game time, hours not wrapping (a 70-minute game reads `01:10:00`); the bug-faithful document is unchanged. An export fix, switched on with the graph fixes (`P13` in `export_fixes`, with B3). Descriptions are prose from the layer and keep their text. Predicted before the change from today's goldens (`.scratch/rex/cr023/predict_p13_docs.py`): the 30 Battle `end time`s are zero-padded, and the 13 Harrasment and 9 Scouting `time`s read as the game time they are (`14:03:00` -> `00:14:03`); nothing else changes, positions included (the layout reads the game time, not the text).
+
+```json
+{"entry": "P13-view", "task": "CR-023", "defect": "P13/B11 mixed time formats (a Battle end time 0:07:57, a Harrasment or Scouting time mm:ss read as hh:mm)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "e464c36eae7fb223e6228e18bdae4dd5d9ae0b53ae3de6c18a711d524ba041bd", "changes": [{"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30}, {"select": {"type": "Harrasment"}, "fields": ["properties.time"], "count": 13}, {"select": {"type": "Scouting"}, "fields": ["properties.time"], "count": 9}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P13-snap-compressed", "task": "CR-023", "defect": "P13/B11 mixed time formats (a Battle end time 0:07:57, a Harrasment or Scouting time mm:ss read as hh:mm)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "1dbf22fdd5948c33adc96a4d4ce058a5d3cfaa63abc7ca709540e7d6aa47f810", "changes": [{"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30}, {"select": {"type": "Harrasment"}, "fields": ["properties.time"], "count": 13}, {"select": {"type": "Scouting"}, "fields": ["properties.time"], "count": 9}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P13-snap-linear", "task": "CR-023", "defect": "P13/B11 mixed time formats (a Battle end time 0:07:57, a Harrasment or Scouting time mm:ss read as hh:mm)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "11b8c4792d243c2eefbd136e913c8f2b2b13c54e27fde84727f5c32a6aae1296", "changes": [{"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30}, {"select": {"type": "Harrasment"}, "fields": ["properties.time"], "count": 13}, {"select": {"type": "Scouting"}, "fields": ["properties.time"], "count": 9}], "added": [], "removed": []}
+```
