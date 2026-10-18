@@ -2,7 +2,17 @@
 
 Recorded by CR-001/CR-002 (T01, T02) for the approach gates. Interpreter Homebrew Python 3.14.5.
 
-## G2: the fork's upstream test suite (`test_replays/`, `test_s2gs/`)
+## G2 from CR-009 on: three suites, each with its own baseline (TD-7, D6a)
+
+| Suite | Where | How | Baseline at CR-009 |
+|---|---|---|---|
+| Our suite | `tests/` (not `pin_conformance/`), `scripts/tests/` | `scripts/gates` (or pytest `-m "not pin_conformance"`) | **110 passed** |
+| Pin conformance | `tests/pin_conformance/` (upstream v1.9.0's own tests, byte-identical; the 7 `test_replays/5.0.15/` replays added) | `scripts/gates`, or pytest `-m pin_conformance` | **73: 70 passed, 3 xfailed** |
+| The fork's suite | `legacy/tests/` (moved from `test_replays/test_replays.py` and `test_s2gs/test_all.py`) | `scripts/legacy-suite` | **72: 65 passed, 4 failed, 3 xfailed** (unchanged, see below); leaves with `legacy/` at CR-025 (logged G2 exception, D6a) |
+
+No count may drop below its own baseline. Some pin-conformance tests load maps over the network (`load_map=True`), as upstream's do.
+
+## G2 before CR-009: the fork's upstream test suite (`test_replays/`, `test_s2gs/`)
 
 Run in the legacy environment (`scripts/legacy-env`, `requirements/legacy.lock`) from the repository root:
 
@@ -45,4 +55,4 @@ Counted in the legacy run log by `scripts/run_legacy.py` (`summary.json`, `creep
 | 200k dmg spine crawler ZvP (83830) | 354 | |
 | 1000 spores ZvP (81433) | n/a | crashes: `EnergyTracker.getEnergyAtTime` KeyError 118489090 (G5 failure, awaiting Stefan) |
 
-With the map loaded (Stefan's old setup, Morgan's spike) Alcyone logs 24 CreepTracker errors instead of 926.
+Morgan's planning spike counted 24 CreepTracker messages on Alcyone, but with `load_map=False` and without running the Mindshare detectors, so that number is not comparable with these runs (corrected after his CR-004 review).
