@@ -44,7 +44,10 @@ def unique_harassment_ids(graph: Graph) -> Graph:
 
 
 def signed_hhmmss(seconds: int) -> str:
-    """``-hh:mm:ss`` for a negative number of seconds, ``hh:mm:ss`` otherwise (no midnight wrap)."""
+    """``-hh:mm:ss`` for a negative number of seconds, ``hh:mm:ss`` otherwise (no midnight wrap).
+
+    The one time formatter outside ``export/`` (stated in ``domain.time``): it writes description prose for
+    ``pre_game_display``, and ``analysis`` may not import ``export``."""
     sign, rest = ("-", -seconds) if seconds < 0 else ("", seconds)
     return f"{sign}{rest // 3600:02d}:{rest // 60 % 60:02d}:{rest % 60:02d}"
 
