@@ -4,7 +4,7 @@ from sc2mindshare.analysis.exports.energyNode import EnergyNode
 from sc2mindshare.analysis.exports.injectNode import InjecDelayNode 
 from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.compat import object_text, type_at
-from sc2mindshare.reader.fork_api import Length
+from sc2mindshare.reader.fork_api import Length, UnitDiedEvent
 from datetime import datetime, timedelta
 
 import sc2mindshare.analysis.detectors.detectors
@@ -351,6 +351,7 @@ class SupplyTracker(Tracker):
     def __init__(self, player1, player2, fixes=frozenset()):
         super().__init__(player1, player2)
         self.fixes = fixes
+        self.addedProviders = set()  # CR-023 S1 (S5): the providers whose limit was added (finished)
 
         self.supplyHistory = {}
         self.supplyHistory[player1] = list()
@@ -373,7 +374,12 @@ class SupplyTracker(Tracker):
         """The supply provider the unit of ``e`` is, or None. CR-023 S1: by its type at the event (S4)."""
         if "S1" in self.fixes:
             name = type_at(e.unit, e.frame)
-            return name if name in PROVIDERS_AT_EVENT else None
+            if name not in PROVIDERS_AT_EVENT:
+                return None
+            if isinstance(e, UnitDiedEvent):  # S5: an unfinished provider never raised the limit
+                return name if e.unit_id in self.addedProviders else None
+            self.addedProviders.add(e.unit_id)
+            return name
         name = object_text(e.unit)
         return name if self.isSupplyProvider(name) else None
 

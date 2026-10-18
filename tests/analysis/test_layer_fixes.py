@@ -256,8 +256,8 @@ def _tracker(fixes):
     return SupplyTracker("p1", "p2", frozenset(fixes))
 
 
-def _event(name_now, history, frame):
-    return SimpleNamespace(unit=SimpleNamespace(name=name_now, type_history=history), frame=frame)
+def _event(name_now, history, frame, unit_id=1):
+    return SimpleNamespace(unit=SimpleNamespace(name=name_now, type_history=history), frame=frame, unit_id=unit_id)
 
 
 def test_s1_providers_by_their_type_at_the_event_and_their_real_value():
@@ -304,8 +304,8 @@ def supply():
 
 
 def test_s1_on_alcyone_the_series_starts_as_playerstats_and_the_blocks_are_the_entrys(supply):
-    """The S1 entry (CHANGES.md): 12/14 and 12/15 at 0:00 as PlayerStats; 9 blocks instead of 11, the
-    57 s block from 0:00 (TD-27) gone."""
+    """The S1 and S1b entries (CHANGES.md): 12/14 and 12/15 at 0:00 as PlayerStats; 7 blocks instead of 11,
+    the 57 s block from 0:00 (TD-27) gone, and none from blacksquall's two Nexuses killed unfinished (S5)."""
     points, blocks = supply["fixed"]
     first = {p.player: (p.supply, p.limit) for p in points if p.time in ("00:00", "00:00:00")}  # the last status in second 0
     assert first == {1: (12.0, 14.0), 2: (12.0, 15.0)}
@@ -316,10 +316,22 @@ def test_s1_on_alcyone_the_series_starts_as_playerstats_and_the_blocks_are_the_e
         ("lilTiGGer", 760, 768),
         ("lilTiGGer", 798, 823),
         ("blacksquall", 32, 38),
-        ("blacksquall", 841, 850),
-        ("blacksquall", 875, 942),
-        ("blacksquall", 949, 974),
+        ("blacksquall", 887, 936),
     ]
     _faithful_points, faithful_blocks = supply["faithful"]
     assert len(faithful_blocks) == 11 and faithful_blocks[0] == ("lilTiGGer", 0, 57)  # bug-faithful: kept
     assert max(p.limit for p in points) == 336 and max(p.limit for p in _faithful_points) == 360
+
+
+def test_s5_an_unfinished_provider_does_not_lower_the_limit():
+    """Morgan's G6 on 5932f93: only a provider whose limit was added lowers it at its death."""
+    from sc2mindshare.reader.fork_api import UnitDiedEvent
+
+    tracker = _tracker({"S1"})
+    nexus = {0: SimpleNamespace(name="Nexus")}
+    assert tracker.providerOf(_event("Nexus", nexus, 100, unit_id=1)) == "Nexus"  # finished: its limit was added
+    died = UnitDiedEvent.__new__(UnitDiedEvent)
+    vars(died).update(unit=SimpleNamespace(name="Nexus", type_history=nexus), frame=200, unit_id=1)
+    assert tracker.providerOf(died) == "Nexus"
+    vars(died).update(unit_id=2)  # another Nexus, killed while building: never added
+    assert tracker.providerOf(died) is None

@@ -119,18 +119,6 @@ def test_predictions_compressed(graph_before_s1, clock_map):
     assert r.warnings == []
 
 
-def test_the_supply_blocks_s1_keeps_stay_where_leo_predicted(graph, clock_map):
-    """CR-023 S1 keeps two of the eleven blocks (blacksquall's at 14:01 and 14:35, now Supply Block-6 and -7):
-    they are placed exactly as Leo predicted for them (his Supply Block-8 and -9). The 7 new blocks need
-    new predictions from Leo (requested through Kevin); their linear widths are checked generically in
-    test_linear_properties."""
-    r = layout(items(graph), Profile(), clock_map)
-    for new_id, old_id in (("Supply Block-6", "Supply Block-8"), ("Supply Block-7", "Supply Block-9")):
-        centre, width = SUPPLY_BLOCKS[old_id]
-        assert r.positions[new_id][0] == pytest.approx(centre) and r.sizes[new_id][0] == pytest.approx(width), new_id
-        assert abs(r.positions[new_id][1]) == 12.16
-
-
 def test_predictions_linear(graph, clock_map):
     r = layout(items(graph), Profile(timeline="linear"), clock_map)
     assert r.rows[-1][2] == 247.5  # 100 windows, 17 of them empty
@@ -213,5 +201,5 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # clocks), so they are asserted here (Morgan's CR-014 P2): every one of the 665 graph nodes has a
     # position, and the 136 clock nodes (68 occupied windows without Stats, x 2 sides) are all present.
     assert (view_report.budget_expected["M4 clock"], view_report.budget_expected["M4 position"]) == (0, 0)
-    # 663 = 665 less the 2 Supply Blocks CR-023's S1 removes (11 -> 9)
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (136, 663)
+    # 661 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7)
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (136, 661)

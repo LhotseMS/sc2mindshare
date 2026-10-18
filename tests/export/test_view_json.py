@@ -75,12 +75,14 @@ def test_the_current_document_equals_g_view_current(document):
 
 
 #: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
-VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view")
+VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view")
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
 #: are removed again by P3e, and A12 changes only the number text, so neither shows in the net delta.
-#: S1 renumbers the Supply Blocks, which no other entry touches: the net check sets them aside, and the
-#: S1 entry is checked on the Supply Blocks alone (test below).
+#: S1 and S1b renumber the Supply Blocks, which no other entry touches: the net check sets them aside, and
+#: their net effect is checked on the Supply Blocks alone: none of the 11 survives (keyed on player and
+#: start time), 7 new ones (test below).
+SUPPLY_NET = {"removed": [f"Supply Block-{i}#1" for i in range(11)], "added": [f"Supply Block-{i}#1" for i in range(7)]}
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
     {"select": {"type": "Harrasment"}, "fields": ["ID"], "count": 14},
@@ -105,7 +107,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
     assert all(e in entries for e in VIEW_LEDGER)
     assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
-    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view"]
+    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view"]
     assert all(c["select"].get("type") != "Supply Block" for c in VIEW_NET_DELTA)
     old_rest = _part(GOLDEN / "G-VIEW-1.json", tmp_path, "old-rest.json", supply_blocks=False)
     new_rest = _part(GOLDEN / "G-VIEW-current.json", tmp_path, "new-rest.json", supply_blocks=False)
@@ -119,8 +121,15 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     assert cgd.check_delta(net, old_rest, new_rest) == []
     old_sb = _part(GOLDEN / "G-VIEW-1.json", tmp_path, "old-sb.json", supply_blocks=True)
     new_sb = _part(GOLDEN / "G-VIEW-current.json", tmp_path, "new-sb.json", supply_blocks=True)
-    s1 = dict(entries["S1-view"], base_sha256=cgd.golden.sha256(old_sb))
-    assert cgd.check_delta(s1, old_sb, new_sb) == []
+    net_sb = dict(
+        entries["S1b-view"],
+        entry="S1-view+S1b-view",
+        base_sha256=cgd.golden.sha256(old_sb),
+        renumber=dict(entries["S1b-view"]["renumber"], ids_changed=0),
+        changes=[],
+        **SUPPLY_NET,
+    )
+    assert cgd.check_delta(net_sb, old_sb, new_sb) == []
 
 
 def test_document_key_order_and_config_parts(document):

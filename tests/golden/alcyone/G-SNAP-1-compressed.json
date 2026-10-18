@@ -12849,64 +12849,22 @@
    }
   },
   {
-   "name": "9s Supply Block",
-   "description": "Supply block started at 00:14:01 and ended at 00:14:10 for a duration of 9s",
+   "name": "49s Supply Block",
+   "description": "Supply block started at 00:14:47 and ended at 00:15:36 for a duration of 49s",
    "type": "Supply Block",
    "ID": "Supply Block-6",
    "size": [
-    2.5,
+    15,
     1
    ],
    "properties": {
-    "time": "00:14:01",
+    "time": "00:14:47",
     "player": "blacksquall",
-    "duration": 9,
-    "end time": "00:14:10"
-   },
-   "position": {
-    "x": 175,
-    "y": 12.16,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "67s Supply Block",
-   "description": "Supply block started at 00:14:35 and ended at 00:15:42 for a duration of 67s",
-   "type": "Supply Block",
-   "ID": "Supply Block-7",
-   "size": [
-    20,
-    1
-   ],
-   "properties": {
-    "time": "00:14:35",
-    "player": "blacksquall",
-    "duration": 67,
-    "end time": "00:15:42"
+    "duration": 49,
+    "end time": "00:15:36"
    },
    "position": {
     "x": 188.75,
-    "y": 12.16,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "25s Supply Block",
-   "description": "Supply block started at 00:15:49 and ended at 00:16:14 for a duration of 25s",
-   "type": "Supply Block",
-   "ID": "Supply Block-8",
-   "size": [
-    7.5,
-    1
-   ],
-   "properties": {
-    "time": "00:15:49",
-    "player": "blacksquall",
-    "duration": 25,
-    "end time": "00:16:14"
-   },
-   "position": {
-    "x": 200,
     "y": 12.16,
     "z": 0.01
    }
