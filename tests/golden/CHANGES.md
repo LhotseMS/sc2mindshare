@@ -211,3 +211,44 @@ Stefan's D10a on P1b: a base counts from its town hall's start until the town ha
 ```json
 {"entry": "P1c-snap-linear", "task": "CR-023", "defect": "P1c (D10a): a battle named after a base whose town hall was destroyed", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "47a9f4f231f37c7d40f441ee139cd39da31bb210d3fe112ffe5c8590e1c2a72b", "changes": [{"select": {"ID": "Battle-15"}, "fields": ["name"], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### S1: the layer's supply history, S1-S4 (CR-023, T22; D9a; TD-27 folded in; written against G-VIEW-current after P1c)
+
+The layer's supply tracker over-counts: on Alcyone it reaches 215 and 205 supply with a limit of 360, where PlayerStats `food_used` peaks at 200 and 198. Root cause, measured against PlayerStats (`.scratch/rex/cr023/probe_supply.py`): **S1** the 12 starting workers are added on top of `INITIAL_SUPPLY` = 12 (24 at 0:00 against `food_used` 12; this is TD-27's 57 s supply block from 0:00); **S2** the providers alive at 0:00 are added on top of `INITIAL_LIMIT` = 15 (30 against `food_made` 15 for blacksquall); **S3** a Hatchery provides 15 in the layer's table, not 6, and Lair and Hive are missing; **S4** providers are matched by their final type (the main base born a Hatchery reads as a Hive; an Overseer's death does not lower the limit). No death subtracts supply that was never added. Fix (Stefan's D9a): S1-S4, keeping the meaning (finished units against the limit, at the exact event); and the team default Q-b2: every event of one loop is applied before a block is judged, so there are no zero-length blocks. The series then starts at 12/14 (lilTiGGer) and 12/15 (blacksquall), as PlayerStats. Applied inside the layer as ledger id `S1`. Predicted before the change by an independent recomputation of the series on the bug-faithful layer's own events and eligibility rules (`.scratch/rex/cr023/probe_supply_fixed.py`): the Supply Block set goes from 11 to 9.
+
+Now (G-VIEW-current):
+
+| Block | Player | Start | End | Duration |
+|---|---|---|---|---|
+| `Supply Block-0` | lilTiGGer | 00:00:00 | 00:00:57 | 57 s |
+| `Supply Block-1` | lilTiGGer | 00:01:45 | 00:02:31 | 46 s |
+| `Supply Block-2` | lilTiGGer | 00:06:30 | 00:06:58 | 28 s |
+| `Supply Block-3` | lilTiGGer | 00:07:16 | 00:07:56 | 40 s |
+| `Supply Block-4` | lilTiGGer | 00:07:58 | 00:08:09 | 11 s |
+| `Supply Block-5` | lilTiGGer | 00:08:41 | 00:10:05 | 84 s |
+| `Supply Block-6` | lilTiGGer | 00:12:31 | 00:12:50 | 19 s |
+| `Supply Block-7` | lilTiGGer | 00:13:32 | 00:13:43 | 11 s |
+| `Supply Block-8` | blacksquall | 00:14:01 | 00:14:08 | 7 s |
+| `Supply Block-9` | blacksquall | 00:14:35 | 00:15:41 | 66 s |
+| `Supply Block-10` | blacksquall | 00:15:50 | 00:16:12 | 22 s |
+
+After:
+
+| Block | Player | Start | End | Duration |
+|---|---|---|---|---|
+| `Supply Block-0` | lilTiGGer | 00:00:38 | 00:00:57 | 19 s |
+| `Supply Block-1` | lilTiGGer | 00:02:08 | 00:02:13 | 5 s |
+| `Supply Block-2` | lilTiGGer | 00:06:42 | 00:06:50 | 8 s |
+| `Supply Block-3` | lilTiGGer | 00:12:40 | 00:12:48 | 8 s |
+| `Supply Block-4` | lilTiGGer | 00:13:18 | 00:13:43 | 25 s |
+| `Supply Block-5` | blacksquall | 00:00:32 | 00:00:38 | 6 s |
+| `Supply Block-6` | blacksquall | 00:14:01 | 00:14:10 | 9 s |
+| `Supply Block-7` | blacksquall | 00:14:35 | 00:15:42 | 67 s |
+| `Supply Block-8` | blacksquall | 00:15:49 | 00:16:14 | 25 s |
+
+The Supply Block IDs are one sequence over both players, so they renumber (`renumber`, QA design Addendum A, keyed on player and start time): the two blocks that keep their start, blacksquall's at 00:14:01 and 00:14:35, become `Supply Block-6` and `-7` and change their end time, duration, name and description; the other 9 old blocks are removed and 7 new ones added. Supply Blocks have no links. Per D7a the snapshot (G-SNAP-1) is not regenerated for this row until Stefan confirms B2; its entries follow then. Still open, and not part of this row: a unit is added with its final type's supply (a Roach that became a Ravager counts 3), the naming row's root cause, so lilTiGGer's finished-unit supply peaks at 203.
+
+```json
+{"entry": "S1-view", "task": "CR-023", "defect": "S1 the layer's supply history over-counts (S1-S4; TD-27's 57 s block from 0:00)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "5871a9d4d78e9b55ddcf25ab319382b83323535505188a429f3bc6ccdf75e780", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 2, "links_dropped": 0}, "changes": [{"select": {"ID": "Supply Block-6"}, "fields": ["name", "description", "properties.duration", "properties.end time"], "count": 1}, {"select": {"ID": "Supply Block-7"}, "fields": ["name", "description", "properties.duration", "properties.end time"], "count": 1}], "added": ["Supply Block-0#1", "Supply Block-1#1", "Supply Block-2#1", "Supply Block-3#1", "Supply Block-4#1", "Supply Block-5#1", "Supply Block-8#1"], "removed": ["Supply Block-0#1", "Supply Block-1#1", "Supply Block-2#1", "Supply Block-3#1", "Supply Block-4#1", "Supply Block-5#1", "Supply Block-6#1", "Supply Block-7#1", "Supply Block-10#1"]}
+```
