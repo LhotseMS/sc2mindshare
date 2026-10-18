@@ -446,3 +446,8 @@ The layer counts every finished non-building as a unit unless its name starts wi
 ```json
 {"entry": "P10-snap-linear", "task": "CR-023", "defect": "P10 spell effects counted as units (Disruptor Phased, Adept Phase Shift); eligibility by the final type", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "dc392ec888db3d64536257cc3f73c7c962ff995f453a36360d1cfc3ae31db48f", "renumber": [{"type": "Units", "key": ["properties.player", "properties.time", "properties.type"], "retype": {}, "merged": {}, "ids_changed": 142, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["position.y"], "count": 8}], "added": [], "removed": ["Units-122#1", "Units-122>Units-124#1", "Units-124#1", "Units-124>Units-180#1", "Units-180#1", "Units-34#1", "Units-34>Units-42#1", "Units-42#1", "Units-42>Units-45#1", "Units-45#1", "Units-45>Units-65#1", "Units-65#1"]}
 ```
+
+
+### P12: `UNITS_FROM_STATE_CHANGE` is a tuple (CR-023, T22; no golden changes)
+
+`EnergyTracker.UNITS_FROM_STATE_CHANGE = ("OrbitalCommand")` is a string, not a tuple, so `name in UNITS_FROM_STATE_CHANGE` is a substring test. Fix: `("OrbitalCommand",)`. Of the names the tracker tests, only `OrbitalCommand` is a substring of "OrbitalCommand" (no unit id is "Orbital", "Command" or empty), so no output can change, the bug-faithful CSV included: a plain correction, not a switched layer fix. Predicted: none of the goldens changes (no entry block; a test pins the tuple and the membership).
