@@ -11,9 +11,9 @@ import sys
 import pytest
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
-from sc2mindshare.domain.models import Link, Node
+from sc2mindshare.domain.models import EXTRA_FIELDS, Link, Node
 from sc2mindshare.export import view
-from sc2mindshare.export.mindshare_json import build_document, load_config, to_json
+from sc2mindshare.export.mindshare_json import EXTRA_DATA_TYPES, build_document, load_config, to_json
 from sc2mindshare.reader.loader import load_replay
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
@@ -73,10 +73,22 @@ def test_the_current_document_equals_g_view_current(document):
     assert report.ok, str(report)
 
 
+#: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
+VIEW_LEDGER = ("H1", "P3d-view")
+
+
 def test_g_view_current_is_g_view_1_plus_the_ledger():
     cgd = _load("check_golden_delta", CHECKOUT / "scripts" / "check_golden_delta.py")
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
-    assert cgd.check_delta(entries["H1"], GOLDEN / "G-VIEW-1.json", GOLDEN / "G-VIEW-current.json") == []
+    chain = [entries[e] for e in VIEW_LEDGER]
+    merged = {
+        "entry": "+".join(VIEW_LEDGER),
+        "base_sha256": chain[0]["base_sha256"],  # G-VIEW-1
+        "changes": [c for e in chain for c in e["changes"]],
+        "added": [a for e in chain for a in e["added"]],
+        "removed": [r for e in chain for r in e["removed"]],
+    }
+    assert cgd.check_delta(merged, GOLDEN / "G-VIEW-1.json", GOLDEN / "G-VIEW-current.json") == []
 
 
 def test_document_key_order_and_config_parts(document):
@@ -84,6 +96,44 @@ def test_document_key_order_and_config_parts(document):
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
     assert doc["visuals"] == load_config()["visuals"]
     assert json.loads(to_json(doc)) == doc
+
+
+def test_p3d_the_main_bases_show_00_00_00_and_keep_their_real_time(document):
+    """A9: the bug-faithful document keeps the legacy wrap; the current one shows 00:00:00 and adds
+    "pre-game time", declared in dataTypes (only where it is used)."""
+    faithful = {n["ID"]: n for n in document["faithful"]["nodes"]}
+    current = {n["ID"]: n for n in document["current"]["nodes"]}
+    for node_id, player, kind in (("Building-1", "lilTiGGer", "Hive"), ("Building-2", "blacksquall", "Nexus")):
+        assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
+        assert current[node_id]["properties"] == {
+            "time": "00:00:00",
+            "player": player,
+            "type": kind,
+            "pre-game time": "-00:01:11",
+        }
+    assert sum("pre-game time" in n["properties"] for n in document["current"]["nodes"]) == 2
+    assert document["faithful"]["dataTypes"] == load_config()["dataTypes"]
+    assert document["current"]["dataTypes"] == load_config()["dataTypes"] | {"pre-game time": "string"}
+    assert list(document["current"]["dataTypes"])[-1] == "pre-game time"
+
+
+def test_every_extra_field_has_a_mindshare_data_type():
+    assert set(EXTRA_DATA_TYPES) == set(EXTRA_FIELDS)
+    assert not set(EXTRA_DATA_TYPES) & set(load_config()["dataTypes"])  # never redefines a workbook type
+
+
+def test_extra_properties_follow_the_kinds_own():
+    node = Node(
+        "Building",
+        "Building-1",
+        "b",
+        "",
+        (),
+        (("time", "00:00:00"), ("player", "p"), ("type", "Hive")),
+        -71,
+        (("pre-game time", "-00:01:11"),),
+    )
+    assert list(view.node_view(node)["properties"]) == ["time", "player", "type", "pre-game time"]
 
 
 def _node(kind, values, start=60, images=()):

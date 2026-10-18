@@ -11,7 +11,7 @@ import sys
 import pytest
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
-from sc2mindshare.domain.models import FIELDS, Link, Node
+from sc2mindshare.domain.models import EXTRA_FIELDS, FIELDS, Link, Node
 from sc2mindshare.reader.loader import load_replay
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -114,6 +114,16 @@ def test_models_are_frozen_and_validated():
     with pytest.raises(ValueError, match="start_seconds"):
         Node("Chat", "Chat-1", "hi", "", (), (("time", "00:01:00"), ("player", "a")), None)
     assert Link("Battle-1", "Battle-2", "previous", "next", "Two consecutive battles", 1).name is None
+
+
+def test_extra_properties_are_declared_and_never_shadow_a_field():
+    values = (("time", "00:00:00"), ("player", "a"), ("type", "Hive"))
+    assert Node("Building", "Building-1", "b", "", (), values, -71, (("pre-game time", "-00:01:11"),)).extra
+    with pytest.raises(ValueError, match="undeclared extra"):
+        Node("Building", "Building-1", "b", "", (), values, -71, (("real time", "-00:01:11"),))
+    with pytest.raises(ValueError, match="repeated extra"):
+        Node("Building", "Building-1", "b", "", (), values, -71, (("pre-game time", "a"), ("pre-game time", "b")))
+    assert not set(EXTRA_FIELDS) & {name for names in FIELDS.values() for name in names}
 
 
 def test_no_properties_count_in_the_domain_or_the_adapter():

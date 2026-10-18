@@ -1,7 +1,7 @@
 """Ledger fixes on the domain graph (analysis/fixes.py)."""
 
 import pytest
-from sc2mindshare.analysis.fixes import FIXES, unique_harassment_ids
+from sc2mindshare.analysis.fixes import FIXES, pre_game_display, signed_hhmmss, unique_harassment_ids
 from sc2mindshare.domain.models import Graph, Link, Node
 
 
@@ -30,5 +30,25 @@ def test_h1_follows_links_to_unique_ids_and_refuses_ambiguous_ones():
         unique_harassment_ids(ambiguous)
 
 
+def building(nid, time, t):
+    return Node("Building", nid, "Main base", "", (), (("time", time), ("player", "p"), ("type", "Hive")), t)
+
+
+def test_p3d_pre_game_items_show_zero_and_keep_the_real_time():
+    graph = Graph((building("Building-1", "23:58:49", -71), building("Building-3", "00:00:30", 30), chat("Chat-1")), ())
+    fixed = pre_game_display(graph)
+    main = fixed.nodes[0]
+    assert dict(main.values) == {"time": "00:00:00", "player": "p", "type": "Hive"}
+    assert main.extra == (("pre-game time", "-00:01:11"),)
+    assert main.start_seconds == -71  # the layout still places it by its real start (B9)
+    assert fixed.nodes[1:] == graph.nodes[1:]  # in-game nodes are untouched
+    assert pre_game_display(fixed) == fixed  # applying it twice changes nothing more
+
+
+@pytest.mark.parametrize(("seconds", "text"), [(-71, "-00:01:11"), (-3725, "-01:02:05"), (-1, "-00:00:01"), (0, "00:00:00")])
+def test_signed_hhmmss(seconds, text):
+    assert signed_hhmmss(seconds) == text
+
+
 def test_the_ledger_order():
-    assert FIXES == (unique_harassment_ids,)
+    assert FIXES == (unique_harassment_ids, pre_game_display)

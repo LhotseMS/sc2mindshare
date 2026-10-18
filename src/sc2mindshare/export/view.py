@@ -125,6 +125,7 @@ def node_view(node: Node) -> dict[str, Any]:
         view["size"] = [10, 3.3]
     elif kind == "Player":
         view["size"] = [7.8, 2.2]
+    props |= dict(node.extra)  # properties added by ledger fixes come after the kind's own
     view["properties"] = props
     return view
 

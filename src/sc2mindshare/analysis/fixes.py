@@ -15,7 +15,9 @@ from sc2mindshare.domain.models import Graph
 
 
 def unique_harassment_ids(graph: Graph) -> Graph:
-    """H1: one game-wide Harrasment sequence in node order (the legacy layer numbers per battle)."""
+    """H1: one game-wide Harrasment sequence in node order (the legacy layer numbers per battle).
+
+    The new sequence starts at ``Harrasment-1``; the legacy one started at ``Harrasment-0``."""
     harassment = [n for n in graph.nodes if n.kind == "Harrasment"]
     old_ids = Counter(n.id for n in harassment)
     linked = {lk.node1 for lk in graph.links} | {lk.node2 for lk in graph.links}
@@ -40,5 +42,25 @@ def unique_harassment_ids(graph: Graph) -> Graph:
     return replace(graph, nodes=tuple(nodes), links=links)
 
 
+def signed_hhmmss(seconds: int) -> str:
+    """``-hh:mm:ss`` for a negative number of seconds, ``hh:mm:ss`` otherwise (no midnight wrap)."""
+    sign, rest = ("-", -seconds) if seconds < 0 else ("", seconds)
+    return f"{sign}{rest // 3600:02d}:{rest // 60 % 60:02d}:{rest % 60:02d}"
+
+
+def pre_game_display(graph: Graph) -> Graph:
+    """P3d (D7a A9): a pre-game item (negative start, the main bases at -71 s) shows ``time``
+    00:00:00, and keeps its real start in the ``pre-game time`` property as ``-hh:mm:ss``. The legacy
+    text wraps to ``23:58:49``; ``start_seconds`` (what the layout reads) is unchanged."""
+    nodes = []
+    for node in graph.nodes:
+        if node.start_seconds is not None and node.start_seconds < 0 and "pre-game time" not in dict(node.extra):
+            values = tuple((name, "00:00:00" if name == "time" else value) for name, value in node.values)
+            extra = (*node.extra, ("pre-game time", signed_hhmmss(node.start_seconds)))
+            node = replace(node, values=values, extra=extra)
+        nodes.append(node)
+    return replace(graph, nodes=tuple(nodes))
+
+
 #: The fixes, in ledger order.
-FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids,)
+FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_display)
