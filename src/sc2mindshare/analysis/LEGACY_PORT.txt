@@ -1,0 +1,32 @@
+# Files moved verbatim (imports rewritten only) from legacy/sc2reader/mindshare and
+# legacy/sc2reader/events/eventTypes.py by CR-011a. They keep the legacy layer's lint findings
+# and are untyped: scripts/gates leaves them out of ruff and mypy, and
+# tests/test_lint_baseline.py holds their ruff finding count to its baseline (it may only
+# fall). CR-011b/c and the cleanup tasks take files off this list once they are clean.
+src/sc2mindshare/analysis/battle.py
+src/sc2mindshare/analysis/game.py
+src/sc2mindshare/analysis/mindshare.py
+src/sc2mindshare/analysis/utils.py
+src/sc2mindshare/analysis/unitTypes.py
+src/sc2mindshare/analysis/detectors/detectors.py
+src/sc2mindshare/analysis/detectors/trackers.py
+src/sc2mindshare/analysis/exports/abilityNode.py
+src/sc2mindshare/analysis/exports/battleNode.py
+src/sc2mindshare/analysis/exports/buildingNode.py
+src/sc2mindshare/analysis/exports/chatNode.py
+src/sc2mindshare/analysis/exports/energyNode.py
+src/sc2mindshare/analysis/exports/exporter.py
+src/sc2mindshare/analysis/exports/gameNode.py
+src/sc2mindshare/analysis/exports/harrasmentNode.py
+src/sc2mindshare/analysis/exports/initNode.py
+src/sc2mindshare/analysis/exports/injectNode.py
+src/sc2mindshare/analysis/exports/link.py
+src/sc2mindshare/analysis/exports/node.py
+src/sc2mindshare/analysis/exports/playerNode.py
+src/sc2mindshare/analysis/exports/scoutNode.py
+src/sc2mindshare/analysis/exports/statsNode.py
+src/sc2mindshare/analysis/exports/supplyBlockNode.py
+src/sc2mindshare/analysis/exports/unitsNode.py
+src/sc2mindshare/analysis/exports/upgradeNode.py
+src/sc2mindshare/reader/event_types.py
+src/sc2mindshare/analysis/fileHandler.py

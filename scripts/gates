@@ -19,13 +19,27 @@ venv="$checkout/.venv"
 [ "$#" -gt 0 ] || set -- "$checkout/src" "$checkout/scripts" "$checkout/tests"
 
 status=0
+# Files moved verbatim from the legacy layer (CR-011a) keep its findings for now: they are left out
+# of ruff and mypy here, and tests/test_lint_baseline.py holds their finding count to its baseline.
+legacy_port="$checkout/src/sc2mindshare/analysis/LEGACY_PORT.txt"
+port_excludes=""
+if [ -f "$legacy_port" ]; then
+    for f in $(grep -v '^#' "$legacy_port" | grep -v '^$'); do
+        port_excludes="$port_excludes --extend-exclude $checkout/$f"
+    done
+fi
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
-"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" $port_excludes "$@" || status=1
 echo "== ruff format --check"
-"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" $port_excludes "$@" || status=1
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
+if [ -f "$legacy_port" ]; then
+    for f in $(grep -v '^#' "$legacy_port" | grep -v '^$'); do
+        typed=$(printf '%s\n' $typed | grep -v "^$checkout/$f\$" || true)
+    done
+fi
 if [ -n "$typed" ]; then
     # shellcheck disable=SC2086
     "$py_env" "$venv/bin/mypy" --strict $typed || status=1

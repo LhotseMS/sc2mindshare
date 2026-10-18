@@ -18,5 +18,5 @@ class ImageUploader:
         raise RuntimeError(f"ImageUploader.{name}: media uploads are out of scope in the new pipeline")
 
 
-def generateBattleHeatMap(*_args: Any, **_kwargs: Any) -> None:  # noqa: N802 (legacy name)
+def generateBattleHeatMap(*_args: Any, **_kwargs: Any) -> None:
     raise RuntimeError("heatmaps are out of scope in the new pipeline")

@@ -23,11 +23,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from sc2reader.data import *  # noqa: F403  (re-exported for the ported layer)
+from sc2reader.data import *  # type: ignore[import-untyped]
 from sc2reader.data import Unit
-from sc2reader.events import *  # noqa: F403
-from sc2reader.events.base import Event
-from sc2reader.events.game import (
+from sc2reader.events import *  # type: ignore[import-untyped]
+from sc2reader.events.base import Event  # type: ignore[import-untyped]
+from sc2reader.events.game import (  # type: ignore[import-untyped]
     AddToControlGroupEvent,
     CameraEvent,
     CommandEvent,
@@ -41,8 +41,8 @@ from sc2reader.events.game import (
     TargetUnitCommandEvent,
     UpdateTargetPointCommandEvent,
 )
-from sc2reader.events.message import ChatEvent, MessageEvent
-from sc2reader.events.tracker import *  # noqa: F403
+from sc2reader.events.message import ChatEvent, MessageEvent  # type: ignore[import-untyped]
+from sc2reader.events.tracker import *  # type: ignore[import-untyped]
 from sc2reader.events.tracker import (
     PlayerStatsEvent,
     TrackerEvent,
@@ -54,9 +54,9 @@ from sc2reader.events.tracker import (
     UnitTypeChangeEvent,
     UpgradeCompleteEvent,
 )
-from sc2reader.objects import Participant, Player
-from sc2reader.resources import Map, MapInfo, Replay
-from sc2reader.utils import Length
+from sc2reader.objects import Participant, Player  # type: ignore[import-untyped]
+from sc2reader.resources import Map, MapInfo, Replay  # type: ignore[import-untyped]
+from sc2reader.utils import Length  # type: ignore[import-untyped]
 
 from sc2mindshare.reader import compat
 
@@ -64,18 +64,17 @@ LOOPS_PER_SECOND = compat.LOOPS_PER_SECOND
 
 from sc2mindshare.reader.event_types import COMBAT_ABILITIES
 
-
 # --- the fork's members, by class ---------------------------------------------------------------
 
 
 class _EventMixin:
-    def isUnique(self, prevEvent: Any) -> bool:  # noqa: N802, N803  (fork names)
+    def isUnique(self, prevEvent: Any) -> bool:
         return True
 
-    def isPlayer(self, pids: Any) -> bool:  # noqa: N802
+    def isPlayer(self, pids: Any) -> bool:
         return False
 
-    def replaceStrings(self, input: Any, split: bool = False) -> str:  # noqa: A002, N802
+    def replaceStrings(self, input: Any, split: bool = False) -> str:
         return compat.clean_name(input, split)
 
 
@@ -84,7 +83,7 @@ class _GameEventMixin(_EventMixin):
     name: str
 
     @property
-    def playerName(self) -> str:  # noqa: N802
+    def playerName(self) -> str:
         return compat.player_name(self)
 
     @property
@@ -99,14 +98,14 @@ class _GameEventMixin(_EventMixin):
 
 
 class _CommandEventMixin(_GameEventMixin):
-    def registerUpdateEvent(self, e: Any) -> None:  # noqa: N802
+    def registerUpdateEvent(self, e: Any) -> None:
         self.updateEvents.append(e)  # type: ignore[attr-defined]
         e.targetCommandEvent = self
 
-    def isCombat(self) -> bool:  # noqa: N802
+    def isCombat(self) -> bool:
         return self.ability_name in COMBAT_ABILITIES  # type: ignore[attr-defined]
 
-    def getJson(self) -> str:  # noqa: N802
+    def getJson(self) -> str:
         s: Any = self
         if s.ability_type == "TargetUnit":
             text = f"Targeted {s.target.name}" if s.ability.name == "Attack" else f"{s.ability.name} on {s.target.name}"
@@ -133,7 +132,7 @@ class _CommandEventMixin(_GameEventMixin):
         if bool(s.flag["minimap"]):
             string += " M"
         if s.ability_type in ("TargetPoint", "TargetUnit"):
-            string += f"; Location: {str(s.location)}"
+            string += f"; Location: {s.location!s}"
         return string + str(self.__class__)
 
 
@@ -144,7 +143,7 @@ class _CommandManagerStateEventMixin(_GameEventMixin):
 
 
 class _SelectionEventMixin(_GameEventMixin):
-    def isPlayer(self, playerNames: Any) -> bool:  # noqa: N802, N803
+    def isPlayer(self, playerNames: Any) -> bool:
         return self.playerName in playerNames
 
     def __str__(self) -> str:
@@ -164,7 +163,7 @@ class _SelectionEventMixin(_GameEventMixin):
 
 
 class _CameraEventMixin(_GameEventMixin):
-    def isPlayer(self, names: Any) -> bool:  # noqa: N802
+    def isPlayer(self, names: Any) -> bool:
         return self.playerName in names
 
     def __str__(self) -> str:
@@ -180,7 +179,7 @@ class _ControlGroupEventMixin(_GameEventMixin):
 
 def _cg_str(label: str) -> Any:
     def __str__(self: Any) -> str:
-        return self._str_prefix() + f" {self.playerName} CG {self.control_group} {label}"
+        return str(self._str_prefix()) + f" {self.playerName} CG {self.control_group} {label}"
 
     return __str__
 
@@ -225,15 +224,15 @@ class _UnitBornEventMixin(_TrackerEventMixin):
     def pid(self) -> Any:
         return self.control_pid  # type: ignore[attr-defined]
 
-    def isPlayer(self, pids: Any) -> bool:  # noqa: N802
+    def isPlayer(self, pids: Any) -> bool:
         return bool(pids.contain(self.upkeep_pid))  # type: ignore[attr-defined]  # the fork's bug, kept
 
-    def isCounted(self) -> bool:  # noqa: N802
+    def isCounted(self) -> bool:
         return self.unit.type not in [845]  # type: ignore[attr-defined]
 
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{str(s.unit_upkeeper): >15} - Unit born {s.unit} at {s.location} id {s.unit_id}"
+        return self._str_prefix() + f"{s.unit_upkeeper!s: >15} - Unit born {s.unit} at {s.location} id {s.unit_id}"
 
 
 class _UnitDiedEventMixin(_TrackerEventMixin):
@@ -245,25 +244,25 @@ class _UnitDiedEventMixin(_TrackerEventMixin):
     def pid(self) -> Any:
         return self.unit.owner.pid  # type: ignore[attr-defined]
 
-    def isCounted(self) -> bool:  # noqa: N802
+    def isCounted(self) -> bool:
         return self.countableUnitDeath()
 
-    def isWorker(self) -> bool:  # noqa: N802
+    def isWorker(self) -> bool:
         return bool(self.unit.is_worker)  # type: ignore[attr-defined]
 
-    def countableUnitDeath(self) -> bool:  # noqa: N802
+    def countableUnitDeath(self) -> bool:
         u: Any = self.unit  # type: ignore[attr-defined]
         return bool(
             (u.is_army or u.is_building or u.name in ["LurkerBurrowed", "Drone", "Probe", "SCV"])
             and not u.name.startswith(("Broodling", "RichMineral", "Mineral", "Force Field"))
         )
 
-    def buildingDeath(self) -> bool:  # noqa: N802
+    def buildingDeath(self) -> bool:
         return bool(self.unit.is_building)  # type: ignore[attr-defined]
 
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{s.unit.name} - Unit died by {s.killing_unit} {str(s.unit.owner): >15} at {s.location}."
+        return self._str_prefix() + f"{s.unit.name} - Unit died by {s.killing_unit} {s.unit.owner!s: >15} at {s.location}."
 
 
 class _UnitInitEventMixin(_TrackerEventMixin):
@@ -275,12 +274,12 @@ class _UnitInitEventMixin(_TrackerEventMixin):
     def pid(self) -> Any:
         return self.upkeep_pid  # type: ignore[attr-defined]
 
-    def isCounted(self) -> bool:  # noqa: N802
+    def isCounted(self) -> bool:
         return True
 
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{str(s.unit_upkeeper): >15} - Unit initiated {s.unit} at {s.location}"
+        return self._str_prefix() + f"{s.unit_upkeeper!s: >15} - Unit initiated {s.unit} at {s.location}"
 
 
 class _UnitDoneEventMixin(_TrackerEventMixin):
@@ -294,7 +293,7 @@ class _UnitDoneEventMixin(_TrackerEventMixin):
 
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{str(s.unit.owner): >15} - Unit {s.unit}({s.unit.id}) {s.unit.location} done"
+        return self._str_prefix() + f"{s.unit.owner!s: >15} - Unit {s.unit}({s.unit.id}) {s.unit.location} done"
 
 
 class _UnitTypeChangeEventMixin(_TrackerEventMixin):
@@ -308,13 +307,13 @@ class _UnitTypeChangeEventMixin(_TrackerEventMixin):
 
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{str(s.unit.owner): >15} - Unit {s.unit} type changed to {s.unit_type_name}"
+        return self._str_prefix() + f"{s.unit.owner!s: >15} - Unit {s.unit} type changed to {s.unit_type_name}"
 
 
 class _UpgradeCompleteEventMixin(_TrackerEventMixin):
     def __str__(self) -> str:
         s: Any = self
-        return self._str_prefix() + f"{str(s.player): >15} - {s.upgrade_type_name} upgrade completed"
+        return self._str_prefix() + f"{s.player!s: >15} - {s.upgrade_type_name} upgrade completed"
 
 
 class _UnitPositionsEventMixin(_TrackerEventMixin):
@@ -332,7 +331,7 @@ class _UnitPositionsEventMixin(_TrackerEventMixin):
 
 class _UnitMixin:
     @property
-    def isScout(self) -> bool:  # noqa: N802
+    def isScout(self) -> bool:
         return self.unit.name in ("Drone", "Probe", "SCV", "Zergling", "Reaper", "Marine", "Oracle", "Phoenix")  # type: ignore[attr-defined]  # the fork's bug (no self.unit), kept
 
     @property
@@ -340,15 +339,15 @@ class _UnitMixin:
         return self.owner  # type: ignore[attr-defined]
 
     @property
-    def diedAtSec(self) -> float | None:  # noqa: N802
+    def diedAtSec(self) -> float | None:
         died_at = self.died_at  # type: ignore[attr-defined]
         return None if died_at is None else died_at / LOOPS_PER_SECOND
 
     @property
-    def nameC(self) -> str:  # noqa: N802
+    def nameC(self) -> str:
         return compat.clean_name(self.name, True)  # type: ignore[attr-defined]
 
-    def replaceStrings(self, input: Any, split: bool = False) -> str:  # noqa: A002, N802
+    def replaceStrings(self, input: Any, split: bool = False) -> str:
         return compat.clean_name(input, split)
 
     def __str__(self) -> str:
@@ -356,7 +355,7 @@ class _UnitMixin:
 
 
 class _PlayerMixin:
-    def replaceStrings(self, input: Any, split: bool = False) -> str:  # noqa: A002, N802
+    def replaceStrings(self, input: Any, split: bool = False) -> str:
         return compat.clean_name(input, split)
 
 

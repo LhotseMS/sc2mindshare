@@ -36,8 +36,8 @@ def analyse(replay: Any, support_root: str | Path) -> AnalysisResult:
     configure(support_root)
     FileHandler.intervals = None
     flavour_replay(replay)
-    detectors.createDetectors(replay)
-    d = detectors
+    d: Any = detectors  # the ported layer is untyped (module globals set by createDetectors)
+    d.createDetectors(replay)
     nodes = (
         d.singlesDetector.nodes
         + d.battleDetector.battles
@@ -56,3 +56,16 @@ def analyse(replay: Any, support_root: str | Path) -> AnalysisResult:
     )
     links = d.singlesDetector.links + d.battleDetector.links + d.simpleDetector.links
     return AnalysisResult(tuple(nodes), tuple(links), FileHandler.intervals)
+
+
+def legacy_csv(result: AnalysisResult) -> str:
+    """The legacy events CSV for ``result`` (the layer's own CSVExporter), as a test oracle only.
+
+    The product never writes the CSV (stream1-plan.md §3). The exporter is imported here, after
+    the detectors, because the legacy modules import each other in a cycle that only resolves in
+    the legacy entry point's order (detectors first).
+    """
+    from sc2mindshare.analysis.exports.exporter import CSVExporter
+
+    exporter: Any = CSVExporter(list(result.nodes), list(result.links))
+    return str(exporter.getExport())
