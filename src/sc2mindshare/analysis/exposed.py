@@ -55,7 +55,8 @@ _BASE_ROW = re.compile(r"(Main base|Natural|\d+(st|nd|rd|th) base)")
 
 def _build_times(table: Any, known: set[str]) -> tuple[tuple[tuple[str, str], ...], tuple[str, ...]]:
     """unitsInfo.csv's build times keyed by unit type id (see ``TimeTables``), and the rows that name none."""
-    keyed, unmapped = [], []
+    keyed: list[tuple[str, str]] = []
+    unmapped: list[str] = []
     for name, row in table.items():
         if _BASE_ROW.fullmatch(name):
             continue
@@ -63,6 +64,8 @@ def _build_times(table: Any, known: set[str]) -> tuple[tuple[tuple[str, str], ..
         unit_id = next((c for c in (name, squashed, UNIT_ALIASES.get(name)) if c in known), None)
         if unit_id is None:
             unmapped.append(name)
+        elif any(key == unit_id for key, _ in keyed):
+            raise ValueError(f"unitsInfo.csv has two rows for unit type {unit_id!r} (the second is {name!r})")
         else:
             keyed.append((unit_id, str(row["Build Time"])))
     return tuple(keyed), tuple(unmapped)
