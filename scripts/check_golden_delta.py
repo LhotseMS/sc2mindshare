@@ -242,8 +242,10 @@ def renumber_map(
 def diff_by_key(old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_map: Mapping[str, str] | None) -> Any:
     """R5's diff: nodes paired by their ``ID#n`` key and links by their ``node1>node2#n`` key, with the
     same masks as ``golden.diff_json`` (which pairs records by sequence alignment, so after a renumber a
-    changed node next to an added one would be compared with its neighbour). The order of records is
-    not compared: after a renumber it follows the IDs."""
+    changed node next to an added one would be compared with its neighbour).
+    Order is compared after the pairing, as plain C3 does: when the records both sides share are in
+    another order, the change is ``nodes <order>`` or ``links <order>``, listed in an entry like any other
+    (Vera's re-run at 726d395)."""
     report = golden.Report()
     old_nodes, budget_old = golden.normalise_nodes(old_doc.get("nodes", []), clock_map, False)
     new_nodes, budget_new = golden.normalise_nodes(new_doc.get("nodes", []), clock_map, False)
@@ -279,6 +281,12 @@ def diff_by_key(old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_ma
             for path, _old, _new in fields:
                 report.changed.append((key, path))
                 report.lines.append(f"{key}: {path}")
+    for kind, (before, after) in zip(("nodes", "links"), pairs, strict=True):
+        shared_before = [k for k in before if k in after]
+        shared_after = [k for k in after if k in before]
+        if shared_before != shared_after:
+            report.changed.append((kind, "<order>"))
+            report.lines.append(f"{kind}: order differs (records both sides have)")
     return report
 
 
