@@ -119,6 +119,33 @@ def test_predictions_compressed(graph_before_s1, clock_map):
     assert r.warnings == []
 
 
+#: Leo's predictions for the 7 Supply Blocks after CR-023's S1 with S5, from spec r3 alone, written before
+#: he opened the regenerated snapshot (.scratch/plan/streams/leo-supply-s1-predictions.md): block ->
+#: (compressed centre x, compressed width, linear centre x, linear width, side).
+SUPPLY_BLOCKS_S1 = {
+    "Supply Block-0": (7.5, 2.5, 10.0, 7.5, -1),
+    "Supply Block-1": (21.25, 5.0, 31.25, 5.0, -1),
+    "Supply Block-2": (75.0, 2.5, 100.0, 2.5, -1),
+    "Supply Block-3": (155.0, 2.5, 188.75, 5.0, -1),
+    "Supply Block-4": (166.25, 10.0, 201.25, 10.0, -1),
+    "Supply Block-5": (7.5, 2.5, 7.5, 2.5, 1),
+    "Supply Block-6": (188.75, 15.0, 226.25, 15.0, 1),
+}
+
+
+@pytest.mark.parametrize("mode", ["compressed", "linear"])
+def test_the_supply_blocks_after_s1_are_where_leo_predicted(graph, clock_map, mode):
+    """The real input (every fix on): Leo's predictions for the 7 blocks, both modes; the round-2
+    predictions above stay on the input they were made for (``graph_before_s1``)."""
+    r = layout(items(graph), Profile(timeline=mode), clock_map)
+    blocks = [n.id for n in graph.nodes if n.kind == "Supply Block"]
+    assert blocks == list(SUPPLY_BLOCKS_S1)
+    for block, (cx, cw, lx, lw, side) in SUPPLY_BLOCKS_S1.items():
+        x, width = (cx, cw) if mode == "compressed" else (lx, lw)
+        assert r.positions[block] == (pytest.approx(x), pytest.approx(side * 12.16)), block
+        assert r.sizes[block] == [pytest.approx(width), 1], block
+
+
 def test_predictions_linear(graph, clock_map):
     r = layout(items(graph), Profile(timeline="linear"), clock_map)
     assert r.rows[-1][2] == 247.5  # 100 windows, 17 of them empty
