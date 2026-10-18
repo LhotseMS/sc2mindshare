@@ -173,3 +173,55 @@ def larva_use(replay: Any) -> tuple[LarvaUse, ...]:
             used.setdefault(p.town_hall_id, set()).add(p.larva_id)
             units[p.town_hall_id] = units.get(p.town_hall_id, 0) + 1
     return tuple(LarvaUse(owner[h], h, len(larvae[h]), len(used.get(h, set())), units.get(h, 0)) for h in sorted(larvae))
+
+
+def is_production_ability(name: str | None) -> bool:
+    """A structure's own train ability (``NexusTrain``, ``GatewayTrain``, ``TrainQueen``...); not the egg's ``LarvaTrain``."""
+    return name is not None and name != LARVA_TRAIN and (name.endswith("Train") or name.startswith("Train"))
+
+
+@dataclass(frozen=True)
+class StructureProduction:
+    """A structure that trained units: its lifetime and what it produced (CR-058, without durations).
+
+    Idle and busy time need build times (CR-053) and are not derived here. Warp-ins (WarpGate units)
+    are not births with a creator, so a WarpGate's warped units are not counted (F3-024).
+    """
+
+    player_id: int
+    structure_id: int
+    #: The structure's type when it was started (a Hatchery that becomes a Lair stays "Hatchery").
+    structure_type: str
+    started_at: int | None
+    finished_at: int | None
+    died_at: int | None
+    units: int
+    first_unit_frame: int
+    last_unit_frame: int
+
+
+def structure_production(replay: Any) -> tuple[StructureProduction, ...]:
+    """One row per structure that trained at least one unit, ordered by its id."""
+    produced: dict[int, list[Creation]] = {}
+    for c in creations(replay):
+        if c.creator_id is not None and is_production_ability(c.creator_ability):
+            produced.setdefault(c.creator_id, []).append(c)
+    rows = []
+    for structure_id in sorted(produced):
+        made = produced[structure_id]
+        unit = replay.objects.get(structure_id)
+        started = None if unit is None else unit.started_at
+        rows.append(
+            StructureProduction(
+                player_id=made[0].player_id,
+                structure_id=structure_id,
+                structure_type="" if unit is None else _type_at(unit, started or 0),
+                started_at=started,
+                finished_at=None if unit is None else unit.finished_at,
+                died_at=None if unit is None else unit.died_at,
+                units=len(made),
+                first_unit_frame=made[0].frame,
+                last_unit_frame=made[-1].frame,
+            )
+        )
+    return tuple(rows)

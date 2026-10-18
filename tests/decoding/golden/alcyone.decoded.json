@@ -587,6 +587,247 @@
     "base_build": 92440,
     "game_loops": 22369
   },
+  "research": {
+    "commands": [
+      {
+        "frame": 7712,
+        "name": "ResearchWarpGate",
+        "player_id": 2
+      },
+      {
+        "frame": 8242,
+        "name": "EvolveGlialReconstitution",
+        "player_id": 1
+      },
+      {
+        "frame": 9893,
+        "name": "UpgradeGroundWeapons1",
+        "player_id": 2
+      },
+      {
+        "frame": 9915,
+        "name": "UpgradeGroundArmor1",
+        "player_id": 2
+      },
+      {
+        "frame": 10853,
+        "name": "ResearchEvolveMuscularAugments",
+        "player_id": 1
+      },
+      {
+        "frame": 10854,
+        "name": "ResearchEvolveGroovedSpines",
+        "player_id": 1
+      },
+      {
+        "frame": 11491,
+        "name": "ResearchExtendedThermalLance",
+        "player_id": 2
+      },
+      {
+        "frame": 14406,
+        "name": "UpgradeGroundWeapons2",
+        "player_id": 2
+      },
+      {
+        "frame": 14442,
+        "name": "UpgradeGroundArmor2",
+        "player_id": 2
+      },
+      {
+        "frame": 14463,
+        "name": "ResearchCharge",
+        "player_id": 2
+      },
+      {
+        "frame": 14760,
+        "name": "ResearchZergMeleeWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 14784,
+        "name": "ResearchZergMissileWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 15156,
+        "name": "EvolveMetabolicBoost",
+        "player_id": 1
+      },
+      {
+        "frame": 15631,
+        "name": "ResearchPsiStormTech",
+        "player_id": 2
+      },
+      {
+        "frame": 15737,
+        "name": "ResearchZergFlyerWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 16736,
+        "name": "Researchoverlordspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 16753,
+        "name": "ResearchBurrow",
+        "player_id": 1
+      },
+      {
+        "frame": 17102,
+        "name": "ResearchZergFlyerArmorsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 17852,
+        "name": "ResearchZergMeleeWeaponsLevel2",
+        "player_id": 1
+      },
+      {
+        "frame": 17855,
+        "name": "ResearchZergMissileWeaponsLevel2",
+        "player_id": 1
+      },
+      {
+        "frame": 17860,
+        "name": "ResearchZergGroundArmorsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 19425,
+        "name": "UpgradeGroundWeapons3",
+        "player_id": 2
+      },
+      {
+        "frame": 19438,
+        "name": "UpgradeGroundArmor3",
+        "player_id": 2
+      },
+      {
+        "frame": 20987,
+        "name": "ResearchAnabolicSynthesis",
+        "player_id": 1
+      },
+      {
+        "frame": 20990,
+        "name": "EvolveChitinousPlating",
+        "player_id": 1
+      }
+    ],
+    "completions": [
+      {
+        "frame": 9728,
+        "name": "WarpGateResearch",
+        "player_id": 2
+      },
+      {
+        "frame": 10002,
+        "name": "GlialReconstitution",
+        "player_id": 1
+      },
+      {
+        "frame": 12293,
+        "name": "EvolveMuscularAugments",
+        "player_id": 1
+      },
+      {
+        "frame": 12411,
+        "name": "ProtossGroundArmorsLevel1",
+        "player_id": 2
+      },
+      {
+        "frame": 12613,
+        "name": "ProtossGroundWeaponsLevel1",
+        "player_id": 2
+      },
+      {
+        "frame": 13412,
+        "name": "EvolveGroovedSpines",
+        "player_id": 1
+      },
+      {
+        "frame": 13731,
+        "name": "ExtendedThermalLance",
+        "player_id": 2
+      },
+      {
+        "frame": 16479,
+        "name": "Charge",
+        "player_id": 2
+      },
+      {
+        "frame": 16916,
+        "name": "zerglingmovementspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 17320,
+        "name": "ZergMeleeWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 17344,
+        "name": "ZergMissileWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 17391,
+        "name": "PsiStormTech",
+        "player_id": 2
+      },
+      {
+        "frame": 17422,
+        "name": "ProtossGroundWeaponsLevel2",
+        "player_id": 2
+      },
+      {
+        "frame": 17458,
+        "name": "ProtossGroundArmorsLevel2",
+        "player_id": 2
+      },
+      {
+        "frame": 17696,
+        "name": "overlordspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 18297,
+        "name": "ZergFlyerWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 18353,
+        "name": "Burrow",
+        "player_id": 1
+      },
+      {
+        "frame": 19662,
+        "name": "ZergFlyerArmorsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 20420,
+        "name": "ZergGroundArmorsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 20892,
+        "name": "ZergMeleeWeaponsLevel2",
+        "player_id": 1
+      },
+      {
+        "frame": 20895,
+        "name": "ZergMissileWeaponsLevel2",
+        "player_id": 1
+      },
+      {
+        "frame": 21947,
+        "name": "AnabolicSynthesis",
+        "player_id": 1
+      }
+    ]
+  },
   "side_members": {
     "load_info_all_zero": true,
     "member_bytes": {
@@ -600,6 +841,173 @@
     "sync_checksum_count": 349,
     "warnings": []
   },
+  "structure_production": [
+    {
+      "died_at": null,
+      "finished_at": 14303,
+      "first_unit_frame": 14811,
+      "last_unit_frame": 21314,
+      "player_id": 2,
+      "started_at": 12703,
+      "structure_id": 33030151,
+      "structure_type": "Nexus",
+      "units": 3
+    },
+    {
+      "died_at": null,
+      "finished_at": 0,
+      "first_unit_frame": 2881,
+      "last_unit_frame": 5997,
+      "player_id": 1,
+      "started_at": 0,
+      "structure_id": 54788097,
+      "structure_type": "Hatchery",
+      "units": 3
+    },
+    {
+      "died_at": null,
+      "finished_at": 1968,
+      "first_unit_frame": 2630,
+      "last_unit_frame": 8416,
+      "player_id": 2,
+      "started_at": 928,
+      "structure_id": 55312386,
+      "structure_type": "Gateway",
+      "units": 6
+    },
+    {
+      "died_at": null,
+      "finished_at": 0,
+      "first_unit_frame": 287,
+      "last_unit_frame": 22340,
+      "player_id": 2,
+      "started_at": 0,
+      "structure_id": 59244545,
+      "structure_type": "Nexus",
+      "units": 44
+    },
+    {
+      "died_at": null,
+      "finished_at": 3401,
+      "first_unit_frame": 4228,
+      "last_unit_frame": 6003,
+      "player_id": 1,
+      "started_at": 1801,
+      "structure_id": 66322433,
+      "structure_type": "Hatchery",
+      "units": 2
+    },
+    {
+      "died_at": 19612,
+      "finished_at": 3718,
+      "first_unit_frame": 4125,
+      "last_unit_frame": 15091,
+      "player_id": 2,
+      "started_at": 2118,
+      "structure_id": 67895297,
+      "structure_type": "Nexus",
+      "units": 26
+    },
+    {
+      "died_at": 10893,
+      "finished_at": 9227,
+      "first_unit_frame": 9900,
+      "last_unit_frame": 10171,
+      "player_id": 2,
+      "started_at": 7627,
+      "structure_id": 68943874,
+      "structure_type": "Nexus",
+      "units": 2
+    },
+    {
+      "died_at": null,
+      "finished_at": 3829,
+      "first_unit_frame": 4542,
+      "last_unit_frame": 8420,
+      "player_id": 2,
+      "started_at": 2789,
+      "structure_id": 69730306,
+      "structure_type": "Gateway",
+      "units": 3
+    },
+    {
+      "died_at": 21529,
+      "finished_at": 6182,
+      "first_unit_frame": 7555,
+      "last_unit_frame": 7555,
+      "player_id": 1,
+      "started_at": 4582,
+      "structure_id": 76283905,
+      "structure_type": "Hatchery",
+      "units": 1
+    },
+    {
+      "died_at": null,
+      "finished_at": 6574,
+      "first_unit_frame": 7377,
+      "last_unit_frame": 15913,
+      "player_id": 2,
+      "started_at": 5614,
+      "structure_id": 82575361,
+      "structure_type": "Stargate",
+      "units": 5
+    },
+    {
+      "died_at": null,
+      "finished_at": 9626,
+      "first_unit_frame": 10845,
+      "last_unit_frame": 19300,
+      "player_id": 2,
+      "started_at": 8586,
+      "structure_id": 100401157,
+      "structure_type": "RoboticsFacility",
+      "units": 10
+    },
+    {
+      "died_at": null,
+      "finished_at": 9592,
+      "first_unit_frame": 10849,
+      "last_unit_frame": 18522,
+      "player_id": 2,
+      "started_at": 8552,
+      "structure_id": 109051912,
+      "structure_type": "RoboticsFacility",
+      "units": 10
+    },
+    {
+      "died_at": null,
+      "finished_at": 13582,
+      "first_unit_frame": 15256,
+      "last_unit_frame": 15256,
+      "player_id": 1,
+      "started_at": 11982,
+      "structure_id": 127926294,
+      "structure_type": "Hatchery",
+      "units": 1
+    },
+    {
+      "died_at": null,
+      "finished_at": 12315,
+      "first_unit_frame": 14891,
+      "last_unit_frame": 21315,
+      "player_id": 2,
+      "started_at": 10715,
+      "structure_id": 129236994,
+      "structure_type": "Nexus",
+      "units": 2
+    },
+    {
+      "died_at": null,
+      "finished_at": 17254,
+      "first_unit_frame": 19245,
+      "last_unit_frame": 19245,
+      "player_id": 1,
+      "started_at": 15654,
+      "structure_id": 164102153,
+      "structure_type": "Hatchery",
+      "units": 1
+    }
+  ],
   "target_flags": {
     "by_kind_and_relation": [
       {

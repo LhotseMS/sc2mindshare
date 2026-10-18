@@ -351,6 +351,77 @@
     "base_build": 83830,
     "game_loops": 14805
   },
+  "research": {
+    "commands": [
+      {
+        "frame": 4208,
+        "name": "ResearchWarpGate",
+        "player_id": 2
+      },
+      {
+        "frame": 4579,
+        "name": "EvolveMetabolicBoost",
+        "player_id": 1
+      },
+      {
+        "frame": 6246,
+        "name": "Researchoverlordspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 8050,
+        "name": "ResearchZergMissileWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 8058,
+        "name": "EvolveGlialReconstitution",
+        "player_id": 1
+      },
+      {
+        "frame": 12705,
+        "name": "ResearchZergMissileWeaponsLevel1",
+        "player_id": 1
+      },
+      {
+        "frame": 12785,
+        "name": "UpgradeGroundWeapons1",
+        "player_id": 2
+      },
+      {
+        "frame": 12785,
+        "name": "ResearchBlink",
+        "player_id": 2
+      },
+      {
+        "frame": 12964,
+        "name": "ResearchCharge",
+        "player_id": 2
+      }
+    ],
+    "completions": [
+      {
+        "frame": 6339,
+        "name": "zerglingmovementspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 6448,
+        "name": "WarpGateResearch",
+        "player_id": 2
+      },
+      {
+        "frame": 7206,
+        "name": "overlordspeed",
+        "player_id": 1
+      },
+      {
+        "frame": 9818,
+        "name": "GlialReconstitution",
+        "player_id": 1
+      }
+    ]
+  },
   "side_members": {
     "load_info_all_zero": true,
     "member_bytes": {
@@ -364,6 +435,96 @@
     "sync_checksum_count": 231,
     "warnings": []
   },
+  "structure_production": [
+    {
+      "died_at": null,
+      "finished_at": 0,
+      "first_unit_frame": 2988,
+      "last_unit_frame": 2988,
+      "player_id": 1,
+      "started_at": 0,
+      "structure_id": 47972353,
+      "structure_type": "Hatchery",
+      "units": 1
+    },
+    {
+      "died_at": null,
+      "finished_at": 3036,
+      "first_unit_frame": 3805,
+      "last_unit_frame": 6609,
+      "player_id": 2,
+      "started_at": 1996,
+      "structure_id": 51904514,
+      "structure_type": "Gateway",
+      "units": 3
+    },
+    {
+      "died_at": null,
+      "finished_at": 0,
+      "first_unit_frame": 284,
+      "last_unit_frame": 14793,
+      "player_id": 2,
+      "started_at": 0,
+      "structure_id": 52428801,
+      "structure_type": "Nexus",
+      "units": 35
+    },
+    {
+      "died_at": null,
+      "finished_at": 1902,
+      "first_unit_frame": 2458,
+      "last_unit_frame": 6961,
+      "player_id": 2,
+      "started_at": 862,
+      "structure_id": 57671681,
+      "structure_type": "Gateway",
+      "units": 3
+    },
+    {
+      "died_at": null,
+      "finished_at": 3180,
+      "first_unit_frame": 4328,
+      "last_unit_frame": 13981,
+      "player_id": 1,
+      "started_at": 1580,
+      "structure_id": 60030977,
+      "structure_type": "Hatchery",
+      "units": 2
+    },
+    {
+      "died_at": null,
+      "finished_at": 4666,
+      "first_unit_frame": 4934,
+      "last_unit_frame": 14416,
+      "player_id": 2,
+      "started_at": 3066,
+      "structure_id": 63176706,
+      "structure_type": "Nexus",
+      "units": 19
+    },
+    {
+      "died_at": null,
+      "finished_at": 4727,
+      "first_unit_frame": 5725,
+      "last_unit_frame": 14309,
+      "player_id": 2,
+      "started_at": 3687,
+      "structure_id": 66584577,
+      "structure_type": "RoboticsFacility",
+      "units": 8
+    },
+    {
+      "died_at": null,
+      "finished_at": 13077,
+      "first_unit_frame": 13472,
+      "last_unit_frame": 14285,
+      "player_id": 2,
+      "started_at": 11477,
+      "structure_id": 73400331,
+      "structure_type": "Nexus",
+      "units": 4
+    }
+  ],
   "target_flags": {
     "by_kind_and_relation": [
       {
