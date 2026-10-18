@@ -262,3 +262,37 @@ def test_the_retired_single_shift_form_is_refused(paths, retired):
     assert problems == ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], (
         problems
     )
+
+
+def _swap(doc, a, b):
+    nodes = doc["nodes"]
+    i, j = (next(k for k, n in enumerate(nodes) if n["ID"] == x) for x in (a, b))
+    nodes[i], nodes[j] = nodes[j], nodes[i]
+    return doc
+
+
+@pytest.mark.parametrize(("a", "b"), [("Battle-1", "Battle-2"), ("Units-1", "Units-2")])
+def test_r5_an_order_change_under_renumber_is_reported_as_c3_does(tmp_path, a, b):
+    """Vera's re-run at 726d395: pairing by ID must not wave reorders through. Another type's swap and a swap
+    within the renumbered type are reported as 'nodes <order>' (an entry can list it)."""
+    old = copy.deepcopy(OLD)
+    old["nodes"].append({"ID": "Battle-2", "type": "Battle", "name": "b2", "description": "d", "properties": {}})
+    new = copy.deepcopy(NEW)
+    new["nodes"].append({"ID": "Battle-2", "type": "Battle", "name": "b2", "description": "d", "properties": {}})
+    old_path = _write(tmp_path / "o.json", old)
+    clean = _write(tmp_path / "n.json", new)
+    assert _problems(_entry(old_path), old_path, clean) == []  # the order as the rewrite gives it: fine
+    swapped = _write(tmp_path / "s.json", _swap(copy.deepcopy(new), a, b))
+    problems = _problems(_entry(old_path), old_path, swapped)
+    assert problems == ["unlisted change: nodes <order>"], problems
+    entry = _entry(old_path)
+    entry["changes"].append({"select": {"ID": "nodes"}, "fields": ["<order>"], "count": 1})
+    assert _problems(entry, old_path, swapped) == []  # listed, it passes
+
+
+def test_r5_a_link_order_change_under_renumber_is_reported(paths, tmp_path):
+    old, _, _ = paths
+    new = copy.deepcopy(NEW)
+    new["links"].reverse()
+    problems = _problems(_entry(old), old, _write(tmp_path / "n3.json", new))
+    assert problems == ["unlisted change: links <order>"], problems
