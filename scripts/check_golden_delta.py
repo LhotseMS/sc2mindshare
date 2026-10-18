@@ -116,24 +116,32 @@ def renumber_map(
     removed: set[str],
     added: set[str] | None = None,
 ) -> tuple[dict[str, str], list[str], dict[str, Any] | None]:
-    """Addendum A, R1, R2, R3, R6 and R4: the old -> new ID map of ``spec["type"]``, the problems, and
-    (when there are none) ``{"old_doc": the rewritten old golden, "consumed": the removed keys R2 and R4
-    used}`` for the C3 run (R5). Stops at the first rule that fails."""
+    """Addendum A for one spec: ``renumber_maps`` with a list of one."""
+    return renumber_maps([spec], old_doc, new_doc, removed, added)
+
+
+def _spec_map(
+    spec: Mapping[str, Any],
+    old_nodes: Sequence[Mapping[str, Any]],
+    new_nodes: Sequence[Mapping[str, Any]],
+    old_occ: Sequence[str],
+    new_occ: Sequence[str],
+    removed: set[str],
+    added: set[str],
+) -> tuple[dict[str, str], set[str], list[str]]:
+    """R1, R2 and R3 for one spec: its old -> new ID map, the removed keys R2 used, and the problems."""
     if "from_position" in spec or "shift" in spec:
-        return {}, ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], None
+        return {}, set(), ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"]
     missing = [
         f"renumber: {field} is required (state 0 when there are none)"
         for field in ("ids_changed", "links_dropped")
         if field not in spec
     ]
     if missing:
-        return {}, missing, None
-    added = added or set()
+        return {}, set(), missing
     typ, paths = spec["type"], list(spec["key"])
     retype: dict[str, str] = dict(spec.get("retype", {}))
     merged: dict[str, str] = dict(spec.get("merged", {}))
-    old_nodes, new_nodes = list(old_doc.get("nodes", [])), list(new_doc.get("nodes", []))
-    old_occ, new_occ = golden.node_keys(old_nodes), golden.node_keys(new_nodes)
     old_of_type = {n["ID"]: n for n in old_nodes if n.get("type") == typ}
 
     # R1: merged and retype against each other, then keys (unique on the new side)
@@ -151,7 +159,7 @@ def renumber_map(
                 f"is not the source's retype {retype[source]!r}"
             )
     if problems:
-        return {}, problems, None
+        return {}, set(), problems
 
     def key_of(node: Mapping[str, Any], old_side: bool) -> str:
         values = []
@@ -171,7 +179,7 @@ def renumber_map(
             problems.append(f"R1: ambiguous alignment: {new_by_key[k][0]} and {node['ID']} share the key {k}")
         new_by_key[k] = (node["ID"], occ)
     if problems:
-        return {}, problems, None
+        return {}, set(), problems
     old_by_key: dict[str, list[tuple[str, str]]] = {}
     for node, occ in zip(old_nodes, old_occ, strict=True):
         if node.get("type") == typ:
@@ -190,7 +198,7 @@ def renumber_map(
         if k not in old_by_key and occ not in added:
             problems.append(f"R2: unlisted addition: {node_id} (key {k}) pairs with no old node")
     if problems:
-        return {}, problems, None
+        return {}, set(), problems
 
     # R3: the merges the keys show must be the ones stated
     derived: dict[str, str] = {}
@@ -207,51 +215,100 @@ def renumber_map(
         if merged.get(source) != derived.get(source):
             problems.append(f"R3: merged states {source} -> {merged.get(source)}, the keys give {derived.get(source)}")
     if problems:
-        return {}, problems, None
+        return {}, set(), problems
+    id_map = {node_id: new_by_key[k][0] for k, members in old_by_key.items() if k in new_by_key for node_id, _ in members}
+    return id_map, consumed, []
 
-    # R6: no other type's ID changes; ids_changed as stated
-    other_old = [n["ID"] for n, occ in zip(old_nodes, old_occ, strict=True) if n.get("type") != typ and occ not in removed]
-    other_new = [n["ID"] for n, occ in zip(new_nodes, new_occ, strict=True) if n.get("type") != typ and occ not in added]
+
+def renumber_maps(
+    specs: Mapping[str, Any] | Sequence[Mapping[str, Any]],
+    old_doc: Mapping[str, Any],
+    new_doc: Mapping[str, Any],
+    removed: set[str],
+    added: set[str] | None = None,
+) -> tuple[dict[str, str], list[str], dict[str, Any] | None]:
+    """Addendum A as amended by Addendum C: ``specs`` is one spec or a list, one per node type (two naming
+    the same type stop as R1). R1, R2 and R3 run per spec; then R6 once (the types no spec names keep their
+    IDs; each spec's ``ids_changed``), R4 once on the union of the maps (each dropped link counts for the
+    spec of its node1's old type, else its node2's, else the first spec), and the caller runs C3 (R5) once.
+    Returns the union map, the problems and (when there are none) ``{"old_doc": the rewritten old golden,
+    "consumed": the removed keys R2 and R4 used}``. Stops at the first rule that fails."""
+    spec_list: list[Mapping[str, Any]] = [specs] if isinstance(specs, Mapping) else list(specs)
+    added = added or set()
+    types = [str(spec.get("type")) for spec in spec_list]
+    twice = sorted({t for t in types if types.count(t) > 1}, key=str)
+    if twice:
+        return {}, [f"R1: two renumber specs name the type {t}" for t in twice], None
+    old_nodes, new_nodes = list(old_doc.get("nodes", [])), list(new_doc.get("nodes", []))
+    old_occ, new_occ = golden.node_keys(old_nodes), golden.node_keys(new_nodes)
+    maps: list[dict[str, str]] = []
+    consumed: set[str] = set()
+    for spec in spec_list:
+        spec_map, spec_consumed, problems = _spec_map(spec, old_nodes, new_nodes, old_occ, new_occ, removed, added)
+        if problems:
+            return {}, problems, None
+        maps.append(spec_map)
+        consumed |= spec_consumed
+
+    # R6: no other type's ID changes; ids_changed as stated, per spec
+    problems = []
+    named = set(types)
+    other_old = [n["ID"] for n, occ in zip(old_nodes, old_occ, strict=True) if n.get("type") not in named and occ not in removed]
+    other_new = [n["ID"] for n, occ in zip(new_nodes, new_occ, strict=True) if n.get("type") not in named and occ not in added]
     if Counter(other_old) != Counter(other_new):  # a multiset: the order of records is C3's to judge
         gone = sorted((Counter(other_old) - Counter(other_new)).elements())
         came = sorted((Counter(other_new) - Counter(other_old)).elements())
         problems.append(f"R6: IDs of other node types change: {gone[:5]} -> {came[:5]}")
-    id_map = {node_id: new_by_key[k][0] for k, members in old_by_key.items() if k in new_by_key for node_id, _ in members}
-    ids_changed = sum(1 for o, n in id_map.items() if o not in merged and o != n)
-    if ids_changed != spec["ids_changed"]:
-        problems.append(f"R6: ids_changed states {spec['ids_changed']}, the map changes {ids_changed}")
+    for spec, spec_map in zip(spec_list, maps, strict=True):
+        merged = spec.get("merged", {})
+        ids_changed = sum(1 for o, n in spec_map.items() if o not in merged and o != n)
+        if ids_changed != spec["ids_changed"]:
+            label = "" if len(spec_list) == 1 else f" ({spec['type']})"
+            problems.append(f"R6: ids_changed{label} states {spec['ids_changed']}, the map changes {ids_changed}")
     if problems:
         return {}, problems, None
+    id_map = {o: n for spec_map in maps for o, n in spec_map.items()}
+    merged_sources = {source for spec in spec_list for source in spec.get("merged", {})}
 
-    # R4: rewrite the old golden; every link it drops is listed in removed (old IDs) or counted
+    # R4: rewrite the old golden once; every link it drops is listed in removed (old IDs) or counted
     rewritten = copy.deepcopy(dict(old_doc))
     nodes = []
     for node, occ in zip(rewritten.get("nodes", []), old_occ, strict=True):
-        if node.get("type") == typ:
-            if node["ID"] in merged or occ in consumed:
+        if node.get("type") in named:
+            if node["ID"] in merged_sources or occ in consumed:
                 continue
             node["ID"] = id_map[node["ID"]]
         nodes.append(node)
     rewritten["nodes"] = nodes
+    old_type: dict[str, str | None] = {}
+    for node in old_nodes:
+        old_type.setdefault(node["ID"], node.get("type"))
     old_links = list(rewritten.get("links", []))
     link_occ = _occurrences([f"{lk.get('node1')}>{lk.get('node2')}" for lk in old_links])
-    links, seen, dropped = [], [], 0
+    links: list[Any] = []
+    seen: list[Any] = []
+    dropped: Counter[str] = Counter()
     for link, occ in zip(old_links, link_occ, strict=True):
+        ends = (old_type.get(link.get("node1")), old_type.get(link.get("node2")))
         link["node1"] = id_map.get(link.get("node1"), link.get("node1"))
         link["node2"] = id_map.get(link.get("node2"), link.get("node2"))
         if link["node1"] == link["node2"] or link in seen:
             if occ in removed:
                 consumed.add(occ)
             else:
-                dropped += 1
+                dropped[str(next((t for t in ends if t in named), types[0]))] += 1
             continue
         seen.append(link)
         links.append(link)
     rewritten["links"] = links
-    if dropped != spec["links_dropped"]:
-        problems.append(
-            f"R4: links_dropped states {spec['links_dropped']}, the rewrite drops {dropped} links not listed in removed"
-        )
+    for spec in spec_list:
+        if dropped[spec["type"]] != spec["links_dropped"]:
+            label = "" if len(spec_list) == 1 else f" ({spec['type']})"
+            problems.append(
+                f"R4: links_dropped{label} states {spec['links_dropped']}, the rewrite drops {dropped[spec['type']]} "
+                "links not listed in removed"
+            )
+    if problems:
         return {}, problems, None
     return id_map, [], {"old_doc": rewritten, "consumed": consumed}
 
@@ -378,8 +435,9 @@ def _selects_order(selector: Mapping[str, Any], key: str) -> bool:
 
 
 def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mapping[str, str] | None = None) -> list[str]:
-    """C3 and C4 for one golden file; returns the problems (empty = ok). A ``renumber`` entry first
-    runs R1, R2, R3, R6 and R4 (``renumber_map``), then C3 on the rewritten old golden (R5)."""
+    """C3 and C4 for one golden file; returns the problems (empty = ok). A ``renumber`` entry (one spec or a
+    list, Addendum C) first runs R1, R2, R3, R6 and R4 (``renumber_maps``), then C3 once on the rewritten old
+    golden (R5)."""
     problems: list[str] = []
     if golden.sha256(old) != entry["base_sha256"]:
         problems.append(f"C4 base_sha256 does not match {old.name}")
@@ -387,17 +445,21 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
     if old.suffix == ".json":
         old_doc, new_doc = json.loads(old.read_text(encoding="utf-8")), json.loads(new.read_text(encoding="utf-8"))
         if entry.get("renumber"):
-            spec = entry["renumber"]
-            id_map, rproblems, result = renumber_map(
-                spec, old_doc, new_doc, set(entry.get("removed", [])), set(entry.get("added", []))
+            specs = entry["renumber"]
+            spec_list = [specs] if isinstance(specs, Mapping) else list(specs)
+            id_map, rproblems, result = renumber_maps(
+                spec_list, old_doc, new_doc, set(entry.get("removed", [])), set(entry.get("added", []))
             )
             if rproblems or result is None:
                 return problems + rproblems
+            type_of = {n["ID"]: n.get("type") for n in old_doc.get("nodes", [])}
             old_doc, consumed = result["old_doc"], result["consumed"]
-            print(f"renumber map ({spec['type']}, {len(id_map)} old IDs):")
-            for o, n in id_map.items():
-                if o != n:
-                    print(f"  {o} -> {n}" + (" (merged)" if o in spec.get("merged", {}) else ""))
+            for spec in spec_list:
+                of_type = {o: n for o, n in id_map.items() if type_of.get(o) == spec["type"]}
+                print(f"renumber map ({spec['type']}, {len(of_type)} old IDs):")
+                for o, n in of_type.items():
+                    if o != n:
+                        print(f"  {o} -> {n}" + (" (merged)" if o in spec.get("merged", {}) else ""))
         if entry.get("renumber"):
             report = diff_by_key(old_doc, new_doc, clock_map)
         else:
