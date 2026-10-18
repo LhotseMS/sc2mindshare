@@ -11,6 +11,7 @@ import json
 from typing import TYPE_CHECKING, Any
 
 from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
+from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
 
 if TYPE_CHECKING:
@@ -51,8 +52,16 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
             for row in mmr_consistency(replay, decoded.metadata)
         ],
         "camera_hotkeys": _camera_hotkeys(replay),
+        "command_activity": [_activity(pid, a) for pid, a in command_activity(replay).items()],
         "warnings": list(decoded.warnings),
     }
+
+
+def _activity(pid: int, activity: CommandActivity) -> dict[str, Any]:
+    row: dict[str, Any] = {"player_id": pid}
+    row.update(dataclasses.asdict(activity))
+    row["actions_without_paired_states"] = activity.actions_without_paired_states
+    return row
 
 
 def _camera_hotkeys(replay: Any) -> dict[str, Any]:

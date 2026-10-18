@@ -45,6 +45,19 @@ def test_export_has_camera_saves_and_recall_counts(alcyone):
     assert sum(r["count"] for r in hotkeys["recalls"] if r["player_id"] == 2) == 22
 
 
+def test_export_has_command_activity(alcyone):
+    rows = to_dict(load(alcyone))["command_activity"]
+    assert rows[0] == {
+        "player_id": 1,
+        "commands": 609,
+        "retargets": 1473,
+        "paired_states": 1473,
+        "unpaired_states": 591,
+        "retargets_after_selection": 490,
+        "actions_without_paired_states": 2673,
+    }
+
+
 def test_export_is_deterministic_json(alcyone):
     text = to_json(load(alcyone))
     assert text == to_json(load(alcyone))

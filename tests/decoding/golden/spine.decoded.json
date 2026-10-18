@@ -55,6 +55,26 @@
       }
     ]
   },
+  "command_activity": [
+    {
+      "actions_without_paired_states": 825,
+      "commands": 300,
+      "paired_states": 325,
+      "player_id": 1,
+      "retargets": 325,
+      "retargets_after_selection": 89,
+      "unpaired_states": 200
+    },
+    {
+      "actions_without_paired_states": 1078,
+      "commands": 301,
+      "paired_states": 652,
+      "player_id": 2,
+      "retargets": 652,
+      "retargets_after_selection": 206,
+      "unpaired_states": 125
+    }
+  ],
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 83830,
