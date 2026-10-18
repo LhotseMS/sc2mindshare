@@ -58,6 +58,13 @@ def _root() -> Path:
     return d
 
 
+def scratch() -> Path:
+    """Where temporary folders go: <root>/.tools/tmp, never the caller's TMPDIR (D30a)."""
+    path = _root() / ".tools" / "tmp"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 # --- the model fixture ------------------------------------------------------------------------------
 
 
@@ -157,7 +164,7 @@ def freeze_models(game: str, replay: Path, support_root: Path) -> int:
     path = _target(game, "models-faithful.json")
     legacy_rows = _load("legacy_rows", CHECKOUT / "tests" / "analysis" / "legacy_rows.py")
     graph = faithful_graph(replay, support_root)
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=scratch()) as tmp:
         cmd = [str(LEGACY_PY), str(CHECKOUT / "scripts" / "run_legacy.py"), "--support", str(support_root), "--out", tmp]
         subprocess.run([*cmd, str(replay)], check=True, capture_output=True)
         legacy_csv = (Path(tmp) / replay.stem / "events.csv").read_text(encoding="utf-8")
@@ -176,7 +183,7 @@ def freeze_models(game: str, replay: Path, support_root: Path) -> int:
 def freeze_reader(game: str, replay: Path) -> int:
     path = _target(game, "reader-state-legacy.summary.json")
     dumper = CHECKOUT / "scripts" / "dump_reader_state.py"
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=scratch()) as tmp:
         out = Path(tmp) / "legacy.json"
         # cwd: the fork's CreepTracker may write debug images to the working directory
         subprocess.run([str(LEGACY_PY), str(dumper), str(replay), str(out)], check=True, capture_output=True, cwd=tmp)

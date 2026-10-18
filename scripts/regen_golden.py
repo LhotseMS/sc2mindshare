@@ -131,7 +131,7 @@ def regenerate(entry_id: str, name: str, write: bool) -> int:
         # the golden is the code's output, and the entry's base is an earlier version of it: applied before
         print(f"{name}: entry {entry_id} is already applied (the golden is the code's output); nothing written")
         return 0
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=scratch()) as tmp:
         new = Path(tmp) / name
         new.write_text(text, encoding="utf-8")
         problems = check_golden_delta.check_delta(entry, GOLDEN / name, new, clock_map)
@@ -147,12 +147,19 @@ def regenerate(entry_id: str, name: str, write: bool) -> int:
     return 0
 
 
+def scratch() -> Path:
+    """Where temporary folders go: <root>/.tools/tmp, never the caller's TMPDIR (D30a)."""
+    path = root() / ".tools" / "tmp"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def check() -> int:
     ms_sc = root() / "MS SC"
     replay = ms_sc / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
     legacy = CHECKOUT / ".venv-legacy" / "bin" / "python"
     problems = []
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=scratch()) as tmp:
         out = Path(tmp)
         cmd = [str(legacy), str(CHECKOUT / "scripts" / "run_legacy.py"), "--support", str(ms_sc), "--out", str(out), str(replay)]
         subprocess.run(cmd, check=True, capture_output=True)
