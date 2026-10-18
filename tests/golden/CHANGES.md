@@ -313,3 +313,20 @@ The simple detector writes a Units group when the next interval begins, so the u
 ```json
 {"entry": "P8-snap-linear", "task": "CR-023", "defect": "P8 the last 10 s Units interval is never written", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "163d31293052224b42196ff21713f54310209e4f9a6e88bb7bb980bd8025fcc4", "changes": [], "added": ["Units-193#1", "Units-192>Units-193#1"], "removed": []}
 ```
+
+
+### P2: race words are no longer stripped from inside names (CR-023, T22; wording ours, A10)
+
+The layer's name cleaning (`reader.compat.clean_name`, the fork's `replaceStrings`) removes "Zerg" and "Terran" anywhere in a text, so "Zergling" reads "ling" and "zerglingmovementspeed" reads "ling Movement Speed" (python bug 2). Fix (team wording under A10, shown to Stefan with the row): the two bare removals are dropped; the explicit `" (Zerg)"` / `" (Terran)"` / `" (Protoss)"` removals stay. Race words then read as Protoss ones always did ("Protoss Ground Weapons Level 1"). Applied as layer fix `P2` (Morgan's ruling): `clean_name(text, split, fixes)` and `object_text(value, fixes)` take the fix set explicitly, and every site whose text reaches the output passes its `ctx.fixes`; the cleaned name is also a grouping key (`nameC`: the per-type unit counts and the Units node's type), and those sites pass it too. Predicted before the change by running today's pipeline with the two removals taken out of the cleaning table for the whole run (`.scratch/rex/cr023/predict_p2_docs.py`): in the three current goldens 13 Battle names and 12 Battle descriptions, 6 Units nodes (name, description, `type`: "ling" -> "Zergling") and 1 Upgrade (name and description) change; the per-type unit counts are unchanged, only the key "ling" becomes "Zergling"; no standalone "ling" is left.
+
+```json
+{"entry": "P2-view", "task": "CR-023", "defect": "P2 'Zerg'/'Terran' stripped anywhere ('ling')", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "946efdb683b6f71f86a544a5e6cafd9d4e07b424b11ea8e3aa1987dda8bec19e", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 13}, {"select": {"type": "Battle"}, "fields": ["description"], "count": 12}, {"select": {"type": "Units"}, "fields": ["name", "description", "properties.type"], "count": 6}, {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P2-snap-compressed", "task": "CR-023", "defect": "P2 'Zerg'/'Terran' stripped anywhere ('ling')", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "5a7b8848ed4ec31c7d354de49836bcaeaf45e8ab8ca6d94e8e28ac7df774801f", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 13}, {"select": {"type": "Battle"}, "fields": ["description"], "count": 12}, {"select": {"type": "Units"}, "fields": ["name", "description", "properties.type"], "count": 6}, {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P2-snap-linear", "task": "CR-023", "defect": "P2 'Zerg'/'Terran' stripped anywhere ('ling')", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "7e25ca29825a6823ed5d13443807094325b60a28efc9444ce77a5f1f5b9f615f", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 13}, {"select": {"type": "Battle"}, "fields": ["description"], "count": 12}, {"select": {"type": "Units"}, "fields": ["name", "description", "properties.type"], "count": 6}, {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1}], "added": [], "removed": []}
+```
