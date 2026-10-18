@@ -1,5 +1,5 @@
 """CR-014 on Alcyone: Leo's predictions (layout-spec.md §5, §7; round2-leo.md), invariants (QA design
-§4) and the snapshot G-SNAP-1 (both modes; frozen once Stefan has checked it in Mindshare, B2)."""
+§4) and the live snapshot G-SNAP-current (both modes; G-SNAP-1 is frozen since Stefan checked it, B2)."""
 
 import contextlib
 import copy
@@ -196,7 +196,7 @@ def test_i13_determinism_and_shuffled_input(graph, clock_map, placed):
     assert again.positions == r.positions and [c for c in again.extra_nodes] == list(r.extra_nodes)
 
 
-# --- the snapshot G-SNAP-1 -------------------------------------------------------------------------------
+# --- the live snapshot G-SNAP-current -------------------------------------------------------------------
 
 
 def _document(graph, clock_map, mode):
@@ -208,7 +208,7 @@ def test_snapshot(graph, clock_map, mode):
     doc = _document(graph, clock_map, mode)
     text = to_json(doc)
     assert text == to_json(_document(graph, clock_map, mode))  # byte-identical runs
-    expected = json.loads((GOLDEN / f"G-SNAP-1-{mode}.json").read_text(encoding="utf-8"))
+    expected = json.loads((GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
     by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")  # media id -> file name, for the M2 mask
     report = golden.diff_json(expected, doc, by_media)
     assert report.ok, str(report)
@@ -218,7 +218,7 @@ def test_snapshot(graph, clock_map, mode):
 
 @pytest.mark.parametrize("mode", ["compressed", "linear"])
 def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
-    """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-1."""
+    """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-current."""
     doc = _document(graph, clock_map, mode)
     by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")
     current = json.loads((GOLDEN / "G-VIEW-current.json").read_text(encoding="utf-8"))

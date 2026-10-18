@@ -313,3 +313,40 @@ The simple detector writes a Units group when the next interval begins, so the u
 ```json
 {"entry": "P8-snap-linear", "task": "CR-023", "defect": "P8 the last 10 s Units interval is never written", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "163d31293052224b42196ff21713f54310209e4f9a6e88bb7bb980bd8025fcc4", "changes": [], "added": ["Units-193#1", "Units-192>Units-193#1"], "removed": []}
 ```
+
+
+### freeze-snap: G-SNAP-1 frozen; the live snapshot goldens are G-SNAP-current (B2, D12a; QA design Addendum B)
+
+Stefan imported G-SNAP-1 into Mindshare and confirmed it (B2, D12a). Both files are frozen as confirmed at 066aa37 and pinned in `alcyone/FROZEN.sha256`: `alcyone/G-SNAP-1-compressed.json` sha256 `f6bfbd02c25f09da77b3968d088ea003ec99e975e09060f35d0c306f41138b5c`, `alcyone/G-SNAP-1-linear.json` sha256 `a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d`. The cut (the next commit, on `cr-022-time-as-a-number`) copies them byte for byte to `alcyone/G-SNAP-current-compressed.json` and `alcyone/G-SNAP-current-linear.json`, the live goldens from then on (as G-VIEW-1 and G-VIEW-current), and points the golden tests, `regen_golden.py` and the CLI comparisons at them. No golden's content changes. The snapshot entries written before the freeze move to the live copies with the lines below; their `base_sha256` still holds.
+
+```json
+{"entry": "freeze-snap", "task": "CR-023", "defect": "none: G-SNAP-1 frozen after Stefan's check (B2, D12a; QA design Addendum B)", "golden": ["alcyone/G-SNAP-1-compressed.json", "alcyone/G-SNAP-1-linear.json"], "frozen_sha256": {"alcyone/G-SNAP-1-compressed.json": "f6bfbd02c25f09da77b3968d088ea003ec99e975e09060f35d0c306f41138b5c", "alcyone/G-SNAP-1-linear.json": "a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d"}, "copies": {"alcyone/G-SNAP-1-compressed.json": "alcyone/G-SNAP-current-compressed.json", "alcyone/G-SNAP-1-linear.json": "alcyone/G-SNAP-current-linear.json"}, "changes": [], "added": [], "removed": []}
+```
+
+- `P3d-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P3d-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `A12-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `A12-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `P3e-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P3e-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+
+Snapshot entries of this row moved to the live copies (`cr-023-p1-closest-base`, merging the freeze forward):
+
+- `P1-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P1-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `P1b-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P1b-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `P1c-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P1c-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+
+Snapshot entries of this row moved to the live copies (`cr-023-supply-s1`, merging the freeze forward):
+
+- `S1-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `S1-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+- `S1b-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `S1b-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)
+
+Snapshot entries of this row moved to the live copies (`cr-023-p8-last-units`, merging the freeze forward):
+
+- `P8-snap-compressed`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)
+- `P8-snap-linear`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)

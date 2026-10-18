@@ -53,13 +53,30 @@ FENCE = re.compile(r"```json\n(.*?)\n```", re.DOTALL)
 WATCHED = ("tests/golden/", "src/", "sc2reader/", "legacy/", "execs/")
 
 
+#: An appended line that moves an entry to the live copy of a frozen golden (QA design Addendum B).
+GOLDEN_NOW = re.compile(r"^- `(?P<entry>[^`]+)`: golden now `(?P<path>[^`]+)` \(freeze, Addendum B\)$", re.MULTILINE)
+
+
 def entries(text: str) -> dict[str, dict[str, Any]]:
+    """The ledger's entries by ID. A ``golden now`` line replaces, in its entry's ``golden`` list, the frozen
+    golden that a freeze entry (its ``copies``: frozen path -> live path) copied to the named live file."""
     out: dict[str, dict[str, Any]] = {}
     for block in FENCE.findall(text):
         entry = json.loads(block)
         if entry["entry"] in out:
             raise ValueError(f"entry {entry['entry']} appears twice")
         out[entry["entry"]] = entry
+    copies: dict[str, str] = {}
+    for entry in out.values():
+        copies.update(entry.get("copies", {}))
+    for line in GOLDEN_NOW.finditer(text):
+        entry_id, live = line["entry"], line["path"]
+        if entry_id not in out:
+            raise ValueError(f"golden now line for unknown entry {entry_id}")
+        frozen = [g for g in out[entry_id]["golden"] if copies.get(g) == live]
+        if len(frozen) != 1:
+            raise ValueError(f"entry {entry_id}: golden now {live}, but it lists no golden a freeze copied there")
+        out[entry_id] = {**out[entry_id], "golden": [live if g == frozen[0] else g for g in out[entry_id]["golden"]]}
     return out
 
 
