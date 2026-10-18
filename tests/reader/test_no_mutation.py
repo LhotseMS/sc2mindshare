@@ -170,7 +170,8 @@ def _load_analyse_drop(path):
         analyse(replay, MS_SC)
     event, unit = weakref.ref(replay.events[100]), weakref.ref(next(iter(replay.objects.values())))
     del replay
-    gc.collect()
+    gc.collect()  # the replay goes, and its finalizer drops its generation's entries
+    gc.collect()  # the objects those entries held are freed in the next pass
     return event, unit
 
 
