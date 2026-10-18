@@ -23,7 +23,7 @@ echo "== ruff check"
 echo "== ruff format --check"
 "$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" "$@" || status=1
 echo "== mypy --strict (non-test files)"
-typed=$(find "$@" -name '*.py' -not -path '*/tests/*' -not -name 'test_*.py' | sort)
+typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then
     # shellcheck disable=SC2086
     "$py_env" "$venv/bin/mypy" --strict $typed || status=1

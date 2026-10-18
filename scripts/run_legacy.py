@@ -23,9 +23,9 @@ import contextlib
 import json
 import os
 import shutil
-import socket
 import subprocess
 import sys
+import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -62,16 +62,23 @@ def stage(replay: Path, support: Path, workdir: Path) -> Path:
     return root
 
 
+BLOCKED_AUDIT_EVENTS = frozenset({"socket.connect", "socket.sendto", "socket.sendmsg", "socket.getaddrinfo"})
+
+
+def _refuse_network(event: str, _args: tuple[object, ...]) -> None:
+    if event in BLOCKED_AUDIT_EVENTS:
+        raise NetworkBlockedError(f"network access is blocked in the legacy run ({event})")
+
+
 def block_network() -> None:
-    """Make every outgoing connection in this process fail."""
+    """Make every outgoing connection, datagram and name lookup in this process fail.
 
-    def refuse(*_args: object, **_kwargs: object) -> None:
-        raise NetworkBlockedError("network access is blocked in the legacy run")
-
-    socket.socket.connect = refuse  # type: ignore[method-assign]
-    socket.socket.connect_ex = refuse  # type: ignore[method-assign,assignment]
-    socket.create_connection = refuse  # type: ignore[assignment]
-    socket.getaddrinfo = refuse  # type: ignore[assignment]
+    An audit hook (PEP 578) sees ``socket.connect`` (which also covers
+    ``connect_ex`` and ``create_connection``), ``socket.sendto``,
+    ``socket.sendmsg`` and ``socket.getaddrinfo`` from any library, and
+    cannot be removed once added, so the guard lasts for the whole process.
+    """
+    sys.addaudithook(_refuse_network)
 
 
 def find_outputs(root: Path) -> tuple[Path, Path]:
@@ -88,12 +95,19 @@ def count_creep_errors(log_text: str) -> int:
 
 
 def child(replay_name: str, log_path: Path) -> int:
-    """Child process: run the legacy parseReplay offline, output to the log."""
+    """Child process: run the legacy parseReplay offline, output to the log.
+
+    A crash is written to the log with its traceback, and the child exits 1.
+    """
     block_network()
     with log_path.open("w", encoding="utf-8") as log, contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
-        from execs.mindShareReplay import parseReplay  # type: ignore[import-not-found]  # legacy code, legacy venv only
+        try:
+            from execs.mindShareReplay import parseReplay  # type: ignore[import-not-found]  # legacy code, legacy venv only
 
-        parseReplay(replay_name, load_map=False)
+            parseReplay(replay_name, load_map=False)
+        except Exception:  # noqa: BLE001 (any legacy crash goes to the log with its traceback)
+            traceback.print_exc(file=log)
+            return 1
     return 0
 
 

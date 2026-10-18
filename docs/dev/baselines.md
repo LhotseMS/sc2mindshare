@@ -24,3 +24,15 @@ The G2 rule "the count never drops" is measured against 72 collected / 65 passin
 ## G3: ruff on the fork
 
 `ruff check` (ruff 0.16.10, the repository's `ruff.toml`) over the fork tree: **984 findings** (338 auto-fixable), plus a deprecation warning for the old top-level `ignore` setting. This number is frozen until T24 deletes the fork. G3 for a task is **0 findings on the files the task adds or changes** (Kevin, 2026-10-18).
+
+## Known legacy defect counts (TD-6)
+
+Counted in the legacy run log by `scripts/run_legacy.py` (`summary.json`, `creep_tracker_errors`), with `load_map=False`. These are the fork's broken `CreepTracker` plugin (`'CreepTracker' object has no attribute 'creepTracker'`), swallowed by the engine; creep data is not exported, so the CSV is unaffected. A change in these counts means the legacy run changed.
+
+| Replay | CreepTracker errors | Other |
+|---|---|---|
+| Alcyone LE (92440) | 926 | 1 blocked map download (CreepTracker calls `load_map`) |
+| 200k dmg spine crawler ZvP (83830) | 354 | |
+| 1000 spores ZvP (81433) | n/a | crashes: `EnergyTracker.getEnergyAtTime` KeyError 118489090 (G5 failure, awaiting Stefan) |
+
+With the map loaded (Stefan's old setup, Morgan's spike) Alcyone logs 24 CreepTracker errors instead of 926.

@@ -2,7 +2,7 @@
 
 import importlib.util
 import pathlib
-import socket
+import subprocess
 import sys
 
 import pytest
@@ -55,22 +55,57 @@ def test_stage_fails_on_a_missing_support_file(tmp_path, support):
         run_legacy.stage(replay, support, tmp_path / "work")
 
 
-def test_block_network_refuses_connections(monkeypatch):
-    for name in ("connect", "connect_ex"):
-        monkeypatch.setattr(socket.socket, name, getattr(socket.socket, name))
-    monkeypatch.setattr(socket, "create_connection", socket.create_connection)
-    monkeypatch.setattr(socket, "getaddrinfo", socket.getaddrinfo)
-    run_legacy.block_network()
-    with pytest.raises(run_legacy.NetworkBlockedError):
-        socket.create_connection(("example.com", 443))
-    with pytest.raises(run_legacy.NetworkBlockedError):
-        socket.getaddrinfo("example.com", 443)
-    s = socket.socket()
+GUARD_PROBE = """
+import importlib.util, socket, sys
+spec = importlib.util.spec_from_file_location("run_legacy", sys.argv[1])
+mod = importlib.util.module_from_spec(spec); sys.modules["run_legacy"] = mod; spec.loader.exec_module(mod)
+mod.block_network()
+results = []
+def attempt(name, fn):
     try:
-        with pytest.raises(run_legacy.NetworkBlockedError):
-            s.connect(("127.0.0.1", 9))
-    finally:
-        s.close()
+        fn(); results.append(name + "=open")
+    except mod.NetworkBlockedError:
+        results.append(name + "=blocked")
+attempt("create_connection", lambda: socket.create_connection(("127.0.0.1", 9), timeout=1))
+attempt("getaddrinfo", lambda: socket.getaddrinfo("example.com", 443))
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+attempt("sendto", lambda: s.sendto(b"x", ("127.0.0.1", 9)))
+attempt("sendmsg", lambda: s.sendmsg([b"x"], [], 0, ("127.0.0.1", 9)))
+attempt("connect_ex", lambda: socket.socket().connect_ex(("127.0.0.1", 9)))
+print(" ".join(results))
+"""
+
+
+def test_block_network_refuses_connections_datagrams_and_lookups():
+    # The audit hook cannot be removed, so the probe runs in its own interpreter.
+    out = subprocess.run(
+        [sys.executable, "-c", GUARD_PROBE, str(_PATH)], capture_output=True, text=True, check=True
+    ).stdout.split()
+    assert out == [
+        "create_connection=blocked",
+        "getaddrinfo=blocked",
+        "sendto=blocked",
+        "sendmsg=blocked",
+        "connect_ex=blocked",
+    ]
+
+
+def test_child_writes_the_traceback_to_the_log_and_returns_1(tmp_path, monkeypatch):
+    fake = tmp_path / "execs"
+    fake.mkdir()
+    (fake / "mindShareReplay.py").write_text("def parseReplay(name, load_map=True):\n    raise KeyError(118489090)\n")
+    probe = (
+        "import importlib.util, sys; sys.path.insert(0, sys.argv[2]);"
+        "spec = importlib.util.spec_from_file_location('run_legacy', sys.argv[1]);"
+        "mod = importlib.util.module_from_spec(spec); sys.modules['run_legacy'] = mod; spec.loader.exec_module(mod);"
+        "sys.exit(mod.child('x.SC2Replay', __import__('pathlib').Path(sys.argv[3])))"
+    )
+    log = tmp_path / "run.log"
+    code = subprocess.run([sys.executable, "-c", probe, str(_PATH), str(tmp_path), str(log)], check=False).returncode
+    assert code == 1
+    text = log.read_text()
+    assert "Traceback (most recent call last)" in text
+    assert "KeyError: 118489090" in text
 
 
 def test_find_outputs_returns_the_single_events_csv_and_intervals(tmp_path):
