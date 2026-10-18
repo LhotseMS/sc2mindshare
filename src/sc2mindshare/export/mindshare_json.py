@@ -17,10 +17,6 @@ from sc2mindshare.export.view import link_view, node_view
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutResult
 
-#: The Mindshare data type of each property a ledger fix may add (domain.models.EXTRA_FIELDS).
-#: "pre-game time" is text: ``time[h:m:s]`` cannot hold a negative time.
-EXTRA_DATA_TYPES: dict[str, str] = {"pre-game time": "string"}
-
 
 def load_config() -> dict[str, Any]:
     root = files("sc2mindshare") / "config"
@@ -68,12 +64,10 @@ def build_document(
                     "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
                 }
             )
-    used = {name for node in graph.nodes for name, _ in node.extra}
-    data_types = cfg["dataTypes"] | {name: kind for name, kind in EXTRA_DATA_TYPES.items() if name in used}
     return {
         "visuals": cfg["visuals"],
         "detail": cfg["detail"],
-        "dataTypes": data_types,
+        "dataTypes": cfg["dataTypes"],
         "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
     }

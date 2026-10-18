@@ -84,8 +84,7 @@
    "properties": {
     "time": {"$ref": "#/$defs/time"},
     "player": {"type": "string"},
-    "type": {"type": "string"},
-    "pre-game time": {"type": "string", "description": "The real start of a pre-game item as -hh:mm:ss (ledger P3d, D7a A9)"}
+    "type": {"type": "string"}
    }
   },
   "battleProperties": {

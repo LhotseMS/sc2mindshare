@@ -11,9 +11,9 @@ import sys
 import pytest
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
-from sc2mindshare.domain.models import EXTRA_FIELDS, Link, Node
+from sc2mindshare.domain.models import Link, Node
 from sc2mindshare.export import view
-from sc2mindshare.export.mindshare_json import EXTRA_DATA_TYPES, build_document, load_config, to_json
+from sc2mindshare.export.mindshare_json import build_document, load_config, to_json
 from sc2mindshare.reader.loader import load_replay
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
@@ -74,21 +74,29 @@ def test_the_current_document_equals_g_view_current(document):
 
 
 #: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
-VIEW_LEDGER = ("H1", "P3d-view")
+VIEW_LEDGER = ("H1", "P3d-view", "A12-view", "P3e-view")
+#: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
+#: P3e moves their real start into the description. P3d's "pre-game time" property and dataTypes entry
+#: are removed again by P3e, and A12 changes only the number text, so neither shows in the net delta.
+VIEW_NET_DELTA = [
+    {"select": {"type": "Harrasment"}, "fields": ["ID"], "count": 14},
+    {"select": {"type": "Building"}, "fields": ["properties.time", "description"], "count": 2},
+]
 
 
 def test_g_view_current_is_g_view_1_plus_the_ledger():
     cgd = _load("check_golden_delta", CHECKOUT / "scripts" / "check_golden_delta.py")
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
-    chain = [entries[e] for e in VIEW_LEDGER]
-    merged = {
+    assert all(e in entries for e in VIEW_LEDGER)
+    assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
+    net = {
         "entry": "+".join(VIEW_LEDGER),
-        "base_sha256": chain[0]["base_sha256"],  # G-VIEW-1
-        "changes": [c for e in chain for c in e["changes"]],
-        "added": [a for e in chain for a in e["added"]],
-        "removed": [r for e in chain for r in e["removed"]],
+        "base_sha256": entries["H1"]["base_sha256"],  # G-VIEW-1
+        "changes": VIEW_NET_DELTA,
+        "added": [],
+        "removed": [],
     }
-    assert cgd.check_delta(merged, GOLDEN / "G-VIEW-1.json", GOLDEN / "G-VIEW-current.json") == []
+    assert cgd.check_delta(net, GOLDEN / "G-VIEW-1.json", GOLDEN / "G-VIEW-current.json") == []
 
 
 def test_document_key_order_and_config_parts(document):
@@ -98,23 +106,40 @@ def test_document_key_order_and_config_parts(document):
     assert json.loads(to_json(doc)) == doc
 
 
-def test_p3d_the_main_bases_show_00_00_00_and_keep_their_real_time(document):
-    """A9: the bug-faithful document keeps the legacy wrap; the current one shows 00:00:00 and adds
-    "pre-game time", declared in dataTypes (only where it is used)."""
+def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_description(document):
+    """A9 (P3d) as amended by D3c (P3e): the bug-faithful document keeps the legacy wrap; the current one
+    shows 00:00:00 with the same property keys as every other Building, and the real start in the
+    description. dataTypes is the workbook's, unchanged."""
     faithful = {n["ID"]: n for n in document["faithful"]["nodes"]}
     current = {n["ID"]: n for n in document["current"]["nodes"]}
     for node_id, player, kind in (("Building-1", "lilTiGGer", "Hive"), ("Building-2", "blacksquall", "Nexus")):
         assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
-        assert current[node_id]["properties"] == {
-            "time": "00:00:00",
-            "player": player,
-            "type": kind,
-            "pre-game time": "-00:01:11",
-        }
-    assert sum("pre-game time" in n["properties"] for n in document["current"]["nodes"]) == 2
-    assert document["faithful"]["dataTypes"] == load_config()["dataTypes"]
-    assert document["current"]["dataTypes"] == load_config()["dataTypes"] | {"pre-game time": "string"}
-    assert list(document["current"]["dataTypes"])[-1] == "pre-game time"
+        assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind}
+        assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
+    assert document["faithful"]["dataTypes"] == document["current"]["dataTypes"] == load_config()["dataTypes"]
+
+
+def _key_lists_per_type(doc):
+    """Node type -> the distinct property key lists (in order) its nodes have."""
+    lists = {}
+    for n in doc["nodes"]:
+        lists.setdefault(n["type"], set()).add(tuple(n.get("properties", {})))
+    return lists
+
+
+@pytest.mark.parametrize("name", ["G-VIEW-1.json", "G-VIEW-current.json", "G-SNAP-1-compressed.json", "G-SNAP-1-linear.json"])
+def test_every_node_of_a_type_has_the_same_property_keys(name):
+    """Mindshare refuses an import where two nodes of one type have different parameters ("node
+    'Building-4' has different parameters than node 'Building-1' but the same type", Stefan's import of
+    G-SNAP-1, 2026-10-18). So in every golden all nodes of a type carry the same property keys, in order."""
+    doc = json.loads((GOLDEN / name).read_text(encoding="utf-8"))
+    mixed = {t: sorted(keys) for t, keys in _key_lists_per_type(doc).items() if len(keys) > 1}
+    assert mixed == {}
+
+
+def test_the_documents_the_code_makes_have_the_same_property_keys_per_type(document):
+    for doc in (document["faithful"], document["current"]):
+        assert {t: keys for t, keys in _key_lists_per_type(doc).items() if len(keys) > 1} == {}
 
 
 def test_to_json_writes_numbers_as_vba_json_does():
@@ -137,25 +162,6 @@ def test_to_json_writes_numbers_as_vba_json_does():
         ' "small": 0.0001,\n "negative small": -0.0001,\n "n": 3,\n "text": "50.0",\n "flag": true\n}\n'
     )
     assert json.loads(to_json(doc)) == doc  # the same numbers
-
-
-def test_every_extra_field_has_a_mindshare_data_type():
-    assert set(EXTRA_DATA_TYPES) == set(EXTRA_FIELDS)
-    assert not set(EXTRA_DATA_TYPES) & set(load_config()["dataTypes"])  # never redefines a workbook type
-
-
-def test_extra_properties_follow_the_kinds_own():
-    node = Node(
-        "Building",
-        "Building-1",
-        "b",
-        "",
-        (),
-        (("time", "00:00:00"), ("player", "p"), ("type", "Hive")),
-        -71,
-        (("pre-game time", "-00:01:11"),),
-    )
-    assert list(view.node_view(node)["properties"]) == ["time", "player", "type", "pre-game time"]
 
 
 def _node(kind, values, start=60, images=()):
