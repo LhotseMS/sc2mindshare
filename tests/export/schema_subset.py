@@ -34,7 +34,43 @@ class UnsupportedKeyword(ValueError):
     pass
 
 
+TYPES = {"object", "array", "string", "boolean", "null", "number", "integer"}
+#: Keywords whose value is one subschema, a list of them, or a name -> subschema map.
+_ONE = {"additionalProperties", "items", "if", "then", "else"}
+_LIST = {"anyOf", "allOf"}
+_MAP = {"properties", "$defs"}
+
+
+def _walk(schema: Any, path: str) -> None:
+    """Every keyword of every subschema is one this checker implements, and every type name is known.
+
+    Checked once over the whole schema, so a keyword in a branch a value never visits (an anyOf
+    alternative after a match, an else when then is taken, an unreferenced $defs entry, the schema of
+    an absent property) is refused as well."""
+    if isinstance(schema, bool):
+        return
+    if not isinstance(schema, dict):
+        raise UnsupportedKeyword(f"{path}: a schema must be an object or a boolean")
+    unknown = set(schema) - SUPPORTED
+    if unknown:
+        raise UnsupportedKeyword(f"{sorted(unknown)} at {path}")
+    if "type" in schema:
+        names = schema["type"] if isinstance(schema["type"], list) else [schema["type"]]
+        if bad := [n for n in names if n not in TYPES]:
+            raise UnsupportedKeyword(f"type {bad} at {path}")
+    for key in _ONE & set(schema):
+        _walk(schema[key], f"{path}/{key}")
+    for key in _LIST & set(schema):
+        for i, sub in enumerate(schema[key]):
+            _walk(sub, f"{path}/{key}/{i}")
+    for key in _MAP & set(schema):
+        for name, sub in schema[key].items():
+            _walk(sub, f"{path}/{key}/{name}")
+
+
 def _is_type(value: Any, name: str) -> bool:
+    if name not in TYPES:
+        raise UnsupportedKeyword(f"type {name!r}")
     if name == "object":
         return isinstance(value, dict)
     if name == "array":
@@ -49,20 +85,27 @@ def _is_type(value: Any, name: str) -> bool:
         return False
     if name == "number":
         return isinstance(value, int | float)
-    if name == "integer":  # 2020-12: a number with no fractional part (2.0 is an integer)
-        return isinstance(value, int) or (isinstance(value, float) and value.is_integer())
-    raise UnsupportedKeyword(f"type {name!r}")
+    # "integer": 2020-12, a number with no fractional part (2.0 is an integer)
+    return isinstance(value, int) or (isinstance(value, float) and value.is_integer())
 
 
 def _same(a: Any, b: Any) -> bool:
-    """JSON equality: a boolean equals only a boolean (Python has True == 1)."""
+    """JSON equality, recursively: a boolean equals only a boolean (Python has True == 1), also inside
+    arrays and objects."""
     if isinstance(a, bool) or isinstance(b, bool):
         return type(a) is type(b) and a == b
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(_same(x, y) for x, y in zip(a, b, strict=True))
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(_same(a[k], b[k]) for k in a)
+    if isinstance(a, list | dict) or isinstance(b, list | dict):
+        return False
     return bool(a == b)
 
 
 class Checker:
     def __init__(self, schema: dict[str, Any]) -> None:
+        _walk(schema, "#")  # refuse any keyword this checker does not implement, wherever it is
         self.root = schema
 
     def errors(self, value: Any) -> list[str]:
