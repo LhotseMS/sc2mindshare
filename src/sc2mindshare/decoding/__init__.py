@@ -17,9 +17,12 @@ from dataclasses import dataclass
 from typing import Any
 
 import sc2reader  # type: ignore[import-untyped]  # sc2reader ships no type information
+from sc2reader.resources import Replay  # type: ignore[import-untyped]
+
+# isort: split
+# (sc2mindshare is first-party once pyproject.toml exists, CR-009; before that ruff sees it as third-party)
 from sc2mindshare.decoding import camera_hotkeys
 from sc2mindshare.decoding.metadata import GameMetadata
-from sc2reader.resources import Replay  # type: ignore[import-untyped]
 
 __all__ = ["DecodedReplay", "load", "register_readers"]
 
