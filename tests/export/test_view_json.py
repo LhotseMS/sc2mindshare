@@ -52,26 +52,38 @@ def document():
             pytest.fail(str(exc))
         pytest.skip(str(exc))
     with contextlib.redirect_stdout(io.StringIO()):
-        return build_document(to_graph(analyse(load_replay(ALCYONE), MS_SC)))
+        result = analyse(load_replay(ALCYONE), MS_SC)
+    return {
+        "faithful": build_document(to_graph(result, fixes=())),
+        "current": build_document(to_graph(result)),
+    }
 
 
-def test_document_equals_g_view_1_with_the_view_masks(document):
+def test_the_bug_faithful_document_equals_g_view_1_with_the_view_masks(document):
     expected = json.loads((GOLDEN / "G-VIEW-1.json").read_text(encoding="utf-8"))
-    report = golden.diff_json(expected, document, view=True)
+    report = golden.diff_json(expected, document["faithful"], view=True)
     assert report.ok, str(report)
     assert report.budget_actual == {"M1": 1, "M3": 11}
+    assert golden.diff_json(expected, document["faithful"]).ok  # even unmasked, before the layout
 
 
-def test_document_equals_g_view_1_even_unmasked(document):
-    # Before the layout (CR-014) the Supply Block size is still the view's [2.65, 1].
-    expected = json.loads((GOLDEN / "G-VIEW-1.json").read_text(encoding="utf-8"))
-    assert golden.diff_json(expected, document).ok
+def test_the_current_document_equals_g_view_current(document):
+    expected = json.loads((GOLDEN / "G-VIEW-current.json").read_text(encoding="utf-8"))
+    report = golden.diff_json(expected, document["current"])
+    assert report.ok, str(report)
+
+
+def test_g_view_current_is_g_view_1_plus_the_ledger():
+    cgd = _load("check_golden_delta", CHECKOUT / "scripts" / "check_golden_delta.py")
+    entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
+    assert cgd.check_delta(entries["H1"], GOLDEN / "G-VIEW-1.json", GOLDEN / "G-VIEW-current.json") == []
 
 
 def test_document_key_order_and_config_parts(document):
-    assert list(document) == ["visuals", "detail", "dataTypes", "nodes", "links"]
-    assert document["visuals"] == load_config()["visuals"]
-    assert json.loads(to_json(document)) == document
+    doc = document["current"]
+    assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
+    assert doc["visuals"] == load_config()["visuals"]
+    assert json.loads(to_json(doc)) == doc
 
 
 def _node(kind, values, start=60, images=()):
