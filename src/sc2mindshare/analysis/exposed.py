@@ -10,6 +10,7 @@ replays are in tests/analysis/test_exposed.py.
 from __future__ import annotations
 
 import hashlib
+import re
 from pathlib import Path
 from typing import Any
 
@@ -38,6 +39,33 @@ from sc2mindshare.reader.event_classes import (
 )
 
 CHRONO_BOOST = "ChronoBoostEnergyCost"
+
+#: unitsInfo.csv display names that are not their unit type's id once spaces are removed (checked
+#: against the 89720 datapack, CR-021 C5).
+UNIT_ALIASES = {
+    "Hellbat": "BattleHellion",
+    "Flying Locust": "LocustMPFlying",
+    "Landed Locust": "Locust",
+    "Ventral Sacs Overlord": "OverlordTransport",
+    "Stasis Ward": "OracleStasisTrap",
+}
+#: The sheet's rows for the layer's base names, which are not unit types.
+_BASE_ROW = re.compile(r"(Main base|Natural|\d+(st|nd|rd|th) base)")
+
+
+def _build_times(table: Any, known: set[str]) -> tuple[tuple[tuple[str, str], ...], tuple[str, ...]]:
+    """unitsInfo.csv's build times keyed by unit type id (see ``TimeTables``), and the rows that name none."""
+    keyed, unmapped = [], []
+    for name, row in table.items():
+        if _BASE_ROW.fullmatch(name):
+            continue
+        squashed = re.sub(r"[^A-Za-z0-9]", "", name)
+        unit_id = next((c for c in (name, squashed, UNIT_ALIASES.get(name)) if c in known), None)
+        if unit_id is None:
+            unmapped.append(name)
+        else:
+            keyed.append((unit_id, str(row["Build Time"])))
+    return tuple(keyed), tuple(unmapped)
 
 
 def _game(replay: Any) -> GameContext:
@@ -139,10 +167,12 @@ def expose(replay: Any, ctx: Any, support_root: Path) -> Exposed:
         and e.player is not None
         and vars(e).get("ability_name") == CHRONO_BOOST  # upstream's own value, not a fork property
     )
+    build_times, unmapped = _build_times(ctx.simple.unitsInfoDict, {str(u.name) for u in replay.datapack.units.values()})
     tables = TimeTables(
-        build_times=tuple((name, str(row["Build Time"])) for name, row in ctx.simple.unitsInfoDict.items()),
+        build_times=build_times,
         research_times=tuple((name, str(row["Upgrade Time"])) for name, row in ctx.simple.upgradesInfoDict.items()),
         units_source_sha256=_sha256(support_root / "unitsInfo.csv"),
         upgrades_source_sha256=_sha256(support_root / "upgradesInfo.csv"),
+        unmapped_units=unmapped,
     )
     return Exposed(game, units, changes, upgrades, stats, supply, chronos, tables)
