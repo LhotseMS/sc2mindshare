@@ -7,9 +7,10 @@ import pathlib
 from types import SimpleNamespace
 
 import pytest
+from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
 from sc2mindshare.analysis.fixes import LAYER_FIXES
-from sc2mindshare.analysis.run import analyse
+from sc2mindshare.analysis.run import AnalysisResult, analyse, legacy_csv
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.reader.loader import load_replay
 
@@ -29,6 +30,35 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == ("P1", "P1b")
+
+
+# --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
+
+
+def test_a_result_carries_its_layer_fixes_and_a_fixed_one_cannot_feed_the_bug_faithful_outputs():
+    """P2: the bug-faithful outputs (the legacy CSV oracle, the graph without fixes) need a result with no
+    layer fix; a mixed run is refused, not only betrayed by P1's visible names."""
+    fixed = AnalysisResult((), (), None, fixes=frozenset({"P1"}))
+    with pytest.raises(ValueError, match="bug-faithful"):
+        legacy_csv(fixed)
+    with pytest.raises(ValueError, match="bug-faithful"):
+        to_graph(fixed, fixes=())
+    assert to_graph(AnalysisResult((), (), None), fixes=()).nodes == ()  # no layer fix: fine
+    assert AnalysisResult((), (), None).fixes == frozenset()
+
+
+def test_unknown_fix_ids_are_refused():
+    """N1: a misspelt id would otherwise switch nothing on, silently."""
+    with pytest.raises(ValueError, match="unknown layer fix"):
+        analyse(object(), MS_SC, fixes=("p1",))
+    with pytest.raises(ValueError, match="unknown layer fix"):
+        detectors.createDetectors("replay", ("P1", "P9"))
+
+
+def test_create_detectors_takes_its_fixes_explicitly():
+    """N0: no default, since analyse's default (all on) and an 'off' default here would disagree."""
+    with pytest.raises(TypeError):
+        detectors.createDetectors("replay")  # type: ignore[call-arg]
 
 
 # --- P1: getClosestBase compares real distances ------------------------------------------------------------
@@ -94,7 +124,8 @@ def battle_names():
     names = {}
     for label, fixes in (("faithful", ()), ("p1", ("P1",)), ("fixed", LAYER_FIXES)):
         with contextlib.redirect_stdout(io.StringIO()):
-            graph = to_graph(analyse(load_replay(ALCYONE), MS_SC, fixes=fixes), fixes=())
+            result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes)
+            graph = to_graph(result, fixes=() if not fixes else None)  # the graph fixes leave Battle names alone
         names[label] = {n.id: n.name for n in graph.nodes if n.kind == "Battle"}
     return names
 

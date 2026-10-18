@@ -11,7 +11,7 @@ something, so it lives at its call site in the layer, switched by its ledger id 
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import replace
 
 from sc2mindshare.domain.models import Graph
@@ -84,3 +84,13 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances;
 #: P1b (D8a), it skips a base whose init/born second is after the battle's start.
 LAYER_FIXES: tuple[str, ...] = ("P1", "P1b")
+
+
+def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:
+    """The layer fix ids as a set; an id that is not in ``LAYER_FIXES`` is refused (a misspelt id would
+    otherwise switch nothing on, silently)."""
+    chosen = frozenset(fixes)
+    unknown = sorted(chosen - set(LAYER_FIXES))
+    if unknown:
+        raise ValueError(f"unknown layer fix ids {unknown}; the layer fixes are {list(LAYER_FIXES)}")
+    return chosen

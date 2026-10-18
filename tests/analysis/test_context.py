@@ -38,17 +38,17 @@ def test_no_module_level_detector_globals_are_left():
         )
 
 
-def _quiet(fn, *args):
+def _quiet(fn, *args, **kwargs):
     with contextlib.redirect_stdout(io.StringIO()):
-        return fn(*args)
+        return fn(*args, **kwargs)
 
 
 @pytest.mark.skipif(not (ALCYONE.exists() and SPINE.exists()), reason="replays not found")
 def test_two_replays_in_one_process_give_their_own_results():
     # With module globals, the second analysis would overwrite the first's detectors.
-    first = _quiet(analyse, load_replay(ALCYONE), MS_SC)
+    first = _quiet(analyse, load_replay(ALCYONE), MS_SC, fixes=())  # the legacy CSV is a bug-faithful output
     first_csv = legacy_csv(first)
-    _quiet(analyse, load_replay(SPINE), MS_SC)
+    _quiet(analyse, load_replay(SPINE), MS_SC, fixes=())
     assert legacy_csv(first) == first_csv
 
 
@@ -61,7 +61,7 @@ def test_create_detectors_returns_the_context(monkeypatch):
 
     for name in ("BaseDetector", "ActionsDetector", "SimpleDetector", "BattleDetector", "SinglesDetector"):
         monkeypatch.setattr(detectors, name, type(name, (Fake,), {}))
-    ctx = detectors.createDetectors("replay")
+    ctx = detectors.createDetectors("replay", ())
     assert isinstance(ctx, AnalysisContext)
     assert [n for n, _ in built] == ["BaseDetector", "ActionsDetector", "SimpleDetector", "BattleDetector", "SinglesDetector"]
     assert all(c is ctx for _, c in built)

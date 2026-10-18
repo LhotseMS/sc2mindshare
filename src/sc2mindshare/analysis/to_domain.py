@@ -104,7 +104,12 @@ def link_model(link: Any) -> Link:
 
 def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None) -> Graph:
     """The domain graph of ``result``, with the ledger's fixes applied (``fixes=()`` for the
-    bug-faithful graph that renders the legacy CSV oracle)."""
+    bug-faithful graph that renders the legacy CSV oracle; it refuses a result whose layer fixes were on,
+    so a bug-faithful graph is never half fixed)."""
+    if fixes is not None and not fixes and result.fixes:
+        raise ValueError(
+            f"fixes=() asks for the bug-faithful graph; this result has layer fixes {sorted(result.fixes)} (analyse(..., fixes=()))"
+        )
     graph = Graph(
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),

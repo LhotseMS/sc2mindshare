@@ -36,12 +36,15 @@ from sc2mindshare.reader.compat import object_text
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
-def createDetectors(replay, fixes=frozenset()):
+def createDetectors(replay, fixes):
     """Build the five detectors in their fixed order and return the context that holds them.
-    ``fixes``: the layer fixes to switch on, by ledger id (analysis.fixes.LAYER_FIXES)."""
+    ``fixes``: the layer fixes to switch on, by ledger id (analysis.fixes.LAYER_FIXES); required, and an
+    unknown id is refused."""
+    from sc2mindshare.analysis.fixes import check_layer_fixes
+
     # order is improtant as many use data set up by base controler or CGc
     # base detector first because batte.py uses it
-    ctx = AnalysisContext(replay, fixes=frozenset(fixes))
+    ctx = AnalysisContext(replay, fixes=check_layer_fixes(fixes))
     ctx.bases = BaseDetector(replay, ctx)
     ctx.actions = ActionsDetector(replay, ctx)
     ctx.simple = SimpleDetector(replay, ctx)
