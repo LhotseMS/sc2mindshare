@@ -9,6 +9,7 @@ every sort uses the key ``(t, order)``, every per-side loop goes A then B.
 
 from __future__ import annotations
 
+import itertools
 import math
 from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
@@ -157,7 +158,7 @@ def layout(
         for u in units:
             by_window[w_of(u)].append(u)
         last_occupied = -1
-        for w in range(0, last_window + 1):
+        for w in range(last_window + 1):
             for u in by_window.get(w, []):
                 buffers[sign(u.player)].append(u)
             lag = any(buffers.values()) and w - last_occupied >= p.unit_max_lag_windows + 1
@@ -226,7 +227,7 @@ def layout(
         pos[b.id] = [x(w_of(b)), p.lane_battle]
         if radius[b.id] >= p.battle_shift_limit:
             result.warnings.append(f"{b.id}: battle radius {radius[b.id]} covers the stats lane (G8)")
-    for prev, cur in zip(battles, battles[1:], strict=False):
+    for prev, cur in itertools.pairwise(battles):
         r_cur, r_prev = radius[cur.id], radius[prev.id]
         d = abs(pos[cur.id][0] - pos[prev.id][0])
         if r_cur >= p.battle_shift_threshold and d < r_cur + r_prev:
@@ -257,7 +258,7 @@ def layout(
     for item in blocks:
         by_side[sign(item.player)].append(item)
     for side_blocks in by_side.values():
-        for a, b_ in zip(side_blocks, side_blocks[1:], strict=False):
+        for a, b_ in itertools.pairwise(side_blocks):
             if a.t_end is not None and b_.t is not None and b_.t < a.t_end:
                 result.warnings.append(f"{a.id} and {b_.id} overlap (G5)")
 
@@ -287,7 +288,7 @@ def layout(
     for item in items:
         if item.id not in result.sizes:
             fixed = p.fixed_sizes.get(item.type)
-            result.sizes[item.id] = list(fixed) if isinstance(fixed, list) else list(p.default_size)  # type: ignore[arg-type]
+            result.sizes[item.id] = list(fixed) if isinstance(fixed, list) else list(p.default_size)
 
     if not swept:
         result.warnings.append("no items to sweep (G4)")
