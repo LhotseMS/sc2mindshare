@@ -13,6 +13,7 @@ import math
 from typing import Any
 
 from sc2mindshare.domain.models import Link, Node
+from sc2mindshare.export.time_text import text_values
 
 X_LD = "X_LD"
 
@@ -73,7 +74,7 @@ def units_size(supply: float) -> float:
 
 
 def node_view(node: Node) -> dict[str, Any]:
-    v = dict(node.values)
+    v = dict(text_values(node))  # the workbook read the legacy text: its rules apply to that (CR-022)
     view: dict[str, Any] = {
         "name": node.name,
         "description": node.description.replace(X_LD, "\n"),

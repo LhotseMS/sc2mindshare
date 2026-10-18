@@ -6,6 +6,7 @@ never writes this CSV.
 """
 
 from sc2mindshare.domain.models import Graph, Link, Node
+from sc2mindshare.export.time_text import text_values
 
 MAX_PROPS = 15
 #: The legacy classes' propertiesCount per node kind (the padding the CSV shows).
@@ -30,7 +31,7 @@ LINK_PROPERTIES_COUNT = 1
 
 
 def node_row(node: Node) -> str:
-    props = ";".join(v for _, v in node.values) + ";"
+    props = ";".join(v for _, v in text_values(node)) + ";"
     pad = ";" * (MAX_PROPS - LEGACY_PROPERTIES_COUNT[node.kind])
     return f"{node.name};{node.description};{node.kind};{node.id};{'|'.join(node.images)};{props};{pad}\n"
 

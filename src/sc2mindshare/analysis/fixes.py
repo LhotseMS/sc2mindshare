@@ -12,6 +12,7 @@ from collections.abc import Callable
 from dataclasses import replace
 
 from sc2mindshare.domain.models import Graph
+from sc2mindshare.domain.time import GameTime
 
 
 def unique_harassment_ids(graph: Graph) -> Graph:
@@ -57,12 +58,12 @@ def pre_game_display(graph: Graph) -> Graph:
     """P3d (D7a A9), as amended by P3e (D3c): a pre-game item (negative start, the main bases at -71 s)
     shows ``time`` 00:00:00, and its real start goes into its description (``pre_game_note``), not into
     a property: Mindshare refuses an import where nodes of one type have different property keys. The
-    legacy text wraps to ``23:58:49``; ``start_seconds`` (what the layout reads) is unchanged."""
+    legacy text wraps to ``23:58:49``; ``start`` (what the layout reads) is unchanged."""
     nodes = []
     for node in graph.nodes:
-        if node.start_seconds is not None and node.start_seconds < 0:
-            values = tuple((name, "00:00:00" if name == "time" else value) for name, value in node.values)
-            note = pre_game_note(node.start_seconds)
+        if node.start is not None and node.start.seconds < 0:
+            values = tuple((name, GameTime(0) if name == "time" else value) for name, value in node.values)
+            note = pre_game_note(node.start.seconds)
             description = node.description
             if note not in description:  # the note once, whatever the description held
                 description = f"{description}X_LDX_LD{note}" if description else note

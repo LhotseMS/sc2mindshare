@@ -10,7 +10,7 @@ import sys
 
 import pytest
 from sc2mindshare.analysis.run import analyse
-from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.analysis.to_domain import to_graph, typed_values
 from sc2mindshare.domain.models import Link, Node
 from sc2mindshare.export import view
 from sc2mindshare.export.mindshare_json import build_document, load_config, to_json
@@ -165,8 +165,12 @@ def test_to_json_writes_numbers_as_vba_json_does():
     assert json.loads(to_json(doc)) == doc  # the same numbers
 
 
-def _node(kind, values, start=60, images=()):
-    return Node(kind, f"{kind}-1", "n", "a X_LD b", tuple(images), tuple(values), start)
+def _node(kind, values, images=()):
+    """A node built from the legacy text, through the adapter (CR-022): its start is its time."""
+    parts = [int(p) for p in dict(values)["time"].split(":")]
+    start = parts[0] * 3600 + parts[1] * 60 + parts[2] if len(parts) == 3 else parts[0] * 60 + parts[1]
+    typed, begins = typed_values(f"{kind}-1", kind, values, start)
+    return Node(kind, f"{kind}-1", "n", "a X_LD b", tuple(images), typed, begins)
 
 
 def test_battle_and_units_sizes_and_properties():

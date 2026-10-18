@@ -3,16 +3,20 @@
 Strangler step: the moved legacy node and link objects are read once, at the end of the analysis,
 through their own getters (name, description, type, ID, images, properties), and turned into
 frozen ``domain`` models with declared fields. Nothing downstream reads the legacy objects.
+
+Times become numbers here (CR-022, T21): the legacy time text is read once into a ``GameTime``
+(``typed_values``), and only ``export/`` writes it back as text.
 """
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
 from sc2mindshare.analysis.fixes import FIXES
 from sc2mindshare.analysis.run import AnalysisResult
-from sc2mindshare.domain.models import FIELDS, Graph, Link, Node
+from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Graph, Link, Node, Value
+from sc2mindshare.domain.time import GameTime
 from sc2mindshare.reader.compat import LOOPS_PER_SECOND
 
 #: A separator no legacy text contains, so property values may hold ";" safely.
@@ -39,6 +43,30 @@ def _start_seconds(kind: str, node: Any, values: dict[str, str]) -> int | None:
     return _seconds(values["time"])
 
 
+def typed_values(
+    node_id: str, kind: str, raw: Iterable[tuple[str, str]], start_seconds: int | None
+) -> tuple[tuple[tuple[str, Value], ...], GameTime | None]:
+    """The fields of a node read from the legacy text, its times as ``GameTime``, and its start.
+
+    A node's ``time`` is its signed start: the legacy text is that second wrapped at midnight
+    (tests/analysis/test_time.py), and anything else is refused, so no time changes silently. An
+    ``end time`` is its second; ``None`` is an open end."""
+    start = None if start_seconds is None else GameTime.from_seconds(start_seconds)
+    values: list[tuple[str, Value]] = []
+    for name, text in raw:
+        if name not in TIME_FIELDS:
+            values.append((name, text))
+        elif text == "None":
+            values.append((name, None))
+        elif name == "time":
+            if start is None or _seconds(text) != start.seconds % 86400:
+                raise ValueError(f"{node_id}: time {text!r} is not its start {start_seconds} s")
+            values.append((name, start))
+        else:
+            values.append((name, GameTime.from_seconds(_seconds(text))))
+    return tuple(values), start
+
+
 def node_model(node: Any) -> Node:
     kind = str(node.getNodeType())
     raw = str(node.getProperties(_SEP)).split(_SEP)
@@ -47,15 +75,17 @@ def node_model(node: Any) -> Node:
     names = FIELDS.get(kind)
     if names is None or len(names) != len(raw):
         raise ValueError(f"{node.getNodeID()}: {len(raw)} property values for kind {kind!r}, declared {names}")
-    values = dict(zip(names, raw, strict=True))
+    texts = dict(zip(names, raw, strict=True))
+    node_id = str(node.getNodeID())
+    values, start = typed_values(node_id, kind, texts.items(), _start_seconds(kind, node, texts))
     return Node(
         kind=kind,
-        id=str(node.getNodeID()),
+        id=node_id,
         name=str(node.getNodeName()),
         description=str(node.getNodeDescription()),
         images=tuple(str(u) for u in node.images),
-        values=tuple(values.items()),
-        start_seconds=_start_seconds(kind, node, values),
+        values=values,
+        start=start,
     )
 
 
