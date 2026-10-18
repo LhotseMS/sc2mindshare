@@ -18,7 +18,7 @@ import json
 from dataclasses import dataclass
 from typing import Any
 
-from sc2mindshare.decoding.archive import read_member
+from sc2mindshare.decoding.archive import MemberUnreadable, read_member
 
 MEMBER = "replay.gamemetadata.json"
 
@@ -51,7 +51,10 @@ class GameMetadata:
 
     @classmethod
     def from_replay(cls, replay: Any) -> GameMetadata:
-        raw = read_member(replay, MEMBER)
+        try:
+            raw = read_member(replay, MEMBER)
+        except MemberUnreadable as exc:
+            return cls(warnings=(f"{MEMBER} unreadable: {exc}",))
         if raw is None:
             return cls(warnings=(f"{MEMBER} not in archive",))
         return cls.from_json(raw)
@@ -64,25 +67,41 @@ class GameMetadata:
             return cls(warnings=(f"{MEMBER} is not valid JSON: {exc}",))
         if not isinstance(data, dict):
             return cls(warnings=(f"{MEMBER} is not a JSON object",))
+        warnings: list[str] = []
+        duration = _int(data.get("Duration"))
+        if duration is None and data.get("Duration") is not None:
+            warnings.append(f"Duration {data.get('Duration')!r} is not a number; read as None")
+        players = tuple(_player(p, warnings) for p in data.get("Players", []) if isinstance(p, dict))
         return cls(
             title=_str(data.get("Title")),
             game_version=_str(data.get("GameVersion")),
             data_build=_int(data.get("DataBuild")),
             data_version=_str(data.get("DataVersion")),
             base_build=_int(str(data.get("BaseBuild", "")).removeprefix("Base") or None),
-            duration_game_seconds=_int(data.get("Duration")),
-            players=tuple(_player(p) for p in data.get("Players", []) if isinstance(p, dict)),
+            duration_game_seconds=duration,
+            players=players,
             extra=_extra(data, _TOP_KEYS),
+            warnings=tuple(warnings),
         )
 
     def player(self, player_id: int) -> PlayerMetadata | None:
         return next((p for p in self.players if p.player_id == player_id), None)
 
 
-def _player(data: dict[str, Any]) -> PlayerMetadata:
+def _rating(value: Any) -> int | None:
+    """A rating is a positive integer; 0 and negatives (e.g. -36400) mean unranked or missing, as upstream reads them."""
+    mmr = _int(value)
+    return mmr if mmr is not None and mmr > 0 else None
+
+
+def _player(data: dict[str, Any], warnings: list[str]) -> PlayerMetadata:
+    player_id = _int(data.get("PlayerID"))
+    mmr = _rating(data.get("MMR"))
+    if mmr is None and _int(data.get("MMR")) is not None:
+        warnings.append(f"player {player_id}: MMR {data.get('MMR')} is not a rating (unranked or missing); read as None")
     return PlayerMetadata(
-        player_id=_int(data.get("PlayerID")),
-        mmr=_int(data.get("MMR")),
+        player_id=player_id,
+        mmr=mmr,
         apm_client=_float(data.get("APM")),
         result=_str(data.get("Result")),
         selected_race=_str(data.get("SelectedRace")),
@@ -130,7 +149,7 @@ class MmrCheck:
 
 def _init_data_mmr(player: Any) -> int | None:
     init = getattr(player, "init_data", None) or {}
-    return _int(init.get("scaled_rating"))
+    return _rating(init.get("scaled_rating"))
 
 
 def mmr_consistency(replay: Any, meta: GameMetadata) -> tuple[MmrCheck, ...]:

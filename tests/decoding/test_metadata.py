@@ -120,3 +120,25 @@ def test_gamemetadata_wins_and_initdata_is_the_fallback():
         ]
     )
     assert mmr_by_player(replay, meta) == {1: 3000, 2: 3100, 3: None}
+
+
+# Rex's CR-043 review (P3 x2)
+def test_a_non_positive_mmr_is_none_with_a_warning():
+    meta = GameMetadata.from_json(b'{"Players": [{"PlayerID": 1, "MMR": -36400}, {"PlayerID": 2, "MMR": 0}]}')
+    assert [p.mmr for p in meta.players] == [None, None]
+    assert meta.warnings == (
+        "player 1: MMR -36400 is not a rating (unranked or missing); read as None",
+        "player 2: MMR 0 is not a rating (unranked or missing); read as None",
+    )
+
+
+def test_an_unparsable_duration_warns():
+    meta = GameMetadata.from_json(b'{"Duration": "long"}')
+    assert meta.duration_game_seconds is None
+    assert meta.warnings == ("Duration 'long' is not a number; read as None",)
+
+
+def test_initdata_fallback_also_ignores_non_positive_ratings():
+    meta = GameMetadata.from_json(b'{"Players": [{"PlayerID": 1}]}')
+    replay = SimpleNamespace(players=[SimpleNamespace(pid=1, init_data={"scaled_rating": -36400})])
+    assert mmr_by_player(replay, meta) == {1: None}
