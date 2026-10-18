@@ -21,7 +21,7 @@ def replays() -> dict[str, str]:
     paths = replay_paths()
     missing = [str(p) for p in paths.values() if not p.exists()]
     if missing:
-        pytest.fail("replays missing (D5a data points in MS SC/): " + ", ".join(missing))
+        pytest.skip("replays missing (D5a data points in MS SC/, never committed, D7a): " + ", ".join(missing))
     return {k: str(v) for k, v in paths.items()}
 
 

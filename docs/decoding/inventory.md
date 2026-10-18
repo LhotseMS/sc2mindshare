@@ -52,16 +52,16 @@ Replays (D5a: data points, not committed): `alcyone` base build 92440 (protocol 
 
 | Event (s2protocol) | id | alcyone | spores | spine | sc2reader 1.9.0 |
 |---|---|---|---|---|---|
-| NNet.Replay.Tracker.SPlayerSetupEvent |  | 2 | 2 | 2 | kept |
-| NNet.Replay.Tracker.SPlayerStatsEvent |  | 283 | 409 | 189 | kept |
-| NNet.Replay.Tracker.SUnitBornEvent |  | 1153 | 1579 | 664 | kept |
-| NNet.Replay.Tracker.SUnitDiedEvent |  | 863 | 1174 | 338 | kept |
-| NNet.Replay.Tracker.SUnitDoneEvent |  | 255 | 345 | 104 | kept |
-| NNet.Replay.Tracker.SUnitInitEvent |  | 258 | 356 | 107 | kept |
-| NNet.Replay.Tracker.SUnitOwnerChangeEvent |  | 0 | 1 | 0 | kept |
-| NNet.Replay.Tracker.SUnitPositionsEvent |  | 56 | 82 | 37 | kept |
-| NNet.Replay.Tracker.SUnitTypeChangeEvent |  | 783 | 1003 | 359 | kept |
-| NNet.Replay.Tracker.SUpgradeEvent |  | 65 | 81 | 29 | kept |
+| NNet.Replay.Tracker.SPlayerSetupEvent | 9 | 2 | 2 | 2 | kept as `PlayerSetupEvent` |
+| NNet.Replay.Tracker.SPlayerStatsEvent | 0 | 283 | 409 | 189 | kept as `PlayerStatsEvent` |
+| NNet.Replay.Tracker.SUnitBornEvent | 1 | 1153 | 1579 | 664 | kept as `UnitBornEvent` |
+| NNet.Replay.Tracker.SUnitDiedEvent | 2 | 863 | 1174 | 338 | kept as `UnitDiedEvent` |
+| NNet.Replay.Tracker.SUnitDoneEvent | 7 | 255 | 345 | 104 | kept as `UnitDoneEvent` |
+| NNet.Replay.Tracker.SUnitInitEvent | 6 | 258 | 356 | 107 | kept as `UnitInitEvent` |
+| NNet.Replay.Tracker.SUnitOwnerChangeEvent | 3 | 0 | 1 | 0 | kept as `UnitOwnerChangeEvent` |
+| NNet.Replay.Tracker.SUnitPositionsEvent | 8 | 56 | 82 | 37 | kept as `UnitPositionsEvent` |
+| NNet.Replay.Tracker.SUnitTypeChangeEvent | 4 | 783 | 1003 | 359 | kept as `UnitTypeChangeEvent` |
+| NNet.Replay.Tracker.SUpgradeEvent | 5 | 65 | 81 | 29 | kept as `UpgradeCompleteEvent` |
 
 ## 3. Fields
 

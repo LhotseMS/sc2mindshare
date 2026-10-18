@@ -94,6 +94,26 @@ def game_event_ids(path: str) -> dict[str, int]:
     return {name: eid for eid, (_typeid, name) in protocol_for(path).game_event_types.items()}
 
 
+def tracker_event_ids(path: str) -> dict[str, int]:
+    return {name: eid for eid, (_typeid, name) in protocol_for(path).tracker_event_types.items()}
+
+
+def tracker_classes() -> dict[int, str]:
+    """sc2reader 1.9.0's tracker dispatch: event id -> the class it builds."""
+    from sc2reader.readers import TrackerEventsReader
+
+    return {eid: cls.__name__ for eid, cls in TrackerEventsReader().EVENT_DISPATCH.items()}
+
+
+def sc2reader_tracker_counts(path: str) -> Counter[str]:
+    """Tracker events sc2reader 1.9.0 keeps on the replay, counted under their s2protocol names."""
+    import sc2reader
+
+    by_class = {cls: name for name, eid in tracker_event_ids(path).items() if (cls := tracker_classes().get(eid))}
+    replay = sc2reader.load_replay(path, load_level=4, load_map=False)
+    return Counter(by_class.get(type(e).__name__, type(e).__name__) for e in replay.tracker_events)
+
+
 @dataclass
 class ReaderCounts:
     parsed: Counter[str] = field(default_factory=Counter)  # every event sc2reader decodes, kept or not
@@ -426,7 +446,11 @@ def render_report(replays: Mapping[str, str], checkout: Path) -> str:
     reader = {k: sc2reader_counts(replays[k]) for k in order}
     for stream in STREAMS:
         counts = {k: s2p_counts(replays[k], stream) for k in order}
-        ids = game_event_ids(replays[order[0]]) if stream == "game" else {}
+        # The id column comes from the first replay's protocol module. The ids are identical in the
+        # three replays' protocols (81009, 83830, 92440): test_event_ids_are_the_same_in_the_three_replays_protocols.
+        ids = game_event_ids(replays[order[0]]) if stream == "game" else tracker_event_ids(replays[order[0]])
+        kept_tracker = {k: sc2reader_tracker_counts(replays[k]) for k in order} if stream == "tracker" else {}
+        classes = {name: tracker_classes().get(eid, "?") for name, eid in ids.items()} if stream == "tracker" else {}
         w(f"### {stream} events")
         w("")
         w("| Event (s2protocol) | id | " + " | ".join(order) + " | sc2reader 1.9.0 |")
@@ -441,7 +465,9 @@ def render_report(replays: Mapping[str, str], checkout: Path) -> str:
                 equal = all(reader[k].parsed.get(name, 0) == counts[k].get(name, 0) for k in order)
                 status += "" if equal else " **COUNT MISMATCH**"
             else:
-                status = "kept"
+                status = f"kept as `{classes.get(name, '?')}`"
+                equal = all(kept_tracker[k].get(name, 0) == counts[k].get(name, 0) for k in order)
+                status += "" if equal else " **COUNT MISMATCH**"
             w(f"| {name} | {ids.get(name, '')} | " + " | ".join(str(counts[k].get(name, 0)) for k in order) + f" | {status} |")
         w("")
 

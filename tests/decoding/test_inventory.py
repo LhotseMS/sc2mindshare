@@ -68,6 +68,22 @@ def test_sc2reader_parses_exactly_what_s2protocol_decodes(any_replay):
     assert inv.sc2reader_counts(any_replay).parsed == inv.s2p_counts(any_replay, "game")
 
 
+def test_sc2reader_keeps_exactly_the_tracker_events_s2protocol_decodes(any_replay):
+    """Rex's CR-041 follow-up: the tracker stream is measured, not assumed (same types, same counts)."""
+    assert inv.sc2reader_tracker_counts(any_replay) == inv.s2p_counts(any_replay, "tracker")
+
+
+def test_alcyone_tracker_counts_through_sc2reader(alcyone):
+    assert dict(inv.sc2reader_tracker_counts(alcyone)) == ALCYONE_TRACKER_EVENTS
+
+
+def test_event_ids_are_the_same_in_the_three_replays_protocols(replays):
+    """The report's id column comes from the first replay's protocol; this keeps that honest."""
+    paths = list(replays.values())
+    assert all(inv.game_event_ids(p) == inv.game_event_ids(paths[0]) for p in paths)
+    assert all(inv.tracker_event_ids(p) == inv.tracker_event_ids(paths[0]) for p in paths)
+
+
 def test_sc2reader_drops_six_types_on_alcyone(alcyone):
     assert inv.sc2reader_counts(alcyone).dropped == {
         "NNet.Game.SUserFinishedLoadingSyncEvent",
@@ -118,6 +134,7 @@ def test_mindshare_use_is_a_static_attribute_search():
 def test_report_marks_dropped_and_unexposed_items(replays):
     report = inv.render_report(replays, CHECKOUT)
     assert "| NNet.Game.SCameraSaveEvent | 14 | 27 | 24 | 5 | dropped |" in report
+    assert "| NNet.Replay.Tracker.SUnitBornEvent | 1 | 1153 | 1579 | 664 | kept as `UnitBornEvent` |" in report
     assert "| m_creatorAbilityName |" in report and "not exposed" in report
     names = [n for path in replays.values() for n in inv.player_names(path)]
     assert len(names) == 6
