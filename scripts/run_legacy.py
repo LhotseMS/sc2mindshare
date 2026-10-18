@@ -122,6 +122,7 @@ def run_one(replay: Path, support: Path, out: Path, python: str) -> dict[str, ob
         [python, str(Path(__file__).resolve()), "--child", replay.name, "--log", str(log_path)],
         env=env,
         check=False,
+        cwd=workdir,  # the fork's CreepTracker writes debug images to the working directory (debug=True)
     )
     log_text = log_path.read_text(encoding="utf-8") if log_path.exists() else ""
     if result.returncode != 0:
