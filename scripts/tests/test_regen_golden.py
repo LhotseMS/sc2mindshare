@@ -84,3 +84,19 @@ def test_an_entry_already_applied_is_reported_and_passes(capsys):
     assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-1-linear.json", "--write"]) == 0
     assert "already applied" in capsys.readouterr().out
     assert (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes() == before
+
+
+def test_an_entry_never_applied_is_not_reported_as_applied(tmp_path, monkeypatch, capsys):
+    """'Already applied' needs the entry's base to be in the golden's git history (Morgan's review): an
+    entry whose base never was the golden goes to the C3/C4 check and fails it."""
+    _need_inputs()
+    fake = tmp_path / "CHANGES.md"
+    fake.write_text(
+        '```json\n{"entry": "X1", "task": "t", "golden": ["alcyone/G-SNAP-1-linear.json"], '
+        '"base_sha256": "' + "0" * 64 + '", "changes": [], "added": [], "removed": []}\n```\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(regen, "CHANGES", fake)
+    assert regen.main(["--entry", "X1", "--golden", "G-SNAP-1-linear.json"]) == 1
+    out = capsys.readouterr().out
+    assert "already applied" not in out and "C4" in out

@@ -123,7 +123,9 @@ def _write_temp(path: Path, text: str) -> Path:
 
 def _publish(outputs: dict[Path, str]) -> None:
     """Every output is written to a temporary name first; only when all are written are they renamed,
-    so a failed write leaves none of them (and no temporary file) behind."""
+    so a failed write leaves none of them (and no temporary file) behind. The three renames are separate
+    ``os.replace`` calls, each atomic: a reader could see the new graph.json with the old intervals for the
+    moment between them, and a failure there (unlikely: a rename writes no data) would leave a mix."""
     next(iter(outputs)).parent.mkdir(parents=True, exist_ok=True)
     written: list[tuple[Path, Path]] = []
     try:
