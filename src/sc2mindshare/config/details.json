@@ -1,0 +1,48 @@
+[
+  {
+    "nodeType": "Building",
+    "properties": [
+      "time",
+      "type"
+    ]
+  },
+  {
+    "nodeType": "Units",
+    "properties": [
+      "time",
+      "total at time"
+    ]
+  },
+  {
+    "nodeType": "Stats",
+    "properties": [
+      "workers",
+      "cur. Min",
+      "cur. Gas",
+      "col. rate Min",
+      "col. rate Gas",
+      "army Min",
+      "army Gas",
+      "eco Min"
+    ]
+  },
+  {
+    "nodeType": "Upgrade",
+    "properties": [
+      "time"
+    ]
+  },
+  {
+    "nodeType": "Initiated",
+    "properties": [
+      "time",
+      "subtype"
+    ]
+  },
+  {
+    "nodeType": "Ability",
+    "properties": [
+      "time"
+    ]
+  }
+]
