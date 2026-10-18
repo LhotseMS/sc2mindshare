@@ -82,8 +82,9 @@ def pre_game_display(graph: Graph) -> Graph:
 FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_display)
 
 #: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances;
-#: P1b (D8a), it skips a base whose init/born second is after the battle's start.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b")
+#: P1b (D8a), it skips a base whose init/born second is after the battle's start; P1c (D10a), and one
+#: whose town hall is not standing then (destroyed, not yet rebuilt).
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c")
 
 
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:

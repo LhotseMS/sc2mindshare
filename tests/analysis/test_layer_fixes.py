@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -53,7 +53,7 @@ def test_to_graph_takes_only_the_two_pure_combinations_unless_a_mix_is_asked_for
     fixes) needs ``mixed=True``."""
     faithful = AnalysisResult((), (), None)
     full = AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))
-    partial = AnalysisResult((), (), None, fixes=frozenset({"P1"}))
+    partial = AnalysisResult((), (), None, fixes=frozenset({"P1", "P1b"}))
     for result, fixes in ((faithful, None), (faithful, FIXES), (partial, None), (full, FIXES[:1]), (partial, ())):
         with pytest.raises(ValueError, match="mixed|bug-faithful"):
             to_graph(result, fixes=fixes)
@@ -130,6 +130,49 @@ def test_p1b_off_or_without_a_battle_start_skips_nothing():
     assert _closest((9, 0), {"P1", "P1b"}, LATER) is LATER["p1"][1]
 
 
+# --- P1c (D10a): only a base whose town hall stands at the battle's start ------------------------------------
+
+
+def _town_hall(died_s=None):
+    return SimpleNamespace(
+        died_at=None if died_s is None else int(died_s * 22.4) + 1, _type_class=SimpleNamespace(name="Nexus"), id=1
+    )
+
+
+def _real_base(started_s, died_s=None):
+    from sc2mindshare.analysis.mindshare import Base
+
+    hall = _town_hall(died_s)
+    event = SimpleNamespace(unit=hall, frame=int(started_s * 22.4) + 1, second=started_s, player="p", location=(0, 0))
+    return Base(event, 2)
+
+
+def test_p1c_a_town_hall_stands_from_its_start_until_its_death_second():
+    base = _real_base(340, died_s=486)
+    assert [base.standsAt(s) for s in (339, 340, 486, 487)] == [False, True, True, False]  # dies in 486: still stood
+
+
+def test_p1c_a_rebuilt_town_hall_stands_again():
+    base = _real_base(340, died_s=486)
+    base.newBase(SimpleNamespace(unit=_town_hall(), frame=int(567 * 22.4) + 1, location=(0, 0)))
+    assert [base.standsAt(s) for s in (514, 566, 567, 900)] == [False, False, True, True]
+
+
+class _Standing(_Base):
+    def __init__(self, name, x, y, standing):
+        super().__init__(name, x, y)
+        self.standing = standing
+
+    def standsAt(self, second):
+        return second in self.standing
+
+
+def test_p1c_a_base_not_standing_at_the_start_is_skipped():
+    bases = {"p": [_Standing("Main", 0, 0, range(999)), _Standing("3rd", 10, 0, range(486))]}
+    assert _closest((9, 0), {"P1", "P1b"}, bases, battle_start=514) is bases["p"][1]  # founded, so P1b keeps it
+    assert _closest((9, 0), {"P1", "P1b", "P1c"}, bases, battle_start=514) is bases["p"][0]
+
+
 @pytest.fixture(scope="module")
 def battle_names():
     if not ALCYONE.exists():
@@ -137,7 +180,7 @@ def battle_names():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     names = {}
-    for label, fixes in (("faithful", ()), ("p1", ("P1",)), ("fixed", LAYER_FIXES)):
+    for label, fixes in (("faithful", ()), ("p1", ("P1",)), ("p1b", ("P1", "P1b")), ("fixed", LAYER_FIXES)):
         with contextlib.redirect_stdout(io.StringIO()):
             result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes)
             graph = to_graph(result, fixes=() if not fixes else None, mixed=fixes != LAYER_FIXES)  # P1 alone is a mix
@@ -161,10 +204,22 @@ def test_p1_on_alcyone_the_battles_name_their_nearest_base(battle_names):
 
 def test_p1b_on_alcyone_seven_battles_name_a_base_that_existed(battle_names):
     """The P1b entry (CHANGES.md): 7 names change from P1's, the other 23 stay."""
-    p1, fixed = battle_names["p1"], battle_names["fixed"]
+    p1, fixed = battle_names["p1"], battle_names["p1b"]
     changed = {k for k in fixed if fixed[k] != p1[k]}
     assert changed == {"Battle-8", "Battle-9", "Battle-10", "Battle-15", "Battle-16", "Battle-18", "Battle-19"}
     assert p1["Battle-9"] == "VoidRay killed Overlord near blacksquall 5th base"  # started at 762 s
     assert fixed["Battle-9"] == "VoidRay killed Overlord near blacksquall Natural"  # the battle starts at 384 s
     assert fixed["Battle-8"] == "Adept killed ling near blacksquall Main base"  # its 3rd base started 2 s later
     assert fixed["Battle-18"] == "VoidRay killed Overseer near lilTiGGer 5th base"
+
+
+def test_p1c_on_alcyone_battle_15_names_the_standing_natural(battle_names):
+    """The P1c entry (CHANGES.md): only Battle-15 changes from P1b's names; Battle-13, which starts in the
+    second blacksquall's 3rd Nexus dies, keeps the 3rd base."""
+    p1b, fixed = battle_names["p1b"], battle_names["fixed"]
+    assert {k for k in fixed if fixed[k] != p1b[k]} == {"Battle-15"}
+    assert (p1b["Battle-15"], fixed["Battle-15"]) == (
+        "VoidRay killed Roach near blacksquall 3rd base",
+        "VoidRay killed Roach near blacksquall Natural",
+    )
+    assert fixed["Battle-13"].endswith(" near blacksquall 3rd base")
