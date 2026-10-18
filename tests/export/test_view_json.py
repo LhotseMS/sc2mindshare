@@ -87,6 +87,7 @@ VIEW_LEDGER = (
     "S1b-view",
     "P8-view",
     "P2-view",
+    "P11-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -94,11 +95,13 @@ VIEW_LEDGER = (
 #: S1 and S1b renumber the Supply Blocks, which no other entry touches: the net check sets them aside, and
 #: their net effect is checked on the Supply Blocks alone: none of the 11 survives (keyed on player and
 #: start time), 7 new ones (test below).
+#: P11 renumbers Harrasment and Scouting (after H1's renumbering of Harrasment): both are set aside as well,
+#: and their net effect is checked on them alone, paired by (player, time) (test below).
 SUPPLY_NET = {"removed": [f"Supply Block-{i}#1" for i in range(11)], "added": [f"Supply Block-{i}#1" for i in range(7)]}
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
-    {"select": {"type": "Harrasment"}, "fields": ["ID"], "count": 14},
     {"select": {"type": "Building"}, "fields": ["properties.time", "description"], "count": 2},
+    {"select": {"type": "Building"}, "fields": ["name"], "count": 5},  # P11: a base name
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
     # P2: battle descriptions, the Zergling Units nodes and the speed upgrade ("ling" -> "Zergling")
     {"select": {"type": "Battle"}, "fields": ["description"], "count": 12},
@@ -107,10 +110,13 @@ VIEW_NET_DELTA = [
 ]
 
 
+SET_ASIDE = ("Supply Block", "Harrasment", "Scouting")  # the renumbered types; none has a link
+
+
 def _part(path, tmp_path, name, supply_blocks):
-    """The document with only its Supply Blocks (or without them), written for check_delta."""
+    """The document with only its Supply Blocks (or without the renumbered types), written for check_delta."""
     doc = json.loads(path.read_text(encoding="utf-8"))
-    doc["nodes"] = [n for n in doc["nodes"] if (n["type"] == "Supply Block") == supply_blocks]
+    doc["nodes"] = [n for n in doc["nodes"] if (n["type"] == "Supply Block" if supply_blocks else n["type"] not in SET_ASIDE)]
     if supply_blocks:
         doc = {"nodes": doc["nodes"], "links": []}  # Supply Blocks have no links
     out = tmp_path / name
@@ -123,8 +129,12 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
     assert all(e in entries for e in VIEW_LEDGER)
     assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
-    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view"]
-    assert all(c["select"].get("type") != "Supply Block" for c in VIEW_NET_DELTA)
+    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view"]
+    assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
+    linked = {
+        lk[end] for doc in ("G-VIEW-1.json", "G-VIEW-current.json") for lk in _doc(doc)["links"] for end in ("node1", "node2")
+    }
+    assert not [i for i in linked if i.startswith(("Supply Block-", "Harrasment-", "Scouting-"))]
     old_rest = _part(GOLDEN / "G-VIEW-1.json", tmp_path, "old-rest.json", supply_blocks=False)
     new_rest = _part(GOLDEN / "G-VIEW-current.json", tmp_path, "new-rest.json", supply_blocks=False)
     net = {
@@ -146,6 +156,34 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         **SUPPLY_NET,
     )
     assert cgd.check_delta(net_sb, old_sb, new_sb) == []
+
+
+def _doc(name):
+    return json.loads((GOLDEN / name).read_text(encoding="utf-8"))
+
+
+def _by_player_and_time(name, typ):
+    return {(n["properties"]["player"], n["properties"]["time"]): n for n in _doc(name)["nodes"] if n["type"] == typ}
+
+
+@pytest.mark.parametrize(
+    ("typ", "removed", "descriptions", "ids"),
+    [
+        # H1 numbers the Harrasment nodes 1-14; P11 drops the one at lilTiGGer's 14:03 (a dropped base) and
+        # renames the base in three descriptions; the 13 left are Harrasment-1..13
+        ("Harrasment", [("lilTiGGer", "14:03:00")], 3, [f"Harrasment-{i}" for i in range(1, 14)]),
+        # P11 drops blacksquall's two Probe scouts of the 4th base (a dropped base); the 9 left are Scouting-0..8
+        ("Scouting", [("blacksquall", "00:41:00"), ("blacksquall", "01:11:00")], 0, [f"Scouting-{i}" for i in range(9)]),
+    ],
+)
+def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, descriptions, ids):
+    """The net effect of H1 and P11 on the two types P11 renumbers, paired by (player, time) (QA design Addendum C)."""
+    old, new = _by_player_and_time("G-VIEW-1.json", typ), _by_player_and_time("G-VIEW-current.json", typ)
+    assert sorted(set(old) - set(new)) == removed  # the legacy time text of these nodes reads mm:ss:00
+    assert set(new) <= set(old)
+    changed = {k: sorted(f for f in set(old[k]) | set(new[k]) if f != "ID" and old[k].get(f) != new[k].get(f)) for k in new}
+    assert sorted(changed.values()) == sorted([["description"]] * descriptions + [[]] * (len(new) - descriptions))
+    assert sorted(n["ID"] for n in new.values()) == sorted(ids)
 
 
 def test_document_key_order_and_config_parts(document):

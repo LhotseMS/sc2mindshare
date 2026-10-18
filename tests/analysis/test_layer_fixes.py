@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -389,7 +389,9 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     assert [(lk.node1, lk.node2, lk.name1) for lk in graphs["fixed"].links if lk.node2 == node_id] == [
         (previous, node_id, "previous")
     ]
-    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 if "Alcyone" in replay else 0) + (
+    # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer and P11 drops 3 nodes (Harrasment-7, Scouting-0
+    # and Scouting-1); on spine S1 leaves 2 more
+    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 + 3 if "Alcyone" in replay else 0) + (
         2 if "spine" in replay else 0
     )
 
@@ -527,3 +529,60 @@ def test_p2_no_standalone_ling_and_the_unit_counts_per_type_are_kept(replay):
     assert Counter({renamed[k]: c for k, c in faithful.items()}) == Counter(
         {k: c for k, c in fixed.items() if k in renamed.values()}
     )
+
+
+# --- P11 (D11a): a base needs a mineral field within 7 cells on both axes ------------------------------------
+
+
+def _near(minerals, x, y, fixes):
+    detector = SimpleNamespace(
+        mineralLocations=minerals, ctx=SimpleNamespace(fixes=frozenset(fixes)), DISTANCE_FROM_MINERALS=5, P11_DISTANCE=7
+    )
+    return BaseDetector.isNearMinerals(detector, SimpleNamespace(x=x, y=y))
+
+
+@pytest.mark.parametrize(
+    ("mineral", "faithful", "fixed"),
+    [
+        ((54, 80), True, False),  # 4 cells on x, 50 on y: the bug's "or" takes it, D11a's "and" does not
+        ((80, 54), True, False),  # the same on y
+        ((57, 57), False, True),  # 7 cells on both axes: near under D11a (<= 7), not under the bug (< 5)
+        ((58, 50), True, False),  # 8 cells on x, 0 on y: not near
+        ((55, 55), False, True),  # 5 cells on both: the bug's "< 5" misses it, D11a takes it
+    ],
+)
+def test_p11_a_mineral_field_counts_when_it_is_near_on_both_axes(mineral, faithful, fixed):
+    assert _near([mineral], 50, 50, ()) is faithful
+    assert _near([mineral], 50, 50, ("P11",)) is fixed
+
+
+@pytest.fixture(scope="module")
+def alcyone_bases():
+    if not ALCYONE.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {ALCYONE}")
+    found = {}
+    original = detectors.createDetectors
+    for label, fixes in (("without P11", tuple(f for f in LAYER_FIXES if f != "P11")), ("fixed", LAYER_FIXES)):
+
+        def capture(replay, fx, label=label):
+            ctx = original(replay, fx)
+            found[label] = sorted(tuple(b.location) for bases in ctx.bases.bases.values() for b in bases)
+            return ctx
+
+        detectors.createDetectors = capture
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                analyse(load_replay(ALCYONE), MS_SC, fixes=fixes)
+        finally:
+            detectors.createDetectors = original
+    return found
+
+
+def test_p11_on_alcyone_the_three_macro_hatcheries_are_no_bases(alcyone_bases):
+    """The P11 entry's prediction: 14 bases without the fix, 11 with it; lilTiGGer's macro Hatcheries drop out."""
+    macro = [(38, 40), (41, 34), (48, 31)]
+    assert len(alcyone_bases["without P11"]) == 14 and len(alcyone_bases["fixed"]) == 11
+    assert sorted(set(alcyone_bases["without P11"]) - set(alcyone_bases["fixed"])) == macro
+    assert set(alcyone_bases["fixed"]) < set(alcyone_bases["without P11"])

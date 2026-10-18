@@ -764,6 +764,7 @@ class ActionsDetector(EventsDetector):
 class BaseDetector(EventsDetector):
 
     DISTANCE_FROM_MINERALS = 5
+    P11_DISTANCE = 7  # D11a: a mineral field within 7 cells on both axes
 
     def __init__(self, replay, ctx):
         super().__init__(replay, ctx)
@@ -785,6 +786,8 @@ class BaseDetector(EventsDetector):
                 self.mineralLocations.append(me.location)
 
     def isNearMinerals(self, e):
+        if "P11" in self.ctx.fixes:  # CR-023 P11 (D11a): near on both axes ("and"), not on either one
+            return any(abs(ml[0] - e.x) <= self.P11_DISTANCE and abs(ml[1] - e.y) <= self.P11_DISTANCE for ml in self.mineralLocations)
         return len([ml for ml in self.mineralLocations if 
                     abs(ml[0] - e.x) < self.DISTANCE_FROM_MINERALS or 
                     abs(ml[1] - e.y) < self.DISTANCE_FROM_MINERALS]) > 0

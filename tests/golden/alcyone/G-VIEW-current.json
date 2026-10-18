@@ -442,7 +442,7 @@
    }
   },
   {
-   "name": "Hydralisks Roachs Overseers Disruptors Immortals died near lilTiGGer 4th base",
+   "name": "Hydralisks Roachs Overseers Disruptors Immortals died near lilTiGGer Main base",
    "description": "lilTiGGer lost 31 units, 58 supply, 2900 min 1250 gas.\n\nblacksquall lost 2 units, 7 supply, 400 min 250 gas.\n\nFrom 0:10:05 to 0:10:28. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Disruptor, Roach killed Immortal, \n  \nCOMBAT: A move(19),  \nNON-COMBAT: Right Click(66), Spawn Larva(22), Build Spire, Build Evolution Chamber(2), Build Extractor(2),  \n\nCONTROL GROUPS: \n5: \n0:  \n\n====blacksquall==== \nKILLS(s): Disruptor killed Hydralisk(8), Disruptor killed Roach(5), Immortal killed Roach(4), Immortal killed Hydralisk(4), Stalker killed Roach(3), Void Ray killed Hydralisk(2), Oracle killed Hydralisk(3), Void Ray killed Overseer(2), \n  \nCOMBAT: Purification Nova Targeted(2), A move(7), Battery Overcharge,  \nNON-COMBAT: Right Click(34), Warp In Stalker(4),  \n\nCONTROL GROUPS: \n1: \n4: \n3: \n5: ",
    "type": "Battle",
    "ID": "Battle-17",
@@ -458,7 +458,7 @@
    }
   },
   {
-   "name": "VoidRay killed Overseer near lilTiGGer 5th base",
+   "name": "VoidRay killed Overseer near lilTiGGer 4th base",
    "description": "lilTiGGer lost an Overseer.\n\nAt 0:10:35. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Spawn Larva(7),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overseer, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(2), Warp In Stalker(5),  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-18",
@@ -474,7 +474,7 @@
    }
   },
   {
-   "name": "Queen killed Oracle near lilTiGGer 5th base",
+   "name": "Queen killed Oracle near lilTiGGer 4th base",
    "description": "\n\nblacksquall lost 1 units, 3 supply, 150 min 150 gas.\n\nAt 0:11:05. \n\n====lilTiGGer==== \nKILLS(s): Queen killed Oracle, \n  \nCOMBAT: A move,  \nNON-COMBAT: Spawn Larva, Right Click(9),  \n\nCONTROL GROUPS: \n4:  \n\n====blacksquall====    \nNON-COMBAT: Warp In High Templar(6), Right Click(5),  \n\nCONTROL GROUPS: \n2: \n5: ",
    "type": "Battle",
    "ID": "Battle-19",
@@ -490,7 +490,7 @@
    }
   },
   {
-   "name": "Hydralisk killed Observer near lilTiGGer 5th base",
+   "name": "Hydralisk killed Observer near lilTiGGer 4th base",
    "description": "\n\nblacksquall lost 1 units, 1 supply, 25 min 75 gas.\n\nAt 0:12:15. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Observer, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(3), Build Creep Tumor(7),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(11),  \n\nCONTROL GROUPS: \n5: \n1: ",
    "type": "Battle",
    "ID": "Battle-20",
@@ -506,7 +506,7 @@
    }
   },
   {
-   "name": "Hydralisk killed CreepTumorBurrowed near lilTiGGer 5th base",
+   "name": "Hydralisk killed CreepTumorBurrowed near lilTiGGer 4th base",
    "description": "lilTiGGer lost an Creep Tumor Burrowed.\n\nAt 0:12:23. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move,  \nNON-COMBAT: Build Evolution Chamber(3),  \n\nCONTROL GROUPS: \n5: \n0:  \n\n====blacksquall====    \nNON-COMBAT: Right Click, Build Nexus(2), Build Pylon,  ",
    "type": "Battle",
    "ID": "Battle-21",
@@ -723,7 +723,7 @@
   },
   {
    "name": "1 dief, before pull",
-   "description": "1 workers died at 5th base from 10:06 to 10:06.\nPull occured after 24.0s with 0 workers dead.",
+   "description": "1 workers died at 4th base from 10:06 to 10:06.\nPull occured after 24.0s with 0 workers dead.",
    "type": "Harrasment",
    "ID": "Harrasment-5",
    "size": [
@@ -737,7 +737,7 @@
   },
   {
    "name": "1 died, no pull",
-   "description": "1 workers died at 8th base from 12:50 to 12:50.",
+   "description": "1 workers died at 5th base from 12:50 to 12:50.",
    "type": "Harrasment",
    "ID": "Harrasment-6",
    "size": [
@@ -750,24 +750,10 @@
    }
   },
   {
-   "name": "1 died, no pull",
-   "description": "1 workers died at 4th base from 14:03 to 14:03.",
+   "name": "1 dief, before pull",
+   "description": "1 workers died at 5th base from 14:15 to 14:15.\nPull occured after 7.0s with 0 workers dead.",
    "type": "Harrasment",
    "ID": "Harrasment-7",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "14:03:00",
-    "player": "lilTiGGer"
-   }
-  },
-  {
-   "name": "1 dief, before pull",
-   "description": "1 workers died at 8th base from 14:15 to 14:15.\nPull occured after 7.0s with 0 workers dead.",
-   "type": "Harrasment",
-   "ID": "Harrasment-8",
    "size": [
     2.65,
     1
@@ -781,7 +767,7 @@
    "name": "1 died, no pull",
    "description": "1 workers died at 5th base from 13:59 to 13:59.",
    "type": "Harrasment",
-   "ID": "Harrasment-9",
+   "ID": "Harrasment-8",
    "size": [
     2.65,
     1
@@ -795,7 +781,7 @@
    "name": "12 died, no pull",
    "description": "12 workers died at Main base from 14:07 to 14:13.",
    "type": "Harrasment",
-   "ID": "Harrasment-10",
+   "ID": "Harrasment-9",
    "size": [
     2.65,
     1
@@ -809,7 +795,7 @@
    "name": "2 dief, before pull",
    "description": "2 workers died at 4th base from 14:08 to 14:09.\nPull occured after 7.0s with 0 workers dead.",
    "type": "Harrasment",
-   "ID": "Harrasment-11",
+   "ID": "Harrasment-10",
    "size": [
     2.65,
     1
@@ -823,7 +809,7 @@
    "name": "14 died, no pull",
    "description": "14 workers died at Natural from 14:20 to 14:26.",
    "type": "Harrasment",
-   "ID": "Harrasment-12",
+   "ID": "Harrasment-11",
    "size": [
     2.65,
     1
@@ -837,7 +823,7 @@
    "name": "1 dief, before pull",
    "description": "1 workers died at Main base from 14:45 to 14:45.\nPull occured after 3.0s with 0 workers dead.",
    "type": "Harrasment",
-   "ID": "Harrasment-13",
+   "ID": "Harrasment-12",
    "size": [
     2.65,
     1
@@ -851,7 +837,7 @@
    "name": "1 died, no pull",
    "description": "1 workers died at 6th base from 15:17 to 15:17.",
    "type": "Harrasment",
-   "ID": "Harrasment-14",
+   "ID": "Harrasment-13",
    "size": [
     2.65,
     1
@@ -1199,7 +1185,7 @@
    }
   },
   {
-   "name": "4th base",
+   "name": "Hatchery",
    "description": "",
    "type": "Building",
    "ID": "Building-57",
@@ -1214,7 +1200,7 @@
    }
   },
   {
-   "name": "5th base",
+   "name": "4th base",
    "description": "",
    "type": "Building",
    "ID": "Building-58",
@@ -1229,7 +1215,7 @@
    }
   },
   {
-   "name": "6th base",
+   "name": "Hatchery 1",
    "description": "",
    "type": "Building",
    "ID": "Building-72",
@@ -1244,7 +1230,7 @@
    }
   },
   {
-   "name": "7th base",
+   "name": "Hatchery 2",
    "description": "",
    "type": "Building",
    "ID": "Building-73",
@@ -1364,7 +1350,7 @@
    }
   },
   {
-   "name": "8th base",
+   "name": "5th base",
    "description": "",
    "type": "Building",
    "ID": "Building-92",
@@ -10341,7 +10327,7 @@
    "name": "Overlord scouted 3rd base",
    "description": "At 01.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-2",
+   "ID": "Scouting-0",
    "size": [
     2.65,
     1
@@ -10355,7 +10341,7 @@
    "name": "Overlord scouted Main base",
    "description": "At 01.43 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-3",
+   "ID": "Scouting-1",
    "size": [
     2.65,
     1
@@ -10369,7 +10355,7 @@
    "name": "Zergling scouted Natural",
    "description": "At 02.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-4",
+   "ID": "Scouting-2",
    "size": [
     2.65,
     1
@@ -10383,7 +10369,7 @@
    "name": "Zergling scouted 3rd base",
    "description": "At 04.46 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-5",
+   "ID": "Scouting-3",
    "size": [
     2.65,
     1
@@ -10397,7 +10383,7 @@
    "name": "Zergling scouted 5th base",
    "description": "At 04.49 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-6",
+   "ID": "Scouting-4",
    "size": [
     2.65,
     1
@@ -10411,7 +10397,7 @@
    "name": "Overseer scouted 3rd base",
    "description": "At 09.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-10",
+   "ID": "Scouting-8",
    "size": [
     2.65,
     1
@@ -10422,38 +10408,10 @@
    }
   },
   {
-   "name": "Probe scouted 4th base",
-   "description": "At 00.41 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-0",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:41:00",
-    "player": "blacksquall"
-   }
-  },
-  {
-   "name": "Probe scouted 4th base",
-   "description": "At 01.11 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-1",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "01:11:00",
-    "player": "blacksquall"
-   }
-  },
-  {
    "name": "Zealot scouted Natural",
    "description": "At 03.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-7",
+   "ID": "Scouting-5",
    "size": [
     2.65,
     1
@@ -10467,7 +10425,7 @@
    "name": "Adept scouted Natural",
    "description": "At 03.48 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-8",
+   "ID": "Scouting-6",
    "size": [
     2.65,
     1
@@ -10481,7 +10439,7 @@
    "name": "AdeptPhaseShift scouted Natural",
    "description": "At 03.52 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-9",
+   "ID": "Scouting-7",
    "size": [
     2.65,
     1

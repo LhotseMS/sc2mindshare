@@ -86,8 +86,9 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: whose town hall is not standing then (destroyed, not yet rebuilt); S1 (D9a, TD-27), the supply
 #: tracker: no double count of the starting units and providers, real provider values by the type at
 #: the event, and a block judged once per loop; P8, the last Units interval is written; P2, race words
-#: are no longer stripped from inside names (the name cleaning takes the fixes explicitly).
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2")
+#: are no longer stripped from inside names (the name cleaning takes the fixes explicitly); P11 (D11a),
+#: ``BaseDetector.isNearMinerals`` needs a mineral field within 7 cells on both axes.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11")
 
 
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:
