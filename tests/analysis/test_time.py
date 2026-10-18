@@ -7,6 +7,7 @@ export formatter.
 import contextlib
 import io
 import json
+import math
 import os
 import pathlib
 import re
@@ -119,7 +120,7 @@ TWELVE_HOURS_OF_LOOPS = range(112 * 3600 * 12 // 5)  # 22.4 loops a second
 
 
 def test_a_loops_second_is_the_legacy_int_frame_over_22_4_for_twelve_hours():
-    """TD-26: the exact integer second equals the legacy float expression for every loop of a game."""
+    """TD-26: the exact integer second equals the legacy float expression for every non-negative loop."""
     assert all(GameTime(loops).seconds == int(loops / 22.4) for loops in TWELVE_HOURS_OF_LOOPS)
 
 
@@ -132,6 +133,15 @@ def test_items_at_a_window_boundary_stay_in_their_window(k):
         for loops in range(first, GameTime.from_seconds(second + 1).loops):
             assert GameTime(loops).seconds == int(loops / 22.4) == second
             assert win(GameTime(loops).seconds) == window, (k, second, loops)
+
+
+def test_a_negative_loop_floors_where_the_legacy_int_truncates():
+    """Morgan's G6 N1 on 3e15a1a: below 0 the choice is floor, deliberately (int() would put loops -1 to -22
+    in second 0, the first second of the game)."""
+    pinned = {-1: -1, -22: -1, -23: -2, -1590: -71, -1591: -72}
+    assert {loops: GameTime(loops).seconds for loops in pinned} == pinned
+    assert int(-1 / 22.4) == 0 != GameTime(-1).seconds  # the legacy expression would differ here
+    assert all(GameTime(loops).seconds == math.floor(loops * 5 / 112) for loops in range(-22 * 3600, 0))
 
 
 def test_from_seconds_is_the_first_loop_of_that_second_signed():
