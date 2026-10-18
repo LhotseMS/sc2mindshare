@@ -4,6 +4,7 @@ Only this folder goes on sys.path (for decoding_support); the checkout root neve
 because it holds the fork's sc2reader/ until T09 (TD-8).
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -21,7 +22,10 @@ def replays() -> dict[str, str]:
     paths = replay_paths()
     missing = [str(p) for p in paths.values() if not p.exists()]
     if missing:
-        pytest.skip("replays missing (D5a data points in MS SC/, never committed, D7a): " + ", ".join(missing))
+        reason = "replays missing (D5a data points in MS SC/, never committed, D7a): " + ", ".join(missing)
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":  # QA design §1.4: on this Mac a skip is a failed gate
+            pytest.fail(reason)
+        pytest.skip(reason)
     return {k: str(v) for k, v in paths.items()}
 
 
