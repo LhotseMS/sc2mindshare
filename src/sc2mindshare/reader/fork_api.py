@@ -18,7 +18,7 @@ replay's datetimes are made naive again, as the fork's ``utcfromtimestamp`` gave
 Everything the ported layer imported from sc2reader is re-exported here (``from fork_api import *``
 gives every public name), so ``analysis`` never imports sc2reader itself (tests/test_architecture.py). This module, ``plugins.mindshare_context``
 and ``compat`` are the strangler's only contact with sc2reader objects. The class swap itself and the
-naive datetimes are the remaining changes to sc2reader objects (a later step than T19).
+naive datetimes are the remaining changes to sc2reader objects (CR-064, after T19).
 """
 
 from __future__ import annotations
