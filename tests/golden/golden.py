@@ -301,7 +301,13 @@ def diff_json(
     exp_nodes, be = normalise_nodes(expected.get("nodes", []), clock_map, view)
     act_nodes, ba = normalise_nodes(actual.get("nodes", []), clock_map, view)
     report.budget_expected, report.budget_actual = be, ba
-    if be != ba:
+
+    def compared(budget: Counter[str]) -> dict[str, int]:
+        # M4 drops what only one side has (positions and clocks of a laid-out document against a
+        # view golden), so its counts differ by design; callers assert them (QA design §1.2).
+        return {k: v for k, v in budget.items() if not k.startswith("M4")}
+
+    if compared(be) != compared(ba):
         report.lines.append(f"mask budget differs: expected {dict(be)}, actual {dict(ba)}")
     for key in sorted((set(expected) | set(actual)) - {"nodes", "links"}):
         if key not in expected or key not in actual or _canon(expected[key], key) != _canon(actual[key], key):

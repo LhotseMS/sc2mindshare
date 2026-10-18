@@ -85,7 +85,7 @@ def _key(item: LayoutItem) -> tuple[float, int]:
 
 
 def _sides(items: Sequence[LayoutItem], result: LayoutResult) -> tuple[str | None, str | None]:
-    players = [i for i in items if i.type == "Player"]
+    players = sorted((i for i in items if i.type == "Player"), key=lambda i: i.order)
     if len(players) > 2:
         raise ValueError(f"more than two Player nodes: {[p.id for p in players]}")
     if len(players) == 2:
@@ -120,7 +120,7 @@ def layout(
 
     # anchors (spec §5.4)
     players_seen = 0
-    for item in items:
+    for item in sorted(items, key=lambda i: i.order):
         if item.type == "Game":
             result.positions[item.id] = p.anchor_game
         elif item.type == "Player":
