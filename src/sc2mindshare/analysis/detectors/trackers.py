@@ -3,6 +3,7 @@ from sc2mindshare.analysis.exports.supplyBlockNode import SupplyBlockNode
 from sc2mindshare.analysis.exports.energyNode import EnergyNode 
 from sc2mindshare.analysis.exports.injectNode import InjecDelayNode 
 from sc2mindshare.analysis.utils import MsUtils
+from sc2mindshare.reader.compat import object_text, type_at
 from sc2mindshare.reader.fork_api import Length
 from datetime import datetime, timedelta
 
@@ -10,6 +11,14 @@ import sc2mindshare.analysis.detectors.detectors
 
 from enum import Enum
 from sc2mindshare.analysis.text import colored
+
+#: CR-023 S1 (D9a): what each supply provider gives, by its type at the event (S3, S4)
+PROVIDERS_AT_EVENT = {
+    "Overlord": 8, "Overseer": 8, "OverlordTransport": 8, "OverseerSiegeMode": 8,
+    "Pylon": 8, "SupplyDepot": 8, "SupplyDepotLowered": 8,
+    "CommandCenter": 15, "OrbitalCommand": 15, "PlanetaryFortress": 15, "Nexus": 15,
+    "Hatchery": 6, "Lair": 6, "Hive": 6,
+}
 
 class Tracker: 
 
@@ -339,9 +348,9 @@ class SupplyTracker(Tracker):
         "Nexus" : 15,
         "Hatchery" : 15 
     }
-
-    def __init__(self, player1, player2):
+    def __init__(self, player1, player2, fixes=frozenset()):
         super().__init__(player1, player2)
+        self.fixes = fixes
 
         self.supplyHistory = {}
         self.supplyHistory[player1] = list()
@@ -360,24 +369,37 @@ class SupplyTracker(Tracker):
 
         return False
 
+    def providerOf(self, e):
+        """The supply provider the unit of ``e`` is, or None. CR-023 S1: by its type at the event (S4)."""
+        if "S1" in self.fixes:
+            name = type_at(e.unit, e.frame)
+            return name if name in PROVIDERS_AT_EVENT else None
+        name = object_text(e.unit)
+        return name if self.isSupplyProvider(name) else None
+
+    def providedBy(self, supplyProvider):
+        return (PROVIDERS_AT_EVENT if "S1" in self.fixes else self.SUPPLY_PROVIDERS)[supplyProvider]
+
     def getPreviousSupply(self, player):
 
         if len(self.supplyHistory[player]) > 0:
             return self.supplyHistory[player][-1]
+        elif "S1" in self.fixes:  # CR-023 S1 (S1, S2): the starting units and providers are counted as events
+            return SupplyStatus("00:00:00", 0, 0)
         else:
             return SupplyStatus("00:00:00", self.INITIAL_SUPPLY, self.INITIAL_LIMIT)
 
-    def changeSupply(self, player, time, change):
+    def changeSupply(self, player, time, change, frame=None):
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply + change, prevSupply.limit))
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply + change, prevSupply.limit, frame))
         
-    def increaseLimit(self, player, time, supplyProvider):
+    def increaseLimit(self, player, time, supplyProvider, frame=None):
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit + self.SUPPLY_PROVIDERS[supplyProvider]))
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit + self.providedBy(supplyProvider), frame))
     
-    def decreaseLimit(self, player, time, supplyProvider):
+    def decreaseLimit(self, player, time, supplyProvider, frame=None):
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit - self.SUPPLY_PROVIDERS[supplyProvider]))
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit - self.providedBy(supplyProvider), frame))
 
     def getSupplyBlocks(self):
         self.findSupplyBlocks(self.player1)
@@ -388,7 +410,11 @@ class SupplyTracker(Tracker):
     def findSupplyBlocks(self, player):
 
         blockStart = None
-        for curStatus in self.supplyHistory[player]:
+        history = self.supplyHistory[player]
+        for index, curStatus in enumerate(history):
+            # CR-023 S1 (Q-b2): every event of one loop is applied before a block is judged
+            if "S1" in self.fixes and index + 1 < len(history) and history[index + 1].frame == curStatus.frame:
+                continue
 
             if curStatus.supply >= curStatus.limit and blockStart == None and curStatus.supply != self.MAX_SUPPLY:
                 blockStart = curStatus
@@ -404,10 +430,11 @@ class SupplyTracker(Tracker):
 
 class SupplyStatus():
 
-    def __init__(self, time, currentSupply, supplyLimit) -> None:
+    def __init__(self, time, currentSupply, supplyLimit, frame=None) -> None:
         self.time = time
         self.supply = currentSupply
         self.limit = supplyLimit
+        self.frame = frame  # CR-023 S1: the loop of the event, for judging a block once per loop
 
     def __str__(self) -> str:
         return "{} : {}/{}".format(self.time, self.supply, self.limit)

@@ -47,6 +47,17 @@ def tracker_time(event: Any) -> str:
     return game_time(event).replace(".", ":")
 
 
+def type_at(unit: Any, frame: int) -> str:
+    """The unit's type at ``frame`` (upstream's ``Unit.type_history``: frame -> type, in order), by its id
+    such as ``Hatchery``; the unit's current type when the history has nothing at or before ``frame``."""
+    name = None
+    for changed_at, unit_type in unit.type_history.items():
+        if changed_at > frame:
+            break
+        name = unit_type.name
+    return str(name if name is not None else unit.name)
+
+
 # --- names -------------------------------------------------------------------------------
 
 #: The fork's ``MsUtils.replaceStrings`` table, in its order (python bug 2 included: "Zerg" and

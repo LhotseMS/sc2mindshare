@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -53,7 +53,7 @@ def test_to_graph_takes_only_the_two_pure_combinations_unless_a_mix_is_asked_for
     fixes) needs ``mixed=True``."""
     faithful = AnalysisResult((), (), None)
     full = AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))
-    partial = AnalysisResult((), (), None, fixes=frozenset({"P1", "P1b"}))
+    partial = AnalysisResult((), (), None, fixes=frozenset({"P1", "P1b"}))  # any proper subset
     for result, fixes in ((faithful, None), (faithful, FIXES), (partial, None), (full, FIXES[:1]), (partial, ())):
         with pytest.raises(ValueError, match="mixed|bug-faithful"):
             to_graph(result, fixes=fixes)
@@ -223,3 +223,103 @@ def test_p1c_on_alcyone_battle_15_names_the_standing_natural(battle_names):
         "VoidRay killed Roach near blacksquall Natural",
     )
     assert fixed["Battle-13"].endswith(" near blacksquall 3rd base")
+
+
+# --- S1 (D9a, TD-27): the supply tracker -------------------------------------------------------------------
+
+
+def test_type_at_reads_upstreams_type_history():
+    from sc2mindshare.reader.compat import type_at
+
+    unit = SimpleNamespace(
+        name="Hive",
+        type_history={
+            0: SimpleNamespace(name="Hatchery"),
+            8145: SimpleNamespace(name="Lair"),
+            12000: SimpleNamespace(name="Hive"),
+        },
+    )
+    assert [type_at(unit, f) for f in (0, 8144, 8145, 11999, 12000, 20000)] == [
+        "Hatchery",
+        "Hatchery",
+        "Lair",
+        "Lair",
+        "Hive",
+        "Hive",
+    ]
+    assert type_at(SimpleNamespace(name="Drone", type_history={}), 5) == "Drone"
+
+
+def _tracker(fixes):
+    from sc2mindshare.analysis.detectors.trackers import SupplyTracker
+
+    return SupplyTracker("p1", "p2", frozenset(fixes))
+
+
+def _event(name_now, history, frame):
+    return SimpleNamespace(unit=SimpleNamespace(name=name_now, type_history=history), frame=frame)
+
+
+def test_s1_providers_by_their_type_at_the_event_and_their_real_value():
+    hatch = {0: SimpleNamespace(name="Hatchery"), 9000: SimpleNamespace(name="Hive")}
+    fixed, faithful = _tracker({"S1"}), _tracker(())
+    assert fixed.providerOf(_event("Hive", hatch, 0)) == "Hatchery" and fixed.providedBy("Hatchery") == 6
+    assert fixed.providerOf(_event("Overseer", {0: SimpleNamespace(name="Overseer")}, 100)) == "Overseer"
+    assert fixed.providedBy("Overseer") == 8 and fixed.providedBy("Nexus") == 15
+    assert faithful.providedBy("Hatchery") == 15  # the legacy table, kept for the bug-faithful run
+
+
+def test_s1_the_series_starts_empty_and_a_block_is_judged_once_per_loop():
+    fixed, faithful = _tracker({"S1"}), _tracker(())
+    assert (faithful.getPreviousSupply("p1").supply, faithful.getPreviousSupply("p1").limit) == (12, 15)
+    assert (fixed.getPreviousSupply("p1").supply, fixed.getPreviousSupply("p1").limit) == (0, 0)
+    # loop 0: 12 workers born before the providers, in one loop: no zero-length block (Q-b2)
+    fixed.changeSupply("p1", "00:00", 12, frame=0)
+    fixed.increaseLimit("p1", "00:00", "Hatchery", frame=0)
+    fixed.increaseLimit("p1", "00:00", "Overlord", frame=0)
+    fixed.changeSupply("p1", "00:38", 2, frame=851)  # 14/14 at 00:38: blocked
+    fixed.increaseLimit("p1", "00:57", "Overlord", frame=1277)  # 14/22: free again
+    fixed.findSupplyBlocks("p1")
+    assert [(b.start, b.end) for b in fixed.supplyBlocks["p1"]] == [("00:00:38", "00:00:57")]
+
+
+@pytest.fixture(scope="module")
+def supply():
+    if not ALCYONE.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {ALCYONE}")
+    out = {}
+    for label, fixes in (("faithful", ()), ("fixed", LAYER_FIXES)):
+        with contextlib.redirect_stdout(io.StringIO()):
+            result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
+        graph = to_graph(result, fixes=() if not fixes else None)
+        blocks = [
+            (n.value("player"), n.time("time").seconds, n.time("end time").seconds)
+            for n in graph.nodes
+            if n.kind == "Supply Block"
+        ]
+        out[label] = (result.exposed.supply, blocks)
+    return out
+
+
+def test_s1_on_alcyone_the_series_starts_as_playerstats_and_the_blocks_are_the_entrys(supply):
+    """The S1 entry (CHANGES.md): 12/14 and 12/15 at 0:00 as PlayerStats; 9 blocks instead of 11, the
+    57 s block from 0:00 (TD-27) gone."""
+    points, blocks = supply["fixed"]
+    first = {p.player: (p.supply, p.limit) for p in points if p.time in ("00:00", "00:00:00")}  # the last status in second 0
+    assert first == {1: (12.0, 14.0), 2: (12.0, 15.0)}
+    assert blocks == [
+        ("lilTiGGer", 38, 57),
+        ("lilTiGGer", 128, 133),
+        ("lilTiGGer", 402, 410),
+        ("lilTiGGer", 760, 768),
+        ("lilTiGGer", 798, 823),
+        ("blacksquall", 32, 38),
+        ("blacksquall", 841, 850),
+        ("blacksquall", 875, 942),
+        ("blacksquall", 949, 974),
+    ]
+    _faithful_points, faithful_blocks = supply["faithful"]
+    assert len(faithful_blocks) == 11 and faithful_blocks[0] == ("lilTiGGer", 0, 57)  # bug-faithful: kept
+    assert max(p.limit for p in points) == 336 and max(p.limit for p in _faithful_points) == 360

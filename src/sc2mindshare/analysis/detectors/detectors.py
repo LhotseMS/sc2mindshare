@@ -187,7 +187,7 @@ class SimpleDetector(EventsDetector):
         self.previousUpgradeLevels = self.initDictByPlayer(2)
         self.upgradesByLevels = {}
         
-        self.st = SupplyTracker(self.player1, self.player2)
+        self.st = SupplyTracker(self.player1, self.player2, self.ctx.fixes)
         self.supplyBlocks = list()
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
@@ -293,8 +293,9 @@ class SimpleDetector(EventsDetector):
                     self.addBuilding(e, buildingCounter)
 
                     #print("building: " + object_text(e.unit))
-                    if self.st.isSupplyProvider(object_text(e.unit)):
-                        self.st.increaseLimit(e.player, e.time, object_text(e.unit))
+                    provider = self.st.providerOf(e)
+                    if provider:
+                        self.st.increaseLimit(e.player, e.time, provider, e.frame)
                 
                 except KeyError:
                     print("Unit not found :" + object_text(e.unit))
@@ -321,20 +322,22 @@ class SimpleDetector(EventsDetector):
                     self.unitTypeCount[e.player][e.unit.nameC] -= 1     
                 
                 #print("unit died: " + object_text(e.unit))
-                if self.st.isSupplyProvider(object_text(e.unit)):
-                    self.st.decreaseLimit(e.player, e.time, object_text(e.unit))
+                provider = self.st.providerOf(e)
+                if provider:
+                    self.st.decreaseLimit(e.player, e.time, provider, e.frame)
                 else:
-                    self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply)
+                    self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply, e.frame)
 
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
                   self.unitFinishedEligble(e)):
                                 
                 #print("new unit: " + object_text(e.unit))
-                if self.st.isSupplyProvider(object_text(e.unit)):
-                    self.st.increaseLimit(e.player, e.time, object_text(e.unit))
+                provider = self.st.providerOf(e)
+                if provider:
+                    self.st.increaseLimit(e.player, e.time, provider, e.frame)
                 else:
-                    self.st.changeSupply(e.player, e.time, e.unit._type_class.supply)
+                    self.st.changeSupply(e.player, e.time, e.unit._type_class.supply, e.frame)
                 
                 newInterval = self.getNearestIntervalStart(e.time)
 

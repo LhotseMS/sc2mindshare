@@ -43,7 +43,7 @@ GAMES = {
 }
 PITCH = Profile().row_pitch
 assert PITCH == 2.5  # the literals below are in units of the row pitch (spec §4)
-SUPPLY_BLOCKS = {"alcyone": 11, "spine": 0}  # spine has none: the width property is exercised on Alcyone
+SUPPLY_BLOCKS = {"alcyone": 9, "spine": 2}  # after CR-023 S1 (D9a): 11 -> 9 on Alcyone, and spine has 2 (it had none)
 
 
 @pytest.fixture(scope="module", params=sorted(GAMES))
