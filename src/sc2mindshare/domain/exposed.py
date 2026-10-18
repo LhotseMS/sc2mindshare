@@ -124,13 +124,21 @@ class GameContext:
 
 @dataclass(frozen=True)
 class TimeTables:
-    """C5: the build and research times the analysis read, as text keyed by the sheet's name, and the
-    sha256 of each source file (so stream 2's oracles can be regenerated when they change, TD-29)."""
+    """C5: the build and research times the analysis read, as text, keyed by the internal ids the units
+    and upgrades carry (U3's ``first_type``, UP2's ``upgrade``), and the sha256 of each source file (so
+    stream 2's oracles can be regenerated when they change, TD-29).
+
+    unitsInfo.csv names units by display name ("Void Ray"); each row is keyed by the unit type of the
+    replay's own datapack it names: the same text, the text without spaces and punctuation, or one of
+    five aliases (``analysis.exposed.UNIT_ALIASES``). The sheet's base rows ("Natural" ... "9th base")
+    are the layer's, not unit types, and are left out; any other row that names no unit type is listed
+    in ``unmapped_units`` (none on the sample replays). upgradesInfo.csv is keyed by internal id already."""
 
     build_times: tuple[tuple[str, str], ...]
     research_times: tuple[tuple[str, str], ...]
     units_source_sha256: str
     upgrades_source_sha256: str
+    unmapped_units: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
