@@ -167,3 +167,30 @@ The bases are every Hatchery, Nexus or Orbital the layer found near minerals ove
 ```json
 {"entry": "P1-snap-linear", "task": "CR-023", "defect": "P1 getClosestBase stores a boolean: every battle near lilTiGGer Natural", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "a070ea623dc58cab466382b0da536e60d478750be8afdd8a7c4b2ee97f8dc68d", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 30}], "added": [], "removed": []}
 ```
+
+
+### P1b: a battle is named only after a base that existed when it started (CR-023, T22; D8a)
+
+Stefan's D8a on P1: skip bases started after the battle. "Existed" here: the base's init or born event, in whole seconds (`int(frame / 22.4)`), is at or before the battle's start (`Battle.startSec`); a base under construction counts. Among those bases the nearest to the battle's first countable death wins, as in P1 (first on a tie). On Alcyone the battle start and the first death give the same answer for every battle (the closest case, Battle-8, starts and has its first death at 338 s; the base P1 named was started at 340 s). A base destroyed before the battle still counts (the layer does not track a base's destruction). Applied inside the layer as its own ledger id, `P1b` in `analysis.fixes.LAYER_FIXES`. Only Battle names change: 7 of the 30, in the three current goldens, against P1's names. Predicted before the change by an independent computation on the bug-faithful layer (`.scratch/rex/cr023/probe_p1b.py`):
+
+| Battle | Starts | P1 named (base started) | Now near |
+|---|---|---|---|
+| `Battle-8` | 338 s | blacksquall 3rd base (started 340 s) | blacksquall Main base |
+| `Battle-9` | 384 s | blacksquall 5th base (started 762 s) | blacksquall Natural |
+| `Battle-10` | 392 s | blacksquall 5th base (started 762 s) | blacksquall Natural |
+| `Battle-15` | 514 s | blacksquall 6th base (started 781 s) | blacksquall 3rd base |
+| `Battle-16` | 596 s | blacksquall 6th base (started 781 s) | blacksquall 3rd base |
+| `Battle-18` | 635 s | blacksquall 6th base (started 781 s) | lilTiGGer 5th base |
+| `Battle-19` | 665 s | lilTiGGer 8th base (started 698 s) | lilTiGGer 5th base |
+
+```json
+{"entry": "P1b-view", "task": "CR-023", "defect": "P1b (D8a): a battle named after a base built later", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "494186638e7b7c11df674cd07df93d3d901208b631c35311fad3d85a552d398a", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 7}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1b-snap-compressed", "task": "CR-023", "defect": "P1b (D8a): a battle named after a base built later", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "53cc33aaf5a2a72dc8b41eb7433b6a04dace3c1c681e6479b36f12e8e05f59d1", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 7}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P1b-snap-linear", "task": "CR-023", "defect": "P1b (D8a): a battle named after a base built later", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "a5286770fa93adf9aaaddaaaffb3f2eaa0b7fc6662f845b961ce3811843fe5fb", "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 7}], "added": [], "removed": []}
+```
