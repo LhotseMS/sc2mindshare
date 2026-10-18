@@ -137,7 +137,7 @@ def expose(replay: Any, ctx: Any, support_root: Path) -> Exposed:
         if isinstance(e, TargetUnitCommandEvent)
         and not isinstance(e, UpdateTargetUnitCommandEvent)
         and e.player is not None
-        and e.ability_name == CHRONO_BOOST
+        and vars(e).get("ability_name") == CHRONO_BOOST  # upstream's own value, not a fork property
     )
     tables = TimeTables(
         build_times=tuple((name, str(row["Build Time"])) for name, row in ctx.simple.unitsInfoDict.items()),

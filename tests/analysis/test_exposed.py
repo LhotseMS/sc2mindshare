@@ -42,7 +42,7 @@ def x():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     with contextlib.redirect_stdout(io.StringIO()):
-        return analyse(load_replay(ALCYONE), MS_SC).exposed
+        return analyse(load_replay(ALCYONE), MS_SC, with_exposed=True).exposed
 
 
 def unit(x, unit_id):
@@ -117,6 +117,19 @@ def test_everything_is_filled_on_alcyone(x):
 
 
 # --- the done-when: type at birth, never the final type (TD-13) ----------------------------------------
+
+
+def test_every_morph_starts_from_the_type_before_it(x):
+    """Morgan's G6 N1 on c312162: each TypeChange's ``before`` is the previous change's ``after``, or the
+    unit's first type for its first change, for every unit (a wrong ``before`` anywhere shows here)."""
+    first = {u.unit_id: u.first_type for u in x.units}
+    current = dict(first)
+    checked = 0
+    for change in sorted(x.type_changes, key=lambda c: c.loop):  # stable: same-loop changes keep their order
+        assert change.before == current[change.unit_id], change
+        current[change.unit_id] = change.after
+        checked += 1
+    assert checked == len(x.type_changes) == 783
 
 
 def test_the_overlord_born_at_2_46_reads_as_an_overlord_with_a_later_overseer_morph(x):
