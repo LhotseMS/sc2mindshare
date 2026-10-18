@@ -31,7 +31,7 @@ def _need_inputs():
 
 
 def test_the_regenerable_goldens_are_the_non_frozen_ones():
-    assert set(regen.REGENERABLE) == {"G-VIEW-current.json", "G-SNAP-1-compressed.json", "G-SNAP-1-linear.json"}
+    assert set(regen.REGENERABLE) == {"G-VIEW-current.json", "G-SNAP-current-compressed.json", "G-SNAP-current-linear.json"}
     assert not set(regen.REGENERABLE) & regen.FROZEN
 
 
@@ -72,7 +72,7 @@ def test_regeneration_needs_an_entry(capsys):
 
 def test_an_entry_for_another_golden_is_refused(capsys):
     # H1 lists only G-VIEW-current.json
-    assert regen.main(["--entry", "H1", "--golden", "G-SNAP-1-linear.json"]) == 2
+    assert regen.main(["--entry", "H1", "--golden", "G-SNAP-current-linear.json"]) == 2
     assert "does not list" in capsys.readouterr().out
 
 
@@ -82,10 +82,18 @@ def test_an_entry_already_applied_is_reported_and_passes(capsys, monkeypatch):
     lookup is stubbed here, so the test also runs in a git archive copy; it is tested on its own below.)"""
     _need_inputs()
     monkeypatch.setattr(regen, "_was_in_history", lambda name, sha256: True)
-    before = (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes()
-    assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-1-linear.json", "--write"]) == 0
+    before = (regen.GOLDEN / "G-SNAP-current-linear.json").read_bytes()
+    assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-current-linear.json", "--write"]) == 0
     assert "already applied" in capsys.readouterr().out
-    assert (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes() == before
+    assert (regen.GOLDEN / "G-SNAP-current-linear.json").read_bytes() == before
+
+
+def test_a_live_copy_looks_up_the_frozen_goldens_history_too():
+    """Addendum B: an entry moved to G-SNAP-current has its base in G-SNAP-1's history (the versions before
+    the freeze), so 'already applied' searches both files; a golden that no freeze copied has one history."""
+    assert regen.history_names("G-SNAP-current-linear.json") == ["G-SNAP-current-linear.json", "G-SNAP-1-linear.json"]
+    assert regen.history_names("G-SNAP-current-compressed.json")[1] == "G-SNAP-1-compressed.json"
+    assert regen.history_names("G-VIEW-current.json") == ["G-VIEW-current.json"]
 
 
 def test_an_entry_never_applied_is_not_reported_as_applied(tmp_path, monkeypatch, capsys):
@@ -94,12 +102,12 @@ def test_an_entry_never_applied_is_not_reported_as_applied(tmp_path, monkeypatch
     _need_inputs()
     fake = tmp_path / "CHANGES.md"
     fake.write_text(
-        '```json\n{"entry": "X1", "task": "t", "golden": ["alcyone/G-SNAP-1-linear.json"], '
+        '```json\n{"entry": "X1", "task": "t", "golden": ["alcyone/G-SNAP-current-linear.json"], '
         '"base_sha256": "' + "0" * 64 + '", "changes": [], "added": [], "removed": []}\n```\n',
         encoding="utf-8",
     )
     monkeypatch.setattr(regen, "CHANGES", fake)
-    assert regen.main(["--entry", "X1", "--golden", "G-SNAP-1-linear.json"]) == 1
+    assert regen.main(["--entry", "X1", "--golden", "G-SNAP-current-linear.json"]) == 1
     out = capsys.readouterr().out
     assert "already applied" not in out and "C4" in out
 
