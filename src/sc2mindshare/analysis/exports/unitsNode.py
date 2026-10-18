@@ -1,4 +1,4 @@
-from sc2mindshare.reader.compat import clean_name
+from sc2mindshare.reader.compat import clean_name, type_at
 from sc2mindshare.analysis.exports.node import MultiNode
 from sc2mindshare.reader.fork_api import UnitDoneEvent, UnitBornEvent, TrackerEvent
 
@@ -14,7 +14,9 @@ class UnitsNode(MultiNode):
             e.unit.unitsNode = self
 
         # TODO unit or the event should provide the cleaned name, #
-        self.name = clean_name(self.event.unit.name, True, self.fixes)  # the fork's nameC, with the fixes (P2)
+        # the fork's nameC, with the fixes (P2); by the type at the event under N1 (CR-023, D6a)
+        unit_type = type_at(self.event.unit, self.event.frame) if "N1" in self.fixes else self.event.unit.name
+        self.name = clean_name(unit_type, True, self.fixes)
 
         self.type = "Units"
         self.propertiesCount = 4

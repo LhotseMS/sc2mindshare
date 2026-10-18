@@ -1,4 +1,4 @@
-from sc2mindshare.reader.compat import clean_name, object_text
+from sc2mindshare.reader.compat import clean_name, object_text, unit_text_at
 # add focus fire, a moves, abilities
 import datetime
 import sc2mindshare.analysis.detectors.detectors
@@ -376,7 +376,9 @@ class Battle(PlayerHandler):
                 MsUtils.iterateType(self.deadBuildingsTypes[e.player], object_text(e.unit, self.ctx.fixes))
             else:
                 # TODO the logic of the key (string of unit names) should be somewher else
-                MsUtils.iterateType(self.killersTypes[self.otherPlayer(e.player)], clean_name(e.killing_unit, True, self.ctx.fixes) + " killed " + clean_name(e.unit, True, self.ctx.fixes))
+                # the killer by its type at the kill under N1 (CR-023, D6a)
+                killer = unit_text_at(e.killing_unit, e.frame, self.ctx.fixes) if "N1" in self.ctx.fixes else e.killing_unit
+                MsUtils.iterateType(self.killersTypes[self.otherPlayer(e.player)], clean_name(killer, True, self.ctx.fixes) + " killed " + clean_name(e.unit, True, self.ctx.fixes))
                 MsUtils.iterateType(self.deadTypes[e.player], clean_name(e.unit, True, self.ctx.fixes)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
 
     def assignEventToScreen(self, event) -> bool:

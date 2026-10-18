@@ -29,7 +29,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -354,12 +354,12 @@ def test_the_supply_tracker_takes_its_fixes_explicitly():
     [
         (
             "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
-            "Units-193",
+            "Units-182",  # Units-193 before N1 merged 11 groups
             "blacksquall",
             "Probe",
             1000,
             "47",
-            "Units-192",
+            "Units-181",
         ),
         ("200k dmg spine crawler ZvP.SC2Replay", "Units-129", "serega", "Probe", 660, "68", "Units-124"),
     ],
@@ -377,7 +377,8 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
         with contextlib.redirect_stdout(io.StringIO()):
             graphs[label] = to_graph(analyse(load_replay(path), MS_SC, fixes=fixes), fixes=() if not fixes else None)
     fixed = {n.id: n for n in graphs["fixed"].nodes}
-    assert node_id not in {n.id for n in graphs["faithful"].nodes}
+    # the bug-faithful run has no Units node in the last interval (N1 renumbers, so not by ID)
+    assert not [n for n in graphs["faithful"].nodes if n.kind == "Units" and n.start.seconds == time]
     node = fixed[node_id]
     assert (node.value("player"), node.value("type"), node.value("count"), node.value("total at time")) == (
         player,
@@ -389,9 +390,9 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     assert [(lk.node1, lk.node2, lk.name1) for lk in graphs["fixed"].links if lk.node2 == node_id] == [
         (previous, node_id, "previous")
     ]
-    # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer and P11 drops 3 nodes (Harrasment-7, Scouting-0
-    # and Scouting-1); on spine S1 leaves 2 more
-    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 + 3 if "Alcyone" in replay else 0) + (
+    # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer, P11 drops 3 nodes (Harrasment-7, Scouting-0
+    # and Scouting-1) and N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there)
+    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - (4 + 3 + 11 if "Alcyone" in replay else 0) + (
         2 if "spine" in replay else 0
     )
 
@@ -586,3 +587,64 @@ def test_p11_on_alcyone_the_three_macro_hatcheries_are_no_bases(alcyone_bases):
     assert len(alcyone_bases["without P11"]) == 14 and len(alcyone_bases["fixed"]) == 11
     assert sorted(set(alcyone_bases["without P11"]) - set(alcyone_bases["fixed"])) == macro
     assert set(alcyone_bases["fixed"]) < set(alcyone_bases["without P11"])
+
+
+# --- N1 (D6a): names by the type at the time of the event ---------------------------------------------------
+
+
+def _unit(history, final):
+    return SimpleNamespace(type_history={f: SimpleNamespace(name=n) for f, n in history}, name=final)
+
+
+def test_n1_the_text_of_a_unit_at_a_frame_is_its_type_then():
+    from sc2mindshare.reader.compat import unit_text_at
+
+    gateway = _unit([(100, "Gateway"), (2000, "WarpGate")], "WarpGate")
+    assert unit_text_at(gateway, 1999, frozenset()).strip() == "Gateway"
+    assert unit_text_at(gateway, 2000, frozenset()).strip() == "Warp Gate"
+    assert unit_text_at(gateway, 50, frozenset()).strip() == "Warp Gate"  # nothing yet: its current type
+
+
+def test_n1_a_type_change_moves_the_unit_between_its_types_counts():
+    p = object()
+    detector = SimpleNamespace(unitTypeCount={p: {"Overlord": 3}}, ctx=SimpleNamespace(fixes=frozenset({"N1", "P2"})))
+    change = SimpleNamespace(
+        unit=SimpleNamespace(owner=p, type_history={1: SimpleNamespace(name="Overlord")}, name="Overseer"),
+        frame=500,
+        unit_type_name="Overseer",
+    )
+    detectors.SimpleDetector.moveUnitTypeCount(detector, change)
+    assert detector.unitTypeCount[p] == {"Overlord": 2, "Overseer": 1}
+    egg = SimpleNamespace(
+        unit=SimpleNamespace(owner=p, type_history={1: SimpleNamespace(name="Egg")}, name="Drone"),
+        frame=9,
+        unit_type_name="Drone",
+    )
+    detectors.SimpleDetector.moveUnitTypeCount(detector, egg)  # an uncounted old type moves nothing
+    assert detector.unitTypeCount[p] == {"Overlord": 2, "Overseer": 1}
+
+
+@pytest.fixture(scope="module")
+def n1_graphs():
+    if not ALCYONE.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {ALCYONE}")
+    graphs = {}
+    for label, fixes in (("without N1", tuple(f for f in LAYER_FIXES if f != "N1")), ("fixed", LAYER_FIXES)):
+        with contextlib.redirect_stdout(io.StringIO()):
+            graphs[label] = to_graph(analyse(load_replay(ALCYONE), MS_SC, fixes=fixes), mixed=fixes != LAYER_FIXES)
+    return {label: {n.id: n for n in g.nodes} for label, g in graphs.items()}
+
+
+def test_n1_on_alcyone_units_buildings_and_killers_take_the_type_at_the_time(n1_graphs):
+    """The N1 entry's prediction (CHANGES.md), a few pinned; the goldens hold all of it."""
+    before, after = n1_graphs["without N1"], n1_graphs["fixed"]
+    units = {label: [n for n in g.values() if n.kind == "Units"] for label, g in n1_graphs.items()}
+    assert (len(units["without N1"]), len(units["fixed"])) == (193, 182)
+    assert (before["Units-24"].value("type"), after["Units-24"].value("type")) == ("Overseer", "Overlord")
+    assert (before["Building-6"].name, after["Building-6"].name) == ("Warp Gate", "Gateway")
+    assert after["Building-6"].value("type") == "Gateway" and after["Building-6"].start.seconds == 41
+    assert (before["Building-1"].value("type"), after["Building-1"].value("type")) == ("Hive", "Hatchery")
+    assert "Ravager killed Stalker" in before["Battle-12"].description
+    assert "Ravager killed" not in after["Battle-12"].description and "Roach killed Stalker(3)" in after["Battle-12"].description

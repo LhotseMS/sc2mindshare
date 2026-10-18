@@ -9,7 +9,7 @@ class InitNode(BuildingNode):
     def __init__(self, e : UnitInitEvent, seq, *, fixes) -> None:
         super().__init__(e, 0, seq, fixes=fixes)
 
-        self.subtype = clean_name(self.event.unit, False, self.fixes).strip()
+        self.subtype = clean_name(self.unitText(), False, self.fixes).strip()
 
         self.event.unit.initNode = self
         if self.event.unit.deathEvent == None:
@@ -23,7 +23,7 @@ class InitNode(BuildingNode):
 
     # TODO get a clean name withou race in ()
     def getNodeName(self):
-        nameStr = clean_name(self.event.unit, True, self.fixes).strip()
+        nameStr = clean_name(self.unitText(), True, self.fixes).strip()
 
         if self.index != None and self.index > 0:
             nameStr += " " + str(self.index)
@@ -33,9 +33,9 @@ class InitNode(BuildingNode):
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
         if self.cancelled:
-            return "{} started building at {} but was cancelled".format(object_text(self.event.unit, self.fixes), self.getNodeTime())
+            return "{} started building at {} but was cancelled".format(object_text(self.unitText(), self.fixes), self.getNodeTime())
         else:
-            return "{} started building at {} but was killed".format(object_text(self.event.unit, self.fixes), self.getNodeTime())
+            return "{} started building at {} but was killed".format(object_text(self.unitText(), self.fixes), self.getNodeTime())
     
     def getProperties(self, sep):
         return "{}{}{}".format(super().getProperties(sep),

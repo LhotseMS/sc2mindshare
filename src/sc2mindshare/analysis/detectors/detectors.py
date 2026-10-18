@@ -32,7 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
-from sc2mindshare.reader.compat import clean_name, object_text
+from sc2mindshare.reader.compat import clean_name, object_text, type_at, unit_text_at
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
@@ -253,7 +253,8 @@ class SimpleDetector(EventsDetector):
                    isinstance(v, ChatEvent) or 
                    isinstance(v, UnitDiedEvent) or
                    isinstance(v, TargetUnitCommandEvent) or
-                   isinstance(v, UnitInitEvent))]:
+                   isinstance(v, UnitInitEvent) or
+                   isinstance(v, UnitTypeChangeEvent))]:
             
             if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
                 try:
@@ -316,6 +317,10 @@ class SimpleDetector(EventsDetector):
             elif isinstance(e, ChatEvent):
                 chatCounter += 1
                 self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, object_text(e.player, self.ctx.fixes), fixes=self.ctx.fixes))
+
+            # CR-023 N1 (D6a): a unit that changes type moves from its old type's count to its new one
+            elif isinstance(e, UnitTypeChangeEvent) and "N1" in self.ctx.fixes:
+                self.moveUnitTypeCount(e)
 
             elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
                 nameC = clean_name(e.unit.name, True, self.ctx.fixes)  # the fork's nameC, with the fixes (P2)
@@ -399,12 +404,26 @@ class SimpleDetector(EventsDetector):
         self.currentIntervalEvents = self.initDictByPlayer(2)
         return unitsCounter
 
+    def moveUnitTypeCount(self, e):
+        """CR-023 N1: at a type change, the unit leaves its old type's count for its new type's, when its old
+        type is counted (the per-type ``total at time`` follows the type at the time)."""
+        if e.unit is None or e.unit.owner not in self.unitTypeCount:
+            return
+        counts = self.unitTypeCount[e.unit.owner]
+        old = clean_name(type_at(e.unit, e.frame - 1), True, self.ctx.fixes)
+        new = clean_name(str(e.unit_type_name), True, self.ctx.fixes)
+        if old in counts and old != new:
+            counts[old] -= 1
+            counts[new] = counts.get(new, 0) + 1
+
     def addLink(self, n1, n2):
         self.links.append(UnitsLink(n1, n2))
 
 
     def addBuilding(self, e, seq):
-        node = BuildingNode(e, self.unitsInfoDict[object_text(e.unit)]['Build Time'], seq, fixes=self.ctx.fixes)
+        # the build time of its type at the event under N1 (CR-023, D6a): a Gateway's, not a Warp Gate's
+        key = unit_text_at(e.unit, e.frame, frozenset()) if "N1" in self.ctx.fixes else object_text(e.unit)
+        node = BuildingNode(e, self.unitsInfoDict[key]['Build Time'], seq, fixes=self.ctx.fixes)
         node.index = self.getBuildingIndex(node)
         self.buildingsByPlayer[e.player].append(node)
 
@@ -423,10 +442,12 @@ class SimpleDetector(EventsDetector):
     
     def addUnit(self, e):
         try:
-            if not e.unit.name in self.currentIntervalEvents[e.player]:
-                self.currentIntervalEvents[e.player][e.unit.name] = list()
+            # grouped by the type at the event under N1 (CR-023, D6a), else by the final type
+            unitType = type_at(e.unit, e.frame) if "N1" in self.ctx.fixes else e.unit.name
+            if not unitType in self.currentIntervalEvents[e.player]:
+                self.currentIntervalEvents[e.player][unitType] = list()
 
-            self.currentIntervalEvents[e.player][e.unit.name].append(e)
+            self.currentIntervalEvents[e.player][unitType].append(e)
     
         except Exception:
             print(e.__class__())

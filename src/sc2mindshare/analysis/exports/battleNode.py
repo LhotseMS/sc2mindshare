@@ -2,7 +2,7 @@ import sc2mindshare.analysis
 import sc2mindshare.analysis.detectors.detectors
 from sc2mindshare.analysis.battle import Battle
 from sc2mindshare.analysis.exports.node import X_LD, Node
-from sc2mindshare.reader.compat import clean_name, object_text
+from sc2mindshare.reader.compat import clean_name, object_text, type_at
 
 # TODO ADD SUPPLY WON 
 # TODO WINNER PLAYER
@@ -27,8 +27,10 @@ class BattleNode(Battle, Node):
         locationPart = ""
 
         if self.deathCount == 1:
+            death = self.deadUnits[0]  # the killer by its type at the kill under N1 (CR-023, D6a)
+            killer = type_at(death.killing_unit, death.frame) if "N1" in self.fixes else death.killing_unit.name
             unitPart = "{} killed {}".format(
-                clean_name(self.deadUnits[0].killing_unit.name, False, self.fixes), 
+                clean_name(killer, False, self.fixes), 
                 clean_name(self.deadUnits[0].unit.name, False, self.fixes)) #TODO hAXorz, replace str doesn't need to be on event
         elif len(self.killersTypes.items()) == 1:
             for key, value in self.killersTypes.items(): # TODO how to take just one key and value from dict?

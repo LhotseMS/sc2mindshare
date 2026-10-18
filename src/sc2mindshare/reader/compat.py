@@ -58,6 +58,12 @@ def type_at(unit: Any, frame: int) -> str:
     return str(name if name is not None else unit.name)
 
 
+def unit_text_at(unit: Any, frame: int, fixes: frozenset[str]) -> str:
+    """``object_text(unit, fixes)`` for the unit's type at ``frame`` instead of its final type (CR-023 N1):
+    the text the layer names and groups a unit by when ``N1`` is in its fixes."""
+    return clean_name(f"{type_at(unit, frame)} ", True, fixes)
+
+
 # --- names -------------------------------------------------------------------------------
 
 #: The two removals CR-023 P2 skips: a race word anywhere in a name.

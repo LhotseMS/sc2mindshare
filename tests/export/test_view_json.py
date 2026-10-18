@@ -88,6 +88,7 @@ VIEW_LEDGER = (
     "P8-view",
     "P2-view",
     "P11-view",
+    "N1-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -100,23 +101,25 @@ VIEW_LEDGER = (
 SUPPLY_NET = {"removed": [f"Supply Block-{i}#1" for i in range(11)], "added": [f"Supply Block-{i}#1" for i in range(7)]}
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
-    {"select": {"type": "Building"}, "fields": ["properties.time", "description"], "count": 2},
-    {"select": {"type": "Building"}, "fields": ["name"], "count": 5},  # P11: a base name
+    # P3d/P3e: the main bases' time and description (2); P11: a base name (5); N1: 14 Warp Gates are Gateways
+    # (name, type, start), the main base a Hatchery, the Greater Spire a Spire and so the next Spire "Spire 1"
+    {"select": {"type": "Building"}, "fields": ["name", "description", "properties.time", "properties.type"], "count": 23},
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
-    # P2: battle descriptions, the Zergling Units nodes and the speed upgrade ("ling" -> "Zergling")
+    # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
     {"select": {"type": "Battle"}, "fields": ["description"], "count": 12},
-    {"select": {"type": "Units"}, "fields": ["name", "description", "properties.type"], "count": 6},
     {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1},
 ]
 
 
-SET_ASIDE = ("Supply Block", "Harrasment", "Scouting")  # the renumbered types; none has a link
+SET_ASIDE = ("Supply Block", "Harrasment", "Scouting", "Units")  # the renumbered types; no link joins them to another type
 
 
 def _part(path, tmp_path, name, supply_blocks):
     """The document with only its Supply Blocks (or without the renumbered types), written for check_delta."""
     doc = json.loads(path.read_text(encoding="utf-8"))
     doc["nodes"] = [n for n in doc["nodes"] if (n["type"] == "Supply Block" if supply_blocks else n["type"] not in SET_ASIDE)]
+    kept = {n["ID"] for n in doc["nodes"]}
+    doc["links"] = [lk for lk in doc["links"] if lk["node1"] in kept and lk["node2"] in kept]
     if supply_blocks:
         doc = {"nodes": doc["nodes"], "links": []}  # Supply Blocks have no links
     out = tmp_path / name
@@ -129,19 +132,20 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
     assert all(e in entries for e in VIEW_LEDGER)
     assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
-    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view"]
+    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view", "N1-view"]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
-    linked = {
-        lk[end] for doc in ("G-VIEW-1.json", "G-VIEW-current.json") for lk in _doc(doc)["links"] for end in ("node1", "node2")
-    }
-    assert not [i for i in linked if i.startswith(("Supply Block-", "Harrasment-", "Scouting-"))]
+    for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
+        doc = _doc(name)
+        kind = {n["ID"]: n["type"] for n in doc["nodes"]}
+        pairs = {(kind[lk["node1"]], kind[lk["node2"]]) for lk in doc["links"]}
+        assert not [p for p in pairs if (p[0] in SET_ASIDE or p[1] in SET_ASIDE) and p != ("Units", "Units")], name
     old_rest = _part(GOLDEN / "G-VIEW-1.json", tmp_path, "old-rest.json", supply_blocks=False)
     new_rest = _part(GOLDEN / "G-VIEW-current.json", tmp_path, "new-rest.json", supply_blocks=False)
     net = {
         "entry": "+".join(VIEW_LEDGER),
         "base_sha256": cgd.golden.sha256(old_rest),
         "changes": VIEW_NET_DELTA,
-        "added": ["Units-193#1", "Units-192>Units-193#1"],  # P8
+        "added": [],
         "removed": [],
     }
     assert cgd.check_delta(net, old_rest, new_rest) == []
@@ -186,6 +190,28 @@ def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, descriptions, i
     assert sorted(n["ID"] for n in new.values()) == sorted(ids)
 
 
+def test_units_net_of_the_ledger():
+    """The net effect of P2, P8 and N1 on the Units nodes: N1 regroups an interval's units by their type at the
+    time, so per player and interval the unit count is kept; P8 adds the last interval (blacksquall's Probe at
+    16:40); 192 + 1 - 11 merged = 182 nodes, and the previous/next chains are rebuilt (163 + 1 -> 158 links)."""
+
+    def counts(name):
+        out = {}
+        for n in _doc(name)["nodes"]:
+            if n["type"] == "Units":
+                key = (n["properties"]["player"], n["properties"]["time"])
+                out[key] = out.get(key, 0) + int(n["properties"]["count"])
+        return out
+
+    old, new = counts("G-VIEW-1.json"), counts("G-VIEW-current.json")
+    p8 = sorted(set(new) - set(old))
+    assert len(p8) == 1 and p8[0][0] == "blacksquall" and new[p8[0]] == 1
+    assert old == {k: v for k, v in new.items() if k != p8[0]}
+    units = {name: [n for n in _doc(name)["nodes"] if n["type"] == "Units"] for name in ("G-VIEW-1.json", "G-VIEW-current.json")}
+    assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 182)
+    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 158 - 163
+
+
 def test_document_key_order_and_config_parts(document):
     doc = document["current"]
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
@@ -199,9 +225,13 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
     description. dataTypes is the workbook's, unchanged."""
     faithful = {n["ID"]: n for n in document["faithful"]["nodes"]}
     current = {n["ID"]: n for n in document["current"]["nodes"]}
-    for node_id, player, kind in (("Building-1", "lilTiGGer", "Hive"), ("Building-2", "blacksquall", "Nexus")):
+    # N1: lilTiGGer's main base was a Hatchery then (the bug-faithful document names its final type, Hive)
+    for node_id, player, kind, kind_now in (
+        ("Building-1", "lilTiGGer", "Hive", "Hatchery"),
+        ("Building-2", "blacksquall", "Nexus", "Nexus"),
+    ):
         assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
-        assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind}
+        assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind_now}
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
     assert document["faithful"]["dataTypes"] == document["current"]["dataTypes"] == load_config()["dataTypes"]
 
