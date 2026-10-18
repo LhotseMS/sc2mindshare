@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 from sc2mindshare.decoding.camera_hotkeys import CameraSaveEvent, camera_recalls
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
+from sc2mindshare.decoding.control_groups import control_group_activity
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
 from sc2mindshare.decoding.target_flags import target_flag_summary
 
@@ -55,6 +56,11 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
         "camera_hotkeys": _camera_hotkeys(replay),
         "command_activity": [_activity(pid, a) for pid, a in command_activity(replay).items()],
         "target_flags": _target_flags(replay),
+        "control_groups": [
+            {"player_id": pid, "kind": kind.name.lower(), "source": source, "count": count}
+            for pid, counts in control_group_activity(replay).items()
+            for (kind, source), count in sorted(counts.items(), key=lambda kv: (kv[0][0].name, kv[0][1]))
+        ],
         "warnings": list(decoded.warnings),
     }
 

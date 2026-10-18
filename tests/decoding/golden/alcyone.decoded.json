@@ -259,6 +259,122 @@
       "unpaired_states": 101
     }
   ],
+  "control_groups": [
+    {
+      "count": 52,
+      "kind": "add",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 3,
+      "kind": "clear",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 40,
+      "kind": "recall",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 376,
+      "kind": "recall",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 41,
+      "kind": "selection",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 990,
+      "kind": "selection",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 7,
+      "kind": "set",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 5,
+      "kind": "set",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 2,
+      "kind": "steal_add",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 5,
+      "kind": "steal_set",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 25,
+      "kind": "add",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 3,
+      "kind": "clear",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 50,
+      "kind": "recall",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 195,
+      "kind": "recall",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 52,
+      "kind": "selection",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 369,
+      "kind": "selection",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 6,
+      "kind": "set",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 13,
+      "kind": "set",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 13,
+      "kind": "steal_set",
+      "player_id": 2,
+      "source": "player"
+    }
+  ],
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 92440,

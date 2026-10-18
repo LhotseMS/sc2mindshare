@@ -75,6 +75,110 @@
       "unpaired_states": 125
     }
   ],
+  "control_groups": [
+    {
+      "count": 13,
+      "kind": "add",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 4,
+      "kind": "clear",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 30,
+      "kind": "recall",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 125,
+      "kind": "recall",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 28,
+      "kind": "selection",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 532,
+      "kind": "selection",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 3,
+      "kind": "set",
+      "player_id": 1,
+      "source": "auto"
+    },
+    {
+      "count": 2,
+      "kind": "set",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 12,
+      "kind": "steal_set",
+      "player_id": 1,
+      "source": "player"
+    },
+    {
+      "count": 9,
+      "kind": "add",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 1,
+      "kind": "clear",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 4,
+      "kind": "recall",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 46,
+      "kind": "recall",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 3,
+      "kind": "selection",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 252,
+      "kind": "selection",
+      "player_id": 2,
+      "source": "player"
+    },
+    {
+      "count": 1,
+      "kind": "set",
+      "player_id": 2,
+      "source": "auto"
+    },
+    {
+      "count": 3,
+      "kind": "steal_set",
+      "player_id": 2,
+      "source": "player"
+    }
+  ],
   "format": "sc2mindshare.decoding/1",
   "gamemetadata": {
     "base_build": 83830,
