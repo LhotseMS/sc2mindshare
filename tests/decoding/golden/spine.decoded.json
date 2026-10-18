@@ -308,6 +308,62 @@
     "title": "Jagannatha LE",
     "warnings": []
   },
+  "larva_sources": [
+    {
+      "injected_larvae": 30,
+      "longest_between_pops": 2921,
+      "natural_larvae": 39,
+      "player_id": 1,
+      "pops": [
+        4409,
+        5114,
+        5770,
+        6635,
+        7361,
+        8111,
+        11032,
+        11673,
+        12314,
+        14375
+      ],
+      "start_larvae": 3,
+      "town_hall_id": 47972353,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 18,
+      "longest_between_pops": 5479,
+      "natural_larvae": 35,
+      "player_id": 1,
+      "pops": [
+        5252,
+        6353,
+        7545,
+        8186,
+        9190,
+        14669
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 60030977,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 15,
+      "longest_between_pops": 1306,
+      "natural_larvae": 29,
+      "player_id": 1,
+      "pops": [
+        10809,
+        12115,
+        12756,
+        13397,
+        14038
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 64487425,
+      "unclassified_larvae": 0
+    }
+  ],
   "larva_use": [
     {
       "larvae": 72,

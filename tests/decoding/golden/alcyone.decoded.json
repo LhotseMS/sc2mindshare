@@ -509,6 +509,161 @@
     "title": "Alcyone LE",
     "warnings": []
   },
+  "larva_sources": [
+    {
+      "injected_larvae": 66,
+      "longest_between_pops": 1970,
+      "natural_larvae": 43,
+      "player_id": 1,
+      "pops": [
+        4016,
+        4893,
+        6782,
+        7462,
+        8245,
+        8913,
+        9554,
+        10253,
+        12223,
+        12864,
+        13505,
+        14595,
+        15236,
+        15877,
+        16518,
+        18219,
+        18860,
+        19501,
+        20142,
+        20783,
+        21424,
+        22065
+      ],
+      "start_larvae": 3,
+      "town_hall_id": 54788097,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 60,
+      "longest_between_pops": 2219,
+      "natural_larvae": 38,
+      "player_id": 1,
+      "pops": [
+        4951,
+        6738,
+        7884,
+        8525,
+        9166,
+        9807,
+        10448,
+        12188,
+        12829,
+        13470,
+        14111,
+        14752,
+        15393,
+        16034,
+        18253,
+        18894,
+        19535,
+        20176,
+        20817,
+        21458
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 66322433,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 48,
+      "longest_between_pops": 2275,
+      "natural_larvae": 24,
+      "player_id": 1,
+      "pops": [
+        8270,
+        8925,
+        10124,
+        10765,
+        12208,
+        12849,
+        13490,
+        14131,
+        14772,
+        15413,
+        16054,
+        18329,
+        18970,
+        19611,
+        20252,
+        20893
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 76283905,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 0,
+      "longest_between_pops": null,
+      "natural_larvae": 22,
+      "player_id": 1,
+      "pops": [],
+      "start_larvae": 0,
+      "town_hall_id": 108527622,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 21,
+      "longest_between_pops": 2354,
+      "natural_larvae": 14,
+      "player_id": 1,
+      "pops": [
+        16023,
+        18377,
+        19018,
+        19659,
+        20300,
+        20941,
+        21582
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 127926294,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 0,
+      "longest_between_pops": null,
+      "natural_larvae": 18,
+      "player_id": 1,
+      "pops": [],
+      "start_larvae": 0,
+      "town_hall_id": 129499155,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 0,
+      "longest_between_pops": null,
+      "natural_larvae": 18,
+      "player_id": 1,
+      "pops": [],
+      "start_larvae": 0,
+      "town_hall_id": 130023440,
+      "unclassified_larvae": 0
+    },
+    {
+      "injected_larvae": 9,
+      "longest_between_pops": 1615,
+      "natural_larvae": 3,
+      "player_id": 1,
+      "pops": [
+        19983,
+        21598,
+        22239
+      ],
+      "start_larvae": 0,
+      "town_hall_id": 164102153,
+      "unclassified_larvae": 0
+    }
+  ],
   "larva_use": [
     {
       "larvae": 112,

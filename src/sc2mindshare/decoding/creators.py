@@ -20,6 +20,7 @@ Measured on the three replays (s2protocol as the oracle):
 
 from __future__ import annotations
 
+import itertools
 import weakref
 from dataclasses import dataclass
 from typing import Any
@@ -222,6 +223,75 @@ def structure_production(replay: Any) -> tuple[StructureProduction, ...]:
                 units=len(made),
                 first_unit_frame=made[0].frame,
                 last_unit_frame=made[-1].frame,
+            )
+        )
+    return tuple(rows)
+
+
+#: Injected larvae are born at one hall in a run of births at most this many loops apart (measured: 4, F3-026).
+INJECT_RUN_MAX_GAP = 4
+#: An inject pop makes this many larvae; a longer run holds natural larvae too.
+INJECT_LARVAE = 3
+
+
+@dataclass(frozen=True)
+class LarvaSources:
+    """Per town hall: where its larvae came from, and its inject pops (CR-061, F3-026; no durations).
+
+    After loop 0, a run of larva births at the hall with gaps of at most 4 loops is an inject pop when it
+    has 3 or more births (3 injected, the rest natural); a single birth is natural; a run of exactly 2 is
+    left unclassified, never guessed. ``pops`` are the loops of each pop's first larva.
+    """
+
+    player_id: int
+    town_hall_id: int
+    start_larvae: int
+    natural_larvae: int
+    injected_larvae: int
+    unclassified_larvae: int
+    pops: tuple[int, ...]
+    #: The longest interval between two consecutive pops, in loops (None with fewer than 2 pops).
+    longest_between_pops: int | None
+
+
+def larva_sources(replay: Any) -> tuple[LarvaSources, ...]:
+    """One row per town hall that spawned a larva, ordered by its id."""
+    births: dict[int, list[Creation]] = {}
+    for c in creations(replay):
+        if c.unit_type == LARVA and c.creator_id is not None:
+            births.setdefault(c.creator_id, []).append(c)
+    rows = []
+    for hall in sorted(births):
+        loops = [c.frame for c in births[hall]]
+        later = [loop for loop in loops if loop]
+        natural = injected = unclassified = 0
+        pops: list[int] = []
+        i = 0
+        while i < len(later):
+            j = i
+            while j + 1 < len(later) and later[j + 1] - later[j] <= INJECT_RUN_MAX_GAP:
+                j += 1
+            run = j - i + 1
+            if run >= INJECT_LARVAE:
+                injected += INJECT_LARVAE
+                natural += run - INJECT_LARVAE
+                pops.append(later[i])
+            elif run == 2:
+                unclassified += 2
+            else:
+                natural += 1
+            i = j + 1
+        gaps = [b - a for a, b in itertools.pairwise(pops)]
+        rows.append(
+            LarvaSources(
+                player_id=births[hall][0].player_id,
+                town_hall_id=hall,
+                start_larvae=len(loops) - len(later),
+                natural_larvae=natural,
+                injected_larvae=injected,
+                unclassified_larvae=unclassified,
+                pops=tuple(pops),
+                longest_between_pops=max(gaps) if gaps else None,
             )
         )
     return tuple(rows)
