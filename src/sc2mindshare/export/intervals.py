@@ -4,7 +4,8 @@ The battle detector produces the text the legacy code wrote to ``Intervals.csv``
 the header ``start,end,id``, then one ``H:MM:SS,H:MM:SS,Battle-N`` row per battle (its start minus 2 s,
 its end plus 2 s). ``execs/screenshotGame.py`` reads that file with pandas and parses the times as
 ``%H:%M:%S``, so ``intervals_csv`` writes the text unchanged. ``intervals_json`` gives the same intervals
-with their times in seconds. Any other text is an error, never a guess.
+with their times in seconds and the name of the graph they belong to. Any other text is an error, never a
+guess.
 """
 
 from __future__ import annotations
@@ -58,5 +59,8 @@ def intervals_csv(text: str) -> str:
     return text
 
 
-def intervals_json(intervals: tuple[Interval, ...]) -> str:
-    return json.dumps({"intervals": [asdict(i) for i in intervals]}, ensure_ascii=False, indent=1) + "\n"
+def intervals_json(intervals: tuple[Interval, ...], *, graph: str) -> str:
+    """The intervals with their times in seconds; ``graph`` names the document they belong to (the
+    screenshot tool's Intervals.csv has a fixed name, so one folder holds one build's intervals)."""
+    doc = {"graph": graph, "intervals": [asdict(i) for i in intervals]}
+    return json.dumps(doc, ensure_ascii=False, indent=1) + "\n"
