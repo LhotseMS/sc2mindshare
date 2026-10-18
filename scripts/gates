@@ -26,8 +26,13 @@ echo "== ruff format --check"
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then
+    # mypy puts the directory it runs from on its import path: run from the checkout root of a tree
+    # that has the fork's sc2reader/ there (before CR-009), it read that instead of the pinned
+    # upstream package (2096 errors). So it runs from scripts/, on absolute paths, with the
+    # repository's config passed explicitly.
+    typed=$(for f in $typed; do case $f in (/*) echo "$f" ;; (*) echo "$PWD/$f" ;; esac; done)
     # shellcheck disable=SC2086
-    "$py_env" "$venv/bin/mypy" --strict $typed || status=1
+    (cd "$script_dir" && "$py_env" "$venv/bin/mypy" --config-file "$checkout/pyproject.toml" --strict $typed) || status=1
 fi
 echo "== pytest"
 "$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
