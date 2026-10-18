@@ -125,25 +125,44 @@ def test_no_properties_count_in_the_domain_or_the_adapter():
 
 
 def test_named_values_are_pinned(alcyone):
-    # Swapping two names in FIELDS (e.g. "count" and "supply") must fail here.
-    units = next(n for n in alcyone.nodes if n.kind == "Units" and n.name == "12 Drones")
-    assert (units.value("type"), units.value("count"), units.value("supply"), units.value("total at time")) == (
-        "Drone",
-        "12",
-        "12",
-        "12",
-    )
-    battle = next(n for n in alcyone.nodes if n.id == "Battle-1")
-    assert (battle.value("dead"), battle.value("p1 dead"), battle.value("p2 dead"), battle.value("supply dead")) == (
-        "1",
-        "1",
-        "0",
-        "0.5",
-    )
-    stats = next(n for n in alcyone.nodes if n.id == "Stats-1")
-    assert (stats.value("cur. Min"), stats.value("col. rate Min"), stats.value("workers"), stats.value("used Min")) == (
-        "330",
-        "839",
-        "14",
-        "1250",
-    )
+    # Swapping two names in FIELDS (e.g. "count" and "supply") must fail here, so each pinned node has
+    # every field pinned and pairwise different values. The literals are G-CSV-1 rows, in the legacy
+    # getProperties order: Units-10 line 179 (type, count, supply, currentUnits; an Overlord costs no
+    # supply), Battle-2 line 5 (its description says 3 + 2 units and 1.5 + 3 supply lost), Stats-11
+    # line 372 (minerals and gas current, collection rates, workers, army, used).
+    expected = {
+        "Units-10": {
+            "time": "00:01:00",
+            "player": "lilTiGGer",
+            "type": "Overlord",
+            "count": "1",
+            "supply": "0",
+            "total at time": "2",
+        },
+        "Battle-2": {
+            "time": "0:02:10",
+            "player": "Common",
+            "dead": "5",
+            "p1 dead": "3",
+            "p2 dead": "2",
+            "supply dead": "4.5",
+            "end time": "0:02:18",
+        },
+        "Stats-11": {
+            "time": "00:06:25",
+            "player": "lilTiGGer",
+            "cur. Min": "115",
+            "cur. Gas": "122",
+            "col. rate Min": "1875",
+            "col. rate Gas": "492",
+            "workers": "41",
+            "army Min": "2000",
+            "army Gas": "350",
+            "used Min": "7175",
+            "used Gas": "450",
+        },
+    }
+    nodes = {n.id: n for n in alcyone.nodes}
+    for node_id, values in expected.items():
+        assert len(set(values.values())) == len(values), node_id  # a swap of any two names would show
+        assert dict(nodes[node_id].values) == values, node_id
