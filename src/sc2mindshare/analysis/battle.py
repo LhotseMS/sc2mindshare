@@ -26,7 +26,8 @@ class Battle(PlayerHandler):
     BIG_UNIT_SUPPLY_THRESHOLD = 3
     GOOD_BATTLE_SUPPLY_COEFICIENT = 1.5
 
-    def __init__(self, p1, p2, startSec, endSec, events, secondsOD):
+    def __init__(self, p1, p2, startSec, endSec, events, secondsOD, ctx):
+        self.ctx = ctx
         #:
         self.events = events
 
@@ -288,7 +289,7 @@ class Battle(PlayerHandler):
 
                     #first sort deaths by bases, later review them to determine pulls
                     if e.unit.is_worker:
-                        baseOfWorkerDeath = sc2mindshare.analysis.detectors.detectors.basesDetector.getBaseForMining(e.x, e.y)
+                        baseOfWorkerDeath = self.ctx.bases.getBaseForMining(e.x, e.y)
 
                         # worker died in mining range
                         if baseOfWorkerDeath != None:
@@ -322,7 +323,7 @@ class Battle(PlayerHandler):
         
         for player, deathBaseEvents in self.workerDeathBases.items():
             for base, deathEvents in deathBaseEvents.items():
-                pullEvent = sc2mindshare.analysis.detectors.detectors.actionsDetector.getPullEventForBase(player, self.startSec, self.endSec, base)
+                pullEvent = self.ctx.actions.getPullEventForBase(player, self.startSec, self.endSec, base)
                 self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
                 self.harrasSeq += 1 
 
@@ -356,7 +357,7 @@ class Battle(PlayerHandler):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = sc2mindshare.analysis.detectors.detectors.basesDetector.getClosestBase(e)
+        locationBase = self.ctx.bases.getClosestBase(e)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)

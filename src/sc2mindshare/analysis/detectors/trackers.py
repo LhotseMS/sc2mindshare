@@ -89,7 +89,7 @@ class UnitInfo():
 
 class UnitMoveCommand(UnitInfo):
 
-    def __init__(self, unit, time, x, y, travelTime, selectedUnits, selectionEvent):
+    def __init__(self, unit, time, x, y, travelTime, selectedUnits, selectionEvent, ctx):
         super().__init__(unit.id, time, x, y)
         
         self.unit = unit
@@ -98,7 +98,7 @@ class UnitMoveCommand(UnitInfo):
         self.travelTime = travelTime
 
         self.processed = False
-        self.targetBase = sc2mindshare.analysis.detectors.detectors.basesDetector.getBaseForLocation(x, y)
+        self.targetBase = ctx.bases.getBaseForLocation(x, y)
 
     @property
     def player(self):
