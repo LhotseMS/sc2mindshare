@@ -81,3 +81,31 @@ def test_smart_means_no_ability(replays, name):
 @pytest.mark.parametrize("name", sorted(ZOOM))
 def test_zoom_events_per_player(replays, name):
     assert zoom_events(load(replays[name]).replay) == ZOOM[name]
+
+
+def _event(cls, frame, player, **attrs):
+    """A sc2reader event of the given class with only the attributes the summary reads (no replay needed)."""
+    event = object.__new__(cls)
+    event.__dict__.update(frame=frame, player=player, **attrs)
+    return event
+
+
+def test_a_zoom_only_camera_update_does_not_move_the_camera():
+    """CR-048 review (Rex's G6): sc2reader reads a camera update without a target as (0, 0), which must not
+    replace the camera point. On Alcyone the 34 zoom updates never sit between a camera move and a point
+    command far from the origin, so this is pinned on a constructed sequence."""
+    from types import SimpleNamespace
+
+    from sc2reader.events.game import CameraEvent, TargetPointCommandEvent
+
+    player = SimpleNamespace(pid=1)
+    point = {"has_ability": True, "flags": 0}
+    events = [
+        _event(CameraEvent, 10, player, location=(100.0, 100.0), x=100.0, y=100.0, distance=None, pitch=None),
+        _event(CameraEvent, 20, player, location=(0.0, 0.0), x=0.0, y=0.0, distance=7682, pitch=None),
+        _event(TargetPointCommandEvent, 30, player, x=105.0, y=100.0, **point),
+        _event(TargetPointCommandEvent, 40, player, x=150.0, y=100.0, **point),
+    ]
+    summary = command_flag_summary(SimpleNamespace(game_events=events))[1]
+    assert (summary.commands, summary.other_near, summary.other_far) == (2, 1, 1)
+    assert zoom_events(SimpleNamespace(game_events=events)) == {1: 1}
