@@ -2,9 +2,11 @@
 
 The domain carries every time as a ``GameTime``; only ``export/`` turns one into text. The real
 second is computed with integers: 22.4 loops per second is 112 / 5, so ``seconds`` is exact for
-every loop and equals the legacy ``int(frame / 22.4)`` for every loop of a game (TD-26, proven over
-twelve hours of loops in tests/analysis/test_time.py), so an item at a window boundary stays in the
-window the legacy layer put it in.
+every loop. For every non-negative loop it equals the legacy ``int(frame / 22.4)`` (TD-26, proven
+over twelve hours of loops in tests/analysis/test_time.py), so an item at a window boundary stays in
+the window the legacy layer put it in. For a negative loop (a pre-game start) it floors where
+``int()`` truncates toward zero, on purpose: loop -1 is in second -1, not second 0, so a signed start
+and its whole second agree (pinned by a test).
 """
 
 from __future__ import annotations
