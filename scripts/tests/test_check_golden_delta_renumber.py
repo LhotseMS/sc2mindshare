@@ -250,3 +250,13 @@ def test_ids_changed_and_links_dropped_are_required(paths, field):
     del entry["renumber"][field]
     problems = _problems(entry, old, new)
     assert any(field in p and "required" in p for p in problems), problems
+
+
+@pytest.mark.parametrize("retired", [{"type": "Units", "from_position": 3, "shift": -1}, {"type": "Units", "shift": 1}])
+def test_the_retired_single_shift_form_is_refused(paths, retired):
+    """Morgan's G6 N1 on e780214: the single-shift form of QA design §5.1 is refused, not half-read."""
+    old, new, _ = paths
+    entry = _entry(old)
+    entry["renumber"] = retired
+    problems = _problems(entry, old, new)
+    assert problems == ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], problems
