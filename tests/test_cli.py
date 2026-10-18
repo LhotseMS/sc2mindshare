@@ -157,3 +157,17 @@ def test_the_outputs_appear_together_or_not_at_all(tmp_path, monkeypatch):
     code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "graph.json", "--config-root", MS_SC)
     assert code == 1 and "disk full" in stderr
     assert sorted(p.name for p in tmp_path.iterdir()) == ["graph.log"]  # no output, no temporary file left
+
+
+def test_with_analysis_adds_the_analysis_object_and_nothing_else(tmp_path):
+    """CR-021: opt-in; without the flag the output is the golden (the other tests), with it the same
+    document gains a top-level "analysis" object and nothing else changes."""
+    need(ALCYONE)
+    out = tmp_path / "graph.json"
+    code, _, stderr = run("build", ALCYONE, "--out", out, "--config-root", MS_SC, "--with-analysis")
+    assert (code, stderr) == (0, "")
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links", "analysis"]
+    analysis = doc.pop("analysis")
+    assert doc == json.loads((GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8"))
+    assert analysis["game"]["base_build"] == 92440 and len(analysis["units"]) == 1232

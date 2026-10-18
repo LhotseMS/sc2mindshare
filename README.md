@@ -18,12 +18,12 @@ sc2mindshare build "MS SC/Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTi
     --out out/graph.json --config-root "MS SC"
 ```
 
-This writes `out/graph.json` (the Mindshare import document), `out/intervals.json` and `out/Intervals.csv` (the battle windows `execs/screenshotGame.py` reads), and `out/graph.log` (what the analysis printed while it ran). On Alcyone, `graph.json` is byte-identical to `tests/golden/alcyone/G-SNAP-1-compressed.json` (`--timeline linear`: `G-SNAP-1-linear.json`) and `Intervals.csv` to `Intervals-1.csv`. Exit codes: 0 built, 1 the analysis failed (traceback in the log), 2 a usage error.
+This writes `out/graph.json` (the Mindshare import document), `out/intervals.json` and `out/Intervals.csv` (the battle windows `execs/screenshotGame.py` reads), and `out/graph.log` (what the analysis printed while it ran). On Alcyone, `graph.json` is byte-identical to `tests/golden/alcyone/G-SNAP-1-compressed.json` (`--timeline linear`: `G-SNAP-1-linear.json`) and `Intervals.csv` to `Intervals-1.csv`. Exit codes: 0 built, 1 the analysis failed (traceback in the log), 2 a usage error. `--with-analysis` adds the analysis values stream 2 reads (unit lifecycles with the type at birth, type changes, upgrades, every PlayerStats sample, the supply history, Chrono Boosts, the game context and the time tables) as a top-level `analysis` object; it is not part of the Mindshare import format.
 
 <!-- build --help -->
 ```text
 usage: sc2mindshare build [-h] --out OUT [--timeline {compressed,linear}]
-                          [--config-root CONFIG_ROOT] [--log LOG]
+                          [--config-root CONFIG_ROOT] [--log LOG] [--with-analysis]
                           REPLAY
 
 Build the Mindshare import document of REPLAY, and the battle intervals for the screenshot tool
@@ -42,4 +42,7 @@ options:
                         the folder with unitsInfo.csv, upgradesInfo.csv and TimeImageTracking.csv
                         (default: the MS_SC_ROOT environment variable)
   --log LOG             where the run log goes (default: <out>.log)
+  --with-analysis       also write the analysis values stream 2 reads (supply, stats, unit
+                        lifecycles...) as a top-level 'analysis' object (not part of the Mindshare
+                        import format)
 ```

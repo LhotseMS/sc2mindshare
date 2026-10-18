@@ -8,10 +8,12 @@ image nodes are appended.
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from importlib.resources import files
 from typing import Any
 
+from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.models import Graph
 from sc2mindshare.export.view import link_view, node_view
 from sc2mindshare.layout.profile import Profile
@@ -37,11 +39,29 @@ def _size(size: Any) -> Any:
     return [_num(v) for v in size] if isinstance(size, list | tuple) else _num(size)
 
 
+def analysis_doc(exposed: Exposed) -> dict[str, Any]:
+    """The exposed analysis values (CR-021) as plain JSON data; tuples become lists."""
+
+    def lists(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {k: lists(v) for k, v in value.items()}
+        if isinstance(value, list | tuple):
+            return [lists(v) for v in value]
+        return value
+
+    return dict(lists(dataclasses.asdict(exposed)))
+
+
 def build_document(
-    graph: Graph, placed: LayoutResult | None = None, config: dict[str, Any] | None = None, profile: Profile | None = None
+    graph: Graph,
+    placed: LayoutResult | None = None,
+    config: dict[str, Any] | None = None,
+    profile: Profile | None = None,
+    analysis: Exposed | None = None,
 ) -> dict[str, Any]:
     """The Mindshare document; with ``placed`` (the layout's result) every node gets its size and
-    position, and the clock image nodes follow the graph's nodes (layout-spec.md §6)."""
+    position, and the clock image nodes follow the graph's nodes (layout-spec.md §6). With
+    ``analysis`` (opt-in, CR-021) the exposed values follow as a top-level ``analysis`` object."""
     cfg = config if config is not None else load_config()
     prof = profile or Profile()
     nodes = []
@@ -64,13 +84,16 @@ def build_document(
                     "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
                 }
             )
-    return {
+    document = {
         "visuals": cfg["visuals"],
         "detail": cfg["detail"],
         "dataTypes": cfg["dataTypes"],
         "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
     }
+    if analysis is not None:
+        document["analysis"] = analysis_doc(analysis)
+    return document
 
 
 def _vba_numbers(value: Any) -> Any:

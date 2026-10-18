@@ -16,7 +16,9 @@ from pathlib import Path
 from typing import Any
 
 from sc2mindshare.analysis.detectors import detectors
+from sc2mindshare.analysis.exposed import expose
 from sc2mindshare.analysis.fileHandler import FileHandler
+from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.reader.fork_api import flavour_replay
 
 
@@ -25,6 +27,8 @@ class AnalysisResult:
     nodes: tuple[Any, ...]
     links: tuple[Any, ...]
     intervals: str | None  # the battle intervals text the legacy code wrote to Intervals.csv
+    #: The values stream 2 reads (CR-021, T20, P0-2): not in the default JSON.
+    exposed: Exposed | None = None
 
 
 def configure(support_root: str | Path) -> None:
@@ -58,7 +62,7 @@ def analyse(replay: Any, support_root: str | Path) -> AnalysisResult:
         + ctx.actions.scouting
     )
     links = ctx.singles.links + ctx.battles.links + ctx.simple.links
-    return AnalysisResult(tuple(nodes), tuple(links), FileHandler.intervals)
+    return AnalysisResult(tuple(nodes), tuple(links), FileHandler.intervals, expose(replay, ctx, Path(support_root)))
 
 
 def legacy_csv(result: AnalysisResult) -> str:
