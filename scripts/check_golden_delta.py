@@ -104,6 +104,13 @@ def renumber_map(
     used}`` for the C3 run (R5). Stops at the first rule that fails."""
     if "from_position" in spec or "shift" in spec:
         return {}, ["renumber: the single-shift form is retired (QA design Addendum A); state key, retype and merged"], None
+    missing = [
+        f"renumber: {field} is required (state 0 when there are none)"
+        for field in ("ids_changed", "links_dropped")
+        if field not in spec
+    ]
+    if missing:
+        return {}, missing, None
     added = added or set()
     typ, paths = spec["type"], list(spec["key"])
     retype: dict[str, str] = dict(spec.get("retype", {}))
@@ -188,15 +195,14 @@ def renumber_map(
     # R6: no other type's ID changes; ids_changed as stated
     other_old = [n["ID"] for n, occ in zip(old_nodes, old_occ, strict=True) if n.get("type") != typ and occ not in removed]
     other_new = [n["ID"] for n, occ in zip(new_nodes, new_occ, strict=True) if n.get("type") != typ and occ not in added]
-    if other_old != other_new:
-        first = next((i for i, (a, b) in enumerate(zip(other_old, other_new)) if a != b), min(len(other_old), len(other_new)))
-        problems.append(
-            f"R6: an ID of another node type changes (first at position {first + 1}: {other_old[first : first + 1]} -> {other_new[first : first + 1]})"
-        )
+    if Counter(other_old) != Counter(other_new):  # a multiset: the order of records is C3's to judge
+        gone = sorted((Counter(other_old) - Counter(other_new)).elements())
+        came = sorted((Counter(other_new) - Counter(other_old)).elements())
+        problems.append(f"R6: IDs of other node types change: {gone[:5]} -> {came[:5]}")
     id_map = {node_id: new_by_key[k][0] for k, members in old_by_key.items() if k in new_by_key for node_id, _ in members}
     ids_changed = sum(1 for o, n in id_map.items() if o not in merged and o != n)
-    if ids_changed != spec.get("ids_changed", 0):
-        problems.append(f"R6: ids_changed states {spec.get('ids_changed', 0)}, the map changes {ids_changed}")
+    if ids_changed != spec["ids_changed"]:
+        problems.append(f"R6: ids_changed states {spec['ids_changed']}, the map changes {ids_changed}")
     if problems:
         return {}, problems, None
 
@@ -225,9 +231,9 @@ def renumber_map(
         seen.append(link)
         links.append(link)
     rewritten["links"] = links
-    if dropped != spec.get("links_dropped", 0):
+    if dropped != spec["links_dropped"]:
         problems.append(
-            f"R4: links_dropped states {spec.get('links_dropped', 0)}, the rewrite drops {dropped} links not listed in removed"
+            f"R4: links_dropped states {spec['links_dropped']}, the rewrite drops {dropped} links not listed in removed"
         )
         return {}, problems, None
     return id_map, [], {"old_doc": rewritten, "consumed": consumed}
