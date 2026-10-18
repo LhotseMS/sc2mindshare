@@ -7,8 +7,8 @@
 | # | Hypothesis | Test | Result |
 |---|---|---|---|
 | 1 | Bit-packed like the game and message streams (loop delta, user id, event id, payload) | Decode the first event header with s2protocol's `BitPackedDecoder` and the replay's protocol | **Refuted**: the first user id reads as 4 (only 0, 1 and 16 exist) |
-| 2 | The stream carries game loops | Longest non-decreasing chain of little-endian u32 fields `≤` the game's loop count with a zero high half | **Supported**: Alcyone 786 loop fields from 420 to 22238 (the game has 22369 loops); spine 269 fields from 285 to 14738 |
-| 3 | Fixed record bodies between loops | Body lengths between consecutive loop fields | Alcyone: 5 bytes ×193, 8 ×190, 9 ×183, 20 ×194, 12 ×24, 11 ×1; spine similar. Bodies are small groups of a count (u16, mostly 1–7), a u16 value (mostly 0x0340–0x046c), and a small byte |
+| 2 | The stream carries game loops | Longest non-decreasing chain of little-endian u32 fields `≤` the game's loop count with a zero high half | **Supported**: Alcyone 786 loop fields from 420 to 22238 (the game has 22369 loops); spores 960 fields from 292 to 32400 (the game has 32511 loops); spine 269 fields from 285 to 14738 |
+| 3 | Fixed record bodies between loops | Body lengths between consecutive loop fields | Alcyone: 5 bytes ×193, 8 ×190, 9 ×183, 20 ×194, 12 ×24, 11 ×1; spine similar. Bodies are small groups of a count (u16, mostly 1–7), a u16 value (mostly 0x0340–0x046c), and a small byte. Caveat (Rex's CR-049 review): the chain picks any u32 that fits, so some 8-byte bodies may be a value inside a 20-byte body read as a loop; the body counts are an upper bound for the short lengths |
 | 4 | The u16 values are unit or ability ids | Look them up in the 92440 datapack | **Refuted**: they resolve to bridges, weapons and doodads (`AiurLightBridgeNW10`, `PhysicsKnot`, ...) or to nothing |
 | 5 | The loops mark "interesting moments" (battles) for the observer camera | Share of loop fields inside the 30 battle windows of Intervals-1 | **Refuted**: 30.3 % inside windows that cover 30.5 % of the game (uniform); for comparison 51.4 % of unit deaths fall inside them |
 

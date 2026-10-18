@@ -134,3 +134,27 @@ def test_subgroup_index_is_within_the_selections_unit_types(replays, name, count
     replay = sc2reader.load_replay(replays[name], load_level=4, load_map=False, engine=engine)
     assert probe.rows == {True: count}
     assert [p.selection_errors for p in replay.players] == [0, 0]
+
+
+def _event(cls, frame, player, **attrs):
+    event = object.__new__(cls)
+    event.__dict__.update(frame=frame, player=player, **attrs)
+    return event
+
+
+def test_a_keypress_in_the_steal_loop_counts_as_auto():
+    """CR-047 review (Rex, N1): the documented limit. A recall pressed in the steal's own loop is
+    indistinguishable from the client's generated recall, so it is counted as auto; one a loop later is the
+    player's."""
+    from types import SimpleNamespace
+
+    from sc2reader.events.game import ControlGroupEvent
+
+    player = SimpleNamespace(pid=1)
+    events = [
+        _event(ControlGroupEvent, 100, player, update_type=4),  # steal and set
+        _event(ControlGroupEvent, 100, player, update_type=2),  # a recall in the same loop
+        _event(ControlGroupEvent, 101, player, update_type=2),  # a recall one loop later
+    ]
+    counts = control_group_activity(SimpleNamespace(game_events=events))[1]
+    assert counts == {(Kind.STEAL_SET, "player"): 1, (Kind.RECALL, "auto"): 1, (Kind.RECALL, "player"): 1}

@@ -9,6 +9,10 @@ After a steal (4 or 5) the client generates, in the same game loop, events that 
 from the player's other groups: per group a recall, a selection change, then a set or (if the group is
 now empty) a clear. They are not key presses, so they are counted apart ("auto"). Every clear in the three
 replays is one of them.
+
+Limit (Rex's CR-047 review): "auto" means the same game loop as the player's latest steal. A real key
+press in that same loop (within 1/22.4 s of the steal) is counted as "auto" too; the replay holds nothing
+that tells the two apart. `test_a_keypress_in_the_steal_loop_counts_as_auto` pins this.
 """
 
 from __future__ import annotations

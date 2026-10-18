@@ -22,7 +22,7 @@ Any other framing raises `FramingError` in the parsers and becomes a warning in 
 
 ## User options (F3-018)
 
-The plan's hypothesis was that the `UserOptionsEvent` flags are guessed (`readers.py:702`). **Refuted for our builds:** that comment is in sc2reader's Wings of Liberty reader (`GameEventsReader_15405`). From `GameEventsReader_38215` on, which covers 81433, 83830 and 92440, the reader decodes all 14 fields in Blizzard's order, and the values of the fields `UserOptionsEvent` keeps equal s2protocol's on all six players:
+The plan's hypothesis was that the `UserOptionsEvent` flags are guessed (`readers.py:702`). **Refuted for our builds:** that comment is in sc2reader's Wings of Liberty reader (`GameEventsReader_15405`). From `GameEventsReader_38215` on, which covers 81433, 83830 and 92440, the reader decodes all 14 fields in Blizzard's order, and the values of the fields `UserOptionsEvent` keeps equal s2protocol's on all six players. This agreement is weak evidence on its own (Rex's CR-050 review): every flag has the same value on all six players, so a swapped pair of flags would agree too. Only `base_build_num`, read after the ten flags, varies; it matches on 95 of 101 corpus replays (E1), which confirms the bit layout:
 
 | Field (s2protocol) | sc2reader attribute | Value on all six players |
 |---|---|---|
