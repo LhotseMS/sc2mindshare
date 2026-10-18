@@ -296,3 +296,20 @@ Against the goldens as the S1 entries left them (on this branch): lilTiGGer's 5 
 ```json
 {"entry": "S1b-snap-linear", "task": "CR-023", "defect": "S1b: S5, a provider that dies unfinished lowers the limit (supersedes S1's claim and prediction)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "eba951d6b18b59c36b78b40950e0d286ebe8275b33cf248472e9da2bdca9e106", "renumber": {"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 0, "links_dropped": 0}, "changes": [], "added": ["Supply Block-6#1"], "removed": ["Supply Block-6#1", "Supply Block-7#1", "Supply Block-8#1"]}
 ```
+
+
+### P8: the last 10 s Units interval is written (CR-023, T22)
+
+The simple detector writes a Units group when the next interval begins, so the units of the last interval were never written (Alcyone's last Units node was at 00:16:20). Fix: after the events, the pending interval is flushed by the same code as during the loop (count, supply, total at time, the previous/next link to the type's last group). Applied inside the layer as ledger id `P8`. Predicted before the change by an independent probe (`.scratch/rex/cr023/probe_p8.py`: the layer's eligibility and interval rules over the events, grouped per player and type; it matches the buffer the layer leaves unflushed): on Alcyone one node and one link are added, `Units-193` (blacksquall, Probe, 1, supply 1, total at time 47, at 00:16:40) and `Units-192 > Units-193` ("previous"/"next"); in both snapshots nothing else moves (`.scratch/rex/cr023/predict_p8_docs.py`). On `200k dmg spine crawler ZvP` the same happens (serega's Probe at 00:11:00, `Units-129`, linked from `Units-124`; spine has only frozen bug-faithful goldens). The 16:40 label is two seconds after the game ends: a Units group is labelled with the nearest ten seconds (the information-only row on the "last 10s" wording).
+
+```json
+{"entry": "P8-view", "task": "CR-023", "defect": "P8 the last 10 s Units interval is never written", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "ea675ba06fced2d4b8b027b575566814b8c2e7003db5b0c60972a4afa794af7f", "changes": [], "added": ["Units-193#1", "Units-192>Units-193#1"], "removed": []}
+```
+
+```json
+{"entry": "P8-snap-compressed", "task": "CR-023", "defect": "P8 the last 10 s Units interval is never written", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "c7a32026a7e16fb461bd9f9b053c1b8cbf10d00d7ef878e151f3b8d6d77086ee", "changes": [], "added": ["Units-193#1", "Units-192>Units-193#1"], "removed": []}
+```
+
+```json
+{"entry": "P8-snap-linear", "task": "CR-023", "defect": "P8 the last 10 s Units interval is never written", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "163d31293052224b42196ff21713f54310209e4f9a6e88bb7bb980bd8025fcc4", "changes": [], "added": ["Units-193#1", "Units-192>Units-193#1"], "removed": []}
+```
