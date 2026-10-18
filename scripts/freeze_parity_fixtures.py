@@ -2,11 +2,15 @@
 """Freeze the analysis and reader parity as fixtures, so tests no longer need the legacy venv (CR-019, T18).
 
     scripts/py-env .venv/bin/python scripts/freeze_parity_fixtures.py models <game> <replay>
+    scripts/py-env .venv/bin/python scripts/freeze_parity_fixtures.py legacy-csv <game> <replay>
     scripts/py-env .venv/bin/python scripts/freeze_parity_fixtures.py reader <game> <replay>
 
 ``models`` writes ``tests/golden/<game>/models-faithful.json``: the bug-faithful domain graph of the
 replay (``to_graph(..., fixes=())``), node by node and link by link, with the intervals text. It is
 written only if the graph renders exactly the CSV that a live legacy run writes for the replay.
+
+``legacy-csv`` writes the live legacy run's ``G-CSV-1.csv`` and ``Intervals-1.csv`` for the game, only
+if its frozen models render exactly them (Alcyone's are the original goldens; spine's are frozen so).
 
 ``reader`` writes ``tests/golden/<game>/reader-state-legacy.summary.json``: the summary and sha256 of
 the legacy reader's state dump (``scripts/dump_reader_state.py`` run in ``.venv-legacy``), written
@@ -180,6 +184,31 @@ def freeze_models(game: str, replay: Path, support_root: Path) -> int:
     return 0
 
 
+def freeze_legacy_csv(game: str, replay: Path, support_root: Path) -> int:
+    """The live legacy run's CSV and intervals, as ``G-CSV-1.csv`` and ``Intervals-1.csv`` of the game,
+    written only if the game's frozen models render exactly them (so the models are tied to the legacy
+    output without the legacy venv, as Alcyone's are to its G-CSV-1)."""
+    csv_path = _target(game, "G-CSV-1.csv")
+    intervals_path = _target(game, "Intervals-1.csv")
+    models = GOLDEN / game / "models-faithful.json"
+    if not models.exists():
+        raise SystemExit(f"{models} is missing: freeze the models first")
+    legacy_rows = _load("legacy_rows", CHECKOUT / "tests" / "analysis" / "legacy_rows.py")
+    graph = graph_from_doc(json.loads(models.read_text(encoding="utf-8")))
+    with tempfile.TemporaryDirectory(dir=scratch()) as tmp:
+        cmd = [str(LEGACY_PY), str(CHECKOUT / "scripts" / "run_legacy.py"), "--support", str(support_root), "--out", tmp]
+        subprocess.run([*cmd, str(replay)], check=True, capture_output=True)
+        legacy_csv = (Path(tmp) / replay.stem / "events.csv").read_text(encoding="utf-8")
+        legacy_intervals = (Path(tmp) / replay.stem / "Intervals.csv").read_text(encoding="utf-8")
+    if legacy_rows.render(graph) != legacy_csv or graph.intervals != legacy_intervals:
+        print(f"{game}: the frozen models do not render the live legacy CSV and intervals; nothing written")
+        return 1
+    csv_path.write_text(legacy_csv, encoding="utf-8", newline="")
+    intervals_path.write_text(legacy_intervals, encoding="utf-8", newline="")
+    print(f"{csv_path}, {intervals_path}: the live legacy output, rendered exactly by the frozen models")
+    return 0
+
+
 def freeze_reader(game: str, replay: Path) -> int:
     path = _target(game, "reader-state-legacy.summary.json")
     dumper = CHECKOUT / "scripts" / "dump_reader_state.py"
@@ -200,13 +229,15 @@ def freeze_reader(game: str, replay: Path) -> int:
 
 def main(argv: Sequence[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("what", choices=("models", "reader"))
+    parser.add_argument("what", choices=("models", "legacy-csv", "reader"))
     parser.add_argument("game")
     parser.add_argument("replay", type=Path)
     parser.add_argument("--support", type=Path, default=_root() / "MS SC")
     args = parser.parse_args(argv)
     if args.what == "models":
         return freeze_models(args.game, args.replay, args.support)
+    if args.what == "legacy-csv":
+        return freeze_legacy_csv(args.game, args.replay, args.support)
     return freeze_reader(args.game, args.replay)
 
 

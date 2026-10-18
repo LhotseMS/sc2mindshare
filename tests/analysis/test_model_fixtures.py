@@ -83,11 +83,13 @@ def test_the_pipeline_still_gives_the_frozen_models(game):
     assert freeze.to_text(now) == fixture_text(game)  # byte for byte
 
 
-def test_the_alcyone_fixture_renders_g_csv_1():
-    """Without the legacy venv: the frozen models render the frozen legacy CSV and intervals."""
-    graph = freeze.graph_from_doc(json.loads(fixture_text("alcyone")))
-    assert legacy_rows.render(graph) == (GOLDEN / "alcyone" / "G-CSV-1.csv").read_text(encoding="utf-8")
-    assert graph.intervals == (GOLDEN / "alcyone" / "Intervals-1.csv").read_text(encoding="utf-8")
+@pytest.mark.parametrize("game", sorted(GAMES))
+def test_the_fixture_renders_the_frozen_legacy_csv(game):
+    """Without the legacy venv: the frozen models render the frozen legacy CSV and intervals (Alcyone's
+    G-CSV-1 and Intervals-1; spine's, frozen from a live legacy run by ``freeze_parity_fixtures legacy-csv``)."""
+    graph = freeze.graph_from_doc(json.loads(fixture_text(game)))
+    assert legacy_rows.render(graph) == (GOLDEN / game / "G-CSV-1.csv").read_text(encoding="utf-8")
+    assert graph.intervals == (GOLDEN / game / "Intervals-1.csv").read_text(encoding="utf-8")
 
 
 @pytest.mark.parametrize("game", sorted(GAMES))
@@ -104,9 +106,12 @@ def test_the_spine_fixture_renders_a_live_legacy_run(tmp_path):
     replay = need(GAMES["spine"], "200k dmg replay")
     cmd = [str(LEGACY_PY), str(CHECKOUT / "scripts" / "run_legacy.py"), "--support", str(MS_SC), "--out", str(tmp_path)]
     subprocess.run([*cmd, str(replay)], check=True, capture_output=True)
+    live_csv = (tmp_path / replay.stem / "events.csv").read_text(encoding="utf-8")
+    live_intervals = (tmp_path / replay.stem / "Intervals.csv").read_text(encoding="utf-8")
+    assert live_csv == (GOLDEN / "spine" / "G-CSV-1.csv").read_text(encoding="utf-8")  # the frozen copy is current
+    assert live_intervals == (GOLDEN / "spine" / "Intervals-1.csv").read_text(encoding="utf-8")
     graph = freeze.graph_from_doc(json.loads(fixture_text("spine")))
-    assert legacy_rows.render(graph) == (tmp_path / replay.stem / "events.csv").read_text(encoding="utf-8")
-    assert graph.intervals == (tmp_path / replay.stem / "Intervals.csv").read_text(encoding="utf-8")
+    assert legacy_rows.render(graph) == live_csv and graph.intervals == live_intervals
 
 
 def test_the_parity_fixtures_are_unchanged():
@@ -115,6 +120,8 @@ def test_the_parity_fixtures_are_unchanged():
     assert set(pins) == {
         "alcyone/models-faithful.json",
         "alcyone/reader-state-legacy.summary.json",
+        "spine/G-CSV-1.csv",
+        "spine/Intervals-1.csv",
         "spine/models-faithful.json",
         "spine/reader-state-legacy.summary.json",
         "spores/reader-state-legacy.summary.json",
