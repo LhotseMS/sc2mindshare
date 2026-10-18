@@ -24,12 +24,14 @@ tools="$dir/.tools"
 # a Homebrew upgrade) must be noticed, not silently used.
 expected_python="3.14.5"
 base_python="/opt/homebrew/bin/python3.14"
-if [ -x "$base_python" ]; then
-    actual=$("$base_python" -I -S -c 'import platform; print(platform.python_version())')
-    if [ "$actual" != "$expected_python" ]; then
-        echo "py-env: $base_python is $actual, expected $expected_python" >&2
-        exit 3
-    fi
+if [ ! -x "$base_python" ]; then
+    echo "py-env: $base_python is missing (expected Python $expected_python)" >&2
+    exit 3
+fi
+actual=$("$base_python" -I -S -c 'import platform; print(platform.python_version())')
+if [ "$actual" != "$expected_python" ]; then
+    echo "py-env: $base_python is $actual, expected $expected_python" >&2
+    exit 3
 fi
 
 mkdir -p "$tools/tmp" "$tools/cache/pip" "$tools/cache/pycache" \
@@ -46,6 +48,9 @@ export PIP_CONFIG_FILE="$tools/pip/pip.conf"
 export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PIP_UPLOADED_PRIOR_TO=P14D
 export PYTHONPYCACHEPREFIX="$tools/cache/pycache"
+# No bytecode: an edit and its revert inside the same second can leave a stale
+# .pyc that runs old code (seen in a sabotage check, CR-003).
+export PYTHONDONTWRITEBYTECODE=1
 export RUFF_CACHE_DIR="$tools/cache/ruff"
 export MYPY_CACHE_DIR="$tools/cache/mypy"
 export XDG_CACHE_HOME="$tools/cache/xdg"

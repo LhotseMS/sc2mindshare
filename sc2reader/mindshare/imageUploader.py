@@ -1,5 +1,14 @@
+import os
+
 import requests
 import json
+
+
+def _require_uploads_enabled():
+    # CR-003: uploads to the media API are off unless MS_UPLOADS_ENABLED=1 is set explicitly.
+    if os.environ.get("MS_UPLOADS_ENABLED") != "1":
+        raise RuntimeError("Mindshare media uploads are disabled (set MS_UPLOADS_ENABLED=1 to enable)")
+
 
 class ImageUploader():
 
@@ -20,11 +29,13 @@ class ImageUploader():
             'meta.height': (None, self.SCREENSHOT_HEIGHT)
         }
 
+        _require_uploads_enabled()
         response = requests.post(self.SERVER_URL, files=files)
         id = json.loads(response.content.decode('utf-8')).get("_id")
         return {"id" : id, "status" : response.status_code}
 
     def readImage(self, image_id):
+        _require_uploads_enabled()
         response = requests.get(f"{self.RESOURCE_URL}{image_id}")
         if response.status_code == 200:
             return response.content
@@ -39,10 +50,12 @@ class ImageUploader():
             'meta.height': (None, self.SCREENSHOT_HEIGHT)
         }
 
+        _require_uploads_enabled()
         response = requests.put(f"{self.SERVER_URL}/{image_id}", files=files)
         return {"status": response.status_code, "content": response.content.decode('utf-8')}
 
     def deleteImage(self, image_id):
+        _require_uploads_enabled()
         response = requests.delete(f"{self.SERVER_URL}/{image_id}")
         return {"status": response.status_code, "content": response.content.decode('utf-8')}
 

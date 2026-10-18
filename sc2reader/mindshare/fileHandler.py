@@ -6,7 +6,8 @@ class FileHandler():
 
     VIDEO_FILE_PREFIX = "Game"
     VIDEO_EXT = ".mp4"
-    SOURCE_FOLDER = "C:/MS SC"
+    # The data root (Stefan's old C:/MS SC layout). MS_SC_ROOT overrides it (CR-003).
+    SOURCE_FOLDER = os.environ.get("MS_SC_ROOT", "C:/MS SC")
     REPLAYS_FOLDER = SOURCE_FOLDER + "/Replays"
 
     IMAGES_END_FOLDER = "images"
