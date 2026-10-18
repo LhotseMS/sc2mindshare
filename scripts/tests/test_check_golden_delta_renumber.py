@@ -271,10 +271,10 @@ def _swap(doc, a, b):
     return doc
 
 
-@pytest.mark.parametrize(("a", "b"), [("Battle-1", "Battle-2"), ("Units-1", "Units-2")])
-def test_r5_an_order_change_under_renumber_is_reported_as_c3_does(tmp_path, a, b):
+@pytest.mark.parametrize(("a", "b", "typ"), [("Battle-1", "Battle-2", "Battle"), ("Units-1", "Units-2", "Units")])
+def test_r5_an_order_change_under_renumber_is_reported_as_c3_does(tmp_path, a, b, typ):
     """Vera's re-run at 726d395: pairing by ID must not wave reorders through. Another type's swap and a swap
-    within the renumbered type are reported as 'nodes <order>' (an entry can list it)."""
+    within the renumbered type are each that type's order record (§A.4); an entry can list it."""
     old = copy.deepcopy(OLD)
     old["nodes"].append({"ID": "Battle-2", "type": "Battle", "name": "b2", "description": "d", "properties": {}})
     new = copy.deepcopy(NEW)
@@ -284,9 +284,9 @@ def test_r5_an_order_change_under_renumber_is_reported_as_c3_does(tmp_path, a, b
     assert _problems(_entry(old_path), old_path, clean) == []  # the order as the rewrite gives it: fine
     swapped = _write(tmp_path / "s.json", _swap(copy.deepcopy(new), a, b))
     problems = _problems(_entry(old_path), old_path, swapped)
-    assert problems == ["unlisted change: nodes <order>"], problems
+    assert problems == [f"unlisted change: nodes[{typ}] <order>"], problems
     entry = _entry(old_path)
-    entry["changes"].append({"select": {"ID": "nodes"}, "fields": ["<order>"], "count": 1})
+    entry["changes"].append({"select": {"type": typ}, "fields": ["<order>"], "count": 1})
     assert _problems(entry, old_path, swapped) == []  # listed, it passes
 
 
@@ -295,4 +295,4 @@ def test_r5_a_link_order_change_under_renumber_is_reported(paths, tmp_path):
     new = copy.deepcopy(NEW)
     new["links"].reverse()
     problems = _problems(_entry(old), old, _write(tmp_path / "n3.json", new))
-    assert problems == ["unlisted change: links <order>"], problems
+    assert problems == ["unlisted change: links[Units>Units] <order>"], problems
