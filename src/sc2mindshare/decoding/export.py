@@ -15,6 +15,7 @@ from sc2mindshare.decoding.command_flags import command_flag_summary, zoom_event
 from sc2mindshare.decoding.command_manager import CommandActivity, command_activity
 from sc2mindshare.decoding.control_groups import control_group_activity
 from sc2mindshare.decoding.metadata import GameMetadata, PlayerMetadata, mmr_by_player, mmr_consistency
+from sc2mindshare.decoding.side_members import side_members, user_options
 from sc2mindshare.decoding.target_flags import target_flag_summary
 
 if TYPE_CHECKING:
@@ -66,7 +67,21 @@ def to_dict(decoded: DecodedReplay) -> dict[str, Any]:
             for pid, counts in control_group_activity(replay).items()
             for (kind, source), count in sorted(counts.items(), key=lambda kv: (kv[0][0].name, kv[0][1]))
         ],
+        "side_members": _side_members(replay),
+        "user_options": [dataclasses.asdict(row) for row in user_options(replay)],
         "warnings": list(decoded.warnings),
+    }
+
+
+def _side_members(replay: Any) -> dict[str, Any]:
+    """Sizes and decoded framing only; the sync checksums are counted, not listed (CR-050)."""
+    members = side_members(replay)
+    return {
+        "member_bytes": dict(members.member_bytes),
+        "resume_loop": members.resume_loop,
+        "load_info_all_zero": members.load_info_all_zero,
+        "sync_checksum_count": None if members.sync_checksums is None else len(members.sync_checksums),
+        "warnings": list(members.warnings),
     }
 
 

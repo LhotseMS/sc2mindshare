@@ -262,6 +262,19 @@
     "base_build": 83830,
     "game_loops": 14805
   },
+  "side_members": {
+    "load_info_all_zero": true,
+    "member_bytes": {
+      "load.info": 52,
+      "resumable.events": 12,
+      "server.battlelobby": 31965,
+      "sync.events": 1155,
+      "sync.history": 0
+    },
+    "resume_loop": 14764,
+    "sync_checksum_count": 231,
+    "warnings": []
+  },
   "target_flags": {
     "by_kind_and_relation": [
       {
@@ -296,6 +309,28 @@
     },
     "unknown_flags": {}
   },
+  "user_options": [
+    {
+      "base_build_num": 83830,
+      "debug_pause_enabled": false,
+      "development_cheats_enabled": false,
+      "game_fully_downloaded": true,
+      "is_map_to_map_transition": false,
+      "multiplayer_cheats_enabled": false,
+      "player_id": 1,
+      "sync_checksumming_enabled": false
+    },
+    {
+      "base_build_num": 83830,
+      "debug_pause_enabled": false,
+      "development_cheats_enabled": false,
+      "game_fully_downloaded": true,
+      "is_map_to_map_transition": false,
+      "multiplayer_cheats_enabled": false,
+      "player_id": 2,
+      "sync_checksumming_enabled": false
+    }
+  ],
   "warnings": [],
   "zoom_events": []
 }
