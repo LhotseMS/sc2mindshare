@@ -242,10 +242,8 @@ def renumber_map(
 def diff_by_key(old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_map: Mapping[str, str] | None) -> Any:
     """R5's diff: nodes paired by their ``ID#n`` key and links by their ``node1>node2#n`` key, with the
     same masks as ``golden.diff_json`` (which pairs records by sequence alignment, so after a renumber a
-    changed node next to an added one would be compared with its neighbour).
-    Order is compared after the pairing, as plain C3 does: when the records both sides share are in
-    another order, the change is ``nodes <order>`` or ``links <order>``, listed in an entry like any other
-    (Vera's re-run at 726d395)."""
+    changed node next to an added one would be compared with its neighbour). Order is not part of it:
+    ``check_delta`` reports order separately, per type (``order_records``, QA design §A.4)."""
     report = golden.Report()
     old_nodes, budget_old = golden.normalise_nodes(old_doc.get("nodes", []), clock_map, False)
     new_nodes, budget_new = golden.normalise_nodes(new_doc.get("nodes", []), clock_map, False)
@@ -281,13 +279,85 @@ def diff_by_key(old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_ma
             for path, _old, _new in fields:
                 report.changed.append((key, path))
                 report.lines.append(f"{key}: {path}")
-    for kind, (before, after) in zip(("nodes", "links"), pairs, strict=True):
-        shared_before = [k for k in before if k in after]
-        shared_after = [k for k in after if k in before]
-        if shared_before != shared_after:
-            report.changed.append((kind, "<order>"))
-            report.lines.append(f"{kind}: order differs (records both sides have)")
     return report
+
+
+def order_key(kind: str, label: str) -> str:
+    """The internal key of an order record: ``nodes[Units]``, ``links[Units>Units]``. No record key can be
+    one, since every node and link key ends in ``#n``."""
+    return f"{kind}[{label}]"
+
+
+def _labelled(
+    doc: Mapping[str, Any], types_new: Mapping[str, Any], clock_map: Mapping[str, str] | None
+) -> dict[str, list[tuple[str, str]]]:
+    """(key, label) per record in document order: nodes by ``ID#n`` and their type in the new golden, links
+    by ``node1>node2#n`` and their endpoint types in the new golden (``?`` for a missing endpoint)."""
+    nodes, _ = golden.normalise_nodes(doc.get("nodes", []), clock_map, False)
+    node_labels = [(k, str(n.get("type"))) for k, n in zip(golden.node_keys(nodes), nodes, strict=True)]
+    links = list(doc.get("links", []))
+    link_keys = _occurrences([f"{x.get('node1')}>{x.get('node2')}" for x in links])
+    link_labels = [
+        (k, f"{types_new.get(x.get('node1'), '?')}>{types_new.get(x.get('node2'), '?')}")
+        for k, x in zip(link_keys, links, strict=True)
+    ]
+    return {"nodes": node_labels, "links": link_labels}
+
+
+def order_records(
+    old_doc: Mapping[str, Any], new_doc: Mapping[str, Any], clock_map: Mapping[str, str] | None
+) -> list[tuple[str, str]]:
+    """QA design §A.4: over the records both sides share, one ``<order>`` record per node type and per link
+    type pair whose own subsequence differs (``nodes[T]``, ``links[T1>T2]``), and one for nodes and one for
+    links when the sequence of labels differs (``nodes``, ``links``: interleaving). Labels are the new
+    golden's; added and removed records never count."""
+    new_nodes, _ = golden.normalise_nodes(new_doc.get("nodes", []), clock_map, False)
+    types_new = {str(n.get("ID")): n.get("type") for n in new_nodes}
+    before, after = _labelled(old_doc, types_new, clock_map), _labelled(new_doc, types_new, clock_map)
+    out: list[tuple[str, str]] = []
+    for kind in ("nodes", "links"):
+        label_after = dict(after[kind])
+        shared = set(label_after) & {k for k, _ in before[kind]}
+        b = [(k, label_after[k]) for k, _ in before[kind] if k in shared]
+        a = [(k, lab) for k, lab in after[kind] if k in shared]
+        for label in sorted({lab for _, lab in a}):
+            if [k for k, lab in b if lab == label] != [k for k, lab in a if lab == label]:
+                out.append((order_key(kind, label), "<order>"))
+        if [lab for _, lab in b] != [lab for _, lab in a]:
+            out.append((kind, "<order>"))
+    return out
+
+
+def _in_old_order(
+    old_records: Sequence[Mapping[str, Any]],
+    new_records: Sequence[Mapping[str, Any]],
+    keys_old: Sequence[str],
+    keys_new: Sequence[str],
+) -> list[Any]:
+    """The new records rearranged into the old order: a shared record goes to its old place, a new one stays
+    right after the record before it. Plain C3's field diff then sees no reorder (``order_records`` does)."""
+    position = {k: i for i, k in enumerate(keys_old)}
+    anchored, anchor = [], -1.0
+    for seq, (key, record) in enumerate(zip(keys_new, new_records, strict=True)):
+        if key in position:
+            anchor = float(position[key])
+            anchored.append((anchor, 0, seq, record))
+        else:
+            anchored.append((anchor, 1, seq, record))
+    return [r for *_, r in sorted(anchored, key=lambda t: (t[0], t[1], t[2]))]
+
+
+def _link_keys(links: Sequence[Mapping[str, Any]]) -> list[str]:
+    return _occurrences([f"{x.get('node1')}>{x.get('node2')}" for x in links])
+
+
+def _selects_order(selector: Mapping[str, Any], key: str) -> bool:
+    """§A.4: ``{"ID": "nodes"}`` / ``{"ID": "links"}`` select only the interleaving record; ``{"type": T}``
+    only T's own order record (``nodes[T]`` or ``links[T]``)."""
+    if key in ("nodes", "links"):
+        return selector.get("ID") == key and "type" not in selector
+    kind, _, label = key.partition("[")
+    return "ID" not in selector and selector.get("type") == label.rstrip("]") and kind in ("nodes", "links")
 
 
 def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mapping[str, str] | None = None) -> list[str]:
@@ -311,9 +381,16 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
             for o, n in id_map.items():
                 if o != n:
                     print(f"  {o} -> {n}" + (" (merged)" if o in spec.get("merged", {}) else ""))
-        report = (
-            diff_by_key(old_doc, new_doc, clock_map) if entry.get("renumber") else golden.diff_json(old_doc, new_doc, clock_map)
-        )
+        if entry.get("renumber"):
+            report = diff_by_key(old_doc, new_doc, clock_map)
+        else:
+            aligned = dict(new_doc)
+            old_nodes, new_nodes = list(old_doc.get("nodes", [])), list(new_doc.get("nodes", []))
+            aligned["nodes"] = _in_old_order(old_nodes, new_nodes, golden.node_keys(old_nodes), golden.node_keys(new_nodes))
+            old_links, new_links = list(old_doc.get("links", [])), list(new_doc.get("links", []))
+            aligned["links"] = _in_old_order(old_links, new_links, _link_keys(old_links), _link_keys(new_links))
+            report = golden.diff_json(old_doc, aligned, clock_map)
+        report.changed = [(k, p) for k, p in report.changed if p != "<order>"] + order_records(old_doc, new_doc, clock_map)
         types: dict[str, str | None] = {}
         for doc in (old_doc, new_doc):
             for key, node in zip(golden.node_keys(doc.get("nodes", [])), doc.get("nodes", []), strict=True):
@@ -335,14 +412,19 @@ def check_delta(entry: Mapping[str, Any], old: Path, new: Path, clock_map: Mappi
             if key not in removed:
                 problems.append(f"unlisted change: {key} removed")
             continue
-        match = next(
-            (
-                i
-                for i, c in enumerate(changes)
-                if _selected(c["select"], key, types.get(key)) and _field_listed(path, c.get("fields", []))
-            ),
-            None,
-        )
+        if path == "<order>":
+            match = next(
+                (i for i, c in enumerate(changes) if _selects_order(c["select"], key) and "<order>" in c.get("fields", [])), None
+            )
+        else:
+            match = next(
+                (
+                    i
+                    for i, c in enumerate(changes)
+                    if _selected(c["select"], key, types.get(key)) and _field_listed(path, c.get("fields", []))
+                ),
+                None,
+            )
         if match is None:
             problems.append(f"unlisted change: {key} {path}")
         else:
