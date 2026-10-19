@@ -3,6 +3,7 @@
 from types import SimpleNamespace
 
 import pytest
+
 from sc2mindshare.reader import compat
 from sc2mindshare.reader.compat import ControlGroupKind
 
@@ -58,8 +59,9 @@ def test_control_group_kind_follows_the_raw_update_type(update_type, kind):
 
 
 def test_fork_control_group_classes_by_update_type():
-    from sc2mindshare.reader import fork_api
     from sc2reader.events.game import create_control_group_event
+
+    from sc2mindshare.reader import fork_api
 
     def flavoured(update_type):
         event = create_control_group_event(
