@@ -3,6 +3,7 @@
 import math
 
 import pytest
+
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutItem, layout, win
 
