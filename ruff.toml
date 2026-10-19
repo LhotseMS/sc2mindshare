@@ -5,3 +5,9 @@ ignore = [
     "F841",  # Run `ruff --select=F841 --fix .`
 ]
 line-length=129
+# The import order may not depend on where ruff runs or on the checkout folder's name (Morgan's G6 on
+# 2053a49): no folder is searched for first-party code, and sc2mindshare is first-party by name.
+src = []
+
+[lint.isort]
+known-first-party = ["sc2mindshare"]

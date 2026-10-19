@@ -16,22 +16,29 @@ checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv"
 [ "$#" -gt 0 ] || set -- "$checkout/scripts"
-# Absolute paths, so the tools below can run from fixed folders (D14a).
-abs=""
-for p in "$@"; do case $p in (/*) abs="$abs $p" ;; (*) abs="$abs $PWD/$p" ;; esac; done
+# Canonical absolute paths (no "." or ".." left), so the excludes below match and mypy can run from a
+# fixed folder (D14a; Morgan's G6 on 2053a49). ruff's import order does not depend on the folder it runs
+# from: ruff.toml searches no src folders and names sc2mindshare first-party.
+canon=""
+for p in "$@"; do
+    if [ -d "$p" ]; then
+        canon="$canon $(CDPATH= cd -- "$p" && pwd)"
+    elif [ -e "$p" ]; then
+        canon="$canon $(CDPATH= cd -- "$(dirname -- "$p")" && pwd)/$(basename -- "$p")"
+    else
+        echo "gates: no such file or folder: $p" >&2
+        exit 2
+    fi
+done
 # shellcheck disable=SC2086
-set -- $abs
-# ruff resolves the relative `src` paths of a --config file against the folder it runs from, and
-# they decide whether `sc2mindshare` is first-party in the import order. The reviewed order is the
-# one ruff gives run from the checkout's parent folder, so ruff always runs from there (D14a).
-ruff_dir=$(dirname -- "$checkout")
+set -- $canon
 
 status=0
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
-(cd "$ruff_dir" && "$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@") || status=1
+"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@" || status=1
 echo "== ruff format --check"
-(cd "$ruff_dir" && "$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" "$@") || status=1
+"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" "$@" || status=1
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then
