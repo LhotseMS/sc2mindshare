@@ -59,8 +59,9 @@ def test_control_group_kind_follows_the_raw_update_type(update_type, kind):
 
 
 def test_fork_control_group_classes_by_update_type():
-    from sc2mindshare.reader import fork_api, side_fields
     from sc2reader.events.game import create_control_group_event
+
+    from sc2mindshare.reader import fork_api, side_fields
 
     class Owner:  # stands in for the replay; flavour_replay adopts each event before flavouring it
         pass
