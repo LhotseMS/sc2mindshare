@@ -9,6 +9,7 @@ import os
 import pathlib
 
 import pytest
+
 from sc2mindshare.reader import extensions, loader, side_fields
 from sc2mindshare.reader.plugins.mindshare_context import MindshareContextLoader
 
