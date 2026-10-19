@@ -7,6 +7,7 @@ import os
 import pathlib
 
 import pytest
+
 from sc2mindshare.analysis.context import AnalysisContext
 from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.run import analyse, legacy_csv
