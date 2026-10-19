@@ -4,6 +4,7 @@ import json
 import pathlib
 
 import pytest
+
 from sc2mindshare.export.intervals import Interval, intervals_csv, intervals_json, parse_intervals
 
 GOLDEN = pathlib.Path(__file__).resolve().parents[1] / "golden" / "alcyone"
