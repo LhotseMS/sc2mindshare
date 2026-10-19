@@ -15,6 +15,7 @@ import subprocess
 import sys
 
 import pytest
+
 from sc2mindshare.analysis.run import analyse, legacy_csv
 from sc2mindshare.reader.loader import load_replay
 

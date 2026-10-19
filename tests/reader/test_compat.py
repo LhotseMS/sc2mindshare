@@ -3,6 +3,7 @@
 from types import SimpleNamespace
 
 import pytest
+
 from sc2mindshare.reader import compat
 from sc2mindshare.reader.compat import ControlGroupKind
 
