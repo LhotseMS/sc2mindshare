@@ -18,11 +18,12 @@ import pathlib
 
 import pytest
 import sc2reader
+from sc2reader.engine import GameEngine
+from sc2reader.engine.plugins import ContextLoader, GameHeartNormalizer, SelectionTracker
+
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.reader import side_fields
 from sc2mindshare.reader.loader import load_replay
-from sc2reader.engine import GameEngine
-from sc2reader.engine.plugins import ContextLoader, GameHeartNormalizer, SelectionTracker
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
 
