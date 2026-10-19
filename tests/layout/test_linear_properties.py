@@ -19,6 +19,7 @@ import os
 import pathlib
 
 import pytest
+
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.layout.items import items
