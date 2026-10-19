@@ -32,7 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
-from sc2mindshare.reader.compat import clean_name, object_text, type_at, unit_text_at
+from sc2mindshare.reader.compat import clean_name, object_text, supply_at, type_at, unit_text_at
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
@@ -195,6 +195,7 @@ class SimpleDetector(EventsDetector):
         self.upgradesByLevels = {}
         
         self.st = SupplyTracker(self.player1, self.player2, self.ctx.fixes)
+        self.countedSupply = {}  # CR-023 S6: unit id -> the supply a finished unit counts now
         self.supplyBlocks = list()
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
@@ -325,9 +326,13 @@ class SimpleDetector(EventsDetector):
                 chatCounter += 1
                 self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, object_text(e.player, self.ctx.fixes), fixes=self.ctx.fixes))
 
-            # CR-023 N1 (D6a): a unit that changes type moves from its old type's count to its new one
-            elif isinstance(e, UnitTypeChangeEvent) and "N1" in self.ctx.fixes:
-                self.moveUnitTypeCount(e)
+            # CR-023 N1 (D6a): a unit that changes type moves from its old type's count to its new one;
+            # S6 (D15a): a counted unit's supply changes by the difference
+            elif isinstance(e, UnitTypeChangeEvent):
+                if "N1" in self.ctx.fixes:
+                    self.moveUnitTypeCount(e)
+                if "S6" in self.ctx.fixes:
+                    self.moveUnitSupply(e)
 
             elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
                 nameC = clean_name(e.unit.name, True, self.ctx.fixes)  # the fork's nameC, with the fixes (P2)
@@ -338,6 +343,8 @@ class SimpleDetector(EventsDetector):
                 provider = self.st.providerOf(e)
                 if provider:
                     self.st.decreaseLimit(e.player, e.time, provider, e.frame)
+                elif "S6" in self.ctx.fixes and e.unit.id in self.countedSupply:  # CR-023 S6: what it counted
+                    self.st.changeSupply(e.player, e.time, -self.countedSupply.pop(e.unit.id), e.frame)
                 else:
                     self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply, e.frame)
 
@@ -349,6 +356,9 @@ class SimpleDetector(EventsDetector):
                 provider = self.st.providerOf(e)
                 if provider:
                     self.st.increaseLimit(e.player, e.time, provider, e.frame)
+                elif "S6" in self.ctx.fixes:  # CR-023 S6 (D15a): the supply of its type when it finishes
+                    self.countedSupply[e.unit.id] = supply_at(e.unit, e.frame)
+                    self.st.changeSupply(e.player, e.time, self.countedSupply[e.unit.id], e.frame)
                 else:
                     self.st.changeSupply(e.player, e.time, e.unit._type_class.supply, e.frame)
                 
@@ -422,6 +432,17 @@ class SimpleDetector(EventsDetector):
         if old in counts and old != new:
             counts[old] -= 1
             counts[new] = counts.get(new, 0) + 1
+
+    def moveUnitSupply(self, e):
+        """CR-023 S6 (D15a): a counted unit's supply moves to its new type's (a type missing from the datapack
+        keeps it); the difference goes into the supply series at the change."""
+        if e.unit is None or e.unit.id not in self.countedSupply:
+            return
+        new = supply_at(e.unit, e.frame)
+        change = new - self.countedSupply[e.unit.id]
+        if change:
+            self.st.changeSupply(e.unit.owner, e.time, change, e.frame)
+            self.countedSupply[e.unit.id] = new
 
     def addLink(self, n1, n2):
         self.links.append(UnitsLink(n1, n2))

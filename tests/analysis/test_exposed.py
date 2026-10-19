@@ -100,8 +100,9 @@ def test_everything_is_filled_on_alcyone(x):
         65,
         283,
         # CR-023 S1: the main base, born a Hatchery, is now counted as a supply provider (one more point);
-        # P10: 8 points less, the spell effects' zero changes (the sequence of supply/limit states is the same)
-        1106,
+        # P10: 8 points less, the spell effects' zero changes (the sequence of supply/limit states is the same);
+        # S6: 3 points more, the supply of 3 Roaches becoming Ravagers (2 -> 3 at the cocoon)
+        1109,
         15,
     )
     assert x.game == ex.GameContext(

@@ -1,4 +1,4 @@
-from sc2mindshare.reader.compat import clean_name, type_at
+from sc2mindshare.reader.compat import clean_name, supply_at, type_at
 from sc2mindshare.analysis.exports.node import MultiNode
 from sc2mindshare.reader.fork_api import UnitDoneEvent, UnitBornEvent, TrackerEvent
 
@@ -10,7 +10,8 @@ class UnitsNode(MultiNode):
         self.supply = 0
 
         for e in self.events:
-            self.supply += e.unit.supply
+            # CR-023 S6 (D15a): the supply of the unit's type at its event, not of its final type
+            self.supply += supply_at(e.unit, e.frame) if "S6" in self.fixes else e.unit.supply
             e.unit.unitsNode = self
 
         # TODO unit or the event should provide the cleaned name, #

@@ -82,15 +82,15 @@ def graph_before_s1():
     """The graph Leo's round-2 predictions were made for: every fix but CR-023's S1 (the supply series),
     which replaces the Supply Blocks, and N1, which came later (an explicit mix). The layout code is the
     same for all."""
-    return _graph_without("S1", "N1")
+    return _graph_without("S1", "N1", "S6")
 
 
 @pytest.fixture(scope="module")
 def graph_before_n1():
     """The graph Leo's S1 predictions were made for: every fix but CR-023's N1 (names by the type at the
-    time), which came later. N1 starts the first Gateway 39 s earlier, which opens a 0:50 window in the
+    time) and S6 (supply by the type at the time), which came later. N1 starts the first Gateway 39 s earlier, which opens a 0:50 window in the
     compressed timeline and moves what follows it by one window; the N1 entries and the goldens hold that."""
-    return _graph_without("N1")
+    return _graph_without("N1", "S6")
 
 
 @pytest.fixture(scope="module", params=["compressed", "linear"])

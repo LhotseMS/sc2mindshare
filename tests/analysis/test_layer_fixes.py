@@ -30,7 +30,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -292,10 +292,11 @@ def supply():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     out = {}
-    for label, fixes in (("faithful", ()), ("fixed", LAYER_FIXES)):
+    before_s6 = tuple(f for f in LAYER_FIXES if f != "S6")  # the S1/S1b entries' input; S6 came later
+    for label, fixes in (("faithful", ()), ("before S6", before_s6), ("fixed", LAYER_FIXES)):
         with contextlib.redirect_stdout(io.StringIO()):
             result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
-        graph = to_graph(result, fixes=() if not fixes else None)
+        graph = to_graph(result, fixes=() if not fixes else None, mixed=label == "before S6")
         blocks = [
             (n.value("player"), n.time("time").seconds, n.time("end time").seconds)
             for n in graph.nodes
@@ -308,7 +309,7 @@ def supply():
 def test_s1_on_alcyone_the_series_starts_as_playerstats_and_the_blocks_are_the_entrys(supply):
     """The S1 and S1b entries (CHANGES.md): 12/14 and 12/15 at 0:00 as PlayerStats; 7 blocks instead of 11,
     the 57 s block from 0:00 (TD-27) gone, and none from blacksquall's two Nexuses killed unfinished (S5)."""
-    points, blocks = supply["fixed"]
+    points, blocks = supply["before S6"]
     first = {p.player: (p.supply, p.limit) for p in points if p.time in ("00:00", "00:00:00")}  # the last status in second 0
     assert first == {1: (12.0, 14.0), 2: (12.0, 15.0)}
     assert blocks == [
@@ -692,3 +693,42 @@ def test_p12_units_from_state_change_is_a_tuple_and_tests_whole_names():
     tracker = SimpleNamespace(UNITS_FROM_STATE_CHANGE=EnergyTracker.UNITS_FROM_STATE_CHANGE)
     assert EnergyTracker.isEnergyUpgrade(tracker, SimpleNamespace(name="OrbitalCommand"))
     assert not EnergyTracker.isEnergyUpgrade(tracker, SimpleNamespace(name="Orbital"))  # a substring, not a name
+
+
+# --- S6 (D15a): a unit's supply follows its type ----------------------------------------------------------------
+
+
+def _typed(history):
+    return SimpleNamespace(type_history={f: SimpleNamespace(name=n, supply=s) for f, n, s in history})
+
+
+def test_s6_the_supply_at_a_frame_is_its_types_and_a_type_missing_from_the_datapack_keeps_it():
+    from sc2mindshare.reader.compat import supply_at
+
+    roach = _typed([(100, "Roach", 2), (900, "RavagerCocoon", 3), (1100, "Ravager", 3)])
+    assert [supply_at(roach, f) for f in (100, 899, 900, 1200)] == [2, 2, 3, 3]
+    observer = _typed([(100, "Observer", 1), (700, "ObserverSiegeMode", 0)])  # not in sc2reader's datapack
+    assert [supply_at(observer, f) for f in (100, 700)] == [1, 1]
+
+
+def test_s6_a_counted_unit_adds_the_difference_at_a_type_change():
+    calls = []
+    detector = SimpleNamespace(
+        ctx=SimpleNamespace(fixes=frozenset({"S6"})),
+        countedSupply={7: 2},
+        st=SimpleNamespace(changeSupply=lambda player, time, change, frame=None: calls.append((player, change, frame))),
+    )
+    roach = _typed([(100, "Roach", 2), (900, "RavagerCocoon", 3)])
+    roach.id, roach.owner = 7, "p"
+    detectors.SimpleDetector.moveUnitSupply(detector, SimpleNamespace(unit=roach, frame=900, time="00:40"))
+    assert calls == [("p", 1, 900)] and detector.countedSupply == {7: 3}
+    stranger = _typed([(100, "Larva", 0), (300, "Egg", 0)])
+    stranger.id, stranger.owner = 8, "p"
+    detectors.SimpleDetector.moveUnitSupply(detector, SimpleNamespace(unit=stranger, frame=300, time="00:13"))
+    assert calls == [("p", 1, 900)]  # a unit that was never counted moves nothing
+
+
+def test_s6_on_alcyone_the_supply_blocks_follow_the_type_at_the_time(supply):
+    """The S6 entry's prediction (CHANGES.md): lilTiGGer's 6:42 block goes, blacksquall gets one at 14:43."""
+    blocks = supply["fixed"][1]
+    assert ("lilTiGGer", 402, 410) not in blocks and ("blacksquall", 883, 885) in blocks

@@ -90,8 +90,9 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: ``BaseDetector.isNearMinerals`` needs a mineral field within 7 cells on both axes; N1 (D6a), units,
 #: buildings and battle killers are named by their type at the time of the event, not their final type;
 #: P10, spell effects (Disruptor Phased, Adept Phase Shift) are no units, and eligibility reads the type at
-#: the event.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10")
+#: the event; S6 (D15a), a unit counts its type's supply when it finishes and the difference at each type
+#: change, and a Units group adds its units' supply at their event.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6")
 
 
 #: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph

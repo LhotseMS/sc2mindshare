@@ -58,6 +58,22 @@ def type_at(unit: Any, frame: int) -> str:
     return str(name if name is not None else unit.name)
 
 
+def supply_at(unit: Any, frame: int) -> float:
+    """The unit's supply at ``frame`` (CR-023 S6, D15a): the supply of its type then, by upstream's type history
+    and datapack (a cocoon counts its target's, RavagerCocoon 3); a type missing from the datapack keeps the
+    supply the unit had (ObserverSiegeMode has none there). The unit's current type when the history is empty."""
+    from sc2reader.data import unit_lookup  # type: ignore[import-untyped]
+
+    known = {name for race in ("Protoss", "Terran", "Zerg") for name in unit_lookup[race]}
+    supply: float | None = None
+    for changed_at, unit_type in unit.type_history.items():
+        if changed_at > frame:
+            break
+        if supply is None or str(unit_type.name).lower() in known:
+            supply = float(unit_type.supply)
+    return supply if supply is not None else float(unit.supply)
+
+
 def unit_text_at(unit: Any, frame: int, fixes: frozenset[str]) -> str:
     """``object_text(unit, fixes)`` for the unit's type at ``frame`` instead of its final type (CR-023 N1):
     the text the layer names and groups a unit by when ``N1`` is in its fixes."""
@@ -97,7 +113,7 @@ def object_text(value: Any, fixes: frozenset[str] = frozenset()) -> str:
     upstream objects, those calls would print ``Zealot [2C80001]`` and ``Player 1 - name (Zerg)``.
     Every such call site now goes through this function; anything else is ``str()``.
     """
-    from sc2reader.data import Unit  # type: ignore[import-untyped]
+    from sc2reader.data import Unit
     from sc2reader.objects import Player  # type: ignore[import-untyped]
 
     if isinstance(value, Unit):
