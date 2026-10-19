@@ -23,7 +23,17 @@ The G2 rule "the count never drops" is measured against 72 collected / 65 passin
 
 ## G3: ruff on the fork
 
-`ruff check` (ruff 0.16.10, the repository's `ruff.toml`) over the fork tree: **984 findings** (338 auto-fixable), plus a deprecation warning for the old top-level `ignore` setting. This number is frozen until T24 deletes the fork. G3 for a task is **0 findings on the files the task adds or changes** (Kevin, 2026-10-18).
+Measured on a clean `git archive 16beefa` copy with ruff 0.16.10 and the repository's `ruff.toml` (corrected 2026-10-18 after Vera's G7 re-run):
+
+```sh
+git archive 16beefa | tar -x -C <copy>
+scripts/py-env .venv/bin/ruff check --config <copy>/ruff.toml --statistics <copy>          # whole tree
+scripts/py-env .venv/bin/ruff check --config <copy>/ruff.toml --statistics <copy>/sc2reader # sc2reader/ only
+```
+
+**1,026 findings on the whole tree (355 auto-fixable); 971 on `sc2reader/` (338).** These numbers are frozen until T24 deletes the fork. G3 for a task is **0 findings on the files the task adds** and **0 new findings on the legacy files it touches** (TD-40 as clarified, TD-46 proposal).
+
+The earlier figure of 984 was wrong: it came from `ruff check --statistics <repo> --exclude scripts` without `--config`, and `--exclude scripts` also dropped `sc2reader/scripts/` (with the 33,000-line `get-pip.py`). With `--config` and the same exclusion the count is 978. Neither is the baseline.
 
 ## Known legacy defect counts (TD-6)
 

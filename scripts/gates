@@ -16,8 +16,25 @@ checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv"
 [ "$#" -gt 0 ] || set -- "$checkout/scripts"
+# Canonical absolute paths (no "." or ".." left), so the excludes below match and mypy can run from a
+# fixed folder (D14a; Morgan's G6 on 2053a49). ruff's import order does not depend on the folder it runs
+# from: ruff.toml searches no src folders and names sc2mindshare first-party.
+canon=""
+for p in "$@"; do
+    if [ -d "$p" ]; then
+        canon="$canon $(CDPATH= cd -- "$p" && pwd)"
+    elif [ -e "$p" ]; then
+        canon="$canon $(CDPATH= cd -- "$(dirname -- "$p")" && pwd)/$(basename -- "$p")"
+    else
+        echo "gates: no such file or folder: $p" >&2
+        exit 2
+    fi
+done
+# shellcheck disable=SC2086
+set -- $canon
 
 status=0
+export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
 "$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@" || status=1
 echo "== ruff format --check"
@@ -25,8 +42,12 @@ echo "== ruff format --check"
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then
+    # mypy puts the directory it runs from on its import path: run from the checkout root of a tree
+    # that has the fork's sc2reader/ there (before CR-009), it read that instead of the pinned
+    # upstream package (2096 errors). So it runs from scripts/, with the repository's config
+    # passed explicitly.
     # shellcheck disable=SC2086
-    "$py_env" "$venv/bin/mypy" --strict $typed || status=1
+    (cd "$script_dir" && "$py_env" "$venv/bin/mypy" --config-file "$checkout/pyproject.toml" --strict $typed) || status=1
 fi
 echo "== pytest"
 "$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
