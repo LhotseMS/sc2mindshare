@@ -1,6 +1,6 @@
 # Legacy output vs Stefan's sample CSV (CR-004, T04)
 
-2026-10-18. A = Stefan's sample `MS SC/Alcyone LE__lilTiGGer_vs_blacksquall/events_Alcyone LE__lilTiGGer_vs_blacksquall.csv` (2025-01-07, cp1250). B = the current code (`16beefa` plus CR-003's run-only edits) on the same replay, run by `scripts/run_legacy.py` (pass 1, offline, `load_map=False`). Compared with `scripts/compare_csv.py`, image URLs masked.
+2026-10-18. A = Stefan's sample `MS SC/Alcyone LE__lilTiGGer_vs_blacksquall/events_Alcyone LE__lilTiGGer_vs_blacksquall.csv` (2025-01-07, cp1250). B = the current code (`16beefa` plus CR-003's run-only edits) on the same replay, run by `scripts/run_legacy.py` (pass 1, offline, `load_map=False`). Compared with `scripts/compare_csv.py`, image URLs masked. Like the workbook's Power Query, the tool treats a row whose first field contains `-` as a link, so a node named with a hyphen (for example a game on "Post-Youth LE") would be read as a link; no such name occurs on Alcyone.
 
 ```sh
 scripts/py-env .venv/bin/python scripts/compare_csv.py --a-encoding cp1250 "<sample csv>" "<root>/.tools/tmp/legacy-run/Alcyone LE__lilTiGGer_vs_blacksquall/events.csv"
@@ -61,5 +61,5 @@ No committed version reproduces it exactly, so it came from a local, uncommitted
 ## Risks to the legacy output from the environment
 
 - **pandas 3.0.6 and numpy 2.5.3** in the legacy environment (Stefan's old setup had pandas 2.2.2, numpy 2.0.0). The fork uses pandas only to read `ImageTracking.csv` into a name → id dict (`fileHandler.getImageTrackingFile`), and numpy not at all outside the screenshot tool. The comparison above shows no effect on any non-image field; the image IDs it feeds are masked. Risk: low, watched by this comparison.
-- **`load_map=False`**: the map is used only for heatmaps (pass 2). With the map absent, the fork's CreepTracker logs 926 errors instead of 24 and one blocked map download; the creep data is not exported. No effect on the CSV in the comparison above.
+- **`load_map=False`**: the map is used only for heatmaps (pass 2). With the map absent, the fork's CreepTracker logs 926 errors and one blocked map download (Morgan's spike count of 24 came from a different setup: `load_map=False`, no detectors); the creep data is not exported. No effect on the CSV in the comparison above.
 - **Text encoding**: B is written as UTF-8 (macOS default), A as cp1250 (Windows). Both decode to the same text here.

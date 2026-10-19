@@ -3,9 +3,10 @@
 # or changed files; the fork's 984 ruff findings are a frozen baseline, see
 # docs/dev/baselines.md).
 #
-#   scripts/gates [PATH ...]      # default: scripts
+#   scripts/gates [PATH ...]      # default: src scripts tests
 #
-# - ruff check and ruff format --check, with the repository's ruff.toml passed
+# - ruff check and ruff format --check, with the repository's ruff.toml passed (upstream's
+#   vendored pin-conformance tests excluded: they stay byte-identical to v1.9.0)
 #   explicitly (line length 129);
 # - mypy --strict on the non-test Python files among PATH (tests are not typed);
 # - pytest on the tests under PATH, in importlib mode, without a cache.
@@ -15,7 +16,7 @@ script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv"
-[ "$#" -gt 0 ] || set -- "$checkout/scripts"
+[ "$#" -gt 0 ] || set -- "$checkout/src" "$checkout/scripts" "$checkout/tests"
 # Canonical absolute paths (no "." or ".." left), so the excludes below match and mypy can run from a
 # fixed folder (D14a; Morgan's G6 on 2053a49). ruff's import order does not depend on the folder it runs
 # from: ruff.toml searches no src folders and names sc2mindshare first-party.
@@ -36,9 +37,9 @@ set -- $canon
 status=0
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
-"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" "$@" || status=1
+"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
 echo "== ruff format --check"
-"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" "$@" || status=1
+"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -n "$typed" ]; then

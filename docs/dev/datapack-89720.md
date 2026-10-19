@@ -6,7 +6,9 @@
 
 **Actual delta: none.** `G-CSV-1` (legacy + 89720) is byte-identical to `G-CSV-0` on Alcyone (and on `200k dmg spine crawler ZvP`, build 83830, which keeps 80949 by design), `Intervals.csv` included.
 
-**Why one row fewer than expected:** the replay's only `MorphToBaneling` command is a `BasicCommandEvent` (checked with the datapack set to `Build 89720`), and the legacy layer makes Ability nodes only from `TargetUnitCommandEvent`s (`SimpleDetector.findSimpleNodes`). The renamed ability never reaches the CSV.
+**Why one row fewer than expected:** the replay's only `MorphToBaneling` command is a `BasicCommandEvent` (checked with the datapack set to `Build 89720`), and the legacy layer makes Ability nodes only from `TargetUnitCommandEvent`s (`SimpleDetector.findSimpleNodes`). The renamed ability never reaches the CSV. A second reason, independent of the first: `Battle` (`legacy/sc2reader/mindshare/battle.py:204`) skips `BasicCommandEvent` and `DataCommandEvent` when it collects a battle's commands, so the battle texts could not change either.
+
+The fork has no data for the later packs `96883` and `97364` (upstream 1.9.0 adds them for builds from 95122 on); none of our three replays is that new.
 
 Consequence: the move to the pinned upstream (CR-009 onwards) is held to **zero** difference against `G-CSV-1`, which equals `G-CSV-0`.
 

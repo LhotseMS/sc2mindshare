@@ -17,7 +17,7 @@ scripts/gates
 
 ## Legacy environment (until T24)
 
-`scripts/legacy-env` (re)creates **this checkout's** `.venv-legacy/` from `requirements/legacy.lock` and puts this checkout's fork tree on its `sys.path` with a `.pth` file (one per checkout, so it never points at another checkout's tree). It is used only to run the old code for the legacy golden; never install the new package into it. Baseline counts: `docs/dev/baselines.md`.
+`scripts/legacy-env` (re)creates **this checkout's** `.venv-legacy/` from `requirements/legacy.lock` and puts this checkout's fork tree (`legacy/` since CR-009) on its `sys.path` with a `.pth` file (one per checkout, so it never points at another checkout's tree). It is used only to run the old code for the legacy golden; never install the new package into it. Baseline counts: `docs/dev/baselines.md`.
 
 Run the old parser offline on replays (pass 1: no heatmaps, no uploads, every network connection blocked):
 
@@ -27,9 +27,14 @@ scripts/py-env .venv-legacy/bin/python scripts/run_legacy.py --support "<root>/M
 
 Per replay it writes `events.csv`, `Intervals.csv`, `run.log` and `summary.json` under `--out/<replay stem>/`. The legacy code reads its data root from `MS_SC_ROOT` (default `C:/MS SC`) and refuses media uploads unless `MS_UPLOADS_ENABLED=1`.
 
+## Package and suites (CR-009)
+
+- The new package is `src/sc2mindshare/`, installed editable in `.venv` (`pip install -e .` through `scripts/py-env`), on `sc2reader==1.9.0` (`requirements/main.lock`; build backend `setuptools==84.0.0`).
+- `scripts/gates` runs our suite and upstream's pin-conformance suite; `scripts/legacy-suite` runs the fork's own suite in `.venv-legacy`. Baselines: `docs/dev/baselines.md`.
+
 ## Gates
 
-`scripts/gates [PATH ...]` (default `scripts`) runs ruff check and ruff format with the repository's `ruff.toml`, `mypy --strict` on the non-test Python files, and pytest. G3 covers the files a task adds or changes only; the fork's own findings are the frozen baseline.
+`scripts/gates [PATH ...]` (default `src scripts tests`) runs ruff check and ruff format with the repository's `ruff.toml`, `mypy --strict` on the non-test Python files, and pytest. G3 covers the files a task adds or changes only; the fork's own findings are the frozen baseline.
 
 ## Notes
 
