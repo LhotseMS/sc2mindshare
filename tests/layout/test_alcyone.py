@@ -13,6 +13,7 @@ import pathlib
 import sys
 
 import pytest
+
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
