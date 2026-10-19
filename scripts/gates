@@ -46,9 +46,9 @@ if [ -f "$legacy_port" ]; then
 fi
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
 echo "== ruff check"
-"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+"$py_env" "$venv/bin/ruff" check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" $port_excludes "$@" || status=1
 echo "== ruff format --check"
-"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
+"$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" $port_excludes "$@" || status=1
 echo "== mypy --strict (non-test files)"
 typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
 if [ -f "$legacy_port" ]; then
