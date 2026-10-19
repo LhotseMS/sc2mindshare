@@ -1,6 +1,7 @@
 """Ledger fixes on the domain graph (analysis/fixes.py)."""
 
 import pytest
+
 from sc2mindshare.analysis.fixes import FIXES, pre_game_display, pre_game_note, signed_hhmmss, unique_harassment_ids
 from sc2mindshare.domain.models import Graph, Link, Node
 from sc2mindshare.domain.time import GameTime
