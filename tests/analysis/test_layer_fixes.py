@@ -7,6 +7,7 @@ import pathlib
 from types import SimpleNamespace
 
 import pytest
+
 from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
 from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
