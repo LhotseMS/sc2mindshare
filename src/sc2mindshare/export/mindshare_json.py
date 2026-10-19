@@ -86,7 +86,7 @@ def build_document(
             )
     document = {
         "visuals": cfg["visuals"],
-        "detail": cfg["detail"],
+        "detail": detail_for(cfg["detail"], graph.export_fixes),
         "dataTypes": cfg["dataTypes"],
         "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
@@ -94,6 +94,20 @@ def build_document(
     if analysis is not None:
         document["analysis"] = analysis_doc(analysis)
     return document
+
+
+def detail_for(detail: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
+    """The workbook's ``detail``; with the export fix ``B12`` (CR-023, D16a) only properties that exist: Stats'
+    "eco Min" (the layer emits no economy spending) is dropped and Initiated's "subtype" is its "type"."""
+    if "B12" not in export_fixes:
+        return detail
+    out = []
+    for entry in detail:
+        props = [p for p in entry["properties"] if not (entry["nodeType"] == "Stats" and p == "eco Min")]
+        if entry["nodeType"] == "Initiated":
+            props = ["type" if p == "subtype" else p for p in props]
+        out.append({**entry, "properties": props})
+    return out
 
 
 def _vba_numbers(value: Any) -> Any:

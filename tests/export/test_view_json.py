@@ -93,6 +93,8 @@ VIEW_LEDGER = (
     "B3-view",
     "P10-view",
     "P13-view",
+    "S6-view",
+    "B12-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -111,6 +113,8 @@ VIEW_NET_DELTA = [
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
     # P13: a Battle's end time is hh:mm:ss (the Harrasment and Scouting times are in their own net test)
     {"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30},
+    # B12: detail lists only properties that exist
+    {"select": {"ID": "detail"}, "fields": [""], "count": 1},
     # B3: every Ability emits combat, queued and minimap
     {"select": {"type": "Ability"}, "fields": ["properties.combat", "properties.queued", "properties.minimap"], "count": 215},
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
@@ -140,7 +144,14 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
     entries = cgd.entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
     assert all(e in entries for e in VIEW_LEDGER)
     assert [entries[e]["golden"] for e in VIEW_LEDGER] == [["alcyone/G-VIEW-current.json"]] * len(VIEW_LEDGER)
-    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == ["S1-view", "S1b-view", "P11-view", "N1-view", "P10-view"]
+    assert [e for e in VIEW_LEDGER if entries[e].get("renumber")] == [
+        "S1-view",
+        "S1b-view",
+        "P11-view",
+        "N1-view",
+        "P10-view",
+        "S6-view",
+    ]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
         doc = _doc(name)
@@ -410,9 +421,9 @@ def test_b3_the_graph_carries_its_export_fixes():
     from sc2mindshare.analysis.fixes import EXPORT_FIXES, LAYER_FIXES
     from sc2mindshare.analysis.run import AnalysisResult
 
-    assert EXPORT_FIXES == ("B3", "P13")
+    assert EXPORT_FIXES == ("B3", "P13", "B12")
     assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
-    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3", "P13"})
+    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3", "P13", "B12"})
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
 
@@ -425,3 +436,23 @@ def test_one_word_links_read_like_the_workbook():
         "node1": "Stats-1",
         "node2": "Stats-2",
     }
+
+
+def test_b12_detail_lists_only_properties_that_exist():
+    """D16a: with the export fix, Stats' detail drops "eco Min" and Initiated's reads "type"; the bug-faithful
+    document keeps the workbook's list; in the current golden every listed property is carried by some node."""
+    from sc2mindshare.analysis.fixes import EXPORT_FIXES
+    from sc2mindshare.domain.models import Graph
+    from sc2mindshare.export.mindshare_json import detail_for
+
+    assert "B12" in EXPORT_FIXES
+    workbook = load_config()["detail"]
+    fixed = {d["nodeType"]: d["properties"] for d in detail_for(workbook, frozenset({"B12"}))}
+    assert "eco Min" not in fixed["Stats"] and fixed["Initiated"] == ["time", "type"]
+    assert detail_for(workbook, frozenset()) == workbook
+    assert build_document(Graph((), ()))["detail"] == workbook  # no export fix on a bare graph
+    doc = _doc("G-VIEW-current.json")
+    carried = {}
+    for n in doc["nodes"]:
+        carried.setdefault(n["type"], set()).update(n.get("properties", {}))
+    assert not [(d["nodeType"], p) for d in doc["detail"] for p in d["properties"] if p not in carried.get(d["nodeType"], set())]

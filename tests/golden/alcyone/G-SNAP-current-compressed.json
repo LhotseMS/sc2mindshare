@@ -90,8 +90,7 @@
     "col. rate Min",
     "col. rate Gas",
     "army Min",
-    "army Gas",
-    "eco Min"
+    "army Gas"
    ]
   },
   {
@@ -104,7 +103,7 @@
    "nodeType": "Initiated",
    "properties": [
     "time",
-    "subtype"
+    "type"
    ]
   },
   {
