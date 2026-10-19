@@ -485,3 +485,20 @@ The layer adds and removes a unit's supply by its final type, its type when the 
 ```json
 {"entry": "S6-snap-linear", "task": "CR-023", "defect": "D15a units counted with their final type's supply (a Roach that became a Ravager counts 3 from its birth)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "9ed810bb8e5a73a4e27ff6d47045c5b5b4d7d060ba4ae6ff8f3ecbfea76b4339", "renumber": [{"type": "Supply Block", "key": ["properties.player", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 3, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["properties.supply"], "count": 4}], "added": ["Supply Block-5#1"], "removed": ["Supply Block-2#1"]}
 ```
+
+
+### B12: `detail` lists only properties that exist (CR-023, T22; D16a)
+
+The workbook's Details sheet marks the properties Mindshare shows as a node's detail, and the export read its columns B-J only (VBA analysis §4.6, B12). The extracted config (`config/details.json`) therefore lists Stats' "eco Min", which no node carries (the layer emits no economy spending; "eco Gas", "tech Min" and "tech Gas", also marked, fell outside B-J), and Initiated's "subtype", which is the property "type". Fix (Stefan's D16a): the current document's `detail` drops "eco Min" and reads "type" for Initiated; producing eco and tech is its own Backlog story. The bug-faithful document keeps the workbook's list (G-VIEW-1 unchanged). An export fix, switched on with the graph fixes (`B12` in `export_fixes`). Predicted from today's goldens (`.scratch/rex/cr023/predict_b12_docs.py`): only the `detail` record changes in each of the three current goldens, and afterwards every listed property is one that some node of its type carries.
+
+```json
+{"entry": "B12-view", "task": "CR-023", "defect": "B12 detail lists eco Min, which is no property, and Initiated subtype, which is type (D16a)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "754508e7727ad94e9ca2c90dcbdf8df713d0430ebb52373c1ba212069fc97baf", "changes": [{"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "B12-snap-compressed", "task": "CR-023", "defect": "B12 detail lists eco Min, which is no property, and Initiated subtype, which is type (D16a)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "1b8668945c89b7285c50395215155ed8d0fa62c8f4d23c6ac842862194edcb4a", "changes": [{"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "B12-snap-linear", "task": "CR-023", "defect": "B12 detail lists eco Min, which is no property, and Initiated subtype, which is type (D16a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "eb44e37feb5549b534a4ad5376ba001f4d8799b3226a297b20678be54163e859", "changes": [{"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
