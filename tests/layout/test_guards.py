@@ -1,6 +1,7 @@
 """layout-spec.md §10: the guards G1-G11 give defined answers."""
 
 import pytest
+
 from sc2mindshare.layout.sweep import LayoutItem, layout
 
 
