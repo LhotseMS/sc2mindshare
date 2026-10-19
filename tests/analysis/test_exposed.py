@@ -15,6 +15,7 @@ import pathlib
 from collections import Counter
 
 import pytest
+
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.domain import exposed as ex
 from sc2mindshare.export.mindshare_json import analysis_doc
