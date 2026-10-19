@@ -1,6 +1,7 @@
 """Leo's hand-computed micro fixture (layout-spec.md §9.3): the first layout golden, both modes."""
 
 import pytest
+
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutItem, layout
 
