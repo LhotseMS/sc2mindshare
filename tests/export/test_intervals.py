@@ -27,18 +27,19 @@ def test_intervals_csv_is_the_legacy_text_byte_for_byte():
 
 def test_intervals_json():
     text = "start,end,id\n0:02:00,0:02:04,Battle-1\n1:00:08,1:00:20,Battle-2\n"
-    doc = json.loads(intervals_json(parse_intervals(text)))
+    doc = json.loads(intervals_json(parse_intervals(text), graph="graph.json"))
     assert doc == {
+        "graph": "graph.json",  # the build these intervals belong to (one build per folder)
         "intervals": [
             {"id": "Battle-1", "start": "0:02:00", "end": "0:02:04", "start_seconds": 120, "end_seconds": 124},
             {"id": "Battle-2", "start": "1:00:08", "end": "1:00:20", "start_seconds": 3608, "end_seconds": 3620},
-        ]
+        ],
     }
 
 
 def test_no_battles_is_an_empty_list():
     assert parse_intervals("start,end,id\n") == ()
-    assert json.loads(intervals_json(())) == {"intervals": []}
+    assert json.loads(intervals_json((), graph="g.json")) == {"graph": "g.json", "intervals": []}
 
 
 @pytest.mark.parametrize(

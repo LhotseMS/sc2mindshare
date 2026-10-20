@@ -74,3 +74,13 @@ def test_an_entry_for_another_golden_is_refused(capsys):
     # H1 lists only G-VIEW-current.json
     assert regen.main(["--entry", "H1", "--golden", "G-SNAP-1-linear.json"]) == 2
     assert "does not list" in capsys.readouterr().out
+
+
+def test_an_entry_already_applied_is_reported_and_passes(capsys):
+    """At the head, the golden is the code's output and no longer the entry's base (C4 would fail):
+    regenerating reports that the entry is already applied and exits 0 without writing."""
+    _need_inputs()
+    before = (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes()
+    assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-1-linear.json", "--write"]) == 0
+    assert "already applied" in capsys.readouterr().out
+    assert (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes() == before

@@ -3,8 +3,10 @@
 One command turns a replay into the Mindshare import document (``graph.json``), plus the battle
 intervals for the screenshot tool (``intervals.json`` and ``Intervals.csv``, next to ``graph.json``).
 The ported legacy layer prints debug text while it runs; that goes to the log file (default
-``<out>.log``), never to the console or into the JSON. Nothing is written to ``--out`` unless the
-whole build succeeds.
+``<out>.log``), never to the console or into the JSON. The three outputs are written to temporary names
+and renamed only once all are written, so a failed build leaves none of them. The screenshot tool reads
+the fixed name ``Intervals.csv`` in the game folder, so one folder holds one build: ``intervals.json``
+names its graph, and a folder holding another build's intervals is refused.
 
 Exit codes: 0 built; 1 the analysis or layout failed (the traceback is in the log); 2 a usage error.
 """
@@ -14,6 +16,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import csv
+import json
 import os
 import sys
 import traceback
@@ -93,12 +96,62 @@ def build(replay: Path, out: Path, timeline: str, config_root: Path, log: Path) 
             traceback.print_exc(file=log_file)
             print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
             return 1
-    out.parent.mkdir(parents=True, exist_ok=True)
-    targets = (out, out.parent / "intervals.json", out.parent / "Intervals.csv")
-    for path, text in zip(targets, (document, intervals_json(intervals), csv_text), strict=True):
-        path.write_text(text, encoding="utf-8", newline="")
-    print("wrote " + ", ".join(str(p) for p in targets))
+    outputs = {
+        out: document,
+        out.parent / "intervals.json": intervals_json(intervals, graph=out.name),
+        out.parent / "Intervals.csv": csv_text,
+    }
+    try:
+        _publish(outputs)
+    except OSError as exc:
+        print(f"{PROG}: writing the outputs failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+        return 1
+    print("wrote " + ", ".join(str(p) for p in outputs))
     return 0
+
+
+def _temp_name(path: Path) -> Path:
+    return path.with_name(f".{path.name}.tmp")
+
+
+def _write_temp(path: Path, text: str) -> Path:
+    """Write ``text`` next to ``path`` under a temporary name; return that name."""
+    temp = _temp_name(path)
+    temp.write_text(text, encoding="utf-8", newline="")
+    return temp
+
+
+def _publish(outputs: dict[Path, str]) -> None:
+    """Every output is written to a temporary name first; only when all are written are they renamed,
+    so a failed write leaves none of them (and no temporary file) behind."""
+    next(iter(outputs)).parent.mkdir(parents=True, exist_ok=True)
+    written: list[tuple[Path, Path]] = []
+    try:
+        for path, text in outputs.items():
+            written.append((_write_temp(path, text), path))
+    except OSError:
+        for path in outputs:
+            _temp_name(path).unlink(missing_ok=True)
+        raise
+    for temp, path in written:
+        os.replace(temp, path)
+
+
+def _foreign_intervals(out: Path) -> str | None:
+    """Why ``out``'s folder holds another build's intervals, or None. The screenshot tool reads the fixed
+    name ``Intervals.csv`` in the game folder, so one folder holds one build's intervals."""
+    folder = out.parent
+    marker = folder / "intervals.json"
+    if marker.is_file():
+        try:
+            owner = json.loads(marker.read_text(encoding="utf-8")).get("graph")
+        except (ValueError, AttributeError):
+            owner = None
+        if owner != out.name:
+            return f"{marker} belongs to {owner or 'an unknown build'}"
+    elif (folder / "Intervals.csv").is_file():
+        return f"{folder / 'Intervals.csv'} belongs to an unknown build (no intervals.json)"
+    return None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -111,6 +164,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     missing = [name for name in SUPPORT_FILES if not (config_root / name).is_file()]
     if missing:
         return _usage_error(f"the config root {config_root} lacks {', '.join(missing)}")
+    foreign = _foreign_intervals(args.out)
+    if foreign:
+        return _usage_error(f"{foreign}: use another --out folder for this build")
     log = args.log or args.out.with_suffix(".log")
     return build(args.replay, args.out, args.timeline, config_root, log)
 

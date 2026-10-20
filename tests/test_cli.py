@@ -53,8 +53,8 @@ def test_one_command_reproduces_the_goldens(tmp_path, mode):
     assert (code, stderr) == (0, "")
     assert out.read_bytes() == (GOLDEN / f"G-SNAP-1-{mode}.json").read_bytes()
     assert (out.parent / "Intervals.csv").read_bytes() == (GOLDEN / "Intervals-1.csv").read_bytes()
-    intervals = json.loads((out.parent / "intervals.json").read_text(encoding="utf-8"))["intervals"]
-    assert len(intervals) == 30 and intervals[0]["id"] == "Battle-1"
+    doc = json.loads((out.parent / "intervals.json").read_text(encoding="utf-8"))
+    assert doc["graph"] == "graph.json" and len(doc["intervals"]) == 30 and doc["intervals"][0]["id"] == "Battle-1"
     # the layer's debug prints go to the log, never to the console or into the JSON
     assert stdout == f"wrote {out}, {out.parent / 'intervals.json'}, {out.parent / 'Intervals.csv'}\n"
     assert (out.parent / "graph.log").read_text(encoding="utf-8") != ""
@@ -88,6 +88,7 @@ def test_usage_errors_exit_2_and_write_nothing(tmp_path, monkeypatch):
     assert code == 2 and "--config-root" in stderr
     code, _, stderr = run("build", tmp_path / "missing.SC2Replay", "--out", out, "--config-root", MS_SC)
     assert code == 2 and "missing.SC2Replay" in stderr
+    need(ALCYONE)  # the replay check comes first, so this case needs a real replay
     code, _, stderr = run("build", ALCYONE, "--out", out, "--config-root", tmp_path / "nowhere")
     assert code == 2 and "nowhere" in stderr
     assert list(tmp_path.iterdir()) == []
@@ -120,3 +121,39 @@ def test_the_readme_documents_the_help_text():
     block = re.search(r"<!-- build --help -->\n```text\n(.*?)```\n", readme, re.DOTALL)
     assert block is not None, "README.md has no '<!-- build --help -->' usage block"
     assert block.group(1) == help_text
+
+
+def test_a_second_build_into_the_same_folder_is_refused(tmp_path):
+    """screenshotGame.py reads <game folder>/Intervals.csv, a fixed name, so one folder holds one build's
+    intervals: building another --out into it would overwrite them. Re-running the same build is fine."""
+    need(ALCYONE)
+    first = tmp_path / "graph.json"
+    assert run("build", ALCYONE, "--out", first, "--config-root", MS_SC)[0] == 0
+    before = {p.name: p.read_bytes() for p in tmp_path.iterdir()}
+    code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "other.json", "--config-root", MS_SC)
+    assert code == 2 and "graph.json" in stderr and "another --out folder" in stderr
+    assert {p.name: p.read_bytes() for p in tmp_path.iterdir()} == before
+    assert run("build", ALCYONE, "--out", first, "--config-root", MS_SC)[0] == 0  # the same build again
+
+
+def test_intervals_without_their_json_are_refused(tmp_path):
+    need(ALCYONE)
+    (tmp_path / "Intervals.csv").write_text("start,end,id\n", encoding="utf-8")
+    code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "graph.json", "--config-root", MS_SC)
+    assert code == 2 and "Intervals.csv" in stderr
+
+
+def test_the_outputs_appear_together_or_not_at_all(tmp_path, monkeypatch):
+    """All three files are written to temporary names first and renamed only when all are written."""
+    need(ALCYONE)
+    real = cli._write_temp
+
+    def failing(path, text):
+        if path.name == "Intervals.csv":
+            raise OSError("disk full")
+        return real(path, text)
+
+    monkeypatch.setattr(cli, "_write_temp", failing)
+    code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "graph.json", "--config-root", MS_SC)
+    assert code == 1 and "disk full" in stderr
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["graph.log"]  # no output, no temporary file left

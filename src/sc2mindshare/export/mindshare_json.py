@@ -80,7 +80,12 @@ def build_document(
 
 
 def _vba_numbers(value: Any) -> Any:
-    """Whole-number floats as integers, as VBA-JSON writes a Double (``2``, not ``2.0``; D7a A12)."""
+    """Whole-number floats as integers, as VBA-JSON writes a Double (``2``, not ``2.0``; D7a A12).
+
+    Other floats keep Python's ``repr``, which matches VBA's text only while it has no exponent form.
+    That holds for the layout's numbers because ``_num`` rounds them to 4 decimal places first (the
+    smallest non-zero value is 0.0001, written ``0.0001``; repr switches to ``1e-05`` below 1e-4 and to
+    ``1e+16`` at 1e16). A float that skipped the rounding could print an exponent VBA would not."""
     if isinstance(value, float) and value.is_integer():
         return int(value)  # -0.0 becomes 0
     if isinstance(value, dict):
