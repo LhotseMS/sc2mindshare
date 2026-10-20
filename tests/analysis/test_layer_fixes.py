@@ -760,3 +760,40 @@ def test_p9_the_time_zone_value_is_the_recorders_offset_and_the_description_says
         game = GameNode(replay, "", fixes=frozenset(fixes))
         assert game.timeZone == zone
         assert game.getNodeDescription().startswith("Played on 2024-07-24 07:55:57 UTC" + ("" if fixes else zone[3:]) + " for")
+
+
+def test_s6_a_counted_unit_takes_away_what_it_counted_at_death():
+    """Morgan's G6 on S6 (N1): an Observer that dies in siege mode counted 1 (its final type has no supply in
+    the datapack); it takes away 1, not its final type's 0. Without S6, or for a unit never counted, the final
+    type's supply goes."""
+    calls = []
+    st = SimpleNamespace(changeSupply=lambda player, time, change, frame=None: calls.append(change))
+    observer = SimpleNamespace(id=7, _type_class=SimpleNamespace(supply=0))
+    death = SimpleNamespace(player="p", time="14:00", frame=19000, unit=observer)
+    detector = SimpleNamespace(ctx=SimpleNamespace(fixes=frozenset({"S6"})), countedSupply={7: 1.0}, st=st)
+    detectors.SimpleDetector.releaseUnitSupply(detector, death)
+    assert calls == [-1.0] and detector.countedSupply == {}
+    detectors.SimpleDetector.releaseUnitSupply(detector, death)  # no longer counted: the final type's supply
+    faithful = SimpleNamespace(ctx=SimpleNamespace(fixes=frozenset()), countedSupply={7: 1.0}, st=st)
+    detectors.SimpleDetector.releaseUnitSupply(faithful, death)
+    assert calls == [-1.0, 0, 0]
+
+
+def test_s6_the_detector_hands_every_type_change_of_a_counted_unit_to_the_supply(monkeypatch):
+    """Morgan's G6 on S6 (N1): through the detector's own loop on Alcyone, the type changes reach moveUnitSupply,
+    and the three Roaches that became Ravagers add 1 each at their cocoon."""
+    if not ALCYONE.exists():
+        pytest.skip(f"missing input {ALCYONE}")
+    moves = []
+    original = detectors.SimpleDetector.moveUnitSupply
+
+    def spy(self, e):
+        before = dict(self.countedSupply)
+        original(self, e)
+        if e.unit is not None and before.get(e.unit.id) != self.countedSupply.get(e.unit.id):
+            moves.append((str(e.unit_type_name), before[e.unit.id], self.countedSupply[e.unit.id]))
+
+    monkeypatch.setattr(detectors.SimpleDetector, "moveUnitSupply", spy)
+    with contextlib.redirect_stdout(io.StringIO()):
+        analyse(load_replay(ALCYONE), MS_SC)
+    assert moves == [("RavagerCocoon", 2.0, 3.0)] * 3

@@ -75,26 +75,14 @@ def test_the_current_document_equals_g_view_current(document):
     assert report.ok, str(report)
 
 
-#: The ledger entries G-VIEW-current applies to G-VIEW-1, in order.
-VIEW_LEDGER = (
-    "H1",
-    "P3d-view",
-    "A12-view",
-    "P3e-view",
-    "P1-view",
-    "P1b-view",
-    "P1c-view",
-    "S1-view",
-    "S1b-view",
-    "P8-view",
-    "P2-view",
-    "P11-view",
-    "N1-view",
-    "B3-view",
-    "P10-view",
-    "P13-view",
-    "S6-view",
-    "B12-view",
+#: The ledger entries G-VIEW-current applies to G-VIEW-1, in ledger order: every CHANGES.md entry whose golden is
+#: alcyone/G-VIEW-current.json, so an entry cannot be left out of the net check (Morgan's G6 on B12).
+VIEW_LEDGER = tuple(
+    e
+    for e, v in _load("check_golden_delta", CHECKOUT / "scripts" / "check_golden_delta.py")
+    .entries((CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8"))
+    .items()
+    if v["golden"] == ["alcyone/G-VIEW-current.json"]
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -137,6 +125,14 @@ def _part(path, tmp_path, name, supply_blocks):
     out = tmp_path / name
     out.write_text(json.dumps(doc), encoding="utf-8")
     return out
+
+
+def test_the_view_ledger_is_every_g_view_current_entry():
+    """The entries the net check below adds up (pinned, so a new one needs its net effect written here too)."""
+    assert VIEW_LEDGER == (
+        "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
+        "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
+    )  # fmt: skip
 
 
 def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
