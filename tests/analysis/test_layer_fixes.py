@@ -30,7 +30,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -356,15 +356,16 @@ def test_the_supply_tracker_takes_its_fixes_explicitly():
     [
         (
             "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
-            "Units-175",  # Units-193 before N1 merged 11 groups and P10 dropped 7
+            "Units-172",  # Units-193 before N1 merged 11 groups, P10 dropped 7 and P10b 3
             "blacksquall",
             "Probe",
             1000,
             "47",
-            "Units-174",
+            "Units-171",
         ),
         # Units-129 before P10 dropped spine's 7 spell-effect groups
-        ("200k dmg spine crawler ZvP.SC2Replay", "Units-122", "serega", "Probe", 660, "68", "Units-117"),
+        # (Units-122 before P10b made spine's Shield Battery group Buildings)
+        ("200k dmg spine crawler ZvP.SC2Replay", "Units-121", "serega", "Probe", 660, "68", "Units-117"),
     ],
 )
 def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_type, time, total, previous):
@@ -395,9 +396,9 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     ]
     # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer, P11 drops 3 nodes (Harrasment-7, Scouting-0
     # and Scouting-1), N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there); on both
-    # P10 drops 7 spell-effect groups
+    # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2)
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (4 + 3 + 11 if "Alcyone" in replay else 0) + (
-        2 if "spine" in replay else 0
+        2 + 1 if "spine" in replay else 0
     )
 
 
@@ -645,7 +646,7 @@ def test_n1_on_alcyone_units_buildings_and_killers_take_the_type_at_the_time(n1_
     """The N1 entry's prediction (CHANGES.md), a few pinned; the goldens hold all of it."""
     before, after = n1_graphs["without N1"], n1_graphs["fixed"]
     units = {label: [n for n in g.values() if n.kind == "Units"] for label, g in n1_graphs.items()}
-    assert (len(units["without N1"]), len(units["fixed"])) == (186, 175)  # 193 -> 182 before P10 dropped 7
+    assert (len(units["without N1"]), len(units["fixed"])) == (183, 172)  # 193 -> 182 before P10 and P10b dropped 10
     assert (before["Units-24"].value("type"), after["Units-24"].value("type")) == ("Overseer", "Overlord")
     assert (before["Building-6"].name, after["Building-6"].name) == ("Warp Gate", "Gateway")
     assert after["Building-6"].value("type") == "Gateway" and after["Building-6"].start.seconds == 41
@@ -760,3 +761,34 @@ def test_p9_the_time_zone_value_is_the_recorders_offset_and_the_description_says
         game = GameNode(replay, "", fixes=frozenset(fixes))
         assert game.timeZone == zone
         assert game.getNodeDescription().startswith("Played on 2024-07-24 07:55:57 UTC" + ("" if fixes else zone[3:]) + " for")
+
+
+# --- P10b (D18a): Shield Batteries and rich Extractors are structures ----------------------------------------------
+
+
+@pytest.mark.parametrize("name", ["ShieldBattery", "ExtractorRich"])
+def test_p10b_the_structures_the_datapack_does_not_mark_are_buildings_not_units(name):
+    unit = SimpleNamespace(name=name, is_building=False, type_history={1: SimpleNamespace(name=name)})
+    event = SimpleNamespace(player="p", unit=unit, time="03:00", frame=4000)
+    for fixes, building in (((), False), (("P10", "P10b"), True)):
+        detector = SimpleNamespace(
+            OMIT_UNITS=detectors.EventsDetector.OMIT_UNITS,
+            P10_OMIT_UNITS=detectors.EventsDetector.P10_OMIT_UNITS,
+            OMIT_BUILDINGS=detectors.EventsDetector.OMIT_BUILDINGS,
+            ctx=SimpleNamespace(fixes=frozenset(fixes)),
+        )
+        detector.isStructure = lambda u, d=detector: detectors.EventsDetector.isStructure(d, u)
+        assert detectors.EventsDetector.buildingsEligible(detector, event) is building
+        assert detectors.EventsDetector.unitFinishedEligble(detector, event) is not building
+
+
+def test_p10b_on_alcyone_the_batteries_and_the_rich_extractor_are_buildings(n1_graphs):
+    """The P10b entry's prediction (CHANGES.md): Building-12 and Building-33 are blacksquall's Shield Batteries
+    (started 2:31 and 5:55), Building-101 lilTiGGer's Extractor Rich (started 13:54); no Units group of either."""
+    g = n1_graphs["fixed"]
+    assert [(g[i].name, g[i].value("player"), g[i].start.seconds) for i in ("Building-12", "Building-33", "Building-101")] == [
+        ("Shield Battery", "blacksquall", 151),
+        ("Shield Battery 1", "blacksquall", 355),
+        ("Extractor Rich", "lilTiGGer", 834),
+    ]
+    assert not [n for n in g.values() if n.kind == "Units" and n.value("type") in ("Shield Battery", "Extractor Rich")]

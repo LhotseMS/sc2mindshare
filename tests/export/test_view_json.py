@@ -95,6 +95,7 @@ VIEW_LEDGER = (
     "P13-view",
     "S6-view",
     "B12-view",
+    "P10b-view",
 )
 #: Their net effect on G-VIEW-1: H1 renumbers the 14 Harrasment nodes; P3d sets the main bases' time and
 #: P3e moves their real start into the description; P1 renames the 30 battles, P1b 7 of them again and P1c one (CR-023). P3d's "pre-game time" property and dataTypes entry
@@ -107,9 +108,6 @@ VIEW_LEDGER = (
 SUPPLY_NET = {"removed": [f"Supply Block-{i}#1" for i in range(11)], "added": [f"Supply Block-{i}#1" for i in range(7)]}
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
-    # P3d/P3e: the main bases' time and description (2); P11: a base name (5); N1: 14 Warp Gates are Gateways
-    # (name, type, start), the main base a Hatchery, the Greater Spire a Spire and so the next Spire "Spire 1"
-    {"select": {"type": "Building"}, "fields": ["name", "description", "properties.time", "properties.type"], "count": 23},
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
     # P13: a Battle's end time is hh:mm:ss (the Harrasment and Scouting times are in their own net test)
     {"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30},
@@ -123,7 +121,13 @@ VIEW_NET_DELTA = [
 ]
 
 
-SET_ASIDE = ("Supply Block", "Harrasment", "Scouting", "Units")  # the renumbered types; no link joins them to another type
+SET_ASIDE = (
+    "Supply Block",
+    "Harrasment",
+    "Scouting",
+    "Units",
+    "Building",
+)  # the renumbered types; no link joins them to another type
 
 
 def _part(path, tmp_path, name, supply_blocks):
@@ -151,6 +155,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "N1-view",
         "P10-view",
         "S6-view",
+        "P10b-view",
     ]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
@@ -228,7 +233,12 @@ def test_units_net_of_the_ledger():
     def counts(name):
         out = {}
         for n in _doc(name)["nodes"]:
-            if n["type"] == "Units" and n["properties"]["type"] not in ("Disruptor Phased", "Adept Phase Shift"):
+            if n["type"] == "Units" and n["properties"]["type"] not in (
+                "Disruptor Phased",
+                "Adept Phase Shift",
+                "Shield Battery",
+                "Extractor Rich",
+            ):
                 key = (n["properties"]["player"], n["properties"]["time"])
                 out[key] = out.get(key, 0) + int(n["properties"]["count"])
         return out
@@ -238,8 +248,35 @@ def test_units_net_of_the_ledger():
     assert len(p8) == 1 and p8[0][0] == "blacksquall" and new[p8[0]] == 1
     assert old == {k: v for k, v in new.items() if k != p8[0]}
     units = {name: [n for n in _doc(name)["nodes"] if n["type"] == "Units"] for name in ("G-VIEW-1.json", "G-VIEW-current.json")}
-    assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 175)
-    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 153 - 163
+    assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 172)
+    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 152 - 163
+
+
+def test_buildings_net_of_the_ledger():
+    """P10b adds Building nodes for blacksquall's 2 Shield Batteries and lilTiGGer's Extractor Rich (Building-12, -33
+    and -101), renumbering the later ones; without them the Buildings pair with G-VIEW-1's in order, player by
+    player, and the 23 the other entries changed (P3d/P3e, P11, N1) are the only ones whose fields differ."""
+    old = [n for n in _doc("G-VIEW-1.json")["nodes"] if n["type"] == "Building"]
+    new = [n for n in _doc("G-VIEW-current.json")["nodes"] if n["type"] == "Building"]
+    added = {
+        n["ID"]: (n["name"], n["properties"]["player"])
+        for n in new
+        if n["properties"]["type"] in ("Shield Battery", "Extractor Rich")
+    }
+    assert added == {
+        "Building-12": ("Shield Battery", "blacksquall"),
+        "Building-33": ("Shield Battery 1", "blacksquall"),
+        "Building-101": ("Extractor Rich", "lilTiGGer"),
+    }
+    rest = [n for n in new if n["ID"] not in added]
+    assert len(rest) == len(old)
+    assert [n["properties"]["player"] for n in rest] == [n["properties"]["player"] for n in old]
+    numbers = sorted(int(i.split("-")[1]) for i in added)
+    for o, m in zip(old, rest, strict=True):
+        shifted = int(m["ID"].split("-")[1])
+        assert shifted == int(o["ID"].split("-")[1]) + sum(1 for k in numbers if k < shifted)
+    changed = [m["ID"] for o, m in zip(old, rest, strict=True) if {**o, "ID": None} != {**m, "ID": None}]
+    assert len(changed) == 23
 
 
 def test_document_key_order_and_config_parts(document):
