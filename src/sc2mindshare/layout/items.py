@@ -7,6 +7,8 @@ from its "end time"; the radius basis is a Battle's "supply dead" and a Units no
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from sc2mindshare.domain.models import Graph, Node
 from sc2mindshare.layout.sweep import LayoutItem
 
@@ -24,13 +26,35 @@ def item(node: Node, order: int) -> LayoutItem:
         player = None
     else:
         player = values["player"]
-    t_end = _seconds(values["end time"]) if node.kind == "Supply Block" else None
+    t_end = _seconds(values["end time"]) if node.kind in ("Supply Block", "Scouting Gap") else None
     basis = None
     if node.kind == "Battle":
         basis = float(values["supply dead"])
     elif node.kind == "Units":
         basis = float(values["supply"])
     return LayoutItem(node.id, node.kind, node.start_seconds, order, player=player, t_end=t_end, size_basis=basis)
+
+
+def ghost_time(
+    *,
+    horizon: float,
+    guide_time: float | None = None,
+    guide_supply: float | None = None,
+    trigger_time: float | None = None,
+    food_used: Sequence[tuple[float, float]] = (),
+) -> float:
+    """The time a Missing Step or Checkpoint ghost is placed at (spec §13.3 rule 1; TD-43, TD-44).
+
+    A guide step with a time: the guide time. Supply only: the first moment the player's ``food_used``
+    reached the guide supply (``food_used`` = (seconds, food used) samples, in time order), or the
+    horizon if it never did. Trigger only: the trigger moment if it could be evaluated, otherwise the
+    horizon. This places the node only; its ``time`` property keeps the guide's value.
+    """
+    if guide_time is not None:
+        return guide_time
+    if guide_supply is not None:
+        return next((t for t, used in food_used if used >= guide_supply), horizon)
+    return trigger_time if trigger_time is not None else horizon
 
 
 def items(graph: Graph) -> list[LayoutItem]:
