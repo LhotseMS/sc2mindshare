@@ -209,6 +209,7 @@ class SimpleDetector(EventsDetector):
         self.st = SupplyTracker(self.player1, self.player2, self.ctx.fixes)
         self.countedSupply = {}  # CR-023 S6: unit id -> the supply a finished unit counts now
         self.supplyFlags = []  # CR-023 S8: (unit id, from type, missing type, frame) the rule kept unnamed
+        self.placementFlags = []  # CR-023 S7: (unit id, type, frame) of an unfinished placement's unrecognised death
         self.supplyBlocks = list()
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
@@ -480,6 +481,9 @@ class SimpleDetector(EventsDetector):
             placed.remove(mine[0])
             if e.unit.doneEvent is None and e.killing_player == e.unit.owner:  # cancelled: the Drone comes back
                 self.st.changeSupply(e.unit.owner, e.time, 1, e.frame)
+            elif e.unit.doneEvent is None and e.killing_player is None:  # neither cancelled nor destroyed: flagged
+                self.placementFlags.append((e.unit.id, e.unit.name, e.frame))
+                print(f"S7: placed {e.unit.name} {e.unit.id} died unfinished with no killing player; its Drone's supply stays away")
         return False
 
     def releaseUnitSupply(self, e):

@@ -891,3 +891,52 @@ def test_s8_the_detector_records_an_unnamed_missing_type():
         detectors.SimpleDetector.moveUnitSupply(detector, SimpleNamespace(unit=hydra, frame=700, time="00:31"))
     assert calls == [] and detector.countedSupply == {7: 2.0}  # the supply is kept
     assert flags == [(7, "Hydralisk", "LurkerMPEgg", 700)] and "LurkerMPEgg" in out.getvalue()
+
+
+# --- S7 follow-ups (Morgan's N1 on S7): the cancellation path ------------------------------------------------------
+
+
+def test_s7_a_cancelled_placement_gives_the_drone_back_a_killed_one_does_not_and_an_unknown_one_is_flagged():
+    calls = []
+    owner = "p"
+    st = SimpleNamespace(changeSupply=lambda player, time, change, frame=None: calls.append(change))
+
+    def run(killing_player):
+        building = SimpleNamespace(name="Extractor", doneEvent=None, owner=owner, id=9)
+        placed = SimpleNamespace(unit=building, frame=1680, x=10, y=10)
+        detector = SimpleNamespace(
+            ctx=SimpleNamespace(fixes=frozenset({"S7"})),
+            placements={owner: [placed]},
+            countedSupply={},
+            st=st,
+            placementFlags=[],
+        )
+        death = SimpleNamespace(
+            unit=building, killer_pid=None, killing_player=killing_player, frame=1880, time="01:24", x=10, y=10
+        )
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            settled = detectors.SimpleDetector.settlePlacement(detector, death)
+        return settled, detector.placements[owner], detector.placementFlags, out.getvalue()
+
+    assert run(owner)[:3] == (False, [], []) and calls == [1]  # cancelled by its owner: the Drone comes back
+    assert run("q")[:3] == (False, [], []) and calls == [1]  # destroyed: the Drone is gone
+    settled, left, flags, log = run(None)  # no killing player: not recognised as either
+    assert (settled, left, calls) == (False, [], [1]) and flags == [(9, "Extractor", 1880)] and "S7" in log
+
+
+def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
+    """Vera's G7 on S7: Piliskner places an Extractor at 1:15 and cancels it at 1:24; the Drone's supply leaves at
+    the placement and comes back at the cancel (the game: 16 -> 14 -> 16 workers around it)."""
+    spine = MS_SC / "200k dmg spine crawler ZvP.SC2Replay"
+    need(spine)
+    with contextlib.redirect_stdout(io.StringIO()):
+        result = analyse(load_replay(spine), MS_SC, with_exposed=True)
+    zerg = next(p.pid for p in result.exposed.game.players if p.race == "Zerg")  # Piliskner
+    piliskner = [p for p in result.exposed.supply if p.player == zerg and p.time in ("01:10", "01:15", "01:24", "01:25")]
+    assert [(p.time, p.supply) for p in piliskner] == [
+        ("01:10", 15.0),
+        ("01:15", 14.0),
+        ("01:24", 15.0),
+        ("01:24", 15.0),
+        ("01:25", 16.0),
+    ]
