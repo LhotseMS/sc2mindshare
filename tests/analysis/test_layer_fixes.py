@@ -38,7 +38,7 @@ def need(path):
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -942,3 +942,249 @@ def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
         ("01:24", 14.0),  # the cancelled Extractor's death: nothing back
         ("01:25", 15.0),  # the Drone back, as a new birth
     ]
+
+
+# --- P10c (CR-068; D21a, D26a, D32a): a destroyed Shield Battery or Rich Extractor counts in battles ---------------
+
+BATTLE_SITES_WITHOUT_THE_FIXES = {
+    # (file under analysis/, function): (calls of countableUnitDeath / buildingDeath that pass no fixes, why)
+    ("detectors/detectors.py", "findSimpleNodes"): (1, "the supply series and blocks (CR-068 out of scope)"),
+    ("detectors/detectors.py", "processSelectionsAndCommands"): (1, "the actions' heatmap locations (CR-068 out of scope)"),
+}
+
+
+@pytest.mark.parametrize("name", ["ShieldBattery", "ExtractorRich"])
+def test_p10c_the_two_structures_deaths_count_and_are_building_deaths(name):
+    from sc2mindshare.reader.fork_api import _UnitDiedEventMixin as UnitDiedEvent  # the flavoured class's rules
+
+    death = SimpleNamespace(unit=SimpleNamespace(name=name, is_army=False, is_building=False))
+    for fixes, counted in (((), False), (("P10b",), False), (("P10c",), True)):
+        assert UnitDiedEvent.countableUnitDeath(death, frozenset(fixes)) is counted
+        assert UnitDiedEvent.buildingDeath(death, frozenset(fixes)) is counted
+    assert UnitDiedEvent.countableUnitDeath(death) is False  # no fixes: the fork's rule
+
+
+@pytest.mark.parametrize(
+    ("name", "is_army", "is_building", "counted", "building"),
+    [
+        ("PhotonCannon", False, True, True, True),
+        ("Zealot", True, False, True, False),
+        ("Probe", False, False, True, False),
+        ("BroodlingEscort", True, False, False, False),
+        ("CreepTumorBurrowed", False, False, False, False),
+    ],
+)
+def test_p10c_changes_no_other_types_death(name, is_army, is_building, counted, building):
+    from sc2mindshare.reader.fork_api import _UnitDiedEventMixin as UnitDiedEvent  # the flavoured class's rules
+
+    death = SimpleNamespace(unit=SimpleNamespace(name=name, is_army=is_army, is_building=is_building))
+    for fixes in ((), ("P10c",)):
+        assert UnitDiedEvent.countableUnitDeath(death, frozenset(fixes)) is counted
+        assert UnitDiedEvent.buildingDeath(death, frozenset(fixes)) is building
+
+
+@pytest.mark.parametrize(
+    ("name", "fixes", "cost"),
+    [
+        ("ShieldBattery", ("P10c",), (100, 0, 0)),  # unitsInfo.csv's Shield Battery row
+        ("ExtractorRich", ("P10c",), (25, 0, 0)),  # valued as an Extractor (its Gas cell is empty)
+        ("ShieldBattery", (), (0, 0, 0)),  # faithful: sc2reader's 0, 0, 0
+        ("PhotonCannon", ("P10c",), (150, 0, 0)),  # any other type: sc2reader's values, as before
+    ],
+)
+def test_p10c_a_battle_values_the_two_structures_from_the_unit_table(name, fixes, cost):
+    from sc2mindshare.analysis.battle import Battle
+
+    need(MS_SC / "unitsInfo.csv")
+    import csv
+
+    with (MS_SC / "unitsInfo.csv").open(encoding="utf-8") as f:
+        table = {row["Name"]: row for row in csv.DictReader(f)}
+    battle = SimpleNamespace(ctx=SimpleNamespace(fixes=frozenset(fixes), simple=SimpleNamespace(unitsInfoDict=table)))
+    sc2reader_cost = (150, 0, 0) if name == "PhotonCannon" else (0, 0, 0)
+    unit = SimpleNamespace(name=name, minerals=sc2reader_cost[0], vespene=sc2reader_cost[1], supply=sc2reader_cost[2])
+    assert Battle.deathCost(battle, SimpleNamespace(unit=unit)) == cost
+
+
+def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
+    """Morgan's design on CR-068: the battle call sites pass ``ctx.fixes``; any other caller of the death rules is
+    on the reviewed list, so a new one cannot silently skip P10c (as the P2 guard above does for the names)."""
+    import ast
+    from collections import Counter
+
+    root = CHECKOUT / "src" / "sc2mindshare" / "analysis"
+    found = Counter()
+    passing = Counter()
+    for path in sorted(root.rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for fn in (n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef | ast.AsyncFunctionDef)):
+            for call in (c for c in ast.walk(fn) if isinstance(c, ast.Call)):
+                func = call.func
+                if not (isinstance(func, ast.Attribute) and func.attr in ("countableUnitDeath", "buildingDeath", "isCounted")):
+                    continue
+                key = (str(path.relative_to(root)), fn.name)
+                if call.args or call.keywords:
+                    passing[key] += 1
+                else:
+                    found[key] += 1
+    assert dict(found) == {k: n for k, (n, _why) in BATTLE_SITES_WITHOUT_THE_FIXES.items()}
+    assert dict(passing) == {
+        ("battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
+        ("battle.py", "getCountableDeaths"): 1,
+        ("battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
+        ("detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
+        ("detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
+    }
+
+
+@pytest.fixture(scope="module")
+def p10c_battles():
+    """Alcyone's battles per run, as (start, end, dead, supply, minerals, gas, LOST, KILLS, name) by battle.
+    Each run may move blacksquall's 7:48 Shield Battery death to another second and give the battery another
+    type for the whole game (a Photon Cannon, an Extractor or a Rich Extractor, the datapack's own type)."""
+    need(ALCYONE)
+    import bisect
+    import math
+
+    from sc2mindshare.analysis.exports.battleNode import BattleNode
+
+    def run(fixes=LAYER_FIXES, second=None, as_type=None):
+        replay = load_replay(ALCYONE)
+        death = next(
+            e
+            for e in replay.tracker_events
+            if type(e).__name__ == "UnitDiedEvent"
+            and e.unit is not None
+            and e.unit.name == "ShieldBattery"
+            and e.unit.killing_unit is not None
+        )
+        assert (death.frame, death.unit.owner.name, death.unit.killing_unit.name) == (10502, "blacksquall", "Roach")
+        if as_type is not None:
+            kind = next(t for t in replay.datapack.units.values() if t.name == as_type)
+            death.unit._type_class = kind
+            death.unit.type_history = {frame: kind for frame in death.unit.type_history}
+        if second is not None:
+            frame = math.ceil(second * 22.4)
+            assert int(frame / 22.4) == second
+            for events in (replay.events, replay.tracker_events):
+                events.remove(death)
+            death.frame = death.unit.died_at = frame
+            for events in (replay.events, replay.tracker_events):
+                bisect.insort(events, death, key=lambda e: e.frame)
+        with contextlib.redirect_stdout(io.StringIO()):
+            result = analyse(replay, MS_SC, fixes=fixes)
+        out = []
+        for b in (n for n in result.nodes if isinstance(n, BattleNode)):
+            ps = (b.player1, b.player2)
+            out.append(
+                {
+                    "start": b.startSec,
+                    "end": b.endSec,
+                    "dead": (b.p1dc, b.p2dc),
+                    "supply": tuple(b.supplyLost[p] for p in ps),
+                    "minerals": tuple(b.minLost[p] for p in ps),
+                    "gas": tuple(b.gasLost[p] for p in ps),
+                    "lost": tuple(dict(b.deadBuildingsTypes[p]) for p in ps),
+                    "kills": tuple(dict(b.killersTypes[p]) for p in ps),
+                    "name": b.getNodeName(),
+                }
+            )
+        return out
+
+    without = tuple(f for f in LAYER_FIXES if f != "P10c")
+    runs = {"fixed": run(), "without": run(without), "cannon": run(as_type="PhotonCannon")}
+    # a gap between two battles after 7:48 wide enough for a lone death 6 s after the first (more than the 4 s
+    # a battle extends by on either side) and for a death 2 s after it that extends it
+    b = runs["without"]
+    i = next(i for i in range(len(b) - 1) if b[i]["start"] > 468 and b[i + 1]["start"] - b[i]["end"] > 12)
+    lone, extend = b[i]["end"] + 6, b[i]["end"] + 2
+    for label, second in (("lone", lone), ("extend", extend)):
+        runs[label] = run(second=second)
+        runs[f"{label}-cannon"] = run(second=second, as_type="PhotonCannon")
+        runs[f"{label}-without"] = run(without, second=second)
+    runs["rich"] = run(as_type="ExtractorRich")
+    runs["extractor"] = run(as_type="Extractor")
+    runs["rich-without"] = run(without, as_type="ExtractorRich")
+    return runs, i
+
+
+def _differences(old, new):
+    assert len(old) == len(new)
+    return {i: sorted(k for k in o if o[k] != n[k]) for i, (o, n) in enumerate(zip(old, new, strict=True)) if o != n}
+
+
+def test_p10c_on_alcyone_battle_12_and_27_count_the_battery(p10c_battles):
+    """AC-1, AC-2 and the P10c entry: blacksquall's batteries at 7:48 and 14:33 (Battle-12, Battle-27); dead and
+    his dead +1, minerals +100, supply unchanged, Shield Battery in his LOST list; nothing else in any battle."""
+    runs, _ = p10c_battles
+    old, new = runs["without"], runs["fixed"]
+    assert _differences(old, new) == {11: ["dead", "lost", "minerals"], 26: ["dead", "lost", "minerals"]}
+    for i in (11, 26):
+        assert (old[i]["start"], old[i]["end"]) in ((456, 477), (871, 905))
+        assert new[i]["dead"] == (old[i]["dead"][0], old[i]["dead"][1] + 1)
+        assert new[i]["minerals"] == (old[i]["minerals"][0], old[i]["minerals"][1] + 100)
+        assert new[i]["supply"] == old[i]["supply"]
+        assert new[i]["lost"][1] == {**old[i]["lost"][1], "Shield Battery": 1}
+        assert new[i]["kills"] == old[i]["kills"]  # D32a: KILLS stay units-only
+
+
+def test_p10c_on_alcyone_the_battery_counts_as_a_photon_cannon_would(p10c_battles):
+    """AC-1's differential: the same death as a Photon Cannon (sc2reader: a building, 150 minerals)."""
+    runs, _ = p10c_battles
+    _same_but_the_structure(runs["fixed"], runs["cannon"], {11: 50})
+
+
+def _same_but_the_structure(battery, other, mineral_gap, other_name="Photon Cannon"):
+    """Every battle is the same but for the structure's name and, in the battles listed, blacksquall's minerals
+    lost, by the gap (the other structure's cost minus the battery's)."""
+    for i, (b, o) in enumerate(zip(battery, other, strict=True)):
+        rename = lambda d: {other_name if k == "Shield Battery" else k: v for k, v in d.items()}
+        assert (b["start"], b["end"], b["dead"], b["supply"], b["gas"], b["kills"]) == (
+            o["start"], o["end"], o["dead"], o["supply"], o["gas"], o["kills"]
+        ), i  # fmt: skip
+        assert tuple(rename(d) for d in b["lost"]) == o["lost"], i
+        assert b["name"].replace("Shield Battery", other_name) == o["name"], i
+        assert o["minerals"][1] - b["minerals"][1] == mineral_gap.get(i, 0), i
+        assert o["minerals"][0] == b["minerals"][0], i
+
+
+def test_p10c_a_lone_battery_death_starts_a_battle_as_a_photon_cannon_does(p10c_battles):
+    """AC-4: alone in a gap, the battery's death is a battle of its own, as a Photon Cannon's would be."""
+    runs, i = p10c_battles
+    assert len(runs["lone"]) == len(runs["lone-without"]) + 1  # without P10c the death starts nothing
+    new = runs["lone"][i + 1]
+    assert (new["dead"], new["minerals"][1], new["supply"], new["lost"][1]) == ((0, 1), 100, (0, 0), {"Shield Battery": 1})
+    assert new["start"] == new["end"] == runs["lone-without"][i]["end"] + 6
+    _same_but_the_structure(runs["lone"], runs["lone-cannon"], {i + 1: 50})
+
+
+def test_p10c_a_battery_death_just_after_a_battle_extends_it_as_a_photon_cannon_does(p10c_battles):
+    """AC-4: 2 s after a battle's last death, the battery's death extends that battle, as a Photon Cannon's would."""
+    runs, i = p10c_battles
+    old, new = runs["extend-without"][i], runs["extend"][i]
+    assert len(runs["extend"]) == len(runs["extend-without"])
+    assert (new["start"], new["end"]) == (old["start"], old["end"] + 2)
+    assert new["dead"] == (old["dead"][0], old["dead"][1] + 1)
+    _same_but_the_structure(runs["extend"], runs["extend-cannon"], {i: 50})
+
+
+def test_p10c_a_rich_extractor_counts_as_an_extractor_at_the_unit_tables_cost(p10c_battles):
+    """AC-3: the death as a Rich Extractor is counted as an Extractor's: the same battles, dead and LOST, valued
+    25 (unitsInfo.csv's Extractor row); sc2reader values a real Extractor at 75, which the battle keeps."""
+    runs, _ = p10c_battles
+    rich, extractor, without = runs["rich"], runs["extractor"], runs["rich-without"]
+    assert _differences(without, rich) == {11: ["dead", "lost", "minerals"], 26: ["dead", "lost", "minerals"]}
+    assert rich[11]["minerals"][1] - without[11]["minerals"][1] == 25
+    assert rich[11]["lost"][1] == {**without[11]["lost"][1], "Extractor Rich": 1}
+    for i, (r, x) in enumerate(zip(rich, extractor, strict=True)):
+        same = ("start", "end", "dead", "supply", "kills")
+        assert [r[k] for k in same] == [x[k] for k in same], i
+        assert x["minerals"][1] - r["minerals"][1] == (50 if i == 11 else 0), i  # 14:33's battery stays one
+
+
+def test_p10c_off_the_battles_are_todays(p10c_battles):
+    """AC-7: without P10c the battery's death counts nowhere, wherever it falls (the bug-faithful run's rule)."""
+    runs, _ = p10c_battles
+    assert all(
+        "Shield Battery" not in d for run in ("without", "lone-without", "extend-without") for b in runs[run] for d in b["lost"]
+    )
