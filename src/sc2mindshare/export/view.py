@@ -30,6 +30,9 @@ GAME_PROPERTIES: tuple[tuple[str, str, str], ...] = (
     ("speed", "speed", "typelist"),
 )
 
+#: The legacy text of a bool and its value (CR-067 G2's ``ladder``); any other text is a KeyError.
+BOOL_TEXT = {"True": True, "False": False}
+
 #: The Stats properties in the order the workbook wrote them.
 STATS_ORDER = (
     "workers",
@@ -140,8 +143,9 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
     elif kind == "Game":
         view["size"] = [10, 3.3]
         if "G2" in export_fixes:  # CR-067 G2: the values the workbook view dropped, in D24a's order
+            # a bool reads only "True" or "False": any other text fails rather than reading as false (Rex's N1)
             props |= {
-                name: v[field] == "True" if data_type == "bool" else v[field] for name, field, data_type in GAME_PROPERTIES
+                name: BOOL_TEXT[v[field]] if data_type == "bool" else v[field] for name, field, data_type in GAME_PROPERTIES
             }
     elif kind == "Player":
         view["size"] = [7.8, 2.2]
