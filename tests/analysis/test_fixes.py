@@ -2,7 +2,7 @@
 
 import pytest
 
-from sc2mindshare.analysis.fixes import FIXES, pre_game_display, signed_hhmmss, unique_harassment_ids
+from sc2mindshare.analysis.fixes import FIXES, pre_game_display, pre_game_note, signed_hhmmss, unique_harassment_ids
 from sc2mindshare.domain.models import Graph, Link, Node
 
 
@@ -35,12 +35,14 @@ def building(nid, time, t):
     return Node("Building", nid, "Main base", "", (), (("time", time), ("player", "p"), ("type", "Hive")), t)
 
 
-def test_p3d_pre_game_items_show_zero_and_keep_the_real_time():
+def test_p3d_pre_game_items_show_zero_and_keep_the_real_time_in_the_description():
+    """P3d, amended by P3e (D3c): no extra property (Mindshare needs one key list per type); the real
+    start goes into the description."""
     graph = Graph((building("Building-1", "23:58:49", -71), building("Building-3", "00:00:30", 30), chat("Chat-1")), ())
     fixed = pre_game_display(graph)
     main = fixed.nodes[0]
-    assert dict(main.values) == {"time": "00:00:00", "player": "p", "type": "Hive"}
-    assert main.extra == (("pre-game time", "-00:01:11"),)
+    assert dict(main.values) == {"time": "00:00:00", "player": "p", "type": "Hive"}  # the kind's own fields only
+    assert main.description == "Started 71 s before the game (real start -00:01:11)."
     assert main.start_seconds == -71  # the layout still places it by its real start (B9)
     assert fixed.nodes[1:] == graph.nodes[1:]  # in-game nodes are untouched
     assert pre_game_display(fixed) == fixed  # applying it twice changes nothing more
@@ -53,3 +55,28 @@ def test_signed_hhmmss(seconds, text):
 
 def test_the_ledger_order():
     assert FIXES == (unique_harassment_ids, pre_game_display)
+
+
+def test_the_pre_game_note_follows_an_existing_description():
+    node = Node(
+        "Building", "Building-1", "b", "built first", (), (("time", "23:58:49"), ("player", "p"), ("type", "Hive")), -3725
+    )
+    fixed = pre_game_display(Graph((node,), ())).nodes[0]
+    assert fixed.description == "built firstX_LDX_LDStarted 3725 s before the game (real start -01:02:05)."
+    assert pre_game_note(-71) == "Started 71 s before the game (real start -00:01:11)."
+
+
+def test_the_time_is_reset_even_when_the_note_is_already_there():
+    """Morgan's CR-014c N0: the 00:00:00 reset does not depend on the description check."""
+    node = Node(
+        "Building",
+        "Building-1",
+        "b",
+        "Started 71 s before the game (real start -00:01:11).",
+        (),
+        (("time", "23:58:49"), ("player", "p"), ("type", "Hive")),
+        -71,
+    )
+    fixed = pre_game_display(Graph((node,), ())).nodes[0]
+    assert fixed.value("time") == "00:00:00"
+    assert fixed.description == "Started 71 s before the game (real start -00:01:11)."  # not added twice

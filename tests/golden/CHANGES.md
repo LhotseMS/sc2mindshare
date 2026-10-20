@@ -78,3 +78,20 @@ A12: the Mindshare import follows VBA-JSON's number format. VBA-JSON writes a Do
 ```json
 {"entry": "A12-snap-linear", "task": "CR-014b", "defect": "A12 number format: whole numbers written as 2.0, VBA-JSON writes 2", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "021880a2587a15e020165bb8b3a6f6e11371fba6a9922dbee758247ed6f9566b", "changes": [], "added": [], "removed": []}
 ```
+
+
+### P3e: the pre-game time moves from a property to the description (CR-014c; P3d follow-up, Stefan's D3c)
+
+Stefan's import of G-SNAP-1-compressed into Mindshare failed: "node 'Building-4' has different parameters than node 'Building-1' but the same type: 'Building'". Mindshare requires every node of a type to carry the same property keys, and P3d gave only the two main bases a `pre-game time` property. D3c: drop that property entirely; the two main bases keep `time` `00:00:00` (P3d's display fix stays, no `23:58:49`), and their real start goes into their description instead, `Started 71 s before the game (real start -00:01:11).` (their description was empty). The `pre-game time` dataTypes entry goes with the property. A new test holds every golden to one property key list per node type. The VBA's conditional keys (Ability `target`, `time`, `player`) are not touched (a separate story); on Alcyone every node of those types has them. G-VIEW-1 stays frozen and unchanged. On Alcyone: `Building-1` and `Building-2` (`properties.pre-game time` removed, `description` set) and `dataTypes`, in each of the three non-frozen goldens.
+
+```json
+{"entry": "P3e-view", "task": "CR-014c", "defect": "P3d follow-up: pre-game time property breaks the Mindshare import (D3c)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "e27ac227ffbb0dd442e5c8895e7a0eaffc52271ce71f7d236336e18e0001f78c", "changes": [{"select": {"type": "Building"}, "fields": ["properties.pre-game time", "description"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P3e-snap-compressed", "task": "CR-014c", "defect": "P3d follow-up: pre-game time property breaks the Mindshare import (D3c)", "golden": ["alcyone/G-SNAP-1-compressed.json"], "base_sha256": "eac3ff4d1ba771c9904c5a339b519c11efd48522eae12aa845b9f7393dbd8de5", "changes": [{"select": {"type": "Building"}, "fields": ["properties.pre-game time", "description"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "P3e-snap-linear", "task": "CR-014c", "defect": "P3d follow-up: pre-game time property breaks the Mindshare import (D3c)", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "d461347a78190e8b10a28221f87bf795fe4d0164dc4c7fa96212486b885a404e", "changes": [{"select": {"type": "Building"}, "fields": ["properties.pre-game time", "description"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```

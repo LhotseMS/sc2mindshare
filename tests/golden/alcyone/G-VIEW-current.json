@@ -146,8 +146,7 @@
   "used Min": "int",
   "used Gas": "int",
   "tech Min": "int",
-  "tech Gas": "int",
-  "pre-game time": "string"
+  "tech Gas": "int"
  },
  "nodes": [
   {
@@ -976,7 +975,7 @@
   },
   {
    "name": "Main base",
-   "description": "",
+   "description": "Started 71 s before the game (real start -00:01:11).",
    "type": "Building",
    "ID": "Building-1",
    "size": [
@@ -986,8 +985,7 @@
    "properties": {
     "time": "00:00:00",
     "player": "lilTiGGer",
-    "type": "Hive",
-    "pre-game time": "-00:01:11"
+    "type": "Hive"
    }
   },
   {
@@ -1427,7 +1425,7 @@
   },
   {
    "name": "Main base",
-   "description": "",
+   "description": "Started 71 s before the game (real start -00:01:11).",
    "type": "Building",
    "ID": "Building-2",
    "size": [
@@ -1437,8 +1435,7 @@
    "properties": {
     "time": "00:00:00",
     "player": "blacksquall",
-    "type": "Nexus",
-    "pre-game time": "-00:01:11"
+    "type": "Nexus"
    }
   },
   {

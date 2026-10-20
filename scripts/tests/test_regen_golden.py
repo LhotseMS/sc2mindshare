@@ -76,10 +76,12 @@ def test_an_entry_for_another_golden_is_refused(capsys):
     assert "does not list" in capsys.readouterr().out
 
 
-def test_an_entry_already_applied_is_reported_and_passes(capsys):
+def test_an_entry_already_applied_is_reported_and_passes(capsys, monkeypatch):
     """At the head, the golden is the code's output and no longer the entry's base (C4 would fail):
-    regenerating reports that the entry is already applied and exits 0 without writing."""
+    regenerating reports that the entry is already applied and exits 0 without writing. (The history
+    lookup is stubbed here, so the test also runs in a git archive copy; it is tested on its own below.)"""
     _need_inputs()
+    monkeypatch.setattr(regen, "_was_in_history", lambda name, sha256: True)
     before = (regen.GOLDEN / "G-SNAP-1-linear.json").read_bytes()
     assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-1-linear.json", "--write"]) == 0
     assert "already applied" in capsys.readouterr().out
@@ -100,3 +102,52 @@ def test_an_entry_never_applied_is_not_reported_as_applied(tmp_path, monkeypatch
     assert regen.main(["--entry", "X1", "--golden", "G-SNAP-1-linear.json"]) == 1
     out = capsys.readouterr().out
     assert "already applied" not in out and "C4" in out
+
+
+def _git(repo, *args):
+    import subprocess
+
+    cmd = ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args]
+    subprocess.run(cmd, check=True, capture_output=True, env=regen.check_golden_delta.git_env())  # never a caller's GIT_DIR
+
+
+def test_the_history_lookup(tmp_path):
+    """True only for a sha256 some committed version of the golden had; False outside a repository."""
+    import hashlib
+
+    golden_file = tmp_path / "tests" / "golden" / "alcyone" / "G.json"
+    golden_file.parent.mkdir(parents=True)
+    _git(tmp_path, "init", "-q")
+    golden_file.write_text("v1\n", encoding="utf-8")
+    _git(tmp_path, "add", ".")
+    _git(tmp_path, "commit", "-qm", "v1")
+    golden_file.write_text("v2\n", encoding="utf-8")
+    _git(tmp_path, "commit", "-qam", "v2")
+    v1, v3 = hashlib.sha256(b"v1\n").hexdigest(), hashlib.sha256(b"v3\n").hexdigest()
+    assert regen._was_in_history("G.json", v1, repo=tmp_path) is True
+    assert regen._was_in_history("G.json", v3, repo=tmp_path) is False
+    not_a_repo = tmp_path.parent / (tmp_path.name + "-plain")
+    not_a_repo.mkdir()
+    assert regen._was_in_history("G.json", v1, repo=not_a_repo) is False
+
+
+def test_the_history_lookup_ignores_a_set_git_dir(tmp_path, monkeypatch, capsys):
+    """A GIT_DIR naming another repository must not change which history is read (incident 2026-10-18)."""
+    import hashlib
+
+    golden_file = tmp_path / "real" / "tests" / "golden" / "alcyone" / "G.json"
+    golden_file.parent.mkdir(parents=True)
+    real = tmp_path / "real"
+    _git(real, "init", "-q")
+    golden_file.write_text("v1\n", encoding="utf-8")
+    _git(real, "add", ".")
+    _git(real, "commit", "-qm", "v1")
+    decoy = tmp_path / "decoy"
+    decoy.mkdir()
+    _git(decoy, "init", "-q")
+    monkeypatch.setenv("GIT_DIR", str(decoy / ".git"))
+    assert regen._was_in_history("G.json", hashlib.sha256(b"v1\n").hexdigest(), repo=real) is True
+    plain = tmp_path / "plain"
+    plain.mkdir()
+    assert regen._was_in_history("G.json", "0" * 64, repo=plain) is False
+    assert "history unavailable (not a git repository): checking against the entry's base" in capsys.readouterr().out

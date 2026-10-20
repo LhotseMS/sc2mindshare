@@ -112,7 +112,8 @@ def test_entries_are_parsed_from_fenced_json_blocks():
 
 
 def _git(repo, *args):
-    subprocess.run(["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args], check=True, capture_output=True)
+    cmd = ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args]
+    subprocess.run(cmd, check=True, capture_output=True, env=cgd.git_env())  # never a caller's GIT_DIR
 
 
 def _repo(tmp_path, entry_first):
@@ -207,3 +208,21 @@ def test_c1_a_test_file_under_tests_golden_is_not_a_golden_change(tmp_path):
     assert cgd.check_git(repo, "HEAD~2..HEAD", "P3") == [
         "C1 the entry was not committed before the first golden or product change"
     ]
+
+
+def test_a_set_git_dir_is_ignored(tmp_path, monkeypatch):
+    """The 2026-10-18 incident: with GIT_DIR pointing at a real repository, the throwaway repositories'
+    commits went there. Now the helpers and check_git ignore every GIT_* variable."""
+    decoy = tmp_path / "decoy"
+    decoy.mkdir()
+    subprocess.run(["git", "init", "-q", str(decoy)], check=True, capture_output=True, env=cgd.git_env())
+    monkeypatch.setenv("GIT_DIR", str(decoy / ".git"))
+    monkeypatch.setenv("GIT_WORK_TREE", str(decoy))
+    repo = _repo(tmp_path, entry_first=True)
+    assert (repo / ".git").is_dir()  # the test repository is a repository of its own
+    assert cgd.check_git(repo, "HEAD~2..HEAD", "P1") == []
+    log = subprocess.run(
+        ["git", "-C", str(decoy), "log", "--oneline"], check=False, capture_output=True, text=True, env=cgd.git_env()
+    )
+    assert log.returncode != 0 and "does not have any commits" in log.stderr  # nothing reached the decoy
+    assert "GIT_DIR" not in cgd.git_env() and "GIT_WORK_TREE" not in cgd.git_env()

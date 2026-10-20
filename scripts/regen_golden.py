@@ -95,14 +95,20 @@ REGENERABLE: dict[str, Callable[[], str]] = {
 }
 
 
-def _was_in_history(name: str, sha256: str) -> bool:
-    """Whether some committed version of the golden had this sha256 (the entry's base, applied since)."""
+def _was_in_history(name: str, sha256: str, repo: Path = CHECKOUT) -> bool:
+    """Whether some committed version of the golden had this sha256 (the entry's base, applied since).
+    Outside a git repository (a ``git archive`` copy) the history cannot be read: False, so the entry
+    goes to the ordinary C3/C4 check."""
     rel = f"tests/golden/alcyone/{name}"
+    env = check_golden_delta.git_env()  # no GIT_DIR or GIT_WORK_TREE can point git at another repository
     log = subprocess.run(
-        ["git", "-C", str(CHECKOUT), "log", "--format=%H", "--", rel], check=True, capture_output=True, text=True
-    ).stdout.split()
-    for sha in log:
-        blob = subprocess.run(["git", "-C", str(CHECKOUT), "show", f"{sha}:{rel}"], check=False, capture_output=True)
+        ["git", "-C", str(repo), "log", "--format=%H", "--", rel], check=False, capture_output=True, text=True, env=env
+    )
+    if log.returncode != 0:
+        print("history unavailable (not a git repository): checking against the entry's base")
+        return False
+    for sha in log.stdout.split():
+        blob = subprocess.run(["git", "-C", str(repo), "show", f"{sha}:{rel}"], check=False, capture_output=True, env=env)
         if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == sha256:
             return True
     return False

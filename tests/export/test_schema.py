@@ -116,7 +116,7 @@ def test_new_node_types_are_allowed(doc):
         ("Units-10", lambda n: n.update(size=[1, 1]), "is not of type number"),
         ("Battle-2", lambda n: n["properties"].update({"supply dead": "4.5"}), "is not of type number"),
         ("Stats-11", lambda n: n["properties"].pop("workers"), "missing required property 'workers'"),
-        ("Building-1", lambda n: n["properties"].update({"pre-game time": -71}), "is not of type string"),
+        ("Building-1", lambda n: n["properties"].update(type=3), "is not of type string"),
         ("Building-3", lambda n: n.pop("position"), "missing required property 'position'"),
         ("Building-3", lambda n: n["position"].pop("z"), "missing required property 'z'"),
         ("Building-3", lambda n: n.pop("description"), "missing required property 'description'"),
