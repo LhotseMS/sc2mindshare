@@ -229,7 +229,9 @@ def layout(
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
 
     # ghosts (spec §13.3): after the real items of their row, ordered by (time, Missing Step before
-    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the row
+    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the row. In linear
+    # mode a ghost whose window is empty sits alone at that window's x, in an otherwise blank row
+    # (row(w) = w): intended, confirmed by Leo (leo-cr014-check.md, CR-015 check, note 1)
     block_rows: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
     for item in (i for i in swept if i.type == "Supply Block"):
         ws, we = span(item)

@@ -174,3 +174,69 @@ def test_the_checker_refuses_keywords_it_does_not_implement():
 )
 def test_checker_semantics(schema, value, ok):
     assert (subset.Checker(schema).errors(value) == []) is ok
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        {"anyOf": [{"type": "number"}, {"type": "string", "pattern": "x"}]},  # an alternative after a match
+        {"if": {"type": "number"}, "then": {"type": "number"}, "else": {"format": "date"}},  # else when then is taken
+        {"$defs": {"unused": {"type": "string", "minLength": 1}}, "type": "number"},  # an unreferenced $defs entry
+        {"properties": {"absent": {"type": "string", "pattern": "^a"}}},  # properties for absent keys
+        {"items": {"uniqueItems": True}},  # an array schema never applied to an array
+        {"additionalProperties": {"format": "email"}},
+    ],
+)
+def test_the_checker_refuses_an_unknown_keyword_anywhere_in_the_schema(schema):
+    """Morgan's CR-018 review: keywords are checked once over the whole schema at construction, not only
+    in the subschemas a value happens to visit."""
+    with pytest.raises(subset.UnsupportedKeyword):
+        subset.Checker(schema)
+
+
+def test_the_real_schema_has_only_supported_keywords():
+    assert subset.Checker(SCHEMA).root is SCHEMA  # constructing it walks every subschema
+
+
+@pytest.mark.parametrize(
+    ("schema", "value", "ok"),
+    [
+        ({"const": [1]}, [True], False),  # JSON equality is recursive: true is not 1 inside a list either
+        ({"const": {"a": 0}}, {"a": False}, False),
+        ({"const": {"a": [1, 2]}}, {"a": [1, 2]}, True),
+        ({"enum": [[1, {"b": None}]]}, [1, {"b": None}], True),
+        ({"const": [1, 2]}, [1, 2, 3], False),
+    ],
+)
+def test_json_equality_is_recursive(schema, value, ok):
+    assert (subset.Checker(schema).errors(value) == []) is ok
+
+
+def test_an_unknown_type_name_raises_even_for_a_boolean():
+    with pytest.raises(subset.UnsupportedKeyword):
+        subset.Checker({"type": "bool"})
+
+
+@pytest.mark.parametrize(
+    "schema",
+    [
+        {"items": False},  # a boolean subschema where _check cannot evaluate one (Morgan's 926003c probe)
+        {"anyOf": [True]},
+        {"properties": {"a": True}},
+        {"anyOf": [{"type": "number"}, {"$ref": "#/$defs/nope"}]},  # a dangling $ref in an unvisited branch
+        {"$ref": "#/$defs/nope"},
+        {"$ref": "#/properties"},  # resolves, but not to a schema object
+        {"properties": ["a"]},  # malformed containers: refused, not an AttributeError
+        {"$defs": "x"},
+        {"anyOf": {"type": "number"}},
+        {"allOf": "x"},
+    ],
+)
+def test_schemas_the_checker_cannot_evaluate_are_refused_at_construction(schema):
+    with pytest.raises(subset.UnsupportedKeyword):
+        subset.Checker(schema)
+
+
+def test_additional_properties_false_is_the_one_boolean_subschema():
+    assert subset.Checker({"additionalProperties": False}).errors({}) == []
+    assert subset.Checker({"additionalProperties": False}).errors({"a": 1}) != []
