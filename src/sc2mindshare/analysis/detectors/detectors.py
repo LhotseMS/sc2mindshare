@@ -355,10 +355,8 @@ class SimpleDetector(EventsDetector):
                 provider = self.st.providerOf(e)
                 if provider:
                     self.st.decreaseLimit(e.player, e.time, provider, e.frame)
-                elif "S6" in self.ctx.fixes and e.unit.id in self.countedSupply:  # CR-023 S6: what it counted
-                    self.st.changeSupply(e.player, e.time, -self.countedSupply.pop(e.unit.id), e.frame)
                 else:
-                    self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply, e.frame)
+                    self.releaseUnitSupply(e)
 
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
@@ -444,6 +442,14 @@ class SimpleDetector(EventsDetector):
         if old in counts and old != new:
             counts[old] -= 1
             counts[new] = counts.get(new, 0) + 1
+
+    def releaseUnitSupply(self, e):
+        """A dead unit's supply leaves the series: with S6 (CR-023, D15a) what it counted, for a counted unit
+        (an Observer that died in siege mode counted 1); otherwise its final type's supply."""
+        if "S6" in self.ctx.fixes and e.unit.id in self.countedSupply:
+            self.st.changeSupply(e.player, e.time, -self.countedSupply.pop(e.unit.id), e.frame)
+        else:
+            self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply, e.frame)
 
     def moveUnitSupply(self, e):
         """CR-023 S6 (D15a): a counted unit's supply moves to its new type's (a type missing from the datapack
