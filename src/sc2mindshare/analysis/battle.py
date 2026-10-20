@@ -355,9 +355,13 @@ class Battle(PlayerHandler):
         return [e for e in self.events if isinstance(e, UnitDiedEvent) and e.countableUnitDeath(self.ctx.fixes)]
 
     def deathCost(self, e):
-        """Minerals, gas and supply a death costs its owner: sc2reader's values for the unit. CR-068 P10c: a
-        Shield Battery's or Rich Extractor's from the unitsInfo.csv row it builds as (sc2reader gives 0, 0, 0;
-        the table's Supply cell is empty for both), supply 0."""
+        """Minerals, gas and supply a death costs its owner: sc2reader's values for the unit. CR-068 P10c (sc2reader
+        gives the two structures 0, 0, 0): a Rich Extractor exactly as a normal Extractor of its race, the
+        datapack's Extractor (D34a: 75 for Zerg, 25 plus the Drone's 50); a Shield Battery from its unitsInfo.csv
+        row (100; the table's Supply cell is empty), supply 0."""
+        if "P10c" in self.ctx.fixes and e.unit.name == "ExtractorRich":
+            kind = next(t for t in self.ctx.replay.datapack.units.values() if t.name == "Extractor")
+            return kind.minerals, kind.vespene, kind.supply
         if "P10c" in self.ctx.fixes and e.unit.name in P10B_STRUCTURES:
             row = self.ctx.simple.unitsInfoDict[P10B_STRUCTURES[e.unit.name]]
             return int(row["Minerals"] or 0), int(row["Gas"] or 0), 0

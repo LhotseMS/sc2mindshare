@@ -570,3 +570,5 @@ Since P10b both are structures (Building nodes), but their deaths are still not 
 ```
 
 - P10c correction (Stefan's D34a): a destroyed Rich Extractor is valued exactly as a normal Extractor of the same race, as sc2reader's datapack values it (a Zerg Extractor: 75 minerals, 25 plus the Drone's 50), not at unitsInfo.csv's 25 as the entry above says. The Shield Battery stays at its table row, 100. No golden changes: no Rich Extractor dies on the three replays (and no Extractor; checked again on the regenerated goldens).
+
+- P10c correction to the note above: normal Extractors do die on the replays (Alcyone: two of lilTiGGer's at 16:07 and 16:08; spine: one at 1:24; spores: two with no killer), but their valuation path is the one D34a reuses and does not change; it is Rich Extractors that never die there. Still no golden changes (the regen checks below).
