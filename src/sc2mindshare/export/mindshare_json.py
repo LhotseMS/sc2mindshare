@@ -2,7 +2,8 @@
 
 Key order as the workbook's ``importDict``: ``visuals``, ``detail``, ``dataTypes``, ``nodes``,
 ``links``. The config parts come from the package data extracted from Stefan's workbook (CR-005).
-Positions are added by the layout (CR-014); until then nodes carry none.
+With a layout result (CR-014), nodes carry the layout's size and position, and the clock
+image nodes are appended.
 """
 
 from __future__ import annotations
@@ -13,6 +14,8 @@ from typing import Any
 
 from sc2mindshare.domain.models import Graph
 from sc2mindshare.export.view import link_view, node_view
+from sc2mindshare.layout.profile import Profile
+from sc2mindshare.layout.sweep import LayoutResult
 
 
 def load_config() -> dict[str, Any]:
@@ -24,13 +27,48 @@ def load_config() -> dict[str, Any]:
     }
 
 
-def build_document(graph: Graph, config: dict[str, Any] | None = None) -> dict[str, Any]:
+def _num(value: float) -> float:
+    """4 decimal places, and no -0.0 (layout-spec.md §2)."""
+    r = round(float(value), 4)
+    return 0.0 if r == 0 else r
+
+
+def _size(size: Any) -> Any:
+    return [_num(v) for v in size] if isinstance(size, list | tuple) else _num(size)
+
+
+def build_document(
+    graph: Graph, placed: LayoutResult | None = None, config: dict[str, Any] | None = None, profile: Profile | None = None
+) -> dict[str, Any]:
+    """The Mindshare document; with ``placed`` (the layout's result) every node gets its size and
+    position, and the clock image nodes follow the graph's nodes (layout-spec.md §6)."""
     cfg = config if config is not None else load_config()
+    prof = profile or Profile()
+    nodes = []
+    for node in graph.nodes:
+        view = node_view(node)
+        if placed is not None:
+            view["size"] = _size(placed.sizes[node.id])
+            x, y = placed.positions[node.id]
+            view["position"] = {"x": _num(x), "y": _num(y), "z": 0.01}
+        nodes.append(view)
+    if placed is not None:
+        for clock in placed.extra_nodes:
+            nodes.append(
+                {
+                    "type": "image",
+                    "name": prof.clock_host + clock.media_id,
+                    "ID": clock.media_id + str(clock.side),
+                    "size": [_num(v) for v in prof.clock_size],
+                    "properties": {},
+                    "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
+                }
+            )
     return {
         "visuals": cfg["visuals"],
         "detail": cfg["detail"],
         "dataTypes": cfg["dataTypes"],
-        "nodes": [node_view(n) for n in graph.nodes],
+        "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
     }
 

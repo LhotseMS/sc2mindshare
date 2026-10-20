@@ -7,8 +7,10 @@ frozen ``domain`` models with declared fields. Nothing downstream reads the lega
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from typing import Any
 
+from sc2mindshare.analysis.fixes import FIXES
 from sc2mindshare.analysis.run import AnalysisResult
 from sc2mindshare.domain.models import FIELDS, Graph, Link, Node
 from sc2mindshare.reader.compat import LOOPS_PER_SECOND
@@ -70,9 +72,14 @@ def link_model(link: Any) -> Link:
     )
 
 
-def to_graph(result: AnalysisResult) -> Graph:
-    return Graph(
+def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None) -> Graph:
+    """The domain graph of ``result``, with the ledger's fixes applied (``fixes=()`` for the
+    bug-faithful graph that renders the legacy CSV oracle)."""
+    graph = Graph(
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),
         intervals=result.intervals,
     )
+    for fix in FIXES if fixes is None else fixes:
+        graph = fix(graph)
+    return graph

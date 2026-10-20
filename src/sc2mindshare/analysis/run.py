@@ -33,6 +33,9 @@ def configure(support_root: str | Path) -> None:
 
 
 def analyse(replay: Any, support_root: str | Path) -> AnalysisResult:
+    """Run the layer on ``replay``. **Consumes the replay**: its events, units and players are
+    switched to their fork-flavoured classes in place (``flavour_replay``), so hand ``analyse`` a
+    replay of its own (stream 3's decoders read theirs first, or load it a second time)."""
     configure(support_root)
     FileHandler.intervals = None
     flavour_replay(replay)

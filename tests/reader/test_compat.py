@@ -56,3 +56,23 @@ def test_player_name():
 )
 def test_control_group_kind_follows_the_raw_update_type(update_type, kind):
     assert compat.control_group_kind(SimpleNamespace(update_type=update_type)) is kind
+
+
+def test_fork_control_group_classes_by_update_type():
+    from sc2reader.events.game import create_control_group_event
+
+    from sc2mindshare.reader import fork_api
+
+    def flavoured(update_type):
+        event = create_control_group_event(
+            100, 1, {"control_group_index": 1, "control_group_update": update_type, "remove_mask": ("None", None)}
+        )
+        fork_api.flavour_event(event)
+        return type(event)
+
+    assert flavoured(3).__name__ == "ControlGroupEvent"  # upstream: DeleteControlGroupEvent
+    assert flavoured(4).__name__ == "StealControlGroupEvent"  # upstream: SetControlGroupEvent
+    assert flavoured(5).__name__ == "WeirdControlGroupEvent"  # upstream: AddToControlGroupEvent
+    assert not issubclass(flavoured(4), fork_api.SetControlGroupEvent)
+    assert not issubclass(flavoured(5), fork_api.AddToControlGroupEvent)
+    assert flavoured(0).__name__ == "SetControlGroupEvent" and flavoured(2).__name__ == "GetControlGroupEvent"

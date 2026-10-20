@@ -82,6 +82,9 @@ class Link:
 
 @dataclass(frozen=True)
 class Graph:
+    """Nodes and links. It does not enforce unique node IDs: the legacy layer repeats Harrasment
+    IDs (H1), which ``analysis.fixes`` corrects, and the layout's guard G1 refuses duplicates."""
+
     nodes: tuple[Node, ...]
     links: tuple[Link, ...]
     intervals: str | None = field(default=None)  # the battle windows text (legacy Intervals.csv)
