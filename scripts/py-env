@@ -54,5 +54,8 @@ export PYTHONDONTWRITEBYTECODE=1
 export RUFF_CACHE_DIR="$tools/cache/ruff"
 export MYPY_CACHE_DIR="$tools/cache/mypy"
 export XDG_CACHE_HOME="$tools/cache/xdg"
+# sc2reader caches downloaded maps on disk only when these are set (a file cache could land
+# outside the root): never let a value from the caller's shell through (CR-010).
+unset SC2READER_CACHE_DIR SC2READER_CACHE_MAX_SIZE
 
 exec "$@"

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Run the batch gates on the files the current task owns (G3 is scoped to added
-# or changed files; the fork's 984 ruff findings are a frozen baseline, see
+# or changed files; the fork's ruff findings (1,026 on the whole tree at 16beefa, TD-49) are a frozen baseline, see
 # docs/dev/baselines.md).
 #
 #   scripts/gates [PATH ...]      # default: src scripts tests

@@ -37,21 +37,27 @@ WORKBOOK = pathlib.Path(
     )
 )
 VBA_TRH = pathlib.Path(os.environ.get("SC2MS_VBA_TRH", _root() / ".scratch" / "plan" / "vba" / "MindshareTRH__1_2.bas"))
-needs_workbook = pytest.mark.skipif(not WORKBOOK.is_file(), reason=f"workbook not found: {WORKBOOK}")
+
+
+def _need(path, what):
+    """Skip with a reason when an input is absent; fail instead under SC2MS_REQUIRE_GOLDEN=1."""
+    if not path.is_file():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"{what} not found: {path} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"{what} not found: {path}")
+    return path
 
 
 @pytest.fixture(scope="module")
 def extracted():
-    return ewc.extract(WORKBOOK)
+    return ewc.extract(_need(WORKBOOK, "workbook"))
 
 
-@needs_workbook
 def test_committed_config_equals_a_fresh_extraction(extracted):
     for name, value in extracted.items():
         assert json.loads((CONFIG / name).read_text(encoding="utf-8")) == value, name
 
 
-@needs_workbook
 def test_visuals_follow_the_sheet_row_by_row(extracted):
     visuals = extracted["visuals.json"]
     assert len(visuals) == 13
@@ -61,7 +67,6 @@ def test_visuals_follow_the_sheet_row_by_row(extracted):
     assert visuals[-1]["nodeType"] == "Supply Block"
 
 
-@needs_workbook
 def test_details_are_the_green_cells_only(extracted):
     by_type = {d["nodeType"]: d["properties"] for d in extracted["details.json"]}
     assert by_type["Building"] == ["time", "type"]
@@ -87,9 +92,8 @@ def test_data_types_keep_the_first_position_of_a_repeated_key():
     assert types["time"] == "time[h:m:s]" and types["supply dead"] == "dec"
 
 
-@pytest.mark.skipif(not VBA_TRH.is_file(), reason=f"extracted VBA not found: {VBA_TRH}")
 def test_data_types_source_matches_the_vba():
-    pairs = ewc.parse_vba_data_types(VBA_TRH.read_text(encoding="utf-8", errors="replace"))
+    pairs = ewc.parse_vba_data_types(_need(VBA_TRH, "extracted VBA").read_text(encoding="utf-8", errors="replace"))
     assert tuple(pairs) == ewc.DATA_TYPES_SOURCE
 
 

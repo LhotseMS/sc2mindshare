@@ -24,6 +24,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
@@ -219,12 +220,22 @@ def _canon(value: Any, where: str) -> Any:
     raise GoldenError(f"unexpected JSON type at {where}: {type(value).__name__}")
 
 
-def _clock_name(media_id_with_suffix: str, clock_map: Mapping[str, str]) -> tuple[str, str]:
-    for suffix in ("1", "2"):
-        if media_id_with_suffix.endswith(suffix) and media_id_with_suffix[:-1] in clock_map:
-            name = clock_map[media_id_with_suffix[:-1]]
-            return f"<clock:{name}>", f"<clock:{name}>#{suffix}"
-    return "<clock:unknown>", "<clock:unknown>"
+_MEDIA_ID = re.compile(r"([0-9a-f]{24})$")
+_MEDIA_ID_SIDE = re.compile(r"([0-9a-f]{24})([12])$")
+UNKNOWN_CLOCK = "<clock:unknown>"
+
+
+def clock_name(url: str, clock_map: Mapping[str, str]) -> str:
+    """``<clock:0-50.png>`` from a clock node's ``name``: the trailing 24-hex media id, whatever the
+    host looks like (the legacy host lacks the ``/`` before the id, python bug 6)."""
+    m = _MEDIA_ID.search(url)
+    return f"<clock:{clock_map[m.group(1)]}>" if m and m.group(1) in clock_map else UNKNOWN_CLOCK
+
+
+def clock_id(node_id: str, clock_map: Mapping[str, str]) -> str:
+    """``<clock:0-50.png>#1`` from a clock node's ``ID`` (media id plus side 1 or 2)."""
+    m = _MEDIA_ID_SIDE.search(node_id)
+    return f"<clock:{clock_map[m.group(1)]}>#{m.group(2)}" if m and m.group(1) in clock_map else UNKNOWN_CLOCK
 
 
 def normalise_nodes(
@@ -240,10 +251,11 @@ def normalise_nodes(
                 continue
             if clock_map is None:
                 raise InputMissing("clock map (TimeImageTracking.csv) needed for clock nodes")
-            media = str(n.get("name", "")).rsplit("/", 1)[-1]
-            n["name"], _ = _clock_name(media + "1", clock_map)
-            _, n["ID"] = _clock_name(str(n.get("ID", "")), clock_map)
+            n["name"] = clock_name(str(n.get("name", "")), clock_map)
+            n["ID"] = clock_id(str(n.get("ID", "")), clock_map)
             budget["M2"] += 1
+            if UNKNOWN_CLOCK in (n["name"], n["ID"]):
+                budget["M2 unknown"] += 1
         if "images" in n and isinstance(n["images"], list):
             budget["M1"] += len(n["images"])
             n["images"] = [IMG for _ in n["images"]]
