@@ -867,12 +867,19 @@ def test_s7_on_alcyone_the_drones_leave_at_placement(supply):
 def test_s8_a_named_mode_keeps_its_supply_quietly_and_any_other_missing_type_is_flagged():
     from sc2mindshare.reader.compat import MODES_MISSING_FROM_THE_DATAPACK, unnamed_missing_type
 
-    assert MODES_MISSING_FROM_THE_DATAPACK["ObserverSiegeMode"] == "Observer"
-    assert MODES_MISSING_FROM_THE_DATAPACK["OverlordCocoon"] == "Overlord"
+    # the names are sc2reader's type titles (what the type history holds), each missing from its datapack
+    assert set(MODES_MISSING_FROM_THE_DATAPACK) == {
+        "ObserverSiegeMode", "OverseerSiegeMode", "OverlordTransport", "TransportOverlordCocoon",
+        "LiberatorAG", "ThorAP", "RavagerBurrowed", "LurkerBurrowed",
+    }  # fmt: skip
+    from sc2reader.data import unit_lookup
+
+    known = {n for race in ("Protoss", "Terran", "Zerg") for n in unit_lookup[race]}
+    assert not [m for m in MODES_MISSING_FROM_THE_DATAPACK if m.lower() in known]
     observer = _typed([(100, "Observer", 1), (700, "ObserverSiegeMode", 0)])
     assert unnamed_missing_type(observer, 700) is None  # named: kept, no flag
-    lurker = _typed([(100, "Hydralisk", 2), (700, "LurkerMPEgg", 0)])  # not in the datapack, not named
-    assert unnamed_missing_type(lurker, 700) == "LurkerMPEgg"
+    lurker = _typed([(100, "Hydralisk", 2), (700, "LurkerEgg", 0)])  # not in the datapack, not named
+    assert unnamed_missing_type(lurker, 700) == "LurkerEgg"
     roach = _typed([(100, "Roach", 2), (900, "RavagerCocoon", 3)])
     assert unnamed_missing_type(roach, 900) is None  # in the datapack
 

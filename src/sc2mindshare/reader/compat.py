@@ -59,19 +59,18 @@ def type_at(unit: Any, frame: int) -> str:
 
 
 #: CR-023 S8: the types missing from sc2reader's datapack that are a mode or a cocoon of a type the unit already
-#: was (the value), whose supply the unit keeps, as in the game (Vera confirmed the mode switch).
+#: was (the value), whose supply the unit keeps, as in the game (Vera confirmed the mode switch). The names are
+#: sc2reader's type titles, which the type history holds (OverlordCocoon's title is OverseerCocoon, in the
+#: datapack, so it is not listed; nor are Viking, BattleHellion, DroneBurrowed or SwarmHostBurrowed).
 MODES_MISSING_FROM_THE_DATAPACK = {
     "ObserverSiegeMode": "Observer",
     "OverseerSiegeMode": "Overseer",
     "OverlordTransport": "Overlord",
-    "OverlordCocoon": "Overlord",
     "TransportOverlordCocoon": "Overlord",
-    "VikingFighter": "VikingAssault",
-    "HellionTank": "Hellion",
     "LiberatorAG": "Liberator",
     "ThorAP": "Thor",
     "RavagerBurrowed": "Ravager",
-    "DroneBurrowed": "Drone",
+    "LurkerBurrowed": "Lurker",
 }
 
 
