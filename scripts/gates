@@ -20,19 +20,19 @@ venv="$checkout/.venv"
 # Canonical absolute paths (no "." or ".." left), so the excludes below match and mypy can run from a
 # fixed folder (D14a; Morgan's G6 on 2053a49). ruff's import order does not depend on the folder it runs
 # from: ruff.toml searches no src folders and names sc2mindshare first-party.
-canon=""
+# Each path is kept as one positional parameter, so a path with a space stays whole (Vera's G7 probe).
+n=$#
 for p in "$@"; do
     if [ -d "$p" ]; then
-        canon="$canon $(CDPATH= cd -- "$p" && pwd)"
+        set -- "$@" "$(CDPATH= cd -- "$p" && pwd)"
     elif [ -e "$p" ]; then
-        canon="$canon $(CDPATH= cd -- "$(dirname -- "$p")" && pwd)/$(basename -- "$p")"
+        set -- "$@" "$(CDPATH= cd -- "$(dirname -- "$p")" && pwd)/$(basename -- "$p")"
     else
         echo "gates: no such file or folder: $p" >&2
         exit 2
     fi
 done
-# shellcheck disable=SC2086
-set -- $canon
+shift "$n"
 
 status=0
 export SC2MS_REQUIRE_GOLDEN=1  # a skipped golden is a failed gate on this Mac (QA design §1.4)
@@ -41,15 +41,24 @@ echo "== ruff check"
 echo "== ruff format --check"
 "$py_env" "$venv/bin/ruff" format --check --config "$checkout/ruff.toml" --force-exclude --extend-exclude "$checkout/tests/pin_conformance/test_*.py" "$@" || status=1
 echo "== mypy --strict (non-test files)"
-typed=$(find "$@" -name '*.py' -not -name 'test_*.py' -not -name 'conftest.py' | sort)
-if [ -n "$typed" ]; then
-    # mypy puts the directory it runs from on its import path: run from the checkout root of a tree
-    # that has the fork's sc2reader/ there (before CR-009), it read that instead of the pinned
-    # upstream package (2096 errors). So it runs from scripts/, with the repository's config
-    # passed explicitly.
-    # shellcheck disable=SC2086
-    (cd "$script_dir" && "$py_env" "$venv/bin/mypy" --config-file "$checkout/pyproject.toml" --strict $typed) || status=1
-fi
+# mypy puts the directory it runs from on its import path: run from the checkout root of a tree that has
+# the fork's sc2reader/ there (before CR-009), it read that instead of the pinned upstream package (2096
+# errors). So it runs from scripts/, with the repository's config passed explicitly. The non-test files are
+# listed in Python, never through a word-split shell string (a path with a space stays whole); files moved
+# verbatim from the legacy layer (LEGACY_PORT.txt, from CR-011a) are left out.
+(cd "$script_dir" && "$py_env" "$venv/bin/python" -I -c '
+import pathlib, subprocess, sys
+checkout, mypy, *paths = sys.argv[1:]
+port = pathlib.Path(checkout, "src/sc2mindshare/analysis/LEGACY_PORT.txt")
+skip = set()
+if port.exists():
+    skip = {str(pathlib.Path(checkout, line.strip())) for line in port.read_text().splitlines() if line.strip() and not line.startswith("#")}
+found = set()
+for path in map(pathlib.Path, paths):
+    found.update([path] if path.is_file() else path.rglob("*.py"))
+typed = sorted(str(f) for f in found if f.suffix == ".py" and not f.name.startswith("test_") and f.name != "conftest.py" and str(f) not in skip)
+sys.exit(subprocess.call([mypy, "--config-file", checkout + "/pyproject.toml", "--strict", *typed]) if typed else 0)
+' "$checkout" "$venv/bin/mypy" "$@") || status=1
 echo "== pytest"
 "$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
 exit $status

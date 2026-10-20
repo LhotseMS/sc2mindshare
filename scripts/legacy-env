@@ -8,7 +8,7 @@
 #
 # The fork is not pip-installed (its setup.py and pyproject.toml disagree on the
 # package name); a .pth file puts this checkout's fork tree on sys.path instead.
-# After T09 the tree lives in legacy/, and this script points there.
+# After T09 the tree lives in legacy/; the .pth line picks legacy/ or the root when Python starts.
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -16,14 +16,10 @@ checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv-legacy"
 
-if [ -d "$checkout/legacy/sc2reader" ]; then
-    fork_root="$checkout/legacy"
-else
-    fork_root="$checkout"
-fi
 
 "$py_env" /opt/homebrew/bin/python3.14 -m venv "$venv"
 "$py_env" "$venv/bin/python" -m pip install --quiet -r "$checkout/requirements/legacy.lock"
 site=$("$py_env" "$venv/bin/python" -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
-printf '%s\n' "$fork_root" > "$site/sc2mindshare_legacy.pth"
+# an import line, so the fork tree follows the checkout's layout at every start (scripts/legacy_pth.py)
+"$py_env" "$venv/bin/python" "$script_dir/legacy_pth.py" "$checkout" > "$site/sc2mindshare_legacy.pth"
 "$py_env" "$venv/bin/python" -c 'import sc2reader; print("legacy sc2reader", sc2reader.__version__, "from", sc2reader.__file__)'
