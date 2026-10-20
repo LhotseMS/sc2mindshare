@@ -12,8 +12,9 @@ Entries are fenced ``json`` blocks in CHANGES.md:
      "added": [], "removed": []}
 
 Checks: C3 the diff equals the entry both ways (``unlisted change`` / ``listed but not
-changed``, counts equal); C4 ``base_sha256`` is the old golden; C1 the entry was committed
-before the first commit that changes a golden or product file; C2 CHANGES.md only grew.
+changed``, counts equal); C4 ``base_sha256`` is the old golden; C1 the entry was added (absent
+in the parent's CHANGES.md) in a commit before the first commit that changes a golden or product
+file (test modules ``test_*.py`` are not product files); C2 CHANGES.md only grew.
 (``renumber`` entries are not implemented yet: they fail loudly until a task needs them.)
 """
 
@@ -125,6 +126,21 @@ def _git(repo: Path, *args: str) -> str:
     return subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, text=True).stdout
 
 
+def _adds(repo: Path, sha: str, changes_rel: str, marker: str) -> bool:
+    """The commit adds the entry: present in its CHANGES.md, absent in its parent's (or no parent file)."""
+    if marker not in _git(repo, "show", f"{sha}:{changes_rel}"):
+        return False
+    before = subprocess.run(
+        ["git", "-C", str(repo), "show", f"{sha}^:{changes_rel}"], check=False, capture_output=True, text=True
+    )
+    return before.returncode != 0 or marker not in before.stdout
+
+
+def _is_product_change(path: str, changes_rel: str) -> bool:
+    """A golden or product file; the ledger itself and test modules (``test_*.py``) are not."""
+    return path.startswith(WATCHED) and path != changes_rel and not Path(path).name.startswith("test_")
+
+
 def check_git(repo: Path, rev_range: str, entry_id: str, changes_rel: str = "tests/golden/CHANGES.md") -> list[str]:
     """C1 (entry before the change) and C2 (CHANGES.md append-only) on a commit range."""
     problems: list[str] = []
@@ -135,9 +151,9 @@ def check_git(repo: Path, rev_range: str, entry_id: str, changes_rel: str = "tes
     marker = f'"entry": "{entry_id}"'
     for index, chunk in enumerate(commits):
         sha, *files = [line for line in chunk.splitlines() if line.strip()]
-        if changes_rel in files and entry_commit is None and marker in _git(repo, "show", f"{sha}:{changes_rel}"):
+        if changes_rel in files and entry_commit is None and _adds(repo, sha, changes_rel, marker):
             entry_commit = index
-        if first_change is None and any(f.startswith(WATCHED) and f != changes_rel for f in files):
+        if first_change is None and any(_is_product_change(f, changes_rel) for f in files):
             first_change = index
     if entry_commit is None:
         problems.append(f"C1 entry {entry_id} not added in {rev_range}")

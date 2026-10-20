@@ -166,3 +166,44 @@ def test_c1_entry_and_change_in_the_same_commit_fails(tmp_path):
     assert cgd.check_git(repo, "HEAD~1..HEAD", "P1") == [
         "C1 the entry was not committed before the first golden or product change"
     ]
+
+
+def test_c1_an_entry_that_existed_before_the_range_is_not_added_in_it(tmp_path):
+    """C1 needs the entry to be added inside the range: an entry already in CHANGES.md at the base passes
+    nothing, even when a commit in the range touches CHANGES.md before the golden change."""
+    repo = _repo(tmp_path, entry_first=True)  # P1 added in HEAD~1
+    changes = repo / "tests" / "golden" / "CHANGES.md"
+    changes.write_text(changes.read_text() + '```json\n{"entry": "P2"}\n```\n')
+    _git(repo, "commit", "-qam", "another entry")
+    (repo / "tests" / "golden" / "g.json").write_text('{"a": 1}')
+    _git(repo, "commit", "-qam", "a golden change")
+    assert cgd.check_git(repo, "HEAD~2..HEAD", "P1") == ["C1 entry P1 not added in HEAD~2..HEAD"]
+    assert cgd.check_git(repo, "HEAD~2..HEAD", "P2") == []
+
+
+def test_c1_a_test_file_under_tests_golden_is_not_a_golden_change(tmp_path):
+    repo = tmp_path / "repo"
+    (repo / "tests" / "golden").mkdir(parents=True)
+    _git(repo, "init", "-q")
+    changes = repo / "tests" / "golden" / "CHANGES.md"
+    changes.write_text("# ledger\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "base")
+    (repo / "tests" / "golden" / "test_golden.py").write_text("def test_x():\n    pass\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "a test edit")
+    changes.write_text(changes.read_text() + '```json\n{"entry": "P1"}\n```\n')
+    _git(repo, "commit", "-qam", "entry")
+    (repo / "tests" / "golden" / "g.json").write_text("{}")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "golden")
+    assert cgd.check_git(repo, "HEAD~3..HEAD", "P1") == []
+    # the harness module itself still counts: a golden.py edit before the entry fails C1
+    (repo / "tests" / "golden" / "golden.py").write_text("X = 1\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "harness")
+    changes.write_text(changes.read_text() + '```json\n{"entry": "P3"}\n```\n')
+    _git(repo, "commit", "-qam", "entry P3")
+    assert cgd.check_git(repo, "HEAD~2..HEAD", "P3") == [
+        "C1 the entry was not committed before the first golden or product change"
+    ]
