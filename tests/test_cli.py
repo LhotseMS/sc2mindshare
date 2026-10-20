@@ -97,7 +97,7 @@ def test_usage_errors_exit_2_and_write_nothing(tmp_path, monkeypatch):
 def test_a_failing_analysis_exits_1_with_the_traceback_in_the_log(tmp_path, monkeypatch):
     need(ALCYONE)
 
-    def broken(replay, support_root):
+    def broken(replay, support_root, **_):
         print("layer output before the failure")
         raise KeyError(1)
 
@@ -157,3 +157,38 @@ def test_the_outputs_appear_together_or_not_at_all(tmp_path, monkeypatch):
     code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "graph.json", "--config-root", MS_SC)
     assert code == 1 and "disk full" in stderr
     assert sorted(p.name for p in tmp_path.iterdir()) == ["graph.log"]  # no output, no temporary file left
+
+
+def test_with_analysis_adds_the_analysis_object_and_nothing_else(tmp_path):
+    """CR-021: opt-in; without the flag the output is the golden (the other tests), with it the same
+    document gains a top-level "analysis" object and nothing else changes."""
+    need(ALCYONE)
+    out = tmp_path / "graph.json"
+    code, _, stderr = run("build", ALCYONE, "--out", out, "--config-root", MS_SC, "--with-analysis")
+    assert (code, stderr) == (0, "")
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links", "analysis"]
+    analysis = doc.pop("analysis")
+    assert doc == json.loads((GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8"))
+    assert analysis["game"]["base_build"] == 92440 and len(analysis["units"]) == 1232
+
+
+def test_the_exposed_values_are_computed_only_when_asked_for(tmp_path, monkeypatch):
+    """Morgan's G6 N1 on c312162: a failure in expose() (or in reading its tables) never breaks the
+    default build; with --with-analysis it fails the build like any analysis failure."""
+    need(ALCYONE)
+    from sc2mindshare.analysis import run as analysis_run
+
+    def broken(*_args, **_kwargs):
+        raise RuntimeError("expose broke")
+
+    monkeypatch.setattr(analysis_run, "expose", broken)
+    plain = tmp_path / "plain" / "graph.json"
+    plain.parent.mkdir()
+    code, _, stderr = run("build", ALCYONE, "--out", plain, "--config-root", MS_SC)
+    assert (code, stderr) == (0, "")
+    assert plain.read_text(encoding="utf-8") == (GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8")
+    asked = tmp_path / "asked" / "graph.json"
+    asked.parent.mkdir()
+    code, _, stderr = run("build", ALCYONE, "--out", asked, "--config-root", MS_SC, "--with-analysis")
+    assert code == 1 and "RuntimeError: expose broke" in stderr

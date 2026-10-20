@@ -62,6 +62,12 @@ def _parser() -> argparse.ArgumentParser:
         "(default: the MS_SC_ROOT environment variable)",
     )
     build.add_argument("--log", type=Path, default=None, help="where the run log goes (default: <out>.log)")
+    build.add_argument(
+        "--with-analysis",
+        action="store_true",
+        help="also write the analysis values stream 2 reads (supply, stats, unit lifecycles...) as a top-level "
+        "'analysis' object (not part of the Mindshare import format)",
+    )
     return parser
 
 
@@ -75,16 +81,17 @@ def _clock_map(config_root: Path) -> dict[str, str]:
         return {row["imageName"]: row["imageID"] for row in csv.DictReader(f)}
 
 
-def build(replay: Path, out: Path, timeline: str, config_root: Path, log: Path) -> int:
+def build(replay: Path, out: Path, timeline: str, config_root: Path, log: Path, with_analysis: bool = False) -> int:
     log.parent.mkdir(parents=True, exist_ok=True)
     with log.open("w", encoding="utf-8") as log_file:
         try:
             with contextlib.redirect_stdout(log_file):  # the layer's debug prints
-                graph = to_graph(analyse(load_replay(replay), config_root))  # a freshly loaded replay
+                result = analyse(load_replay(replay), config_root, with_exposed=with_analysis)  # a freshly loaded replay
+                graph = to_graph(result)
                 placed = layout(
                     items(graph), Profile(timeline="linear" if timeline == "linear" else "compressed"), _clock_map(config_root)
                 )
-                document = to_json(build_document(graph, placed))
+                document = to_json(build_document(graph, placed, analysis=result.exposed))
                 if graph.intervals is None:
                     raise ValueError("the analysis produced no battle intervals")
                 intervals = parse_intervals(graph.intervals)
@@ -170,7 +177,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if foreign:
         return _usage_error(f"{foreign}: use another --out folder for this build")
     log = args.log or args.out.with_suffix(".log")
-    return build(args.replay, args.out, args.timeline, config_root, log)
+    return build(args.replay, args.out, args.timeline, config_root, log, args.with_analysis)
 
 
 if __name__ == "__main__":

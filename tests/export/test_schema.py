@@ -74,6 +74,75 @@ def test_the_spine_replay_validates(spine_document):
     assert CHECK.errors(spine_document) == []
 
 
+# --- CR-021: the opt-in analysis object is closed (Vera's G7 (d)) ------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def analysed_document():
+    for needed in (SPINE, MS_SC / "TimeImageTracking.csv"):
+        if not needed.exists():
+            if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+                pytest.fail(f"missing input {needed} (SC2MS_REQUIRE_GOLDEN=1)")
+            pytest.skip(f"missing input {needed}")
+    with (MS_SC / "TimeImageTracking.csv").open(encoding="utf-8") as f:
+        clock_map = {r["imageName"]: r["imageID"] for r in csv.DictReader(f)}
+    with contextlib.redirect_stdout(io.StringIO()):
+        result = analyse(load_replay(SPINE), MS_SC, with_exposed=True)
+    graph = to_graph(result)
+    placed = layout(items(graph), Profile(), clock_map)
+    return json.loads(to_json(build_document(graph, placed, analysis=result.exposed)))
+
+
+def test_a_document_with_the_analysis_validates(analysed_document):
+    assert "analysis" in analysed_document and CHECK.errors(analysed_document) == []
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        (lambda a: a.update(extra=1), "'extra' is not allowed"),
+        (lambda a: a.pop("chronos"), "missing required property 'chronos'"),
+        (lambda a: a["units"][0].update(colour="red"), "'colour' is not allowed"),
+        (lambda a: a["units"][0].pop("first_type"), "missing required property 'first_type'"),
+        (lambda a: a["units"][0].update(unit_id="x"), "unit_id"),
+        (lambda a: a["type_changes"][0].update(loop=1.5), "loop"),
+        (lambda a: a["game"]["players"][0].update(race=None), "race"),
+        (lambda a: a["tables"]["build_times"].append(["VoidRay"]), "build_times"),
+        (lambda a: a["stats"][0].update(food_used="12"), "food_used"),
+    ],
+)
+def test_the_analysis_object_is_closed_and_typed(analysed_document, change, message):
+    bad = copy.deepcopy(analysed_document)
+    change(bad["analysis"])
+    errors = CHECK.errors(bad)
+    assert any(message in e for e in errors), errors
+
+
+def test_the_analysis_schema_names_exactly_the_dataclass_fields():
+    """The schema is written by hand; this keeps it in step with domain/exposed.py."""
+    import dataclasses
+
+    from sc2mindshare.domain import exposed as ex
+
+    defs = SCHEMA["$defs"]
+    pairs = {
+        "analysis": ex.Exposed,
+        "analysisGame": ex.GameContext,
+        "analysisPlayer": ex.PlayerContext,
+        "analysisUnit": ex.UnitLife,
+        "analysisTypeChange": ex.TypeChange,
+        "analysisUpgrade": ex.UpgradeDone,
+        "analysisStats": ex.StatsSample,
+        "analysisSupply": ex.SupplyPoint,
+        "analysisChrono": ex.Chrono,
+        "analysisTables": ex.TimeTables,
+    }
+    for name, cls in pairs.items():
+        fields = [f.name for f in dataclasses.fields(cls)]
+        assert list(defs[name]["properties"]) == fields, name
+        assert defs[name]["required"] == fields and defs[name]["additionalProperties"] is False, name
+
+
 # --- TD-16: additive properties and new types are allowed; existing ones stay required and typed ------------
 
 
