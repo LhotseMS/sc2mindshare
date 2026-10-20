@@ -987,7 +987,7 @@ def test_p10c_changes_no_other_types_death(name, is_army, is_building, counted, 
     ("name", "fixes", "cost"),
     [
         ("ShieldBattery", ("P10c",), (100, 0, 0)),  # unitsInfo.csv's Shield Battery row
-        ("ExtractorRich", ("P10c",), (25, 0, 0)),  # valued as an Extractor (its Gas cell is empty)
+        ("ExtractorRich", ("P10c",), (75, 0, 0)),  # D34a: as the datapack values a Zerg Extractor (25 + the Drone's 50)
         ("ShieldBattery", (), (0, 0, 0)),  # faithful: sc2reader's 0, 0, 0
         ("PhotonCannon", ("P10c",), (150, 0, 0)),  # any other type: sc2reader's values, as before
     ],
@@ -1000,7 +1000,13 @@ def test_p10c_a_battle_values_the_two_structures_from_the_unit_table(name, fixes
 
     with (MS_SC / "unitsInfo.csv").open(encoding="utf-8") as f:
         table = {row["Name"]: row for row in csv.DictReader(f)}
-    battle = SimpleNamespace(ctx=SimpleNamespace(fixes=frozenset(fixes), simple=SimpleNamespace(unitsInfoDict=table)))
+    extractor = SimpleNamespace(name="Extractor", minerals=75, vespene=0, supply=0)  # sc2reader's datapack row
+    datapack = SimpleNamespace(units={111: extractor, 482: SimpleNamespace(name="ShieldBattery", minerals=0)})
+    battle = SimpleNamespace(
+        ctx=SimpleNamespace(
+            fixes=frozenset(fixes), simple=SimpleNamespace(unitsInfoDict=table), replay=SimpleNamespace(datapack=datapack)
+        )
+    )
     sc2reader_cost = (150, 0, 0) if name == "PhotonCannon" else (0, 0, 0)
     unit = SimpleNamespace(name=name, minerals=sc2reader_cost[0], vespene=sc2reader_cost[1], supply=sc2reader_cost[2])
     assert Battle.deathCost(battle, SimpleNamespace(unit=unit)) == cost
@@ -1169,18 +1175,18 @@ def test_p10c_a_battery_death_just_after_a_battle_extends_it_as_a_photon_cannon_
     _same_but_the_structure(runs["extend"], runs["extend-cannon"], i)
 
 
-def test_p10c_a_rich_extractor_counts_as_an_extractor_at_the_unit_tables_cost(p10c_battles):
-    """AC-3: the death as a Rich Extractor is counted as an Extractor's: the same battles, dead and LOST, valued
-    25 (unitsInfo.csv's Extractor row); sc2reader values a real Extractor at 75, which the battle keeps."""
+def test_p10c_a_rich_extractor_counts_exactly_as_an_extractor(p10c_battles):
+    """AC-3 (D34a): the death as a Rich Extractor is counted as a normal Extractor's of the same race: the same
+    battles, dead, LOST and losses (sc2reader's Zerg Extractor, 75: 25 plus the Drone's 50)."""
     runs, _ = p10c_battles
     rich, extractor, without = runs["rich"], runs["extractor"], runs["rich-without"]
     assert _differences(without, rich) == {11: ["dead", "lost", "minerals"], 26: ["dead", "lost", "minerals"]}
-    assert rich[11]["minerals"][1] - without[11]["minerals"][1] == 25
+    assert rich[11]["minerals"][1] - without[11]["minerals"][1] == 75
     assert rich[11]["lost"][1] == {**without[11]["lost"][1], "Extractor Rich": 1}
     for i, (r, x) in enumerate(zip(rich, extractor, strict=True)):
         same = ("start", "end", "dead", "supply", "kills")
         assert [r[k] for k in same] == [x[k] for k in same], i
-        assert x["minerals"][1] - r["minerals"][1] == (50 if i == 11 else 0), i  # 14:33's battery stays one
+        assert x["minerals"] == r["minerals"], i
 
 
 def test_p10c_off_the_battles_are_todays(p10c_battles):

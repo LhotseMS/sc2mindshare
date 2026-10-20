@@ -568,3 +568,5 @@ Since P10b both are structures (Building nodes), but their deaths are still not 
 ```json
 {"entry": "P10c-snap-linear", "task": "CR-068", "defect": "P10c a destroyed Shield Battery or Rich Extractor is not a countable death, so battles leave it out (D21a, D26a, D32a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "0aae07586c81b3b9c1f0bc2c9190ab3bab39ccfc9d4b6ba2ea4ccfc4e85a6cfd", "changes": [{"select": {"type": "Battle"}, "fields": ["description", "properties.dead", "properties.p2 dead"], "count": 2}], "added": [], "removed": []}
 ```
+
+- P10c correction (Stefan's D34a): a destroyed Rich Extractor is valued exactly as a normal Extractor of the same race, as sc2reader's datapack values it (a Zerg Extractor: 75 minerals, 25 plus the Drone's 50), not at unitsInfo.csv's 25 as the entry above says. The Shield Battery stays at its table row, 100. No golden changes: no Rich Extractor dies on the three replays (and no Extractor; checked again on the regenerated goldens).
