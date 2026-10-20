@@ -82,7 +82,7 @@ class SinglesDetector(Detector):
         if gameHeatMapName in self.uploadedImagesTracker:
             gameHeatMapID = self.uploadedImagesTracker[gameHeatMapName]
 
-        g = GameNode(replay, gameHeatMapID)
+        g = GameNode(replay, gameHeatMapID, fixes=self.ctx.fixes)
         p1 = PlayerNode(replay.players[0], replay.players[1], 1)
         p2 = PlayerNode(replay.players[1], replay.players[0], 2)
 

@@ -91,8 +91,9 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: buildings and battle killers are named by their type at the time of the event, not their final type;
 #: P10, spell effects (Disruptor Phased, Adept Phase Shift) are no units, and eligibility reads the type at
 #: the event; S6 (D15a), a unit counts its type's supply when it finishes and the difference at each type
-#: change, and a Units group adds its units' supply at their event.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6")
+#: change, and a Units group adds its units' supply at their event; P9 (D17a), the Game node's time zone is
+#: the recording PC's offset (UTC-5), and its description says UTC (the date is UTC).
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9")
 
 
 #: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph

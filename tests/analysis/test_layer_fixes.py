@@ -30,7 +30,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -68,7 +68,7 @@ def test_unknown_fix_ids_are_refused():
     with pytest.raises(ValueError, match="unknown layer fix"):
         analyse(object(), MS_SC, fixes=("p1",))
     with pytest.raises(ValueError, match="unknown layer fix"):
-        detectors.createDetectors("replay", ("P1", "P9"))
+        detectors.createDetectors("replay", ("P1", "P99"))
 
 
 def test_create_detectors_takes_its_fixes_explicitly():
@@ -732,3 +732,31 @@ def test_s6_on_alcyone_the_supply_blocks_follow_the_type_at_the_time(supply):
     """The S6 entry's prediction (CHANGES.md): lilTiGGer's 6:42 block goes, blacksquall gets one at 14:43."""
     blocks = supply["fixed"][1]
     assert ("lilTiGGer", 402, 410) not in blocks and ("blacksquall", 883, 885) in blocks
+
+
+# --- P9 (D17a): the replay's time-zone offset ------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("offset", "faithful", "fixed"),
+    [(-5.0, "UTC", "UTC-5"), (1.0, "UTC+", "UTC+1"), (0.0, "UTC", "UTC"), (5.5, "UTC+", "UTC+5:30"), (-3.5, "UTC", "UTC-3:30")],
+)
+def test_p9_the_time_zone_value_is_the_recorders_offset_and_the_description_says_utc(offset, faithful, fixed):
+    from sc2mindshare.analysis.exports.gameNode import GameNode
+
+    players = [SimpleNamespace(result="Win", name="a"), SimpleNamespace(result="Loss", name="b")]
+    replay = SimpleNamespace(
+        map_name="M",
+        players=players,
+        time_zone=offset,
+        date="2024-07-24 07:55:57",
+        length="16.38",
+        speed="Faster",
+        is_ladder=True,
+        type="1v1",
+        category="Ladder",
+    )
+    for fixes, zone in (((), faithful), (("P9",), fixed)):
+        game = GameNode(replay, "", fixes=frozenset(fixes))
+        assert game.timeZone == zone
+        assert game.getNodeDescription().startswith("Played on 2024-07-24 07:55:57 UTC" + ("" if fixes else zone[3:]) + " for")
