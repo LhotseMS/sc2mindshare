@@ -29,6 +29,14 @@ MS_SC = pathlib.Path(os.environ.get("SC2MS_MS_SC", _root() / "MS SC"))
 ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
 
 
+def need(path):
+    """A missing input skips, or fails under SC2MS_REQUIRE_GOLDEN=1 (the harness's rule, QA design §1.4)."""
+    if not path.exists():
+        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
+            pytest.fail(f"missing input {path} (SC2MS_REQUIRE_GOLDEN=1)")
+        pytest.skip(f"missing input {path}")
+
+
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8")
 
@@ -815,8 +823,7 @@ def test_s6_a_counted_unit_takes_away_what_it_counted_at_death():
 def test_s6_the_detector_hands_every_type_change_of_a_counted_unit_to_the_supply(monkeypatch):
     """Morgan's G6 on S6 (N1): through the detector's own loop on Alcyone, the type changes reach moveUnitSupply,
     and the three Roaches that became Ravagers add 1 each at their cocoon."""
-    if not ALCYONE.exists():
-        pytest.skip(f"missing input {ALCYONE}")
+    need(ALCYONE)
     moves = []
     original = detectors.SimpleDetector.moveUnitSupply
 
