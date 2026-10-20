@@ -32,7 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
-from sc2mindshare.reader.compat import clean_name, object_text, supply_at, type_at, unit_text_at
+from sc2mindshare.reader.compat import clean_name, object_text, supply_at, type_at, unit_text_at, unnamed_missing_type
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
@@ -208,6 +208,7 @@ class SimpleDetector(EventsDetector):
         
         self.st = SupplyTracker(self.player1, self.player2, self.ctx.fixes)
         self.countedSupply = {}  # CR-023 S6: unit id -> the supply a finished unit counts now
+        self.supplyFlags = []  # CR-023 S8: (unit id, from type, missing type, frame) the rule kept unnamed
         self.supplyBlocks = list()
         
         # simple nodes are the ones that are 1:1 with events and don't need too much post processing
@@ -494,6 +495,11 @@ class SimpleDetector(EventsDetector):
         keeps it); the difference goes into the supply series at the change."""
         if e.unit is None or e.unit.id not in self.countedSupply:
             return
+        missing = unnamed_missing_type(e.unit, e.frame) if "S8" in self.ctx.fixes else None
+        if missing is not None:  # CR-023 S8: kept, but not passed over
+            previous = type_at(e.unit, e.frame - 1)
+            self.supplyFlags.append((e.unit.id, previous, missing, e.frame))
+            print(f"S8: unit {e.unit.id} became {missing}, missing from sc2reader's datapack and not a named mode; it keeps the supply of {previous}")
         new = supply_at(e.unit, e.frame)
         change = new - self.countedSupply[e.unit.id]
         if change:

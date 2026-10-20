@@ -30,7 +30,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -852,3 +852,35 @@ def test_s7_on_alcyone_the_drones_leave_at_placement(supply):
     """The S7 entry's prediction (CHANGES.md): lilTiGGer's 2:08 and 12:40 blocks go, the first starts at 0:41."""
     blocks = supply["fixed"][1]
     assert [b for b in blocks if b[0] == "lilTiGGer"] == [("lilTiGGer", 41, 57), ("lilTiGGer", 798, 823)]
+
+
+# --- S8: the missing-type supply rule names its modes and flags the rest -----------------------------------------
+
+
+def test_s8_a_named_mode_keeps_its_supply_quietly_and_any_other_missing_type_is_flagged():
+    from sc2mindshare.reader.compat import MODES_MISSING_FROM_THE_DATAPACK, unnamed_missing_type
+
+    assert MODES_MISSING_FROM_THE_DATAPACK["ObserverSiegeMode"] == "Observer"
+    assert MODES_MISSING_FROM_THE_DATAPACK["OverlordCocoon"] == "Overlord"
+    observer = _typed([(100, "Observer", 1), (700, "ObserverSiegeMode", 0)])
+    assert unnamed_missing_type(observer, 700) is None  # named: kept, no flag
+    lurker = _typed([(100, "Hydralisk", 2), (700, "LurkerMPEgg", 0)])  # not in the datapack, not named
+    assert unnamed_missing_type(lurker, 700) == "LurkerMPEgg"
+    roach = _typed([(100, "Roach", 2), (900, "RavagerCocoon", 3)])
+    assert unnamed_missing_type(roach, 900) is None  # in the datapack
+
+
+def test_s8_the_detector_records_an_unnamed_missing_type():
+    calls, flags = [], []
+    detector = SimpleNamespace(
+        ctx=SimpleNamespace(fixes=frozenset({"S6", "S8"})),
+        countedSupply={7: 2.0},
+        supplyFlags=flags,
+        st=SimpleNamespace(changeSupply=lambda *a, **k: calls.append(a)),
+    )
+    hydra = _typed([(100, "Hydralisk", 2), (700, "LurkerMPEgg", 0)])
+    hydra.id, hydra.owner = 7, "p"
+    with contextlib.redirect_stdout(io.StringIO()) as out:
+        detectors.SimpleDetector.moveUnitSupply(detector, SimpleNamespace(unit=hydra, frame=700, time="00:31"))
+    assert calls == [] and detector.countedSupply == {7: 2.0}  # the supply is kept
+    assert flags == [(7, "Hydralisk", "LurkerMPEgg", 700)] and "LurkerMPEgg" in out.getvalue()

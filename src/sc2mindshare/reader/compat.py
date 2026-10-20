@@ -58,13 +58,43 @@ def type_at(unit: Any, frame: int) -> str:
     return str(name if name is not None else unit.name)
 
 
+#: CR-023 S8: the types missing from sc2reader's datapack that are a mode or a cocoon of a type the unit already
+#: was (the value), whose supply the unit keeps, as in the game (Vera confirmed the mode switch).
+MODES_MISSING_FROM_THE_DATAPACK = {
+    "ObserverSiegeMode": "Observer",
+    "OverseerSiegeMode": "Overseer",
+    "OverlordTransport": "Overlord",
+    "OverlordCocoon": "Overlord",
+    "TransportOverlordCocoon": "Overlord",
+    "VikingFighter": "VikingAssault",
+    "HellionTank": "Hellion",
+    "LiberatorAG": "Liberator",
+    "ThorAP": "Thor",
+    "RavagerBurrowed": "Ravager",
+    "DroneBurrowed": "Drone",
+}
+
+
+def _datapack_names() -> set[str]:
+    from sc2reader.data import unit_lookup  # type: ignore[import-untyped]
+
+    return {name for race in ("Protoss", "Terran", "Zerg") for name in unit_lookup[race]}
+
+
+def unnamed_missing_type(unit: Any, frame: int) -> str | None:
+    """CR-023 S8: the unit's type at ``frame`` when it is missing from the datapack and not a named mode
+    (``MODES_MISSING_FROM_THE_DATAPACK``); None otherwise."""
+    name = type_at(unit, frame)
+    if name.lower() in _datapack_names() or name in MODES_MISSING_FROM_THE_DATAPACK:
+        return None
+    return name
+
+
 def supply_at(unit: Any, frame: int) -> float:
     """The unit's supply at ``frame`` (CR-023 S6, D15a): the supply of its type then, by upstream's type history
     and datapack (a cocoon counts its target's, RavagerCocoon 3); a type missing from the datapack keeps the
     supply the unit had (ObserverSiegeMode has none there). The unit's current type when the history is empty."""
-    from sc2reader.data import unit_lookup  # type: ignore[import-untyped]
-
-    known = {name for race in ("Protoss", "Terran", "Zerg") for name in unit_lookup[race]}
+    known = _datapack_names()
     supply: float | None = None
     for changed_at, unit_type in unit.type_history.items():
         if changed_at > frame:
