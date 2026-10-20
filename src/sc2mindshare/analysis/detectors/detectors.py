@@ -1054,7 +1054,7 @@ class BattleDetector(EventsDetector):
                 self.unitNodesCounts = {}
                 for deathEvent in self.battles[-1].getCountableDeaths():
                     if deathEvent.unit.unitsNode != None:
-                        if deathEvent.unit.is_building:
+                        if deathEvent.buildingDeath(self.ctx.fixes):  # CR-068 P10c: the two structures too
                             if deathEvent.unit.doneEvent == None:
                                 self.unitLinks.append(InitBuildingBattleLink(self.battles[-1], deathEvent.unit.initNode))
                             #else:
@@ -1205,7 +1205,7 @@ class BattleDetector(EventsDetector):
 
     def sortDeaths(self):
         # TODO the logic for identifying eligible UD events is all over the place, 3x?
-        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath()]
+        unitDeathEvents = [e for e in self.replay.events if isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit) and e.countableUnitDeath(self.ctx.fixes)]  # CR-068 P10c: battles form from them too
         
         self.deathsByTime = {}
         for e in unitDeathEvents:

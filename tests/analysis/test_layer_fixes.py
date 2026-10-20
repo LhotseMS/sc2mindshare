@@ -1131,21 +1131,22 @@ def test_p10c_on_alcyone_battle_12_and_27_count_the_battery(p10c_battles):
 def test_p10c_on_alcyone_the_battery_counts_as_a_photon_cannon_would(p10c_battles):
     """AC-1's differential: the same death as a Photon Cannon (sc2reader: a building, 150 minerals)."""
     runs, _ = p10c_battles
-    _same_but_the_structure(runs["fixed"], runs["cannon"], {11: 50})
+    _same_but_the_structure(runs["fixed"], runs["cannon"], 11)
 
 
-def _same_but_the_structure(battery, other, mineral_gap, other_name="Photon Cannon"):
-    """Every battle is the same but for the structure's name and, in the battles listed, blacksquall's minerals
-    lost, by the gap (the other structure's cost minus the battery's)."""
-    for i, (b, o) in enumerate(zip(battery, other, strict=True)):
-        rename = lambda d: {other_name if k == "Shield Battery" else k: v for k, v in d.items()}
-        assert (b["start"], b["end"], b["dead"], b["supply"], b["gas"], b["kills"]) == (
-            o["start"], o["end"], o["dead"], o["supply"], o["gas"], o["kills"]
-        ), i  # fmt: skip
-        assert tuple(rename(d) for d in b["lost"]) == o["lost"], i
-        assert b["name"].replace("Shield Battery", other_name) == o["name"], i
-        assert o["minerals"][1] - b["minerals"][1] == mineral_gap.get(i, 0), i
-        assert o["minerals"][0] == b["minerals"][0], i
+def _same_but_the_structure(battery, cannon, swapped):
+    """Every battle is the same, but in the one with the swapped death (index ``swapped``) the structure's name
+    and blacksquall's minerals lost, by 50 (a Photon Cannon's 150, sc2reader's, minus the battery's 100). The
+    other battery (14:33) is a battery in both runs."""
+    for i, (b, o) in enumerate(zip(battery, cannon, strict=True)):
+        same = ("start", "end", "dead", "supply", "gas", "kills")
+        assert [b[k] for k in same] == [o[k] for k in same], i
+        lost, name, gap = b["lost"], b["name"], 0
+        if i == swapped:
+            lost = (lost[0], {"Photon Cannon" if k == "Shield Battery" else k: v for k, v in lost[1].items()})
+            name, gap = name.replace("ShieldBattery", "PhotonCannon"), 50
+        assert (lost, name) == (o["lost"], o["name"]), i
+        assert (o["minerals"][0], o["minerals"][1] - gap) == b["minerals"], i
 
 
 def test_p10c_a_lone_battery_death_starts_a_battle_as_a_photon_cannon_does(p10c_battles):
@@ -1155,7 +1156,7 @@ def test_p10c_a_lone_battery_death_starts_a_battle_as_a_photon_cannon_does(p10c_
     new = runs["lone"][i + 1]
     assert (new["dead"], new["minerals"][1], new["supply"], new["lost"][1]) == ((0, 1), 100, (0, 0), {"Shield Battery": 1})
     assert new["start"] == new["end"] == runs["lone-without"][i]["end"] + 6
-    _same_but_the_structure(runs["lone"], runs["lone-cannon"], {i + 1: 50})
+    _same_but_the_structure(runs["lone"], runs["lone-cannon"], i + 1)
 
 
 def test_p10c_a_battery_death_just_after_a_battle_extends_it_as_a_photon_cannon_does(p10c_battles):
@@ -1165,7 +1166,7 @@ def test_p10c_a_battery_death_just_after_a_battle_extends_it_as_a_photon_cannon_
     assert len(runs["extend"]) == len(runs["extend-without"])
     assert (new["start"], new["end"]) == (old["start"], old["end"] + 2)
     assert new["dead"] == (old["dead"][0], old["dead"][1] + 1)
-    _same_but_the_structure(runs["extend"], runs["extend-cannon"], {i: 50})
+    _same_but_the_structure(runs["extend"], runs["extend-cannon"], i)
 
 
 def test_p10c_a_rich_extractor_counts_as_an_extractor_at_the_unit_tables_cost(p10c_battles):

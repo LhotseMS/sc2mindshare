@@ -432,16 +432,16 @@
   },
   {
    "name": "Roachs Zerglings Adepts Zealots Stalkers Probes died near blacksquall Natural",
-   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 16 units, 24 supply, 1375 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(3), Roach killed Probe(6), \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed Zergling, \n \nLOST: Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
+   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 17 units, 24 supply, 1475 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(3), Roach killed Probe(6), \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed Zergling, \n \nLOST: Shield Battery, Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
    "type": "Battle",
    "ID": "Battle-12",
    "size": 2.345,
    "properties": {
     "time": "00:07:36",
     "player": "Common",
-    "dead": 22,
+    "dead": 23,
     "p1 dead": 6,
-    "p2 dead": 16,
+    "p2 dead": 17,
     "supply dead": 34.5,
     "end time": "00:07:57"
    },
@@ -747,16 +747,16 @@
   },
   {
    "name": "Zerglings Probes Zealots died near blacksquall Natural",
-   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 15 units, 3 supply, 1675 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe, Zergling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed Zergling(41), Zealot killed Zergling(9), Immortal killed Zergling(3), Stalker killed Zergling(6), Void Ray killed Zergling(11), High Templar killed Zergling, \n \nLOST: Pylon(9), Assimilator(3), Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
+   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 16 units, 3 supply, 1775 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe, Zergling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed Zergling(41), Zealot killed Zergling(9), Immortal killed Zergling(3), Stalker killed Zergling(6), Void Ray killed Zergling(11), High Templar killed Zergling, \n \nLOST: Pylon(9), Assimilator(3), Shield Battery, Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-27",
    "size": 2.385,
    "properties": {
     "time": "00:14:31",
     "player": "Common",
-    "dead": 86,
+    "dead": 87,
     "p1 dead": 71,
-    "p2 dead": 15,
+    "p2 dead": 16,
     "supply dead": 38.5,
     "end time": "00:15:05"
    },

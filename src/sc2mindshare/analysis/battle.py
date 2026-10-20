@@ -1,4 +1,4 @@
-from sc2mindshare.reader.compat import clean_name, object_text, unit_text_at
+from sc2mindshare.reader.compat import P10B_STRUCTURES, clean_name, object_text, unit_text_at
 # add focus fire, a moves, abilities
 import datetime
 import sc2mindshare.analysis.detectors.detectors
@@ -149,15 +149,16 @@ class Battle(PlayerHandler):
 
                 try:            
                     self.deadUnitsByPlayer[e.unit.owner].append(e)
-                    self.supplyLost[e.unit.owner] += e.unit.supply
-                    self.minLost[e.unit.owner] += e.unit.minerals
-                    self.gasLost[e.unit.owner] += e.unit.vespene
+                    minerals, vespene, supply = self.deathCost(e)
+                    self.supplyLost[e.unit.owner] += supply
+                    self.minLost[e.unit.owner] += minerals
+                    self.gasLost[e.unit.owner] += vespene
 
-                    self.losses[e.unit.owner].minerals = self.losses[e.unit.owner].minerals + e.unit.minerals
-                    self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + e.unit.vespene
-                    self.losses[e.unit.owner].supply = self.losses[e.unit.owner].supply + e.unit.supply
+                    self.losses[e.unit.owner].minerals = self.losses[e.unit.owner].minerals + minerals
+                    self.losses[e.unit.owner].gas = self.losses[e.unit.owner].gas + vespene
+                    self.losses[e.unit.owner].supply = self.losses[e.unit.owner].supply + supply
                 
-                    if e.unit.supply >= self.BIG_UNIT_SUPPLY_THRESHOLD:
+                    if supply >= self.BIG_UNIT_SUPPLY_THRESHOLD:
                         self.bigUnitsLost[e.player] += 1
 
                     # print(f"Adding {secOfDying.second} {unit} {unit.killing_unit} {unit.type}")
@@ -282,7 +283,7 @@ class Battle(PlayerHandler):
                 self.eventsByPlayer[e.player].append(e)
 
             elif isinstance(e, UnitDiedEvent): 
-                if e.countableUnitDeath():
+                if e.countableUnitDeath(self.ctx.fixes):
                     self.eventsByPlayer[e.unit.owner].append(e)
                     screenEventsBuffer[e.player].append(e)
                     self.processLocationEvent(e)
@@ -351,7 +352,16 @@ class Battle(PlayerHandler):
         return self.supplyLost[self.player1] + self.supplyLost[self.player2]
 
     def getCountableDeaths(self):
-        return [e for e in self.events if isinstance(e, UnitDiedEvent) and e.countableUnitDeath()] 
+        return [e for e in self.events if isinstance(e, UnitDiedEvent) and e.countableUnitDeath(self.ctx.fixes)]
+
+    def deathCost(self, e):
+        """Minerals, gas and supply a death costs its owner: sc2reader's values for the unit. CR-068 P10c: a
+        Shield Battery's or Rich Extractor's from the unitsInfo.csv row it builds as (sc2reader gives 0, 0, 0;
+        the table's Supply cell is empty for both), supply 0."""
+        if "P10c" in self.ctx.fixes and e.unit.name in P10B_STRUCTURES:
+            row = self.ctx.simple.unitsInfoDict[P10B_STRUCTURES[e.unit.name]]
+            return int(row["Minerals"] or 0), int(row["Gas"] or 0), 0
+        return e.unit.minerals, e.unit.vespene, e.unit.supply
                 
     # TODO duplicate with detectors
     def otherPlayer(self, player):
@@ -372,7 +382,7 @@ class Battle(PlayerHandler):
             else:
                 MsUtils.iterateType(self.nonCombatAbilitiesTypes[e.player],clean_name(e.ability_name, True, self.ctx.fixes))
         elif isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit):
-            if e.buildingDeath():
+            if e.buildingDeath(self.ctx.fixes):  # a structure's death: LOST only, not KILLS (D32a)
                 MsUtils.iterateType(self.deadBuildingsTypes[e.player], object_text(e.unit, self.ctx.fixes))
             else:
                 # TODO the logic of the key (string of unit names) should be somewher else
