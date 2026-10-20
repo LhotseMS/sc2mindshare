@@ -17,6 +17,19 @@ from sc2mindshare.export.time_text import text_values
 
 X_LD = "X_LD"
 
+#: CR-067 (export fix G2; D24a): the Game node's properties in their order, each with the domain field it reads
+#: (``FIELDS["Game"]``) and its Mindshare data type. The names avoid ``duration`` and ``type``, which other node
+#: types already declare with other data types.
+GAME_PROPERTIES: tuple[tuple[str, str, str], ...] = (
+    ("date played (UTC)", "date", "string"),
+    ("time zone", "timezone", "typelist"),
+    ("length", "duration", "time[h:m:s]"),
+    ("game type", "type", "typelist"),
+    ("ladder", "ladder", "bool"),
+    ("category", "category", "typelist"),
+    ("speed", "speed", "typelist"),
+)
+
 #: The Stats properties in the order the workbook wrote them.
 STATS_ORDER = (
     "workers",
@@ -126,6 +139,10 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
         props |= {name: vba_integer(v[name]) for name in STATS_ORDER}
     elif kind == "Game":
         view["size"] = [10, 3.3]
+        if "G2" in export_fixes:  # CR-067 G2: the values the workbook view dropped, in D24a's order
+            props |= {
+                name: v[field] == "True" if data_type == "bool" else v[field] for name, field, data_type in GAME_PROPERTIES
+            }
     elif kind == "Player":
         view["size"] = [7.8, 2.2]
     view["properties"] = props

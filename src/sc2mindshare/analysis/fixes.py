@@ -95,15 +95,19 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: the recording PC's offset (UTC-5), and its description says UTC (the date is UTC); P10b (D18a), Shield
 #: Batteries and rich Extractors are structures (Building and Initiated nodes), not units; S7, a Drone's supply
 #: leaves when its structure is placed, and the limit is the providers' total capped at 200; S8, a type missing
-#: from the datapack that is not a named mode is flagged (SimpleDetector.supplyFlags) when a counted unit takes it.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8")
+#: from the datapack that is not a named mode is flagged (SimpleDetector.supplyFlags) when a counted unit takes it;
+#: G1 (CR-067), the Game node's game type is the replay's, its length keeps its hours and its date has its own format.
+LAYER_FIXES: tuple[str, ...] = (
+    "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "G1",
+)  # fmt: skip
 
 
 #: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph
 #: (``Graph.export_fixes``) and on with the graph fixes: B3, an Ability's ``combat``, ``queued`` and
 #: ``minimap`` are emitted (the workbook never set ``combatSet``); P13 (B11), every time property is
-#: ``hh:mm:ss`` of game time (export.time_text); B12 (D16a), ``detail`` lists only properties that exist.
-EXPORT_FIXES: tuple[str, ...] = ("B3", "P13", "B12")
+#: ``hh:mm:ss`` of game time (export.time_text); B12 (D16a), ``detail`` lists only properties that exist; G2
+#: (CR-067; D20a, D24a), the Game node carries its seven properties, with their data types and a Details entry.
+EXPORT_FIXES: tuple[str, ...] = ("B3", "P13", "B12", "G2")
 
 
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:

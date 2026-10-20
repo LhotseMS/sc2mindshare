@@ -292,7 +292,7 @@ def test_document_key_order_and_config_parts(document):
 def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_description(document):
     """A9 (P3d) as amended by D3c (P3e): the bug-faithful document keeps the legacy wrap; the current one
     shows 00:00:00 with the same property keys as every other Building, and the real start in the
-    description. dataTypes is the workbook's, unchanged."""
+    description. dataTypes keeps the workbook's entries unchanged (CR-067's G2 adds the Game types after them)."""
     faithful = {n["ID"]: n for n in document["faithful"]["nodes"]}
     current = {n["ID"]: n for n in document["current"]["nodes"]}
     # N1: lilTiGGer's main base was a Hatchery then (the bug-faithful document names its final type, Hive)
@@ -303,7 +303,9 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
         assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
         assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind_now}
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
-    assert document["faithful"]["dataTypes"] == document["current"]["dataTypes"] == load_config()["dataTypes"]
+    workbook = load_config()["dataTypes"]
+    assert document["faithful"]["dataTypes"] == workbook
+    assert {name: document["current"]["dataTypes"][name] for name in workbook} == workbook
 
 
 def _key_lists_per_type(doc):

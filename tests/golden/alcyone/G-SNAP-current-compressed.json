@@ -111,6 +111,13 @@
    "properties": [
     "time"
    ]
+  },
+  {
+   "nodeType": "Game",
+   "properties": [
+    "date played (UTC)",
+    "length"
+   ]
   }
  ],
  "dataTypes": {
@@ -145,7 +152,14 @@
   "used Min": "int",
   "used Gas": "int",
   "tech Min": "int",
-  "tech Gas": "int"
+  "tech Gas": "int",
+  "date played (UTC)": "string",
+  "time zone": "typelist",
+  "length": "time[h:m:s]",
+  "game type": "typelist",
+  "ladder": "bool",
+  "category": "typelist",
+  "speed": "typelist"
  },
  "nodes": [
   {
@@ -160,7 +174,15 @@
     10,
     3.3
    ],
-   "properties": {},
+   "properties": {
+    "date played (UTC)": "2024-07-24 07:55:57",
+    "time zone": "UTC-5",
+    "length": "00:16:38",
+    "game type": "1v1",
+    "ladder": true,
+    "category": "Ladder",
+    "speed": "Faster"
+   },
    "position": {
     "x": -12,
     "y": 0,

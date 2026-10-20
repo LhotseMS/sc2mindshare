@@ -15,7 +15,7 @@ from typing import Any
 
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.models import Graph
-from sc2mindshare.export.view import link_view, node_view
+from sc2mindshare.export.view import GAME_PROPERTIES, link_view, node_view
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutResult
 
@@ -87,7 +87,7 @@ def build_document(
     document = {
         "visuals": cfg["visuals"],
         "detail": detail_for(cfg["detail"], graph.export_fixes),
-        "dataTypes": cfg["dataTypes"],
+        "dataTypes": data_types_for(cfg["dataTypes"], graph.export_fixes),
         "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
     }
@@ -98,16 +98,34 @@ def build_document(
 
 def detail_for(detail: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
     """The workbook's ``detail``; with the export fix ``B12`` (CR-023, D16a) only properties that exist: Stats'
-    "eco Min" (the layer emits no economy spending) is dropped and Initiated's "subtype" is its "type"."""
-    if "B12" not in export_fixes:
-        return detail
-    out = []
-    for entry in detail:
-        props = [p for p in entry["properties"] if not (entry["nodeType"] == "Stats" and p == "eco Min")]
-        if entry["nodeType"] == "Initiated":
-            props = ["type" if p == "subtype" else p for p in props]
-        out.append({**entry, "properties": props})
+    "eco Min" (the layer emits no economy spending) is dropped and Initiated's "subtype" is its "type"; with ``G2``
+    (CR-067) a Game entry follows the others."""
+    out = list(detail)
+    if "B12" in export_fixes:
+        out = []
+        for entry in detail:
+            props = [p for p in entry["properties"] if not (entry["nodeType"] == "Stats" and p == "eco Min")]
+            if entry["nodeType"] == "Initiated":
+                props = ["type" if p == "subtype" else p for p in props]
+            out.append({**entry, "properties": props})
+    if "G2" in export_fixes:  # CR-067 G2: the Game node's date and length as its details
+        out.append({"nodeType": "Game", "properties": list(GAME_DETAIL)})
     return out
+
+
+#: CR-067 G2: the Game properties its Details entry names.
+GAME_DETAIL = ("date played (UTC)", "length")
+
+
+def data_types_for(data_types: dict[str, str], export_fixes: frozenset[str]) -> dict[str, str]:
+    """The workbook's ``dataTypes``; with the export fix ``G2`` (CR-067) the Game properties' types follow, after the
+    workbook's entries, none of which changes (their names are new: ``view.GAME_PROPERTIES``)."""
+    if "G2" not in export_fixes:
+        return data_types
+    added = {name: data_type for name, _field, data_type in GAME_PROPERTIES}
+    if clash := sorted(set(added) & set(data_types)):
+        raise ValueError(f"G2: the Game properties {clash} are already declared in dataTypes")
+    return data_types | added
 
 
 def _vba_numbers(value: Any) -> Any:

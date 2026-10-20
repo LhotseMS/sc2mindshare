@@ -67,7 +67,8 @@
     {"if": {"properties": {"type": {"const": "Ability"}}}, "then": {"properties": {"size": {"$ref": "#/$defs/rectangle"}, "properties": {"$ref": "#/$defs/abilityProperties"}}}},
     {"if": {"properties": {"type": {"enum": ["Building", "Initiated"]}}}, "then": {"properties": {"size": {"$ref": "#/$defs/rectangle"}, "properties": {"$ref": "#/$defs/typedTimelineProperties"}}}},
     {"if": {"properties": {"type": {"enum": ["Upgrade", "Chat", "Energy Excess", "Inject Delay", "Harrasment", "Scouting"]}}}, "then": {"properties": {"size": {"$ref": "#/$defs/rectangle"}, "properties": {"$ref": "#/$defs/timelineProperties"}}}},
-    {"if": {"properties": {"type": {"enum": ["Game", "Player"]}}}, "then": {"properties": {"size": {"$ref": "#/$defs/rectangle"}}}}
+    {"if": {"properties": {"type": {"enum": ["Game", "Player"]}}}, "then": {"properties": {"size": {"$ref": "#/$defs/rectangle"}}}},
+    {"if": {"properties": {"type": {"const": "Game"}}}, "then": {"properties": {"properties": {"$ref": "#/$defs/gameProperties"}}}}
    ]
   },
   "clock": {
@@ -128,6 +129,20 @@
     "army Gas": {"type": "integer"},
     "used Min": {"type": "integer"},
     "used Gas": {"type": "integer"}
+   }
+  },
+  "gameProperties": {
+   "description": "CR-067 (export fix G2): the Game node's seven properties, in D24a's order",
+   "type": "object",
+   "required": ["date played (UTC)", "time zone", "length", "game type", "ladder", "category", "speed"],
+   "properties": {
+    "date played (UTC)": {"type": "string"},
+    "time zone": {"type": "string"},
+    "length": {"$ref": "#/$defs/time"},
+    "game type": {"type": "string"},
+    "ladder": {"type": "boolean"},
+    "category": {"type": "string"},
+    "speed": {"type": "string"}
    }
   },
   "supplyBlockProperties": {
