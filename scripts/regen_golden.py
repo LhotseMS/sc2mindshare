@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import csv
+import hashlib
 import importlib.util
 import io
 import json
@@ -94,6 +95,19 @@ REGENERABLE: dict[str, Callable[[], str]] = {
 }
 
 
+def _was_in_history(name: str, sha256: str) -> bool:
+    """Whether some committed version of the golden had this sha256 (the entry's base, applied since)."""
+    rel = f"tests/golden/alcyone/{name}"
+    log = subprocess.run(
+        ["git", "-C", str(CHECKOUT), "log", "--format=%H", "--", rel], check=True, capture_output=True, text=True
+    ).stdout.split()
+    for sha in log:
+        blob = subprocess.run(["git", "-C", str(CHECKOUT), "show", f"{sha}:{rel}"], check=False, capture_output=True)
+        if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == sha256:
+            return True
+    return False
+
+
 def regenerate(entry_id: str, name: str, write: bool) -> int:
     """Make ``name`` with the current code, check it against the entry (C3, C4), write it if asked."""
     entry = check_golden_delta.entries(CHANGES.read_text(encoding="utf-8")).get(entry_id)
@@ -106,8 +120,9 @@ def regenerate(entry_id: str, name: str, write: bool) -> int:
     clock_map = golden.load_clock_map(root() / "MS SC" / "TimeImageTracking.csv")
     text = REGENERABLE[name]()
     on_disk = GOLDEN / name
-    if text == on_disk.read_text(encoding="utf-8") and golden.sha256(on_disk) != entry["base_sha256"]:
-        # the golden is already the code's output and no longer the entry's base: applied before
+    applied = golden.sha256(on_disk) != entry["base_sha256"] and _was_in_history(name, entry["base_sha256"])
+    if text == on_disk.read_text(encoding="utf-8") and applied:
+        # the golden is the code's output, and the entry's base is an earlier version of it: applied before
         print(f"{name}: entry {entry_id} is already applied (the golden is the code's output); nothing written")
         return 0
     with tempfile.TemporaryDirectory() as tmp:

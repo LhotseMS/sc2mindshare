@@ -43,6 +43,7 @@ GAMES = {
     "spine": MS_SC / "200k dmg spine crawler ZvP.SC2Replay",
 }
 PITCH = Profile().row_pitch
+assert PITCH == 2.5  # the literals below are in units of the row pitch (spec §4)
 SUPPLY_BLOCKS = {"alcyone": 11, "spine": 0}  # spine has none: the width property is exercised on Alcyone
 
 

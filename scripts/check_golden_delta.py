@@ -137,7 +137,10 @@ def _adds(repo: Path, sha: str, changes_rel: str, marker: str) -> bool:
 
 
 def _is_product_change(path: str, changes_rel: str) -> bool:
-    """A golden or product file; the ledger itself and test modules (``test_*.py``) are not."""
+    """A golden or product file; the ledger itself and test modules (``test_*.py``) are not.
+
+    Test edits under ``tests/golden/`` are therefore reviewed, not gated: C1 does not order them against
+    an entry, so the reviewer checks that a test change does not weaken what the goldens prove."""
     return path.startswith(WATCHED) and path != changes_rel and not Path(path).name.startswith("test_")
 
 
