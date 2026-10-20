@@ -502,3 +502,8 @@ The workbook's Details sheet marks the properties Mindshare shows as a node's de
 ```json
 {"entry": "B12-snap-linear", "task": "CR-023", "defect": "B12 detail lists eco Min, which is no property, and Initiated subtype, which is type (D16a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "eb44e37feb5549b534a4ad5376ba001f4d8799b3226a297b20678be54163e859", "changes": [{"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### P9: the replay's time-zone offset is printed (CR-023, T22; D17a; no golden changes)
+
+The Game node writes its time zone as `"UTC+".format(offset)` (no placeholder: "UTC+" with no number) for a positive offset and "UTC" otherwise, and the description "Played on <date> <time zone>" uses the same text. sc2reader's `replay.date` is the game's end in UTC, and `replay.time_zone` is the offset of the PC that recorded the replay (Alcyone -5, spine +1). Fix (Stefan's D17a): the description keeps the date in UTC with "UTC" ("Played on 2024-07-24 07:55:57 UTC for ..."), and the Game node's time-zone value is the recorder's offset, "UTC-5" / "UTC+1" ("UTC+5:30" for a half hour; "UTC" for none). Applied inside the layer as ledger id `P9`. Predicted: no golden changes. Alcyone's description already reads "UTC", and the Mindshare document emits no Game properties (the view writes the Game node's name, description and size only), so the new value shows in the domain node and the legacy-format outputs, not in the goldens; spine's description changes from "UTC+" to "UTC" (spine has no current goldens). No entry block; tests pin the texts.
