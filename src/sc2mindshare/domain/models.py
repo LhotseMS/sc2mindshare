@@ -45,6 +45,10 @@ FIELDS: Mapping[str, tuple[str, ...]] = {
     "Chat": ("time", "player"),
 }
 
+#: Properties a ledger fix may add to a node, beyond its kind's legacy fields (``Node.extra``).
+#: "pre-game time": the signed start of a pre-game item as ``-hh:mm:ss`` (P3d, D7a A9).
+EXTRA_FIELDS: tuple[str, ...] = ("pre-game time",)
+
 
 @dataclass(frozen=True)
 class Node:
@@ -55,6 +59,8 @@ class Node:
     images: tuple[str, ...]
     values: tuple[tuple[str, str], ...]
     start_seconds: int | None
+    #: Properties added by ledger fixes (names from EXTRA_FIELDS), exported after the kind's own.
+    extra: tuple[tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         if self.kind not in FIELDS:
@@ -64,6 +70,11 @@ class Node:
             raise ValueError(f"{self.id}: fields {names} are not the declared {FIELDS[self.kind]}")
         if (self.start_seconds is None) != (self.kind in ("Game", "Player")):
             raise ValueError(f"{self.id}: start_seconds is required for every kind but Game and Player")
+        extra_names = [name for name, _ in self.extra]
+        if undeclared := [name for name in extra_names if name not in EXTRA_FIELDS]:
+            raise ValueError(f"{self.id}: undeclared extra properties {undeclared} (EXTRA_FIELDS)")
+        if len(set(extra_names)) != len(extra_names):
+            raise ValueError(f"{self.id}: repeated extra properties {extra_names}")
 
     def value(self, name: str) -> str:
         return dict(self.values)[name]

@@ -17,6 +17,10 @@ from sc2mindshare.export.view import link_view, node_view
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutResult
 
+#: The Mindshare data type of each property a ledger fix may add (domain.models.EXTRA_FIELDS).
+#: "pre-game time" is text: ``time[h:m:s]`` cannot hold a negative time.
+EXTRA_DATA_TYPES: dict[str, str] = {"pre-game time": "string"}
+
 
 def load_config() -> dict[str, Any]:
     root = files("sc2mindshare") / "config"
@@ -64,14 +68,28 @@ def build_document(
                     "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
                 }
             )
+    used = {name for node in graph.nodes for name, _ in node.extra}
+    data_types = cfg["dataTypes"] | {name: kind for name, kind in EXTRA_DATA_TYPES.items() if name in used}
     return {
         "visuals": cfg["visuals"],
         "detail": cfg["detail"],
-        "dataTypes": cfg["dataTypes"],
+        "dataTypes": data_types,
         "nodes": nodes,
         "links": [link_view(lk) for lk in graph.links],
     }
 
 
+def _vba_numbers(value: Any) -> Any:
+    """Whole-number floats as integers, as VBA-JSON writes a Double (``2``, not ``2.0``; D7a A12)."""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)  # -0.0 becomes 0
+    if isinstance(value, dict):
+        return {k: _vba_numbers(v) for k, v in value.items()}
+    if isinstance(value, list | tuple):
+        return [_vba_numbers(v) for v in value]
+    return value
+
+
 def to_json(document: dict[str, Any]) -> str:
-    return json.dumps(document, ensure_ascii=False, indent=1) + "\n"
+    """The document as text, numbers in VBA-JSON's format (after the 4-decimal rounding of ``_num``)."""
+    return json.dumps(_vba_numbers(document), ensure_ascii=False, indent=1) + "\n"

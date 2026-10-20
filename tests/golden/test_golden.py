@@ -142,6 +142,27 @@ def test_h22_legacy_output_is_hash_seed_stable(tmp_path):
     assert len(set(outputs.values())) == 1
 
 
+_LEGACY_DATAPACK = """
+import sys
+import sc2reader
+replay = sc2reader.load_replay(sys.argv[1], load_level=2, load_map=False)
+print(sc2reader.__file__)
+print(replay.build, replay.expansion, replay.datapack.id)
+"""
+
+
+def test_legacy_alcyone_uses_data_pack_89720():
+    """CR-008 (D0): G-CSV-1 is byte-identical under 80949 and 89720, so the golden cannot pin the
+    registration; this does. Alcyone is build 92440, so 89720 applies (89634 <= build)."""
+    need(LEGACY_PY, "this checkout's .venv-legacy (scripts/legacy-env)")
+    need(REPLAY, "Alcyone replay")
+    out = subprocess.run(
+        [str(LEGACY_PY), "-c", _LEGACY_DATAPACK, str(REPLAY)], check=True, capture_output=True, text=True
+    ).stdout.splitlines()
+    assert pathlib.Path(out[0]).is_relative_to(CHECKOUT / "legacy")  # the fork tree, not upstream 1.9.0
+    assert out[1] == "92440 LotV 89720"
+
+
 def test_golden_counts(csv_golden, view_golden):
     assert len(csv_golden.split("\n")) == 1084  # 1083 lines and the final newline
     assert (len(view_golden["nodes"]), len(view_golden["links"])) == (665, 412)

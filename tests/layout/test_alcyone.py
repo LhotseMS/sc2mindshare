@@ -176,6 +176,18 @@ def test_snapshot(graph, clock_map, mode):
     assert report.ok, str(report)
     assert report.budget_actual["M2"] == 136 and report.budget_actual["M2 unknown"] == 0
     assert all(n["position"]["z"] == 0.01 for n in doc["nodes"])
-    view = copy.deepcopy(doc)
+
+
+@pytest.mark.parametrize("mode", ["compressed", "linear"])
+def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
+    """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-1."""
+    doc = _document(graph, clock_map, mode)
+    by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")
     current = json.loads((GOLDEN / "G-VIEW-current.json").read_text(encoding="utf-8"))
-    assert golden.diff_json(current, view, by_media, view=True).ok  # the layout changed only what it owns
+    view_report = golden.diff_json(current, copy.deepcopy(doc), by_media, view=True)
+    assert view_report.ok, str(view_report)
+    # diff_json leaves the M4 counts out of its budget comparison (a view golden has no positions or
+    # clocks), so they are asserted here (Morgan's CR-014 P2): every one of the 665 graph nodes has a
+    # position, and the 136 clock nodes (68 occupied windows without Stats, x 2 sides) are all present.
+    assert (view_report.budget_expected["M4 clock"], view_report.budget_expected["M4 position"]) == (0, 0)
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (136, 665)
