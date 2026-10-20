@@ -126,6 +126,7 @@ def test_view_golden_holds_the_view_size_of_every_supply_block(view_golden):
     assert all(n["size"] == [2.65, 1] for n in blocks)  # TD-21, Leo's condition 1
 
 
+@pytest.mark.legacy  # runs the old fork in .venv-legacy (CR-019)
 def test_csv_golden_is_what_the_legacy_code_writes_now(tmp_path, csv_golden):
     need(LEGACY_PY, "this checkout's .venv-legacy (scripts/legacy-env)")
     golden.check_pins(ALCYONE / "INPUTS.sha256", _inputs())
@@ -135,6 +136,7 @@ def test_csv_golden_is_what_the_legacy_code_writes_now(tmp_path, csv_golden):
     assert (tmp_path / REPLAY.stem / "Intervals.csv").read_text() == (ALCYONE / "Intervals-1.csv").read_text()
 
 
+@pytest.mark.legacy  # runs the old fork in .venv-legacy (CR-019)
 def test_h22_legacy_output_is_hash_seed_stable(tmp_path):
     need(LEGACY_PY, "this checkout's .venv-legacy (scripts/legacy-env)")
     need(REPLAY, "Alcyone replay")
@@ -151,6 +153,7 @@ print(replay.build, replay.expansion, replay.datapack.id)
 """
 
 
+@pytest.mark.legacy  # runs the old fork in .venv-legacy (CR-019)
 def test_legacy_alcyone_uses_data_pack_89720():
     """CR-008 (D0): G-CSV-1 is byte-identical under 80949 and 89720, so the golden cannot pin the
     registration; this does. Alcyone is build 92440, so 89720 applies (89634 <= build)."""

@@ -34,6 +34,7 @@ addopts = "--import-mode=importlib -p no:cacheprovider"
 markers = [
   "pin_conformance: upstream sc2reader v1.9.0's own test suite, run against the pin (TD-7)",
   "network: needs the network (map downloads); deselect offline with -m 'not network'",
+  "legacy: runs the old fork in this checkout's .venv-legacy; without it, deselect with -m 'not legacy' (CR-019)",
 ]
 
 [tool.mypy]
