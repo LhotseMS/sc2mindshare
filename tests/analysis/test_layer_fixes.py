@@ -864,37 +864,33 @@ def test_s7_on_alcyone_the_drones_leave_at_placement(supply):
 # --- S7 follow-ups (Morgan's N1 on S7): the cancellation path ------------------------------------------------------
 
 
-def test_s7_a_cancelled_placement_gives_the_drone_back_a_killed_one_does_not_and_an_unknown_one_is_flagged():
+def test_s7_an_unfinished_placement_that_dies_gives_nothing_back_and_leaves_the_drone_matching():
+    """Morgan's G6 on 169c1fb (P2): a cancel gives nothing back here, because the replay hands the Drone back as a
+    new birth, which the birth path counts; a destroyed one's Drone is gone. Either way the placement leaves the
+    Drone matching, so no later Drone death can be taken for it."""
     calls = []
     owner = "p"
     st = SimpleNamespace(changeSupply=lambda player, time, change, frame=None: calls.append(change))
-
-    def run(killing_player):
+    for killing_player in (owner, "q", None):  # cancelled, destroyed, unknown
         building = SimpleNamespace(name="Extractor", doneEvent=None, owner=owner, id=9)
         placed = SimpleNamespace(unit=building, frame=1680, x=10, y=10)
         detector = SimpleNamespace(
-            ctx=SimpleNamespace(fixes=frozenset({"S7"})),
-            placements={owner: [placed]},
-            countedSupply={},
-            st=st,
-            placementFlags=[],
+            ctx=SimpleNamespace(fixes=frozenset({"S7"})), placements={owner: [placed]}, countedSupply={}, st=st
         )
         death = SimpleNamespace(
             unit=building, killer_pid=None, killing_player=killing_player, frame=1880, time="01:24", x=10, y=10
         )
-        with contextlib.redirect_stdout(io.StringIO()) as out:
-            settled = detectors.SimpleDetector.settlePlacement(detector, death)
-        return settled, detector.placements[owner], detector.placementFlags, out.getvalue()
-
-    assert run(owner)[:3] == (False, [], []) and calls == [1]  # cancelled by its owner: the Drone comes back
-    assert run("q")[:3] == (False, [], []) and calls == [1]  # destroyed: the Drone is gone
-    settled, left, flags, log = run(None)  # no killing player: not recognised as either
-    assert (settled, left, calls) == (False, [], [1]) and flags == [(9, "Extractor", 1880)] and "S7" in log
+        assert detectors.SimpleDetector.settlePlacement(detector, death) is False
+        assert detector.placements[owner] == []
+        drone = SimpleNamespace(unit=SimpleNamespace(name="Drone", owner=owner, id=5), killer_pid=None, frame=1990, x=10, y=10)
+        assert detectors.SimpleDetector.settlePlacement(detector, drone) is False  # not taken for the gone placement
+    assert calls == []
 
 
 def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
-    """Vera's G7 on S7: Piliskner places an Extractor at 1:15 and cancels it at 1:24; the Drone's supply leaves at
-    the placement and comes back at the cancel (the game: 16 -> 14 -> 16 workers around it)."""
+    """Vera's G7 on S7, Morgan's G6 on 169c1fb: Piliskner places an Extractor at 1:15 and cancels it at 1:24; the
+    Drone's supply leaves at the placement, and comes back once, at 1:25, when the replay hands the Drone back as
+    a new birth (unit 60293122), which the birth path counts."""
     spine = MS_SC / "200k dmg spine crawler ZvP.SC2Replay"
     need(spine)
     with contextlib.redirect_stdout(io.StringIO()):
@@ -904,7 +900,6 @@ def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
     assert [(p.time, p.supply) for p in piliskner] == [
         ("01:10", 15.0),
         ("01:15", 14.0),
-        ("01:24", 15.0),
-        ("01:24", 15.0),
-        ("01:25", 16.0),
+        ("01:24", 14.0),  # the cancelled Extractor's death: nothing back
+        ("01:25", 15.0),  # the Drone back, as a new birth
     ]
