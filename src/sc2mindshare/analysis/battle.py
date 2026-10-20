@@ -1,3 +1,4 @@
+from sc2mindshare.reader.compat import object_text
 # add focus fire, a moves, abilities
 import datetime
 import sc2mindshare.analysis.detectors.detectors
@@ -372,7 +373,7 @@ class Battle(PlayerHandler):
                 MsUtils.iterateType(self.nonCombatAbilitiesTypes[e.player],e.replaceStrings(e.ability_name, True))
         elif isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit):
             if e.buildingDeath():
-                MsUtils.iterateType(self.deadBuildingsTypes[e.player], str(e.unit))
+                MsUtils.iterateType(self.deadBuildingsTypes[e.player], object_text(e.unit))
             else:
                 # TODO the logic of the key (string of unit names) should be somewher else
                 MsUtils.iterateType(self.killersTypes[self.otherPlayer(e.player)], e.replaceStrings(e.killing_unit, True) + " killed " + e.replaceStrings(e.unit, True))

@@ -1,4 +1,5 @@
 from sc2mindshare.analysis.exports.node import SimpleNode
+from sc2mindshare.reader.compat import object_text
 from sc2mindshare.reader.fork_api import ChatEvent
 
 
@@ -18,7 +19,7 @@ class ChatNode(SimpleNode):
         return "{}".format(self.text).replace(";",":")
 
     def getNodeDescription(self):
-        return "{}: {}".format(self.player, self.text).replace(";",":")
+        return "{}: {}".format(object_text(self.player), self.text).replace(";",":")
     
     def getProperties(self, sep):
         return "{}".format(super().getProperties(sep))

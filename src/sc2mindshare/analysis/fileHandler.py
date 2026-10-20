@@ -13,6 +13,8 @@ CSV, ``Intervals.csv`` and ``ImageTracking.csv``. Here it only answers paths and
 import csv
 import os
 
+from sc2mindshare.reader.compat import object_text
+
 
 class FileHandler:
     VIDEO_FILE_PREFIX = "Game"
@@ -35,7 +37,7 @@ class FileHandler:
         self.player1 = replay.players[0]
         self.player2 = replay.players[1]
 
-        self.gameName = "{}__{}_vs_{}".format(replay.map_name, self.player1, self.player2)
+        self.gameName = "{}__{}_vs_{}".format(replay.map_name, object_text(self.player1), object_text(self.player2))
 
         self.gameFolder = "{}/{}".format(self.SOURCE_FOLDER, self.gameName)
         self.imagesFolder = "{}/{}".format(self.gameFolder, self.IMAGES_END_FOLDER)
@@ -49,8 +51,8 @@ class FileHandler:
 
         self.imageTrackingFile = "{}/{}".format(self.SOURCE_FOLDER, self.IMAGE_TRACKING_FILE_NAME)
 
-        self.player1VideoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, self.player1, self.VIDEO_EXT)
-        self.player2VideoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, self.player2, self.VIDEO_EXT)
+        self.player1VideoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, object_text(self.player1), self.VIDEO_EXT)
+        self.player2VideoFileName = "{}_{}{}".format(self.VIDEO_FILE_PREFIX, object_text(self.player2), self.VIDEO_EXT)
 
     def getImageTrackingFile(self):
         if not os.path.isfile(self.imageTrackingFile):

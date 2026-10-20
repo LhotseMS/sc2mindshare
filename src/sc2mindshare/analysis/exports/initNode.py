@@ -1,5 +1,7 @@
 from sc2mindshare.analysis.exports.buildingNode import BuildingNode
+from sc2mindshare.reader.compat import object_text
 from sc2mindshare.reader.fork_api import UnitInitEvent
+
 
 #TODO add building deaths. Unit killed them. Tied to battle? Was that unit in battle? 
 class InitNode(BuildingNode):
@@ -31,9 +33,9 @@ class InitNode(BuildingNode):
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
         if self.cancelled:
-            return "{} started building at {} but was cancelled".format(self.event.unit, self.getNodeTime())
+            return "{} started building at {} but was cancelled".format(object_text(self.event.unit), self.getNodeTime())
         else:
-            return "{} started building at {} but was killed".format(self.event.unit, self.getNodeTime())
+            return "{} started building at {} but was killed".format(object_text(self.event.unit), self.getNodeTime())
     
     def getProperties(self, sep):
         return "{}{}{}".format(super().getProperties(sep),

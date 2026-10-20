@@ -1,6 +1,9 @@
 from datetime import datetime
+
 from sc2mindshare.analysis.exports.node import Node
 from sc2mindshare.analysis.utils import MsUtils
+from sc2mindshare.reader.compat import object_text
+
 
 class EnergyNode(Node):
     
@@ -50,4 +53,4 @@ class EnergyNode(Node):
         return self.start.replace(".",":").strip()
 
     def __str__(self) -> str:
-        return "{} : {}({}) {}-{} {} {} {}".format(self.player, self.unitName, self.unitID, self.start, self.end, self.duration, self.energy, self.timeDetected)
+        return "{} : {}({}) {}-{} {} {} {}".format(object_text(self.player), self.unitName, self.unitID, self.start, self.end, self.duration, self.energy, self.timeDetected)

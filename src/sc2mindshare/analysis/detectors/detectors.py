@@ -32,6 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
+from sc2mindshare.reader.compat import object_text
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
 
@@ -71,7 +72,7 @@ class SinglesDetector(Detector):
         self.nodes = list()
         self.links = list()
 
-        gameHeatMapName = "{}_{}_{}-{}{}".format(self.mapFileName, None, replay.players[0], replay.players[1], self.HEAT_MAP_APPENDIX)
+        gameHeatMapName = "{}_{}_{}-{}{}".format(self.mapFileName, None, object_text(replay.players[0]), object_text(replay.players[1]), self.HEAT_MAP_APPENDIX)
 
         gameHeatMapID = ""
         if gameHeatMapName in self.uploadedImagesTracker:
@@ -143,7 +144,7 @@ class EventsDetector(Detector):
                 not e.unit.name.startswith(self.OMIT_UNITS))
     
     def buildingsEligible(self, e) -> bool:
-        return not str(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building
+        return not object_text(e.unit).startswith(self.OMIT_BUILDINGS) and e.unit.is_building
     
     def abilityEligible(self, e) -> bool:
         return e.has_ability and not e.ability_name.startswith(self.OMIT_ABILITIES)
@@ -287,12 +288,12 @@ class SimpleDetector(EventsDetector):
                     buildingCounter += 1 
                     self.addBuilding(e, buildingCounter)
 
-                    #print("building: " + str(e.unit))
-                    if self.st.isSupplyProvider(str(e.unit)):
-                        self.st.increaseLimit(e.player, e.time, str(e.unit))
+                    #print("building: " + object_text(e.unit))
+                    if self.st.isSupplyProvider(object_text(e.unit)):
+                        self.st.increaseLimit(e.player, e.time, object_text(e.unit))
                 
                 except KeyError:
-                    print("Unit not found :" + str(e.unit))
+                    print("Unit not found :" + object_text(e.unit))
 
             # incomplete buildings
             elif isinstance(e, UnitInitEvent) and e.unit.is_building and e.unit.doneEvent == None:
@@ -309,15 +310,15 @@ class SimpleDetector(EventsDetector):
 
             elif isinstance(e, ChatEvent):
                 chatCounter += 1
-                self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, str(e.player)))
+                self.messagesByPlayer[e.player].append(ChatNode(e, chatCounter, object_text(e.player)))
 
             elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
                 if e.player != None and e.unit.nameC in self.unitTypeCount[e.player]:
                     self.unitTypeCount[e.player][e.unit.nameC] -= 1     
                 
-                #print("unit died: " + str(e.unit))
-                if self.st.isSupplyProvider(str(e.unit)):
-                    self.st.decreaseLimit(e.player, e.time, str(e.unit))
+                #print("unit died: " + object_text(e.unit))
+                if self.st.isSupplyProvider(object_text(e.unit)):
+                    self.st.decreaseLimit(e.player, e.time, object_text(e.unit))
                 else:
                     self.st.changeSupply(e.player, e.time, -e.unit._type_class.supply)
 
@@ -325,9 +326,9 @@ class SimpleDetector(EventsDetector):
                   isinstance(e, UnitDoneEvent)) and
                   self.unitFinishedEligble(e)):
                                 
-                #print("new unit: " + str(e.unit))
-                if self.st.isSupplyProvider(str(e.unit)):
-                    self.st.increaseLimit(e.player, e.time, str(e.unit))
+                #print("new unit: " + object_text(e.unit))
+                if self.st.isSupplyProvider(object_text(e.unit)):
+                    self.st.increaseLimit(e.player, e.time, object_text(e.unit))
                 else:
                     self.st.changeSupply(e.player, e.time, e.unit._type_class.supply)
                 
@@ -385,7 +386,7 @@ class SimpleDetector(EventsDetector):
 
 
     def addBuilding(self, e, seq):
-        node = BuildingNode(e, self.unitsInfoDict[str(e.unit)]['Build Time'], seq)
+        node = BuildingNode(e, self.unitsInfoDict[object_text(e.unit)]['Build Time'], seq)
         node.index = self.getBuildingIndex(node)
         self.buildingsByPlayer[e.player].append(node)
 
@@ -983,7 +984,7 @@ class BattleDetector(EventsDetector):
                 else:
                     allCoordinates[player] = battleCoordinates[player]
         
-            heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, battle.getNodeID(), self.player1, self.player2, self.HEAT_MAP_APPENDIX)
+            heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, battle.getNodeID(), object_text(self.player1), object_text(self.player2), self.HEAT_MAP_APPENDIX)
 
             if not os.path.exists(heatmapFileName):
                 generateBattleHeatMap(self.replay.map,
@@ -993,7 +994,7 @@ class BattleDetector(EventsDetector):
             #else:
             #    print("image {} exists on local".format(heatmapFileName))
         
-        heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, None, self.player1, self.player2, self.HEAT_MAP_APPENDIX)
+        heatmapFileName = "{}/{}_{}_{}-{}{}".format(self.fh.imagesFolder, self.mapFileName, None, object_text(self.player1), object_text(self.player2), self.HEAT_MAP_APPENDIX)
         
         if not os.path.exists(heatmapFileName):
             generateBattleHeatMap(self.replay.map,

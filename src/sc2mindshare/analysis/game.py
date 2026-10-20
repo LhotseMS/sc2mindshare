@@ -1,3 +1,4 @@
+from sc2mindshare.reader.compat import object_text
 from sc2mindshare.reader.fork_api import Unit
 from sc2mindshare.reader.fork_api import ControlGroupEvent, SelectionEvent, StealControlGroupEvent
 from sc2mindshare.analysis.utils import PlayerHandler, MsUtils
@@ -81,7 +82,7 @@ class ControlGroup():
         self.unitsHistory[scge.second] = remainingUnits
 
     def __str__(self) -> str:
-        str = colored("{} {}, Units: {}".format(self.cg_no, self.player,self.getUnitsStr(second=200)), "blue")
+        str = colored("{} {}, Units: {}".format(self.cg_no, object_text(self.player),self.getUnitsStr(second=200)), "blue")
         
         #for sec, units in self.unitsHistory.items():
         #    str += "\n {}: {}".format(sec, units)
