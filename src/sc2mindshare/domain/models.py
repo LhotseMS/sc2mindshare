@@ -2,17 +2,22 @@
 
 Each node kind declares its fields in ``FIELDS``; a ``Node`` with other field names cannot be
 built, so a value can no longer shift into another column (the legacy hand-kept column counts,
-python bugs 4 and 5, cannot happen here). Field values are still the legacy layer's text, bugs
-included (CR-022, T21, turns times into numbers); ``start_seconds`` is the one number the layout
-needs now: the node's game time in real seconds, **signed** (a main base built before 0:00 has a
-negative start, where the legacy text wraps to ``23:58:49``; Leo's B9 condition), or None for the
-Game and Player nodes.
+python bugs 4 and 5, cannot happen here).
+
+Times are numbers (CR-022, T21): the ``time`` and ``end time`` fields hold a ``GameTime`` (an open
+Energy Excess has no end, None), and ``export/`` alone writes them as text. Every other field is
+still the legacy layer's text, bugs included. ``start`` is what the layout places a node by: its
+**signed** start (a main base built before 0:00 starts at -71 s, where the legacy text wraps to
+``23:58:49``; Leo's B9 condition), or None for the Game and Player nodes. It is a field of its own
+because a fix may show another time than the node's start (``analysis.fixes.pre_game_display``).
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass, field
+
+from sc2mindshare.domain.time import GameTime
 
 #: The declared fields of every node kind, in the legacy CSV's column order.
 FIELDS: Mapping[str, tuple[str, ...]] = {
@@ -45,6 +50,14 @@ FIELDS: Mapping[str, tuple[str, ...]] = {
     "Chat": ("time", "player"),
 }
 
+#: The fields that hold a ``GameTime``.
+TIME_FIELDS = frozenset({"time", "end time"})
+#: The time fields that may be empty (None): an Energy Excess still open when the game ends.
+OPEN_ENDED = frozenset({("Energy Excess", "end time")})
+
+#: A field's value: a time, or the legacy text.
+Value = GameTime | str | None
+
 
 @dataclass(frozen=True)
 class Node:
@@ -53,8 +66,8 @@ class Node:
     name: str
     description: str
     images: tuple[str, ...]
-    values: tuple[tuple[str, str], ...]
-    start_seconds: int | None
+    values: tuple[tuple[str, Value], ...]
+    start: GameTime | None
 
     def __post_init__(self) -> None:
         if self.kind not in FIELDS:
@@ -62,11 +75,28 @@ class Node:
         names = tuple(name for name, _ in self.values)
         if names != FIELDS[self.kind]:
             raise ValueError(f"{self.id}: fields {names} are not the declared {FIELDS[self.kind]}")
-        if (self.start_seconds is None) != (self.kind in ("Game", "Player")):
-            raise ValueError(f"{self.id}: start_seconds is required for every kind but Game and Player")
+        for name, value in self.values:
+            if name in TIME_FIELDS:
+                if not isinstance(value, GameTime) and not (value is None and (self.kind, name) in OPEN_ENDED):
+                    raise ValueError(f"{self.id}: {name!r} must be a GameTime, not {value!r}")
+            elif not isinstance(value, str):
+                raise ValueError(f"{self.id}: {name!r} is text, not {value!r}")
+        if (self.start is None) != (self.kind in ("Game", "Player")):
+            raise ValueError(f"{self.id}: start is required for every kind but Game and Player")
 
     def value(self, name: str) -> str:
-        return dict(self.values)[name]
+        """A text field's value."""
+        value = dict(self.values)[name]
+        if not isinstance(value, str):
+            raise TypeError(f"{self.id}: {name!r} is a time; read it with time()")
+        return value
+
+    def time(self, name: str) -> GameTime | None:
+        """A time field's value (None only for an open end, ``OPEN_ENDED``)."""
+        value = dict(self.values)[name]
+        if isinstance(value, str):
+            raise TypeError(f"{self.id}: {name!r} is text; read it with value()")
+        return value
 
 
 @dataclass(frozen=True)

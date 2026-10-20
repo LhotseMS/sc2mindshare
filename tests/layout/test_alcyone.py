@@ -1,5 +1,5 @@
 """CR-014 on Alcyone: Leo's predictions (layout-spec.md §5, §7; round2-leo.md), invariants (QA design
-§4) and the snapshot G-SNAP-1 (both modes; frozen once Stefan has checked it in Mindshare, B2)."""
+§4) and the live snapshot G-SNAP-current (both modes; G-SNAP-1 is frozen since Stefan checked it, B2)."""
 
 import contextlib
 import copy
@@ -95,7 +95,7 @@ SUPPLY_BLOCKS = {  # round2-leo.md, compressed, B9 applied: (centre x, width)
 def test_predictions_compressed(graph, clock_map):
     r = layout(items(graph), Profile(), clock_map)
     assert len(r.rows) == 83 and r.rows[0][2] == 0 and r.rows[-1][2] == 205
-    mains = [n.id for n in graph.nodes if n.kind == "Building" and n.start_seconds == -71]
+    mains = [n.id for n in graph.nodes if n.kind == "Building" and n.start.seconds == -71]
     assert [r.positions[m] for m in mains] == [(0.0, -8.0), (0.0, 8.0)]  # row 0, lilTiGGer on -y (B9, B13)
     names = [c.file_name for c in r.extra_nodes]
     assert "0-10.png" in names and "58-50.png" not in names
@@ -127,7 +127,7 @@ def test_i1_every_item_has_one_finite_position_and_a_size(graph, placed):
 def test_i2_x_never_decreases_with_time_inside_a_bucket(graph, placed):
     _, r = placed
     for kind in ("Battle", "Building", "Stats", "Chat", "Ability", "Units", "Supply Block"):
-        nodes = sorted((n for n in graph.nodes if n.kind == kind), key=lambda n: (n.start_seconds, graph.nodes.index(n)))
+        nodes = sorted((n for n in graph.nodes if n.kind == kind), key=lambda n: (n.start, graph.nodes.index(n)))
         xs = [r.positions[n.id][0] for n in nodes]
         if kind != "Supply Block":
             assert xs == sorted(xs), kind
@@ -158,7 +158,7 @@ def test_i13_determinism_and_shuffled_input(graph, clock_map, placed):
     assert again.positions == r.positions and [c for c in again.extra_nodes] == list(r.extra_nodes)
 
 
-# --- the snapshot G-SNAP-1 -------------------------------------------------------------------------------
+# --- the live snapshot G-SNAP-current -------------------------------------------------------------------
 
 
 def _document(graph, clock_map, mode):
@@ -170,7 +170,7 @@ def test_snapshot(graph, clock_map, mode):
     doc = _document(graph, clock_map, mode)
     text = to_json(doc)
     assert text == to_json(_document(graph, clock_map, mode))  # byte-identical runs
-    expected = json.loads((GOLDEN / f"G-SNAP-1-{mode}.json").read_text(encoding="utf-8"))
+    expected = json.loads((GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
     by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")  # media id -> file name, for the M2 mask
     report = golden.diff_json(expected, doc, by_media)
     assert report.ok, str(report)
@@ -180,7 +180,7 @@ def test_snapshot(graph, clock_map, mode):
 
 @pytest.mark.parametrize("mode", ["compressed", "linear"])
 def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
-    """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-1."""
+    """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-current."""
     doc = _document(graph, clock_map, mode)
     by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")
     current = json.loads((GOLDEN / "G-VIEW-current.json").read_text(encoding="utf-8"))

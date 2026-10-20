@@ -111,6 +111,36 @@ def test_entries_are_parsed_from_fenced_json_blocks():
         cgd.entries(text + '```json\n{"entry": "A1"}\n```\n')
 
 
+_FREEZE = (
+    '```json\n{"entry": "S1-snap", "golden": ["alcyone/G-SNAP-1-linear.json"], "base_sha256": "b"}\n```\n'
+    '```json\n{"entry": "freeze-snap", "golden": ["alcyone/G-SNAP-1-linear.json"], "changes": [], '
+    '"copies": {"alcyone/G-SNAP-1-linear.json": "alcyone/G-SNAP-current-linear.json"}}\n```\n'
+)
+_NOW = "- `S1-snap`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)\n"
+
+
+def test_a_golden_now_line_moves_an_entry_to_the_frozen_goldens_live_copy():
+    """QA design Addendum B: an entry written for G-SNAP-1 gets an appended line naming its new golden;
+    the tooling follows it, and the entry's base is unchanged (the copy is byte-identical)."""
+    entry = cgd.entries(_FREEZE + _NOW)["S1-snap"]
+    assert entry["golden"] == ["alcyone/G-SNAP-current-linear.json"]
+    assert entry["base_sha256"] == "b"
+    assert cgd.entries(_FREEZE)["S1-snap"]["golden"] == ["alcyone/G-SNAP-1-linear.json"]  # no line: unchanged
+
+
+@pytest.mark.parametrize(
+    ("line", "error"),
+    [
+        ("- `S9-snap`: golden now `alcyone/G-SNAP-current-linear.json` (freeze, Addendum B)\n", "unknown entry"),
+        ("- `S1-snap`: golden now `alcyone/G-SNAP-current-compressed.json` (freeze, Addendum B)\n", "no golden"),
+        (_NOW, "no golden"),  # the same line twice: the entry no longer names the frozen golden
+    ],
+)
+def test_a_golden_now_line_that_does_not_fit_a_freeze_stops(line, error):
+    with pytest.raises(ValueError, match=error):
+        cgd.entries(_FREEZE + _NOW + line if line == _NOW else _FREEZE + line)
+
+
 def _git(repo, *args):
     cmd = ["git", "-C", str(repo), "-c", "user.name=t", "-c", "user.email=t@t", *args]
     subprocess.run(cmd, check=True, capture_output=True, env=cgd.git_env())  # never a caller's GIT_DIR

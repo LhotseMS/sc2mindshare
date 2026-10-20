@@ -37,8 +37,9 @@ from pathlib import Path
 from typing import Any
 
 from sc2mindshare.analysis.run import analyse
-from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.analysis.to_domain import to_graph, typed_values
 from sc2mindshare.domain.models import Graph, Link, Node
+from sc2mindshare.export.time_text import text_values
 from sc2mindshare.reader.loader import load_replay
 
 CHECKOUT = Path(__file__).resolve().parents[1]
@@ -82,8 +83,8 @@ def graph_doc(graph: Graph) -> dict[str, Any]:
                 "name": n.name,
                 "description": n.description,
                 "images": list(n.images),
-                "values": [[k, v] for k, v in n.values],
-                "start_seconds": n.start_seconds,
+                "values": [[k, v] for k, v in text_values(n)],  # times as the legacy text (CR-022)
+                "start_seconds": None if n.start is None else n.start.seconds,
             }
             for n in graph.nodes
         ],
@@ -105,19 +106,22 @@ def graph_doc(graph: Graph) -> dict[str, Any]:
 
 def graph_from_doc(doc: dict[str, Any]) -> Graph:
     """The inverse of graph_doc (the models validate their fields on construction)."""
-    return Graph(
-        nodes=tuple(
+    nodes = []
+    for n in doc["nodes"]:
+        values, start = typed_values(n["id"], n["kind"], ((k, v) for k, v in n["values"]), n["start_seconds"])
+        nodes.append(
             Node(
                 kind=n["kind"],
                 id=n["id"],
                 name=n["name"],
                 description=n["description"],
                 images=tuple(n["images"]),
-                values=tuple((k, v) for k, v in n["values"]),
-                start_seconds=n["start_seconds"],
+                values=values,
+                start=start,
             )
-            for n in doc["nodes"]
-        ),
+        )
+    return Graph(
+        nodes=tuple(nodes),
         links=tuple(Link(**lk) for lk in doc["links"]),
         intervals=doc["intervals"],
     )

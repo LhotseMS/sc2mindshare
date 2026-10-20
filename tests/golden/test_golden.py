@@ -1,7 +1,8 @@
 """Golden tests and the harness's own tests (CR-007, T07), to Vera's design (`qa-golden-design.md`).
 
-Goldens (frozen, `FROZEN.sha256`): G-CSV-1 (+ Intervals-1) from the legacy code, and G-VIEW-1
-from the VBA view port on G-CSV-1. Inputs pinned in `INPUTS.sha256`. Missing inputs skip with a
+Goldens (frozen, `FROZEN.sha256`): G-CSV-1 (+ Intervals-1) from the legacy code, G-VIEW-1
+from the VBA view port on G-CSV-1, and G-SNAP-1 as Stefan confirmed it (Addendum B; the live
+snapshots are G-SNAP-current). Inputs pinned in `INPUTS.sha256`. Missing inputs skip with a
 reason, or fail under `SC2MS_REQUIRE_GOLDEN=1` (set by `scripts/gates`). H1-H22 are the harness
 tests of the design's §2.
 """
@@ -103,7 +104,7 @@ def _run_legacy(out, seed=None):
 
 def test_frozen_goldens_are_unchanged():
     pins = golden.read_pins(ALCYONE / "FROZEN.sha256")
-    assert set(pins) == {"G-CSV-1.csv", "Intervals-1.csv", "G-VIEW-1.json"}
+    assert set(pins) == {"G-CSV-1.csv", "Intervals-1.csv", "G-VIEW-1.json", "G-SNAP-1-compressed.json", "G-SNAP-1-linear.json"}
     for name, digest in pins.items():
         assert golden.sha256(ALCYONE / name) == digest, f"frozen golden changed: {name} (stop and report)"
 

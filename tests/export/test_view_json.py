@@ -11,7 +11,7 @@ import sys
 import pytest
 
 from sc2mindshare.analysis.run import analyse
-from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.analysis.to_domain import to_graph, typed_values
 from sc2mindshare.domain.models import Link, Node
 from sc2mindshare.export import view
 from sc2mindshare.export.mindshare_json import build_document, load_config, to_json
@@ -129,7 +129,17 @@ def _key_lists_per_type(doc):
     return lists
 
 
-@pytest.mark.parametrize("name", ["G-VIEW-1.json", "G-VIEW-current.json", "G-SNAP-1-compressed.json", "G-SNAP-1-linear.json"])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "G-VIEW-1.json",
+        "G-VIEW-current.json",
+        "G-SNAP-1-compressed.json",
+        "G-SNAP-1-linear.json",
+        "G-SNAP-current-compressed.json",
+        "G-SNAP-current-linear.json",
+    ],
+)
 def test_every_node_of_a_type_has_the_same_property_keys(name):
     """Mindshare refuses an import where two nodes of one type have different parameters ("node
     'Building-4' has different parameters than node 'Building-1' but the same type", Stefan's import of
@@ -166,8 +176,12 @@ def test_to_json_writes_numbers_as_vba_json_does():
     assert json.loads(to_json(doc)) == doc  # the same numbers
 
 
-def _node(kind, values, start=60, images=()):
-    return Node(kind, f"{kind}-1", "n", "a X_LD b", tuple(images), tuple(values), start)
+def _node(kind, values, images=()):
+    """A node built from the legacy text, through the adapter (CR-022): its start is its time."""
+    parts = [int(p) for p in dict(values)["time"].split(":")]
+    start = parts[0] * 3600 + parts[1] * 60 + parts[2] if len(parts) == 3 else parts[0] * 60 + parts[1]
+    typed, begins = typed_values(f"{kind}-1", kind, values, start)
+    return Node(kind, f"{kind}-1", "n", "a X_LD b", tuple(images), typed, begins)
 
 
 def test_battle_and_units_sizes_and_properties():

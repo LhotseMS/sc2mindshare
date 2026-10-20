@@ -11,8 +11,10 @@ import sys
 import pytest
 
 from sc2mindshare.analysis.run import analyse
-from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.analysis.to_domain import to_graph, typed_values
 from sc2mindshare.domain.models import FIELDS, Link, Node
+from sc2mindshare.domain.time import GameTime
+from sc2mindshare.export.time_text import text_values
 from sc2mindshare.reader.loader import load_replay
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -94,27 +96,52 @@ def test_every_node_has_its_kinds_declared_fields(alcyone):
 
 
 def test_start_times_are_signed_for_the_main_bases_b9(alcyone):
-    main = [n for n in alcyone.nodes if n.kind == "Building" and n.value("time") == "23:58:49"]
+    main = [n for n in alcyone.nodes if n.kind == "Building" and dict(text_values(n))["time"] == "23:58:49"]
     assert len(main) == 2  # one per player: the legacy text wraps past midnight ...
-    assert all(n.start_seconds == -71 for n in main)  # ... the model keeps the real pre-game start
+    assert all(n.start.seconds == -71 and n.time("time") == n.start for n in main)  # ... the model keeps the real start
 
 
 def test_scouting_minutes_are_read_as_minutes(alcyone):
     scout = next(n for n in alcyone.nodes if n.kind == "Scouting")
-    m, s = scout.value("time").split(":")
-    assert scout.start_seconds == int(m) * 60 + int(s)
+    m, s = dict(text_values(scout))["time"].split(":")
+    assert scout.start.seconds == int(m) * 60 + int(s)
+    values, start = typed_values(
+        "Scouting-1", "Scouting", [("time", "01:42"), ("player", "p"), ("unit", "u"), ("base", "b")], 102
+    )
+    assert start == GameTime.from_seconds(102) and dict(values)["time"] == start  # 01:42 is 1 min 42 s
+
+
+def test_the_adapter_refuses_a_time_that_is_not_its_start():
+    """CR-022: no time changes silently; the printed time must be the signed start (wrapped at midnight)."""
+    with pytest.raises(ValueError, match="is not its start"):
+        typed_values("Chat-1", "Chat", [("time", "00:01:00"), ("player", "p")], 61)
+    values, _ = typed_values("Building-1", "Building", [("time", "23:58:49"), ("player", "p"), ("type", "Hatchery")], -71)
+    assert dict(values)["time"] == GameTime.from_seconds(-71)
+    values, _ = typed_values("Energy Excess-1", "Energy Excess", [("time", "00:05:00"), ("end time", "None")], 300)
+    assert dict(values)["end time"] is None  # an open end
 
 
 def test_models_are_frozen_and_validated():
-    ok = Node("Chat", "Chat-1", "hi", "", (), (("time", "00:01:00"), ("player", "a")), 60)
+    t = GameTime.from_seconds(60)
+    ok = Node("Chat", "Chat-1", "hi", "", (), (("time", t), ("player", "a")), t)
     with pytest.raises(AttributeError):
         ok.name = "x"  # type: ignore[misc]
     with pytest.raises(ValueError, match="declared"):
-        Node("Chat", "Chat-1", "hi", "", (), (("player", "a"), ("time", "00:01:00")), 60)
+        Node("Chat", "Chat-1", "hi", "", (), (("player", "a"), ("time", t)), t)
     with pytest.raises(ValueError, match="unknown node kind"):
-        Node("Comet", "Comet-1", "", "", (), (), 1)
-    with pytest.raises(ValueError, match="start_seconds"):
-        Node("Chat", "Chat-1", "hi", "", (), (("time", "00:01:00"), ("player", "a")), None)
+        Node("Comet", "Comet-1", "", "", (), (), t)
+    with pytest.raises(ValueError, match="start is required"):
+        Node("Chat", "Chat-1", "hi", "", (), (("time", t), ("player", "a")), None)
+    with pytest.raises(ValueError, match="must be a GameTime"):  # CR-022: a time is never text in the model
+        Node("Chat", "Chat-1", "hi", "", (), (("time", "00:01:00"), ("player", "a")), t)
+    with pytest.raises(ValueError, match="must be a GameTime"):  # only an open Energy Excess may have no end
+        Node("Chat", "Chat-1", "hi", "", (), (("time", None), ("player", "a")), t)
+    with pytest.raises(ValueError, match="is text"):
+        Node("Chat", "Chat-1", "hi", "", (), (("time", t), ("player", t)), t)
+    with pytest.raises(TypeError, match="read it with time"):
+        ok.value("time")
+    with pytest.raises(TypeError, match="whole number of loops"):
+        GameTime(1.5)  # type: ignore[arg-type]
     assert Link("Battle-1", "Battle-2", "previous", "next", "Two consecutive battles", 1).name is None
 
 
@@ -167,4 +194,4 @@ def test_named_values_are_pinned(alcyone):
     nodes = {n.id: n for n in alcyone.nodes}
     for node_id, values in expected.items():
         assert len(set(values.values())) == len(values), node_id  # a swap of any two names would show
-        assert dict(nodes[node_id].values) == values, node_id
+        assert dict(text_values(nodes[node_id])) == values, node_id

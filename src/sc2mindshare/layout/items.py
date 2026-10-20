@@ -1,6 +1,7 @@
 """Layout items from the domain graph (CR-014; layout-spec.md §3).
 
-``t`` is the node's signed start in seconds (``Node.start_seconds``: main bases at -71, B9);
+``t`` is the node's signed start in whole seconds (``Node.start``: main bases at -71, B9; the
+second is floored exactly as the legacy layer printed it, TD-26);
 ``order`` is the node's position in the graph (the TD-20 tie-break); Supply Block ``t_end`` comes
 from its "end time"; the radius basis is a Battle's "supply dead" and a Units node's "supply".
 """
@@ -13,26 +14,22 @@ from sc2mindshare.domain.models import Graph, Node
 from sc2mindshare.layout.sweep import LayoutItem
 
 
-def _seconds(text: str) -> int:
-    parts = [int(p) for p in text.split(":")]
-    return parts[0] * 3600 + parts[1] * 60 + parts[2] if len(parts) == 3 else parts[0] * 60 + parts[1]
-
-
 def item(node: Node, order: int) -> LayoutItem:
-    values = dict(node.values)
     if node.kind == "Player":
-        player = values["name"]
+        player = node.value("name")
     elif node.kind == "Game":
         player = None
     else:
-        player = values["player"]
-    t_end = _seconds(values["end time"]) if node.kind in ("Supply Block", "Scouting Gap") else None
+        player = node.value("player")
+    end = node.time("end time") if node.kind in ("Supply Block", "Scouting Gap") else None
+    t_end = None if end is None else end.seconds
     basis = None
     if node.kind == "Battle":
-        basis = float(values["supply dead"])
+        basis = float(node.value("supply dead"))
     elif node.kind == "Units":
-        basis = float(values["supply"])
-    return LayoutItem(node.id, node.kind, node.start_seconds, order, player=player, t_end=t_end, size_basis=basis)
+        basis = float(node.value("supply"))
+    t = None if node.start is None else node.start.seconds
+    return LayoutItem(node.id, node.kind, t, order, player=player, t_end=t_end, size_basis=basis)
 
 
 def ghost_time(

@@ -51,7 +51,7 @@ SPINE = MS_SC / "200k dmg spine crawler ZvP.SC2Replay"
 
 @pytest.mark.parametrize("mode", ["compressed", "linear"])
 def test_alcyone_validates(mode):
-    doc = json.loads((GOLDEN / f"G-SNAP-1-{mode}.json").read_text(encoding="utf-8"))
+    doc = json.loads((GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
     assert CHECK.errors(doc) == []
 
 
@@ -148,7 +148,7 @@ def test_the_analysis_schema_names_exactly_the_dataclass_fields():
 
 @pytest.fixture
 def doc():
-    return json.loads((GOLDEN / "G-SNAP-1-compressed.json").read_text(encoding="utf-8"))
+    return json.loads((GOLDEN / "G-SNAP-current-compressed.json").read_text(encoding="utf-8"))
 
 
 def _node(doc, node_id):

@@ -3,7 +3,8 @@
 The Mindshare layer was written against a fork that changed sc2reader's events and objects in
 place. Each function here gives the fork's value from an unmodified upstream object, so the
 strangler port (CR-011) replaces ``e.second`` with ``game_second(e)`` and so on, call site by call
-site, bug-faithfully. Time stays in the fork's base until CR-022 (T21) makes it a number in loops.
+site, bug-faithfully. The time helpers serve the moved legacy layer only: since CR-022 (T21) the
+domain models carry ``domain.time.GameTime`` (loops), and only ``export/`` writes time as text.
 """
 
 from __future__ import annotations
