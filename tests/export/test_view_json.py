@@ -570,3 +570,7 @@ def test_g2_the_game_properties_follow_the_graphs_export_fixes():
     unladdered = dict(values, ladder="False")
     node = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(unladdered.items()), None)
     assert view.node_view(node, frozenset({"G2"}))["properties"]["ladder"] is False
+    # Rex's N1 on 6780905: a value that is neither "True" nor "False" fails, instead of reading as false
+    odd = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(dict(values, ladder="true").items()), None)
+    with pytest.raises(KeyError):
+        view.node_view(odd, frozenset({"G2"}))

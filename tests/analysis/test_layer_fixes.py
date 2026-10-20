@@ -985,7 +985,10 @@ def test_g1_the_game_type_is_the_replays_and_the_node_stays_a_game():
     assert faithful.getNodeType() == fixed.getNodeType() == "Game"  # the node is a Game node either way
 
 
-@pytest.mark.parametrize(("seconds", "text"), [(998, "00:16:38"), (3909, "01:05:09"), (660, "00:11:00"), (0, "00:00:00")])
+@pytest.mark.parametrize(
+    ("seconds", "text"),
+    [(998, "00:16:38"), (3909, "01:05:09"), (660, "00:11:00"), (0, "00:00:00"), (3599, "00:59:59"), (3600, "01:00:00")],
+)
 def test_g1_the_length_keeps_its_hours(seconds, text):
     """AC-3: a game of 1 h 5 min 9 s reads 01:05:09 (the legacy strptime('%M.%S') fails from an hour on)."""
     from sc2reader.utils import Length
