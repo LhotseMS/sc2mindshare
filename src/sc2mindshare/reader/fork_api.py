@@ -10,14 +10,15 @@ two control-group classes of its own.
 ``flavour_replay(replay)`` gives a loaded upstream replay that API without touching sc2reader: each
 event, unit and player gets a **subclass** of its own upstream class that adds the fork's members
 (``obj.__class__`` is swapped), so every ``isinstance`` check against upstream classes still holds,
-and ``type(obj).__name__`` and ``str(type(obj))`` read as before. Instance values the fork computed
-differently in ``__init__`` (``second``) are recomputed. The replay's datetimes are made naive
-again, as the fork's ``utcfromtimestamp`` gave them.
+and ``type(obj).__name__`` and ``str(type(obj))`` read as before. The fork's fields, and the values
+it computed differently in ``__init__`` (``second``), are properties backed by
+``reader.side_fields`` (CR-020, T19): the objects keep upstream's attributes and values. The
+replay's datetimes are made naive again, as the fork's ``utcfromtimestamp`` gave them.
 
 Everything the ported layer imported from sc2reader is re-exported here (``from fork_api import *``
 gives every public name), so ``analysis`` never imports sc2reader itself (tests/test_architecture.py). This module, ``plugins.mindshare_context``
-and ``compat`` are the strangler's only contact with sc2reader objects; CR-020 (T19) retires the
-class swap.
+and ``compat`` are the strangler's only contact with sc2reader objects. The class swap itself and the
+naive datetimes are the remaining changes to sc2reader objects (CR-064, after T19).
 """
 
 from __future__ import annotations
@@ -59,7 +60,7 @@ from sc2reader.objects import Participant, Player  # type: ignore[import-untyped
 from sc2reader.resources import Map, MapInfo, Replay  # type: ignore[import-untyped]
 from sc2reader.utils import Length  # type: ignore[import-untyped]
 
-from sc2mindshare.reader import compat
+from sc2mindshare.reader import compat, side_fields
 
 LOOPS_PER_SECOND = compat.LOOPS_PER_SECOND
 
@@ -97,8 +98,8 @@ class _GameEventMixin(_EventMixin):
 
 class _CommandEventMixin(_GameEventMixin):
     def registerUpdateEvent(self, e: Any) -> None:
-        self.updateEvents.append(e)  # type: ignore[attr-defined]
-        e.targetCommandEvent = self
+        side_fields.get(self, "updateEvents").append(e)
+        side_fields.set(e, "targetCommandEvent", self)
 
     def isCombat(self) -> bool:
         return self.ability_name in COMBAT_ABILITIES  # type: ignore[attr-defined]
@@ -278,6 +279,22 @@ class _ParticipantMixin(_PlayerMixin):
     """The fork's ``__str__`` for this class is not needed (CR-011c)."""
 
 
+# --- the fork's fields, kept beside the objects (CR-020, T19) ------------------------------------
+# Data descriptors on the flavoured classes: reading falls back to upstream's own value, writing goes
+# to reader.side_fields, never onto the object (so its __dict__ stays upstream's).
+
+_FIELDS_BY_MIXIN: tuple[tuple[type, tuple[str, ...]], ...] = (
+    (_EventMixin, ("second", "name", "timeLocation")),
+    (_CommandEventMixin, (*side_fields.COMMAND_FIELDS, *side_fields.COPIED_FROM_TARGET)),
+    (_CommandManagerStateEventMixin, ("commandEvent",)),
+    (_SelectionEventMixin, ("cameraLocation",)),
+    (_UnitMixin, side_fields.UNIT_FIELDS),
+)
+for _mixin, _names in _FIELDS_BY_MIXIN:
+    for _name in _names:
+        setattr(_mixin, _name, side_fields.field(_name))
+
+
 # --- the fork's own control-group classes -----------------------------------------------------
 
 
@@ -364,11 +381,14 @@ def flavour_event(event: Any) -> None:
 
 def flavour_replay(replay: Any) -> Any:
     """Give a loaded replay's events, units and players the fork's API (see the module docstring)."""
+    entities = list(replay.players) + list(getattr(replay, "observers", []))
+    for obj in [*replay.events, *replay.objects.values(), *entities]:
+        side_fields.adopt(obj, replay)  # their fork fields belong to this replay and go with it
     for event in replay.events:
         flavour_event(event)
     for unit in replay.objects.values():
         _swap(unit)
-    for entity in list(replay.players) + list(getattr(replay, "observers", [])):
+    for entity in entities:
         _swap(entity)
     for name in ("end_time", "start_time", "date"):
         value = getattr(replay, name, None)

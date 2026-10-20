@@ -11,10 +11,11 @@ Stefan's fork edited ``sc2reader/engine/plugins/context.py`` in place. This subc
   (``updateEvents`` / ``targetCommandEvent``), and become the last target themselves;
 - a selection change forgets both last target commands of that player.
 
-It also gives upstream objects the attributes the fork declared in their ``__init__`` (the
-Mindshare layer reads them, and later detectors set them), so the strangler port (CR-011) can read
-them as before. **This is the one module that sets attributes on sc2reader objects**; CR-020 (T19)
-replaces them with maps keyed by id.
+It also gives upstream objects the fields the fork declared in their ``__init__`` (the Mindshare
+layer reads them, and later detectors set them). Since CR-020 (T19) none of this touches the objects:
+every field is kept in ``reader.side_fields`` (a map keyed by the object), and the fork-flavoured
+classes read it through properties, so each event and unit keeps exactly upstream's attributes and
+values.
 
 Kept as ``name = "ContextLoader"``: the engine re-raises exceptions of a plugin with that name
 instead of swallowing them, exactly as for the fork's ContextLoader.
@@ -33,43 +34,41 @@ from sc2reader.events.game import (  # type: ignore[import-untyped]
     UpdateTargetPointCommandEvent,
 )
 
-COPIED_FROM_TARGET = ("ability_name", "has_ability", "ability_type", "ability_data", "ability_id", "ability")
-COPIED_FROM_POINT = ("queued", "minimap", "repeated", *COPIED_FROM_TARGET)
-
-#: The fork's extra Unit fields (sc2reader/data/__init__.py ``Unit.__init__``), all None at creation.
-UNIT_FIELDS = ("baseName", "baseType", "unitsNode", "initNode", "deathEvent", "doneEvent", "initEvent")
+# isort: split
+from sc2mindshare.reader import side_fields
+from sc2mindshare.reader.side_fields import COPIED_FROM_POINT, COPIED_FROM_TARGET, UNIT_FIELDS
 
 
-def register_update_event(command: Any, update: Any) -> None:
+def register_update_event(command: Any, update: Any, replay: Any) -> None:
     """The fork's ``CommandEvent.registerUpdateEvent``."""
-    command.updateEvents.append(update)
-    update.targetCommandEvent = command
+    side_fields.get(command, "updateEvents").append(update)
+    side_fields.set(update, "targetCommandEvent", command, replay)
 
 
-def decorate_unit(unit: Any) -> None:
+def decorate_unit(unit: Any, replay: Any) -> None:
     """Give a unit the fork's extra fields (None) unless it has them already."""
     if unit is not None:
         for name in UNIT_FIELDS:
-            if not hasattr(unit, name):
-                setattr(unit, name, None)
+            if not side_fields.has(unit, name):
+                side_fields.set(unit, name, None, replay)
 
 
-def decorate_game_event(event: Any) -> None:
+def decorate_game_event(event: Any, replay: Any) -> None:
     """The fields the fork set in game-event ``__init__``s."""
     if isinstance(event, CommandEvent):
-        event.abilityNode = None
-        event.queued = bool(event.flag["queued"])
-        event.minimap = bool(event.flag["minimap"])
-        event.repeated = bool(event.flag["repeat"])
-        event.updateEvents = []
+        side_fields.set(event, "abilityNode", None, replay)
+        side_fields.set(event, "queued", bool(event.flag["queued"]), replay)
+        side_fields.set(event, "minimap", bool(event.flag["minimap"]), replay)
+        side_fields.set(event, "repeated", bool(event.flag["repeat"]), replay)
+        side_fields.set(event, "updateEvents", [], replay)
         if isinstance(event, UpdateTargetPointCommandEvent):
-            event.targetCommandEvent = None
+            side_fields.set(event, "targetCommandEvent", None, replay)
     elif isinstance(event, CommandManagerStateEvent):
-        event.commandEvent = None
+        side_fields.set(event, "commandEvent", None, replay)
     elif isinstance(event, SelectionEvent):
-        event.cameraLocation = None
+        side_fields.set(event, "cameraLocation", None, replay)
     elif isinstance(event, CameraEvent):
-        event.timeLocation = None
+        side_fields.set(event, "timeLocation", None, replay)
 
 
 class MindshareContextLoader(ContextLoader):  # type: ignore[misc]  # sc2reader is untyped
@@ -78,18 +77,29 @@ class MindshareContextLoader(ContextLoader):  # type: ignore[misc]  # sc2reader 
     def handleInitGame(self, event: Any, replay: Any) -> None:
         super().handleInitGame(event, replay)
         self.last_point_command_event: dict[int, Any] = {}
+        #: Players whose last target command the fork forgot on a selection change (CR-020). Upstream's own
+        #: ``last_target_ability_event`` is left as upstream keeps it, so the events' own fields stay upstream's.
+        self.fork_forgot_target: set[int] = set()
+
+    def _fork_last_target(self, pid: int) -> Any:
+        """The fork's last target command of the player: upstream's, unless a selection change came after it."""
+        return None if pid in self.fork_forgot_target else self.last_target_ability_event.get(pid)
 
     def handleGameEvent(self, event: Any, replay: Any) -> None:
-        decorate_game_event(event)
+        decorate_game_event(event, replay)
         super().handleGameEvent(event, replay)
 
     def handleUpdateTargetUnitCommandEvent(self, event: Any, replay: Any) -> None:
-        last = self.last_target_ability_event.get(event.player.pid)
+        last = self._fork_last_target(event.player.pid)
         if last is not None:
             for name in COPIED_FROM_TARGET:
-                setattr(event, name, getattr(last, name))
-            register_update_event(last, event)
-        self.handleTargetUnitCommandEvent(event, replay)
+                side_fields.set(event, name, side_fields.get(last, name), replay)
+            register_update_event(last, event, replay)
+        else:  # the fork copied nothing: its layer reads the event's own ability_name, before upstream's copy
+            side_fields.set(event, "ability_name", event.ability_name, replay)
+        # upstream's own handler: it copies ability_name onto the event itself (as a plain upstream load
+        # does), then runs handleTargetUnitCommandEvent, which is ours (it decorates the target)
+        super().handleUpdateTargetUnitCommandEvent(event, replay)
 
     def handleTargetPointCommandEvent(self, event: Any, replay: Any) -> None:
         self.last_point_command_event[event.player.pid] = event
@@ -98,48 +108,49 @@ class MindshareContextLoader(ContextLoader):  # type: ignore[misc]  # sc2reader 
         last = self.last_point_command_event.get(event.player.pid)
         if last is not None:
             for name in COPIED_FROM_POINT:
-                setattr(event, name, getattr(last, name))
-            register_update_event(last, event)
+                side_fields.set(event, name, side_fields.get(last, name), replay)
+            register_update_event(last, event, replay)
         self.handleTargetPointCommandEvent(event, replay)
 
     def handleSelectionEvent(self, event: Any, replay: Any) -> None:
         super().handleSelectionEvent(event, replay)
         if not replay.datapack:
             return
-        self.last_target_ability_event.pop(event.player.pid, None)
+        self.fork_forgot_target.add(event.player.pid)  # the fork's forgetting; upstream's dict is left alone
         self.last_point_command_event.pop(event.player.pid, None)
         for unit in event.new_units or ():
-            decorate_unit(unit)
+            decorate_unit(unit, replay)
 
     def handleTargetUnitCommandEvent(self, event: Any, replay: Any) -> None:
-        super().handleTargetUnitCommandEvent(event, replay)
-        decorate_unit(getattr(event, "target", None))
+        super().handleTargetUnitCommandEvent(event, replay)  # upstream records this as the player's last target
+        self.fork_forgot_target.discard(event.player.pid)
+        decorate_unit(getattr(event, "target", None), replay)
 
     def handleUnitBornEvent(self, event: Any, replay: Any) -> None:
         super().handleUnitBornEvent(event, replay)
         if replay.datapack:
-            decorate_unit(event.unit)
-            event.unit.doneEvent = event
+            decorate_unit(event.unit, replay)
+            side_fields.set(event.unit, "doneEvent", event, replay)
 
     def handleUnitInitEvent(self, event: Any, replay: Any) -> None:
         super().handleUnitInitEvent(event, replay)
         if replay.datapack:
-            decorate_unit(event.unit)
-            event.unit.initEvent = event
+            decorate_unit(event.unit, replay)
+            side_fields.set(event.unit, "initEvent", event, replay)
 
     def handleUnitDoneEvent(self, event: Any, replay: Any) -> None:
         super().handleUnitDoneEvent(event, replay)
         if replay.datapack and event.unit_id in replay.objects:
-            decorate_unit(event.unit)
-            event.unit.doneEvent = event
+            decorate_unit(event.unit, replay)
+            side_fields.set(event.unit, "doneEvent", event, replay)
 
     def handleUnitDiedEvent(self, event: Any, replay: Any) -> None:
         known = event.unit_id in replay.objects
         super().handleUnitDiedEvent(event, replay)
         if replay.datapack and known:
-            decorate_unit(event.unit)
-            event.unit.deathEvent = event
+            decorate_unit(event.unit, replay)
+            side_fields.set(event.unit, "deathEvent", event, replay)
 
     def handleEndGame(self, event: Any, replay: Any) -> None:
         for unit in replay.objects.values():
-            decorate_unit(unit)
+            decorate_unit(unit, replay)

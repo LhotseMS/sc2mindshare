@@ -10,7 +10,7 @@ import pathlib
 
 import pytest
 
-from sc2mindshare.reader import extensions, loader
+from sc2mindshare.reader import extensions, loader, side_fields
 from sc2mindshare.reader.plugins.mindshare_context import MindshareContextLoader
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
@@ -70,7 +70,8 @@ def test_a_plugin_registered_through_the_hook_sees_the_events_after_the_mindshar
         name = "Sentinel"
 
         def handleUnitBornEvent(self, event, replay):
-            seen.append(event.unit.doneEvent is event)  # the Mindshare ContextLoader ran first
+            # the Mindshare ContextLoader ran first; the fork's fields are in reader.side_fields (CR-020)
+            seen.append(side_fields.get(event.unit, "doneEvent") is event)
 
     monkeypatch.setattr(extensions, "register_plugins", lambda engine: engine.register_plugin(SentinelPlugin()))
     loader.load_replay(alcyone)
