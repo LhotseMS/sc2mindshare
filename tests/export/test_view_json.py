@@ -92,7 +92,10 @@ VIEW_LEDGER = tuple(
 #: start time), 7 new ones (test below).
 #: P11 renumbers Harrasment and Scouting (after H1's renumbering of Harrasment): both are set aside as well,
 #: and their net effect is checked on them alone, paired by (player, time) (test below).
-SUPPLY_NET = {"removed": [f"Supply Block-{i}#1" for i in range(11)], "added": [f"Supply Block-{i}#1" for i in range(7)]}
+SUPPLY_NET = {
+    "removed": [f"Supply Block-{i}#1" for i in range(11)],
+    "added": [f"Supply Block-{i}#1" for i in range(5)],
+}  # 7 after S1b, 5 after S6/S7
 #: A future entry on G-VIEW-current needs a hand edit here (VIEW_LEDGER and its net effect).
 VIEW_NET_DELTA = [
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
@@ -135,7 +138,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
     assert VIEW_LEDGER == (
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
-        "P10b-view",
+        "P10b-view", "S7-view",
     )  # fmt: skip
 
 
@@ -152,6 +155,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "P10-view",
         "S6-view",
         "P10b-view",
+        "S7-view",
     ]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):

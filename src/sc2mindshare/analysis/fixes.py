@@ -93,8 +93,9 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: the event; S6 (D15a), a unit counts its type's supply when it finishes and the difference at each type
 #: change, and a Units group adds its units' supply at their event; P9 (D17a), the Game node's time zone is
 #: the recording PC's offset (UTC-5), and its description says UTC (the date is UTC); P10b (D18a), Shield
-#: Batteries and rich Extractors are structures (Building and Initiated nodes), not units.
-LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b")
+#: Batteries and rich Extractors are structures (Building and Initiated nodes), not units; S7, a Drone's supply
+#: leaves when its structure is placed, and the limit is the providers' total capped at 200.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7")
 
 
 #: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph

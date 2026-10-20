@@ -13008,8 +13008,8 @@
    }
   },
   {
-   "name": "19s Supply Block",
-   "description": "Supply block started at 00:00:38 and ended at 00:00:57 for a duration of 19s",
+   "name": "16s Supply Block",
+   "description": "Supply block started at 00:00:41 and ended at 00:00:57 for a duration of 16s",
    "type": "Supply Block",
    "ID": "Supply Block-0",
    "size": [
@@ -13017,9 +13017,9 @@
     1
    ],
    "properties": {
-    "time": "00:00:38",
+    "time": "00:00:41",
     "player": "lilTiGGer",
-    "duration": 19,
+    "duration": 16,
     "end time": "00:00:57"
    },
    "position": {
@@ -13029,52 +13029,10 @@
    }
   },
   {
-   "name": "5s Supply Block",
-   "description": "Supply block started at 00:02:08 and ended at 00:02:13 for a duration of 5s",
-   "type": "Supply Block",
-   "ID": "Supply Block-1",
-   "size": [
-    5,
-    1
-   ],
-   "properties": {
-    "time": "00:02:08",
-    "player": "lilTiGGer",
-    "duration": 5,
-    "end time": "00:02:13"
-   },
-   "position": {
-    "x": 23.75,
-    "y": -12.16,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "8s Supply Block",
-   "description": "Supply block started at 00:12:40 and ended at 00:12:48 for a duration of 8s",
-   "type": "Supply Block",
-   "ID": "Supply Block-2",
-   "size": [
-    2.5,
-    1
-   ],
-   "properties": {
-    "time": "00:12:40",
-    "player": "lilTiGGer",
-    "duration": 8,
-    "end time": "00:12:48"
-   },
-   "position": {
-    "x": 160,
-    "y": -12.16,
-    "z": 0.01
-   }
-  },
-  {
    "name": "25s Supply Block",
    "description": "Supply block started at 00:13:18 and ended at 00:13:43 for a duration of 25s",
    "type": "Supply Block",
-   "ID": "Supply Block-3",
+   "ID": "Supply Block-1",
    "size": [
     10,
     1
@@ -13095,7 +13053,7 @@
    "name": "6s Supply Block",
    "description": "Supply block started at 00:00:32 and ended at 00:00:38 for a duration of 6s",
    "type": "Supply Block",
-   "ID": "Supply Block-4",
+   "ID": "Supply Block-2",
    "size": [
     2.5,
     1
@@ -13116,7 +13074,7 @@
    "name": "2s Supply Block",
    "description": "Supply block started at 00:14:43 and ended at 00:14:45 for a duration of 2s",
    "type": "Supply Block",
-   "ID": "Supply Block-5",
+   "ID": "Supply Block-3",
    "size": [
     2.5,
     1
@@ -13137,7 +13095,7 @@
    "name": "49s Supply Block",
    "description": "Supply block started at 00:14:47 and ended at 00:15:36 for a duration of 49s",
    "type": "Supply Block",
-   "ID": "Supply Block-6",
+   "ID": "Supply Block-4",
    "size": [
     15,
     1

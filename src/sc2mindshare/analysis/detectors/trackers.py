@@ -352,6 +352,7 @@ class SupplyTracker(Tracker):
     def __init__(self, player1, player2, fixes):
         super().__init__(player1, player2, fixes)
         self.addedProviders = set()  # CR-023 S1 (S5): the providers whose limit was added (finished)
+        self.providedLimit = {}  # CR-023 S7: player -> the providers' total, which the limit caps at 200
 
         self.supplyHistory = {}
         self.supplyHistory[player1] = list()
@@ -400,12 +401,22 @@ class SupplyTracker(Tracker):
         self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply + change, prevSupply.limit, frame))
         
     def increaseLimit(self, player, time, supplyProvider, frame=None):
-        prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit + self.providedBy(supplyProvider), frame))
+        self.changeLimit(player, time, self.providedBy(supplyProvider), frame)
     
     def decreaseLimit(self, player, time, supplyProvider, frame=None):
+        self.changeLimit(player, time, -self.providedBy(supplyProvider), frame)
+
+    def changeLimit(self, player, time, change, frame=None):
+        """The limit moves by ``change``; with S7 (CR-023) it is the providers' total capped at 200, as in the
+        game, the total itself still kept (a provider lost above the cap may leave the limit at 200)."""
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit - self.providedBy(supplyProvider), frame))
+        if "S7" in self.fixes:
+            total = self.providedLimit.get(player, prevSupply.limit) + change
+            self.providedLimit[player] = total
+            limit = min(total, self.MAX_SUPPLY)
+        else:
+            limit = prevSupply.limit + change
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, limit, frame))
 
     def getSupplyBlocks(self):
         self.findSupplyBlocks(self.player1)

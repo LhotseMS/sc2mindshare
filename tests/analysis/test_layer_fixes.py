@@ -30,7 +30,7 @@ ALCYONE = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGe
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b")
+    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7")
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -292,7 +292,7 @@ def supply():
             pytest.fail(f"missing input {ALCYONE} (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"missing input {ALCYONE}")
     out = {}
-    before_s6 = tuple(f for f in LAYER_FIXES if f != "S6")  # the S1/S1b entries' input; S6 came later
+    before_s6 = tuple(f for f in LAYER_FIXES if f not in ("S6", "S7"))  # the S1/S1b entries' input; S6, S7 came later
     for label, fixes in (("faithful", ()), ("before S6", before_s6), ("fixed", LAYER_FIXES)):
         with contextlib.redirect_stdout(io.StringIO()):
             result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
@@ -396,10 +396,11 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     ]
     # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer, P11 drops 3 nodes (Harrasment-7, Scouting-0
     # and Scouting-1), N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there); on both
-    # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2)
-    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (4 + 3 + 11 if "Alcyone" in replay else 0) + (
-        2 + 1 if "spine" in replay else 0
-    )
+    # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2);
+    # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5)
+    assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (
+        4 + 3 + 11 + 2 if "Alcyone" in replay else 0
+    ) + (2 + 1 if "spine" in replay else 0)
 
 
 # --- P2: race words are no longer stripped from inside names -----------------------------------------------
@@ -829,3 +830,25 @@ def test_s6_the_detector_hands_every_type_change_of_a_counted_unit_to_the_supply
     with contextlib.redirect_stdout(io.StringIO()):
         analyse(load_replay(ALCYONE), MS_SC)
     assert moves == [("RavagerCocoon", 2.0, 3.0)] * 3
+
+
+# --- S7: a Drone's supply leaves at placement; the limit stops at 200 ---------------------------------------------
+
+
+def test_s7_the_limit_stops_at_200_but_the_providers_still_add_up():
+    from sc2mindshare.analysis.detectors.trackers import SupplyStatus, SupplyTracker
+
+    for fixes, limits in ((("S1", "S7"), [196, 200, 200, 200, 196]), (("S1",), [196, 204, 212, 204, 196])):
+        st = SupplyTracker("p1", "p2", frozenset(fixes))
+        st.supplyHistory["p1"].append(SupplyStatus("10:00", 150, 196, 1))
+        seen = []
+        for change in (+1, +1, -1, -1):
+            (st.increaseLimit if change > 0 else st.decreaseLimit)("p1", "10:01", "Pylon", 2)
+            seen.append(st.supplyHistory["p1"][-1].limit)
+        assert [196, *seen] == limits, fixes
+
+
+def test_s7_on_alcyone_the_drones_leave_at_placement(supply):
+    """The S7 entry's prediction (CHANGES.md): lilTiGGer's 2:08 and 12:40 blocks go, the first starts at 0:41."""
+    blocks = supply["fixed"][1]
+    assert [b for b in blocks if b[0] == "lilTiGGer"] == [("lilTiGGer", 41, 57), ("lilTiGGer", 798, 823)]

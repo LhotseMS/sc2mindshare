@@ -82,15 +82,16 @@ def graph_before_s1():
     """The graph Leo's round-2 predictions were made for: every fix but CR-023's S1 (the supply series),
     which replaces the Supply Blocks, and N1, which came later (an explicit mix). The layout code is the
     same for all."""
-    return _graph_without("S1", "N1", "S6", "P10b")
+    return _graph_without("S1", "N1", "S6", "P10b", "S7")
 
 
 @pytest.fixture(scope="module")
 def graph_before_n1():
     """The graph Leo's S1 predictions were made for: every fix but CR-023's N1 (names by the type at the
-    time), S6 (supply by the type at the time) and P10b (batteries as Buildings), which came later. N1 starts the first Gateway 39 s earlier, which opens a 0:50 window in the
+    time), S6 (supply by the type at the time), P10b (batteries as Buildings) and S7 (Drones leave at
+    placement; the limit stops at 200), which came later. N1 starts the first Gateway 39 s earlier, which opens a 0:50 window in the
     compressed timeline and moves what follows it by one window; the N1 entries and the goldens hold that."""
-    return _graph_without("N1", "S6", "P10b")
+    return _graph_without("N1", "S6", "P10b", "S7")
 
 
 @pytest.fixture(scope="module", params=["compressed", "linear"])
@@ -244,7 +245,8 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # position, and the 140 clock nodes (70 occupied windows without Stats, x 2 sides; P10b's two battery
     # starts open 2 more) are all present.
     assert (view_report.budget_expected["M4 clock"], view_report.budget_expected["M4 position"]) == (0, 0)
-    # 641 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
+    # 639 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
     # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
-    # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change)
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (140, 641)
+    # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change);
+    # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5)
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (140, 639)

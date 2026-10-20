@@ -265,6 +265,7 @@ class SimpleDetector(EventsDetector):
         chatCounter = 0
 
         # TODO add message event as for messages in lobby?
+        self.placements = self.initDictByPlayer()  # CR-023 S7: Zerg structures whose Drone has not died yet
         for e in [v for v in self.replay.events if 
                   (isinstance(v, UpgradeCompleteEvent) or 
                    isinstance(v, PlayerStatsEvent) or 
@@ -275,7 +276,11 @@ class SimpleDetector(EventsDetector):
                    isinstance(v, TargetUnitCommandEvent) or
                    isinstance(v, UnitInitEvent) or
                    isinstance(v, UnitTypeChangeEvent))]:
-            
+
+            # CR-023 S7: a Zerg structure's placement takes its Drone's supply (the game frees it there)
+            if "S7" in self.ctx.fixes and isinstance(e, UnitInitEvent):
+                self.placeStructure(e)
+
             if isinstance(e, UpgradeCompleteEvent) and self.upgradeEligible(e):
                 try:
                     upgradeCounter += 1
@@ -355,7 +360,7 @@ class SimpleDetector(EventsDetector):
                 provider = self.st.providerOf(e)
                 if provider:
                     self.st.decreaseLimit(e.player, e.time, provider, e.frame)
-                else:
+                elif not ("S7" in self.ctx.fixes and self.settlePlacement(e)):
                     self.releaseUnitSupply(e)
 
             elif ((isinstance(e, UnitBornEvent) or 
@@ -442,6 +447,39 @@ class SimpleDetector(EventsDetector):
         if old in counts and old != new:
             counts[old] -= 1
             counts[new] = counts.get(new, 0) + 1
+
+    #: CR-023 S7: Zerg structures no Drone makes
+    NOT_FROM_A_DRONE = ("CreepTumor", "NydusCanal")
+
+    def placeStructure(self, e):
+        """CR-023 S7: a Zerg structure is placed: its Drone's supply (1) leaves now; the Drone's death, reported
+        when the structure finishes, then takes nothing more (settlePlacement)."""
+        unit = e.unit
+        if unit is None or unit.owner is None or unit.owner not in self.placements:
+            return
+        if getattr(unit.owner, "play_race", "") != "Zerg" or not self.isStructure(unit) or unit.name.startswith(self.NOT_FROM_A_DRONE):
+            return
+        self.placements[unit.owner].append(e)
+        self.st.changeSupply(unit.owner, e.time, -1, e.frame)
+
+    def settlePlacement(self, e):
+        """CR-023 S7, at a countable death: a Drone dying with no killer at a placed structure's place is that
+        structure's Drone, whose supply already left (True: nothing more to take); a placed structure that dies
+        unfinished and cancelled gives its Drone's supply back (the game returns the Drone)."""
+        placed = self.placements.get(e.unit.owner, [])
+        if e.unit.name == "Drone" and e.killer_pid is None:
+            near = [p for p in placed if p.frame <= e.frame and abs(p.x - e.x) + abs(p.y - e.y) <= 4]
+            if near:
+                placed.remove(min(near, key=lambda p: abs(p.x - e.x) + abs(p.y - e.y)))
+                self.countedSupply.pop(e.unit.id, None)
+                return True
+            return False
+        mine = [p for p in placed if p.unit is e.unit]
+        if mine:
+            placed.remove(mine[0])
+            if e.unit.doneEvent is None and e.killing_player == e.unit.owner:  # cancelled: the Drone comes back
+                self.st.changeSupply(e.unit.owner, e.time, 1, e.frame)
+        return False
 
     def releaseUnitSupply(self, e):
         """A dead unit's supply leaves the series: with S6 (CR-023, D15a) what it counted, for a counted unit
