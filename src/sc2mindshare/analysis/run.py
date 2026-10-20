@@ -5,8 +5,8 @@ between loading the replay and writing the CSV: it gives the replay the fork's o
 (``reader.fork_api.flavour_replay``), runs the detectors in their fixed order, and returns the
 nodes and links in the order ``parseReplay`` handed them to the CSV exporter. Nothing is written.
 
-The detectors still communicate through module globals (``detectors.basesDetector`` ...), so one
-replay is analysed at a time; CR-011b replaces them with an AnalysisContext.
+The detectors share an explicit ``AnalysisContext`` (CR-011b), not module globals. FileHandler's
+support root and its pass-1 intervals are still class-level, so analyses run one at a time.
 """
 
 from __future__ import annotations
@@ -36,25 +36,25 @@ def analyse(replay: Any, support_root: str | Path) -> AnalysisResult:
     configure(support_root)
     FileHandler.intervals = None
     flavour_replay(replay)
-    d: Any = detectors  # the ported layer is untyped (module globals set by createDetectors)
-    d.createDetectors(replay)
+    layer: Any = detectors  # the ported layer is untyped
+    ctx: Any = layer.createDetectors(replay)
     nodes = (
-        d.singlesDetector.nodes
-        + d.battleDetector.battles
-        + d.battleDetector.harrasmentNodes
-        + d.simpleDetector.upgrades
-        + d.simpleDetector.buildings
-        + d.simpleDetector.initializations
-        + d.simpleDetector.units
-        + d.simpleDetector.stats
-        + d.simpleDetector.abilities
-        + d.simpleDetector.messages
-        + d.simpleDetector.supplyBlocks
-        + d.actionsDetector.excessEnergy
-        + d.actionsDetector.injectDelays
-        + d.actionsDetector.scouting
+        ctx.singles.nodes
+        + ctx.battles.battles
+        + ctx.battles.harrasmentNodes
+        + ctx.simple.upgrades
+        + ctx.simple.buildings
+        + ctx.simple.initializations
+        + ctx.simple.units
+        + ctx.simple.stats
+        + ctx.simple.abilities
+        + ctx.simple.messages
+        + ctx.simple.supplyBlocks
+        + ctx.actions.excessEnergy
+        + ctx.actions.injectDelays
+        + ctx.actions.scouting
     )
-    links = d.singlesDetector.links + d.battleDetector.links + d.simpleDetector.links
+    links = ctx.singles.links + ctx.battles.links + ctx.simple.links
     return AnalysisResult(tuple(nodes), tuple(links), FileHandler.intervals)
 
 
