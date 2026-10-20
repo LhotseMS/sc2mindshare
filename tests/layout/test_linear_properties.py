@@ -2,8 +2,14 @@
 
 Only ``row()`` differs between the modes: linear ``row(w) = w``. So, against the compressed layout of
 the same game: the same occupied windows; every swept node at x = 2.5 x its window and never left of its
-compressed x; y and sizes identical, except supply-block widths, which equal the window span; clock
-nodes only on occupied windows without Stats, and empty rows stay blank. Checked on two real games.
+compressed x; y identical except for battles, and sizes identical except supply-block widths, which
+equal the window span; clock nodes only on occupied windows without Stats, and empty rows stay blank.
+Checked on two real games.
+
+Battles are exempt from the y identity (Leo's CR-017 check): the collision distance is measured along x,
+so two battles with an empty window between them may shift in compressed mode and not in linear
+(test_lanes.test_3_battle_collision_depends_on_the_mode). The determinism invariant I13 runs in both
+modes (test_alcyone.test_i13_determinism_and_shuffled_input).
 """
 
 import contextlib
@@ -82,10 +88,11 @@ def test_every_swept_node_sits_at_its_window_and_never_left_of_compressed(game):
         assert xl >= xc, item.id
 
 
-def test_y_and_sizes_are_identical_except_supply_block_widths(game):
+def test_y_and_sizes_are_identical_except_battle_y_and_supply_block_widths(game):
     _name, its, compressed, linear = game
     for item in its:
-        assert linear.positions[item.id][1] == compressed.positions[item.id][1], item.id
+        if item.type != "Battle":  # a battle's shift depends on the x distance to the previous battle
+            assert linear.positions[item.id][1] == compressed.positions[item.id][1], item.id
         if item.type == "Supply Block":
             assert linear.sizes[item.id][1:] == compressed.sizes[item.id][1:], item.id
         else:
