@@ -7,7 +7,10 @@ and records, and how it stops. Pacing and Retry-After go through an injected sle
 
 from __future__ import annotations
 
+import datetime
+import email.utils
 import hashlib
+import re
 import threading
 from pathlib import Path
 
@@ -21,12 +24,14 @@ from sc2mindshare.media.clocks import (
     RECORD_FILE,
     RecordRow,
     RecordUnreadable,
+    _retry_seconds,
     append_row,
     clock_map,
     read_record,
     upload_clocks,
 )
 
+RETRY = re.compile(r"retry after (\S+?)[;:,]?(?:\s|$)")  # the retry times a message gives
 NAMES = [f"{m}-{s:02d}.png" for m in range(2) for s in range(0, 60, 10)]  # 0-00.png .. 1-50.png, 12 clocks
 
 
@@ -234,18 +239,46 @@ def test_a_429_waits_the_servers_retry_after_once_then_goes_on(fake_media, image
 
 
 def test_a_second_429_stops_cleanly_with_the_servers_retry_time(fake_media, images, record, monkeypatch):
-    Script(fake_media, {4: (429, {"Retry-After": "61"}), 5: (429, {"Retry-After": "61"})}).install(monkeypatch)
+    Script(fake_media, {4: (429, {"Retry-After": "61"}), 5: (429, {"Retry-After": "97"})}).install(monkeypatch)
     result, rec = _run(fake_media, images, record)
     assert result.exit_code == EXIT_LIMIT == 3
     assert [r.image_name for r in read_record(record)] == NAMES[:3]  # every clock already uploaded is recorded
     assert result.left == NAMES[3:]
     assert f"{len(NAMES) - 3} left" in result.message
-    assert "61" in result.message and "60 s" not in result.message  # the server's own time, never a fixed one
+    # Rex's N1: the retry time the message gives is exactly the server's last one, never a fixed one
+    assert set(RETRY.findall(result.message)) == {"97"}
     assert "Traceback" not in rec.text and "\n" not in result.message
     fake_media.requests.clear()
     again, _ = _run(fake_media, images, record)  # the next run uploads only the clocks left
     assert again.exit_code == 0
     assert [p.parts()[0][1] for p in fake_media.posts()] == NAMES[3:]
+
+
+@pytest.mark.parametrize(("retry_after", "waits"), [("120", True), ("121", False), ("3600", False)])
+def test_a_retry_after_over_120_s_is_not_waited_for(fake_media, images, record, monkeypatch, retry_after, waits):
+    """Rex's P3: the wait has a ceiling of 120 s; beyond it the run stops (exit 3) and gives the server's time."""
+    Script(fake_media, {3: (429, {"Retry-After": retry_after})}).install(monkeypatch)
+    result, rec = _run(fake_media, images, record)
+    if waits:
+        assert result.exit_code == 0 and rec.sleeps.count(120.0) == 1
+        return
+    assert result.exit_code == EXIT_LIMIT
+    assert float(retry_after) not in rec.sleeps
+    assert [r.image_name for r in read_record(record)] == NAMES[:2]
+    assert set(RETRY.findall(result.message)) == {retry_after}
+    assert len(fake_media.posts()) == 3  # the refused upload is not tried again
+
+
+def test_an_http_date_in_minus_0000_is_read_as_utc():
+    """Rex's N1: parsedate_to_datetime gives a naive datetime for "-0000"; it is UTC, not a TypeError."""
+    when = datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=90)
+    text = email.utils.format_datetime(when.replace(tzinfo=None))
+    assert text.endswith("-0000")
+    seconds = _retry_seconds(text)
+    assert seconds is not None and 80 <= seconds <= 90
+    assert _retry_seconds(email.utils.format_datetime(when)) == pytest.approx(seconds, abs=2)
+    assert _retry_seconds("Thu, 01 Jan 1970 00:00:00 -0000") == 0.0
+    assert _retry_seconds("soon") is None and _retry_seconds(None) is None
 
 
 def test_a_503_stops_cleanly(fake_media, images, record, monkeypatch):

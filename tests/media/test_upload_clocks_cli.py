@@ -146,7 +146,10 @@ def test_the_exit_codes_and_flags_are_in_the_help():
     text = sub.format_help()
     for flag in ("--config-root", "--server", "--live", "--max", "--pace"):
         assert flag in text
-    assert "3" in text and "4" in text and "dry run" in text
+    flat = " ".join(text.split())
+    assert "dry run" in flat
+    for code in ("0 done", "1 the analysis of a replay failed", "2 a usage error", "3 stopped cleanly", "4 refused"):
+        assert code in flat, code  # Rex's N0: every exit code, 1 included
 
 
 def test_a_missing_clock_picture_is_a_usage_error_before_any_request(fake_media, tmp_path, alcyone_clocks):
