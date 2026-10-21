@@ -10,6 +10,8 @@ import os
 import subprocess
 from pathlib import Path
 
+import pytest
+
 GATES = Path(__file__).resolve().parents[1] / "gates"
 
 PROBE = """import pytest
@@ -47,7 +49,15 @@ def test_gates_network_runs_them_too(tmp_path):
     assert "network tests included" in run.stdout
 
 
-def test_an_unknown_option_is_a_usage_error(tmp_path):
-    run = _gates(tmp_path, "--offline")
-    assert run.returncode == 2
+@pytest.mark.parametrize(
+    "args",
+    [
+        ("--offline",),  # an option other than --network
+        ("--network", "-k"),  # --network followed by another option: only paths may follow it
+        ("src", "--x"),  # an option after a path
+    ],
+)
+def test_any_other_option_is_a_usage_error(tmp_path, args):
+    run = _gates(tmp_path, *args)
+    assert run.returncode == 2, run.stdout + run.stderr
     assert "unknown option" in run.stderr
