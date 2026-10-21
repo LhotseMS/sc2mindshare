@@ -1,21 +1,36 @@
 """CR-069 AC-1: ``scripts/one_clock_check.py``, the one-picture check, against the fake server (never the network).
 
 A dry run asks for the upload status once and uploads nothing; ``--live`` uploads the one clock, reads it back,
-compares the bytes and writes a one-node import file whose node points at the picture by its ID.
+compares the decoded pictures (size and pixels, D51a: the server re-encodes what it stores) and writes a one-node
+import file whose node points at the picture by its ID; ``--picture-id`` does the same for a picture already
+uploaded, with no upload.
 """
 
 from __future__ import annotations
 
 import hashlib
 import importlib.util
+import io
 import json
 import sys
 from pathlib import Path
 
 import pytest
+from PIL import Image
 
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "one_clock_check.py"
-PNG = b"\x89PNG\r\n\x1a\n" + bytes(range(256)) * 2
+
+
+def _png(pixels: bytes = bytes(range(128)), size=(8, 4), **save) -> bytes:
+    """A small RGBA PNG; the same pixels saved with other options give other bytes."""
+    out = io.BytesIO()
+    Image.frombytes("RGBA", size, pixels).save(out, "PNG", **save)
+    return out.getvalue()
+
+
+PNG = _png()
+#: what the local Mindshare serves back: the same picture re-encoded (it adds pHYs and recompresses, D51a)
+REENCODED = _png(dpi=(72, 72), compress_level=1)
 
 
 def _script():
@@ -87,20 +102,77 @@ def test_live_uploads_one_clock_reads_it_back_and_writes_the_one_node_file(fake_
         "clock": "0-10.png",
         "pictureID": picture_id,
         "status": 201,
+        "uploaded": True,
         "sha256_file": hashlib.sha256(PNG).hexdigest(),
         "sha256_served": hashlib.sha256(PNG).hexdigest(),
+        "picture": "identical: 8x4 RGBA, same pixels",
         "out": str(out_file),
         "sha256_out": hashlib.sha256(out_file.read_bytes()).hexdigest(),
     }
 
 
-def test_live_stops_when_the_bytes_read_back_differ(fake_media, config_root, tmp_path, capsys):
-    fake_media.served_bytes = PNG + b"x"
+def test_a_re_encoded_picture_with_the_same_pixels_passes(fake_media, config_root, tmp_path, capsys):
+    """D51a: the server re-encodes the PNG it stores, so the read-back compares size and pixels, not bytes."""
+    assert REENCODED != PNG
+    fake_media.served_bytes = REENCODED
+    out_file = tmp_path / "one-clock.json"
+    code, out, _ = _run(capsys, "--config-root", config_root, "--server", fake_media.url, "--out", out_file, "--live")
+    assert code == 0
+    assert fake_media.posts()[0].parts()[0] == ("file", "0-10.png", PNG)  # the file's own bytes are what is sent
+    report = json.loads(out.strip().splitlines()[-1])
+    assert report["sha256_file"] == hashlib.sha256(PNG).hexdigest()
+    assert report["sha256_served"] == hashlib.sha256(REENCODED).hexdigest()  # audit only
+    assert report["picture"] == "identical: 8x4 RGBA, same pixels"
+    assert out_file.exists()
+
+
+@pytest.mark.parametrize(
+    ("served", "why"),
+    [
+        (_png(bytes([255]) + bytes(range(1, 128))), "pixels differ"),  # the first pixel's red only
+        (_png(bytes(range(128)) * 2, size=(8, 8)), "size differs"),
+        (b"<html>not a picture</html>", "not a picture"),
+    ],
+    ids=["one-pixel", "size", "not-a-picture"],
+)
+def test_live_stops_when_the_picture_read_back_differs(fake_media, config_root, tmp_path, capsys, served, why):
+    fake_media.served_bytes = served
     out_file = tmp_path / "one-clock.json"
     code, _, err = _run(capsys, "--config-root", config_root, "--server", fake_media.url, "--out", out_file, "--live")
     assert code == 4
-    assert "differ" in err
+    assert why in err
     assert not out_file.exists()
+
+
+def test_a_picture_already_uploaded_is_read_back_without_an_upload(fake_media, config_root, tmp_path, capsys):
+    """D51a: the one-node file for the picture uploaded on 2026-10-21, with no second upload."""
+    fake_media.stored["8d4e894d-f6b7-41a6-80df-b999b322349c"] = REENCODED
+    out_file = tmp_path / "qa" / "one-clock.json"
+    code, out, _ = _run(
+        capsys, "--config-root", config_root, "--server", fake_media.url, "--out", out_file,
+        "--picture-id", "8d4e894d-f6b7-41a6-80df-b999b322349c",
+    )  # fmt: skip
+    assert code == 0
+    assert fake_media.posts() == []
+    assert [(r.method, r.path) for r in fake_media.requests] == [
+        ("GET", "/media/health"),
+        ("GET", "/media/resource/8d4e894d-f6b7-41a6-80df-b999b322349c"),
+    ]
+    [node] = json.loads(out_file.read_text(encoding="utf-8"))["nodes"]
+    assert node["nodeImage"] == "8d4e894d-f6b7-41a6-80df-b999b322349c"
+    report = json.loads(out.strip().splitlines()[-1])
+    assert (report["uploaded"], report["status"]) == (False, None)
+    assert report["sha256_served"] == hashlib.sha256(REENCODED).hexdigest()
+
+
+def test_a_picture_id_and_live_together_are_a_usage_error(fake_media, config_root, tmp_path, capsys):
+    code, _, err = _run(
+        capsys, "--config-root", config_root, "--server", fake_media.url, "--out", tmp_path / "x.json",
+        "--live", "--picture-id", "8d4e894d-f6b7-41a6-80df-b999b322349c",
+    )  # fmt: skip
+    assert code == 2
+    assert "--picture-id" in err and "--live" in err
+    assert fake_media.requests == []
 
 
 def test_live_uploads_nothing_when_uploads_are_paused(fake_media, config_root, tmp_path, capsys):
