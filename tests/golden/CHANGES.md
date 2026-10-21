@@ -594,3 +594,20 @@ The workbook view writes no Game properties, so the Mindshare file carries none 
 ```json
 {"entry": "G2-snap-linear", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "0aae07586c81b3b9c1f0bc2c9190ab3bab39ccfc9d4b6ba2ea4ccfc4e85a6cfd", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### G2r: G2 again, on CR-068's goldens (CR-067 landing)
+
+CR-068 lands before CR-067, so the merge of cr-068 into cr-067 kept CR-068's goldens, which lack G2; the three G2 entries above have the pre-CR-068 bases and can no longer apply. G2r restates them unchanged on CR-068's goldens: the same seven Game properties, `dataTypes` and `detail` changes, and nothing else (P10c touches only Battle nodes, G2 only the Game node and the two config records, so the two do not meet). The regeneration follows in its own commit.
+
+```json
+{"entry": "G2r-view", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "3a5e2762a7d6a697d3063cc8198b2e0f247cad0504d240785759021d14e0e302", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2r-snap-compressed", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "3d617740bff9eca46bb2c82d4b4a6ee47f790583221bd896a810003b1512f8e5", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2r-snap-linear", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "74c1513a590c5223352e4c1e98c4e2839c65c00dee9745b45544bdb4cbd3b0a2", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
