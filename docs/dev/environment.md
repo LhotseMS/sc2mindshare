@@ -36,7 +36,7 @@ Per replay it writes `events.csv`, `Intervals.csv`, `run.log` and `summary.json`
 
 ## Gates
 
-`scripts/gates [PATH ...]` (default `src scripts tests`) runs ruff check and ruff format with the repository's `ruff.toml`, `mypy --strict` on the non-test Python files, and pytest. G3 covers the files a task adds or changes only; the fork's own findings are the frozen baseline.
+`scripts/gates [PATH ...]` (default `src scripts tests`) runs ruff check and ruff format with the repository's `ruff.toml`, `mypy --strict` on the non-test Python files, and pytest. G3 covers the files a task adds or changes only; the fork's own findings are the frozen baseline. pytest leaves out the tests marked `network` (upstream's map and s2gs downloads from Battle.net, listed in `tests/pin_conformance/conftest.py`), so no gate depends on a third-party service (D55a); `scripts/gates --network [PATH ...]` runs them too, and is run only with Stefan's OK when sc2reader changes.
 
 ## Notes
 
