@@ -5,55 +5,30 @@ the suite would override ``git -C <temporary repository>`` and send the git-base
 real repository (incident 2026-10-18 12:38, decision D1a). The git helpers also pass an environment
 without them, so this is the second guard, not the only one.
 
-No test reaches the network (CR-069, QA check 4011): every connection to an address that is not this
-computer's loopback fails at once, unless the test is marked ``network`` (map downloads, deselected offline).
+No test reaches the network (CR-069): the guard in ``network_guard.py`` (shared with scripts/tests) fails every
+connection to an address that is not this computer's loopback, unless the test is marked ``network``. Name
+lookups (DNS) are not covered.
 """
 
-import ipaddress
+import importlib.util
 import os
-import socket
+import sys
+from pathlib import Path
 
-import pytest
+
+def _network_guard_module():
+    spec = importlib.util.spec_from_file_location("sc2ms_network_guard", Path(__file__).with_name("network_guard.py"))
+    assert spec and spec.loader
+    module = sys.modules.get("sc2ms_network_guard") or importlib.util.module_from_spec(spec)
+    if "sc2ms_network_guard" not in sys.modules:
+        sys.modules["sc2ms_network_guard"] = module
+        spec.loader.exec_module(module)
+    return module
+
+
+network_guard = _network_guard_module().guard  # an autouse fixture
 
 
 def pytest_configure(config):
     for name in [k for k in os.environ if k.startswith("GIT_")]:
         del os.environ[name]
-
-
-_REAL_CONNECT = socket.socket.connect
-_REAL_CONNECT_EX = socket.socket.connect_ex
-
-
-def _loopback(address):
-    if not isinstance(address, tuple):
-        return True  # a Unix socket path: this computer
-    host = str(address[0])
-    if host == "localhost":
-        return True
-    try:
-        return ipaddress.ip_address(host.split("%")[0]).is_loopback
-    except ValueError:
-        return False  # any other name
-
-
-def _check(sock, address):
-    if sock.family in (socket.AF_INET, socket.AF_INET6) and not _loopback(address):
-        raise OSError(f"network guard: a test tried to connect to {address!r}; tests reach only this computer")
-
-
-def _guarded_connect(self, address):
-    _check(self, address)
-    return _REAL_CONNECT(self, address)
-
-
-def _guarded_connect_ex(self, address):
-    _check(self, address)
-    return _REAL_CONNECT_EX(self, address)
-
-
-@pytest.fixture(autouse=True)
-def _network_guard(request, monkeypatch):
-    if request.node.get_closest_marker("network") is None:
-        monkeypatch.setattr(socket.socket, "connect", _guarded_connect)
-        monkeypatch.setattr(socket.socket, "connect_ex", _guarded_connect_ex)

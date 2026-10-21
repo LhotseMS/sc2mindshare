@@ -9,7 +9,7 @@ upload run and is left exactly as it is.
 ``upload_clocks`` is a dry run unless ``live``: it asks for the upload status once, says which of the needed
 clocks are missing on this server, and with ``live`` uploads them one at a time, ``pace_s`` apart and at most
 ``max_uploads`` in a run. A 429 waits the server's Retry-After once and tries again; a second 429, a 503, a
-server that stops answering or the cap stop the run cleanly (``EXIT_LIMIT``, 3), and the next run resumes from
+server that stops answering, a Retry-After over 120 s or the cap stop the run cleanly (``EXIT_LIMIT``, 3), and the next run resumes from
 the record. A file the server refuses (400, 413, 415) is reported and skipped; such a run, a paused or unreadable
 server, a 201 without an ``_id`` or an unreadable record end with ``EXIT_REFUSED`` (4).
 """
@@ -37,6 +37,7 @@ EXIT_REFUSED = 4  # refused or failed (paused, unreadable answer or record, a fi
 MAX_UPLOADS = 95  # under the server's 100 a day per address
 PACE_S = 3.5  # under its 20 a minute
 FILE_REFUSED = (400, 413, 415)
+MAX_RETRY_WAIT_S = 120.0  # a longer Retry-After (the per-address cap is a rolling 24 h) stops the run instead
 
 
 class RecordUnreadable(Exception):
@@ -102,6 +103,8 @@ def _retry_seconds(retry_after: str | None) -> float | None:
         when = email.utils.parsedate_to_datetime(retry_after)
     except (TypeError, ValueError):
         return None
+    if when.tzinfo is None:  # "-0000" (RFC 5322: UTC, source unknown) parses as naive
+        when = when.replace(tzinfo=datetime.UTC)
     return max(0.0, (when - datetime.datetime.now(datetime.UTC)).total_seconds())
 
 
@@ -171,7 +174,7 @@ def upload_clocks(
                 picture_id = upload_picture(server, path, timeout=timeout)
             except MediaError as first:
                 wait = _retry_seconds(first.retry_after) if first.status == 429 else None
-                if wait is None:
+                if wait is None or wait > MAX_RETRY_WAIT_S:  # no wait the server named, or one too long: stop
                     raise
                 say(f"  {name}: 429, waiting the server's Retry-After ({first.retry_after}) once")
                 sleep(wait)

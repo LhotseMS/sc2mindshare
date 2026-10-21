@@ -97,8 +97,9 @@ def _parser() -> argparse.ArgumentParser:
         help="upload the clock pictures the replays need to the local Mindshare",
         description="Upload to the local Mindshare the clock pictures the timelines of REPLAY need and the clock "
         "record does not yet hold for it, and record each one's picture ID. A dry run unless --live: it shows the "
-        "server's upload status and the clocks it would upload. Exit codes: 0 done or a dry run; 2 a usage error; "
-        "3 stopped cleanly at a limit (the server's or --max: run it again later); 4 refused or failed.",
+        "server's upload status and the clocks it would upload. Exit codes: 0 done or a dry run; 1 the analysis of a "
+        "replay failed; 2 a usage error; 3 stopped cleanly at a limit (the server's or --max: run it again later); "
+        "4 refused or failed.",
     )
     upload.add_argument("replay", metavar="REPLAY", type=Path, nargs="+", help="the .SC2Replay files")
     upload.add_argument(
