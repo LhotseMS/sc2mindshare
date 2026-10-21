@@ -123,7 +123,7 @@ class _Server(http.server.ThreadingHTTPServer):
 def fake_media():
     server = _Server(("127.0.0.1", 0), _Handler)
     server.fake = FakeMedia(url=f"http://127.0.0.1:{server.server_address[1]}")
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.02}, daemon=True)
     thread.start()
     yield server.fake
     server.shutdown()
