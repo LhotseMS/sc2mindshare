@@ -1,8 +1,8 @@
 """CR-069: ``sc2mindshare upload-clocks REPLAY [REPLAY ...]`` on real replays, against the fake server.
 
 The clocks a replay needs come from the real pipeline (analysis, graph, layout). The expected set is derived
-independently from the Alcyone golden (QA check 4011): the distinct clocks of its image nodes, 70 since CR-023
-P10b (the story's 68 predate it).
+independently from the Alcyone golden (QA check 4011): the distinct clocks of its image nodes, 71 since CR-034
+(BO1: the Warp Gates at 7:14 open the 7:10-7:20 window), 70 since CR-023 P10b (the story's 68 predate it).
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ def _alcyone_clocks() -> list[str]:
 def alcyone_clocks():
     need(ALCYONE)
     names = _alcyone_clocks()
-    assert len(names) == 70
+    assert len(names) == 71
     return names
 
 

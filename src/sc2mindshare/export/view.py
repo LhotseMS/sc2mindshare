@@ -13,7 +13,7 @@ import math
 from typing import Any
 
 from sc2mindshare.domain.models import Link, Node
-from sc2mindshare.export.time_text import text_values
+from sc2mindshare.export.time_text import game_hms, text_values
 
 X_LD = "X_LD"
 
@@ -29,6 +29,16 @@ GAME_PROPERTIES: tuple[tuple[str, str, str], ...] = (
     ("category", "category", "typelist"),
     ("speed", "speed", "typelist"),
 )
+
+#: CR-034 (export fix BO1; P0-6, Iris; D57a, D62b): the step properties, with their Mindshare data types, on every
+#: node of the kinds that hold steps. Not detail properties (the node face is unchanged).
+STEP_PROPERTIES: tuple[tuple[str, str], ...] = (
+    ("step #", "int"),
+    ("at supply", "int"),
+    ("started at", "time[h:m:s]"),
+    ("steps", "string"),
+)
+STEP_KINDS = frozenset({"Building", "Upgrade", "Units"})
 
 #: The legacy text of a bool and its value (CR-067 G2's ``ladder``); any other text is a KeyError.
 BOOL_TEXT = {"True": True, "False": False}
@@ -149,8 +159,23 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
             }
     elif kind == "Player":
         view["size"] = [7.8, 2.2]
+    if "BO1" in export_fixes and kind in STEP_KINDS:
+        props |= step_properties(node)
     view["properties"] = props
     return view
+
+
+def step_properties(node: Node) -> dict[str, Any]:
+    """CR-034 BO1: the first step's number, supply and start, and the list of the node's steps when it holds two
+    or more (AC-2); a node holding no step carries 0, 0, 00:00:00 and "" (D62b: Mindshare needs every node of a
+    type to have the same keys, and refuses null or a blank int)."""
+    first = node.steps[0] if node.steps else None
+    return {
+        "step #": first.number if first else 0,
+        "at supply": first.supply if first else 0,
+        "started at": game_hms(first.second if first else 0),
+        "steps": " / ".join(s.line() for s in node.steps) if len(node.steps) > 1 else "",
+    }
 
 
 def link_view(link: Link) -> dict[str, Any]:

@@ -135,10 +135,10 @@ def _clock_map(config_root: Path, server: Server) -> tuple[dict[str, str], str |
 
 
 def _laid_out(
-    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str], with_analysis: bool = False
+    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str]
 ) -> tuple[AnalysisResult, Graph, LayoutResult]:
     """The analysis result, its graph and the layout: the one pipeline ``build`` and ``upload-clocks`` share."""
-    result = analyse(load_replay(replay), config_root, with_exposed=with_analysis)  # a freshly loaded replay
+    result = analyse(load_replay(replay), config_root)  # a freshly loaded replay; its exposed values feed the steps
     graph = to_graph(result)
     placed = layout(items(graph), Profile(timeline="linear" if timeline == "linear" else "compressed"), clocks)
     return result, graph, placed
@@ -158,8 +158,8 @@ def build(
     with log.open("w", encoding="utf-8") as log_file:
         try:
             with contextlib.redirect_stdout(log_file):  # the layer's debug prints
-                result, graph, placed = _laid_out(replay, config_root, timeline, clocks, with_analysis)
-                document = to_json(build_document(graph, placed, analysis=result.exposed))
+                result, graph, placed = _laid_out(replay, config_root, timeline, clocks)
+                document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
                 if graph.intervals is None:
                     raise ValueError("the analysis produced no battle intervals")
                 intervals = parse_intervals(graph.intervals)

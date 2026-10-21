@@ -13,6 +13,7 @@ from sc2mindshare.analysis.detectors.detectors import BaseDetector
 from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse, legacy_csv
 from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.domain.exposed import Exposed, GameContext, TimeTables
 from sc2mindshare.reader.loader import load_replay
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
@@ -62,9 +63,12 @@ def test_to_graph_takes_only_the_two_pure_combinations_unless_a_mix_is_asked_for
     """Morgan's G6 N1 on d6ca6b3: the other direction too. Layer and graph fixes all on, or all off;
     any other combination (a faithful result with the graph fixes, a partial layer set, half the graph
     fixes) needs ``mixed=True``."""
-    faithful = AnalysisResult((), (), None)
-    full = AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))
-    partial = AnalysisResult((), (), None, fixes=frozenset({"P1", "P1b"}))  # any proper subset
+    # CR-034: a graph with the graph fixes carries the build order, made from the exposed values (here: a game
+    # with nothing in it)
+    empty = Exposed(GameContext(0, "", 0, "1v1", 1, False, ()), (), (), (), (), (), (), TimeTables((), (), "", ""))
+    faithful = AnalysisResult((), (), None, empty)
+    full = AnalysisResult((), (), None, empty, fixes=frozenset(LAYER_FIXES))
+    partial = AnalysisResult((), (), None, empty, fixes=frozenset({"P1", "P1b"}))  # any proper subset
     for result, fixes in ((faithful, None), (faithful, FIXES), (partial, None), (full, FIXES[:1]), (partial, ())):
         with pytest.raises(ValueError, match="mixed|bug-faithful"):
             to_graph(result, fixes=fixes)
@@ -407,10 +411,11 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     # P8 adds this node; on Alcyone S1 leaves 4 Supply Blocks fewer, P11 drops 3 nodes (Harrasment-7, Scouting-0
     # and Scouting-1), N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there); on both
     # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2);
-    # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5)
+    # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds a Building node per building
+    # morph (Alcyone 17: a Lair, a Hive, a Greater Spire and 14 Warp Gates; spine 9: a Lair and 8 Warp Gates)
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (
         4 + 3 + 11 + 2 if "Alcyone" in replay else 0
-    ) + (2 + 1 if "spine" in replay else 0)
+    ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9)
 
 
 # --- P2: race words are no longer stripped from inside names -----------------------------------------------

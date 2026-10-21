@@ -163,8 +163,9 @@ def test_the_supply_blocks_after_s1_are_where_leo_predicted(graph_before_n1, clo
 
 def test_predictions_linear(graph, clock_map):
     r = layout(items(graph), Profile(timeline="linear"), clock_map)
-    assert r.rows[-1][2] == 247.5  # 100 windows, 15 of them empty (17 before P10b's two battery starts)
-    assert len(r.rows) == 85
+    # 100 windows, 14 of them empty (17 before P10b's two battery starts, 15 before CR-034's Warp Gates at 7:14)
+    assert r.rows[-1][2] == 247.5
+    assert len(r.rows) == 86
 
 
 # --- invariants (QA design §4) -------------------------------------------------------------------------
@@ -226,7 +227,8 @@ def test_snapshot(graph, clock_map, mode):
     expected = json.loads((GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
     report = golden.diff_json(expected, doc)  # CR-069: clock nodes in the local form need no clock map for M2
     assert report.ok, str(report)
-    assert report.budget_actual["M2"] == 140 and report.budget_actual["M2 unknown"] == 0  # 136 before P10b
+    # 136 before P10b, 140 before CR-034 (BO1: the two Warp Gates at 7:14 open the 7:10-7:20 window)
+    assert report.budget_actual["M2"] == 142 and report.budget_actual["M2 unknown"] == 0
     assert text == (GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8")  # and byte for byte
     assert all(n["position"]["z"] == 0.01 for n in doc["nodes"])
 
@@ -240,11 +242,11 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     assert view_report.ok, str(view_report)
     # diff_json leaves the M4 counts out of its budget comparison (a view golden has no positions or
     # clocks), so they are asserted here (Morgan's CR-014 P2): every one of the 665 graph nodes has a
-    # position, and the 140 clock nodes (70 occupied windows without Stats, x 2 sides; P10b's two battery
-    # starts open 2 more) are all present.
+    # position, and the 142 clock nodes (71 occupied windows without Stats, x 2 sides; P10b's two battery
+    # starts open 2 more, CR-034's Warp Gates at 7:14 one) are all present.
     assert (view_report.budget_expected["M4 clock"], view_report.budget_expected["M4 position"]) == (0, 0)
     # 639 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
     # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
     # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change);
-    # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5)
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (140, 639)
+    # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds the 17 building-morph nodes
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 656)

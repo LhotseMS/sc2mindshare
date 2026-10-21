@@ -29,7 +29,8 @@ class AnalysisResult:
     nodes: tuple[Any, ...]
     links: tuple[Any, ...]
     intervals: str | None  # the battle intervals text the legacy code wrote to Intervals.csv
-    #: The values stream 2 reads (CR-021, T20, P0-2): not in the default JSON, and None unless asked for.
+    #: The values stream 2 reads (CR-021, T20, P0-2): not in the default JSON; None when ``analyse`` was told not
+    #: to compute them.
     exposed: Exposed | None = None
     #: The layer fixes this result was computed with (empty: the bug-faithful run). The bug-faithful
     #: outputs (``legacy_csv``, ``to_graph(..., fixes=())``) refuse a result with any (CR-023).
@@ -42,15 +43,16 @@ def configure(support_root: str | Path) -> None:
 
 
 def analyse(
-    replay: Any, support_root: str | Path, *, with_exposed: bool = False, fixes: Iterable[str] = LAYER_FIXES
+    replay: Any, support_root: str | Path, *, with_exposed: bool = True, fixes: Iterable[str] = LAYER_FIXES
 ) -> AnalysisResult:
     """Run the layer on ``replay``. **Consumes the replay**: its events, units and players are
     switched to their fork-flavoured classes in place (``flavour_replay``), so hand ``analyse`` a
     replay of its own (stream 3's decoders read theirs first, or load it a second time).
 
     ``with_exposed`` also computes ``AnalysisResult.exposed`` (``analysis.exposed.expose``, which
-    reads the support tables' bytes too); off by default, so nothing it does can break a build that
-    did not ask for it (Morgan's G6 N1 on CR-021). ``fixes``: the layer fixes to apply, by ledger id
+    reads the support tables' bytes too). On by default since CR-034: the current graph's build steps are
+    built from it (D47a); it was off before so that nothing it does could break a build that did not ask
+    for it (Morgan's G6 N1 on CR-021). ``fixes``: the layer fixes to apply, by ledger id
     (``analysis.fixes.LAYER_FIXES``, all of them by default); ``()`` for the bug-faithful run, the one
     the legacy CSV oracle and the frozen models describe."""
     applied = check_layer_fixes(fixes)

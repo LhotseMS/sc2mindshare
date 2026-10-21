@@ -13,6 +13,7 @@ class PlayerNode(SimpleNode):
         self.subregion = player.subregion
 
         self.name = player.name
+        self.pid = player.pid  # CR-034: the join to the player's build steps (read by to_domain.node_model only)
         self.race = player.pick_race
         self.color = player.color
 

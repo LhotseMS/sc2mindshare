@@ -109,8 +109,11 @@ LAYER_FIXES: tuple[str, ...] = (
 #: (``Graph.export_fixes``) and on with the graph fixes: B3, an Ability's ``combat``, ``queued`` and
 #: ``minimap`` are emitted (the workbook never set ``combatSet``); P13 (B11), every time property is
 #: ``hh:mm:ss`` of game time (export.time_text); B12 (D16a), ``detail`` lists only properties that exist; G2
-#: (CR-067; D20a, D24a), the Game node carries its seven properties, with their data types and a Details entry.
-EXPORT_FIXES: tuple[str, ...] = ("B3", "P13", "B12", "G2")
+#: (CR-067; D20a, D24a), the Game node carries its seven properties, with their data types and a Details entry; BO1
+#: (CR-034; D57a, D62b), every Building, Upgrade and Units node carries the four step properties (zeros and "" where
+#: it holds no step), with their data types (the steps themselves go on the current graph in ``to_domain.to_graph``;
+#: a mixed run has no steps, so no BO1).
+EXPORT_FIXES: tuple[str, ...] = ("B3", "P13", "B12", "G2", "BO1")
 
 
 def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:

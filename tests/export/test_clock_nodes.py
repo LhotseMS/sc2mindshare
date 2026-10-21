@@ -106,7 +106,7 @@ def test_the_profile_has_no_media_host():
 def test_ac9_every_clock_node_points_at_its_recorded_picture(graph, record, mode):
     doc, placed = _doc(graph, record, mode)
     clocks = [n for n in doc["nodes"] if n["type"] == "image"]
-    assert len(clocks) == 140 and len({n["name"] for n in clocks}) == 70
+    assert len(clocks) == 142 and len({n["name"] for n in clocks}) == 71  # 140 and 70 before CR-034 (BO1, 7:10-7:20)
     for n in clocks:
         assert n["nodeImage"] == record[n["name"]]
         m = CLOCK_ID.match(n["ID"])
@@ -141,7 +141,7 @@ def test_ac11_without_a_record_there_are_no_clocks_and_one_warning_per_clock(gra
     bare, placed = _doc(graph, {})
     assert [n for n in bare["nodes"] if n["type"] == "image"] == []
     warnings = [w for w in placed.warnings if w.startswith("no clock image")]
-    assert len(warnings) == 70 and all("sc2mindshare upload-clocks" in w for w in warnings)
+    assert len(warnings) == 71 and all("sc2mindshare upload-clocks" in w for w in warnings)  # 70 before CR-034
     assert bare == _without_clocks(full)  # every other node, link and position is identical
 
 

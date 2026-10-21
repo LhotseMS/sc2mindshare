@@ -13,9 +13,11 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
+from sc2mindshare.analysis.build_steps import build_order, with_build_order
 from sc2mindshare.analysis.fixes import EXPORT_FIXES, FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult
 from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Graph, Link, Node, Value
+from sc2mindshare.domain.steps import NodeSource
 from sc2mindshare.domain.time import GameTime
 from sc2mindshare.reader.compat import LOOPS_PER_SECOND
 
@@ -67,6 +69,20 @@ def typed_values(
     return tuple(values), start
 
 
+def node_source(kind: str, node: Any) -> NodeSource | None:
+    """What a legacy node was built from (CR-034): the join of the build steps to the nodes."""
+    if kind == "Player":
+        return NodeSource(pid=int(node.pid))
+    if kind == "Building":
+        return NodeSource(unit_ids=(int(node.event.unit.id),))
+    if kind == "Units":
+        return NodeSource(unit_ids=tuple(int(e.unit.id) for e in node.events))
+    if kind == "Upgrade":
+        e = node.event
+        return NodeSource(pid=int(e.pid), upgrade=str(e.upgrade_type_name), loop=int(e.frame))
+    return None
+
+
 def node_model(node: Any) -> Node:
     kind = str(node.getNodeType())
     raw = str(node.getProperties(_SEP)).split(_SEP)
@@ -86,6 +102,7 @@ def node_model(node: Any) -> Node:
         images=tuple(str(u) for u in node.images),
         values=values,
         start=start,
+        source=node_source(kind, node),
     )
 
 
@@ -104,7 +121,10 @@ def link_model(link: Any) -> Link:
 
 def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None, *, mixed: bool = False) -> Graph:
     """The domain graph of ``result``, with the ledger's graph fixes applied (``fixes=()`` for the
-    bug-faithful graph that renders the legacy CSV oracle).
+    bug-faithful graph that renders the legacy CSV oracle). The current graph (every layer and graph fix on)
+    also carries each player's build order (CR-034, ``analysis.build_steps``; ledger BO1, on by default, D47a),
+    made from ``result.exposed``; a mixed run has none (its steps would read names and types the layer fixes
+    it leaves out would change, such as N1's type-at-the-time names).
 
     Only the two pure combinations are accepted: every layer and graph fix on (the default with a result
     of ``analyse``'s default), or none (``fixes=()`` with ``analyse(..., fixes=())``). Any other mix, such as
@@ -122,12 +142,20 @@ def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] |
             f"a mixed run: layer fixes {sorted(result.fixes)} with {len(graph_fixes)} of {len(FIXES)} graph fixes; "
             "use both all on or both off, or pass mixed=True"
         )
+    export_fixes = frozenset(EXPORT_FIXES) if graph_fixes == FIXES else frozenset()
     graph = Graph(
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),
         intervals=result.intervals,
-        export_fixes=frozenset(EXPORT_FIXES) if graph_fixes == FIXES else frozenset(),
+        export_fixes=export_fixes if all_on else export_fixes - {"BO1"},  # the step properties go with the steps
     )
     for fix in graph_fixes:
         graph = fix(graph)
+    if all_on:
+        if result.exposed is None:
+            raise ValueError("the build steps (CR-034) need the exposed values: analyse(..., with_exposed=True)")
+        order = build_order(result.exposed, result.fixes)
+        for note in order.estimated:  # D60a: an estimated start is a data-quality finding for the run log only
+            print(note)
+        graph = with_build_order(graph, order, result.fixes)
     return graph

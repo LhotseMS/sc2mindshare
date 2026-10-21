@@ -17,6 +17,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
+from sc2mindshare.domain.steps import BuildStep, NodeSource
 from sc2mindshare.domain.time import GameTime
 
 #: The declared fields of every node kind, in the legacy CSV's column order.
@@ -68,6 +69,10 @@ class Node:
     images: tuple[str, ...]
     values: tuple[tuple[str, Value], ...]
     start: GameTime | None
+    #: CR-034: what the node was built from (the join to the build steps), and the steps it holds, in step order
+    #: (Building, Upgrade and Units nodes; the others hold none)
+    source: NodeSource | None = None
+    steps: tuple[BuildStep, ...] = ()
 
     def __post_init__(self) -> None:
         if self.kind not in FIELDS:
