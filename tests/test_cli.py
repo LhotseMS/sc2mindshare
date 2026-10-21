@@ -48,7 +48,7 @@ def config(tmp_path):
     build reproduces the goldens without Stefan's own record (the goldens are built from the fixture)."""
     root = tmp_path / "config"
     root.mkdir()
-    for name in ("unitsInfo.csv", "upgradesInfo.csv"):
+    for name in ("unitsInfo.csv", "upgradesInfo.csv", "ImageTracking.csv"):  # ImageTracking: the Game's images
         shutil.copyfile(need(MS_SC / name), root / name)
     shutil.copyfile(FIXTURE_RECORD, root / "ClockImageRecord.csv")
     return root
