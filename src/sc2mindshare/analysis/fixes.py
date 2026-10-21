@@ -96,9 +96,12 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: Batteries and rich Extractors are structures (Building and Initiated nodes), not units; S7, a Drone's supply
 #: leaves when its structure is placed, and the limit is the providers' total capped at 200; S8, a type missing
 #: from the datapack that is not a named mode is flagged (SimpleDetector.supplyFlags) when a counted unit takes it;
+#: P10c (CR-068; D21a, D26a, D32a), a destroyed Shield Battery or Rich Extractor counts in battles like another
+#: structure (a countable and a building death at the battle call sites); a battery is valued from its unitsInfo.csv
+#: row, a Rich Extractor as a normal Extractor of its race (D34a);
 #: G1 (CR-067), the Game node's game type is the replay's, its length keeps its hours and its date has its own format.
 LAYER_FIXES: tuple[str, ...] = (
-    "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "G1",
+    "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1",
 )  # fmt: skip
 
 

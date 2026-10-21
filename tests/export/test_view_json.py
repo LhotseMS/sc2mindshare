@@ -111,6 +111,8 @@ VIEW_NET_DELTA = [
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
     {"select": {"type": "Battle"}, "fields": ["description"], "count": 12},
     {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1},
+    # P10c: blacksquall's Shield Batteries count in Battle-12 and Battle-27 (their descriptions are among P2's 12)
+    {"select": {"type": "Battle"}, "fields": ["properties.dead", "properties.p2 dead"], "count": 2},
 ]
 
 
@@ -141,7 +143,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
     assert VIEW_LEDGER == (
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
-        "P10b-view", "S7-view", "G2-view",
+        "P10b-view", "S7-view", "P10c-view", "G2-view",
     )  # fmt: skip
 
 
