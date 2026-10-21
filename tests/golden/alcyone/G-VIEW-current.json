@@ -159,7 +159,11 @@
   "game type": "typelist",
   "ladder": "bool",
   "category": "typelist",
-  "speed": "typelist"
+  "speed": "typelist",
+  "step #": "int",
+  "at supply": "int",
+  "started at": "time[h:m:s]",
+  "steps": "string"
  },
  "nodes": [
   {
@@ -186,7 +190,7 @@
   },
   {
    "name": "lilTiGGer",
-   "description": "Red Zerg build 938 units and killed 358 units.",
+   "description": "Red Zerg build 938 units and killed 358 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:18 Spawning Pool\n2. 12 0:21 Drone\n3. 12 0:26 Drone\n4. 13 0:29 Drone\n5. 14 0:39 Overlord\n6. 14 1:06 Zergling ×6\n7. 19 1:20 Hatchery\n8. 19 1:24 Zergling ×2\n9. 17 1:28 Zergling ×2\n10. 17 1:32 Queen\n11. 20 1:40 Drone\n12. 21 1:51 Drone\n13. 20 2:25 Drone ×2\n14. 20 2:27 Overlord\n15. 22 2:31 Queen\n16. 22 2:32 Queen\n17. 22 2:35 Drone\n18. 26 2:46 Drone ×2\n19. 28 2:54 Drone ×2\n20. 29 3:05 Extractor\n21. 29 3:08 Drone ×3\n22. 31 3:17 Overlord\n23. 31 3:19 Overlord\n24. 31 3:21 Drone\n25. 31 3:23 Drone\n26. 31 3:24 Hatchery\n27. 32 3:30 Drone ×2\n28. 34 3:51 Queen ×2\n29. 38 3:56 Drone ×4\n30. 41 4:05 Drone ×4\n31. 45 4:17 Overlord\n32. 45 4:25 Overlord\n33. 45 4:27 Drone ×2\n34. 47 4:38 Extractor\n35. 46 4:47 Roach Warren\n36. 46 4:51 Drone ×8\n37. 53 4:54 Extractor\n38. 52 5:01 Queen\n39. 52 5:06 Lair\n40. 54 5:10 Drone ×2\n41. 54 5:11 Spore Crawler\n42. 54 5:12 Spore Crawler\n43. 54 5:12 Drone\n44. 55 5:20 Overlord ×2\n45. 55 5:27 Roach ×5\n46. 65 5:34 Overlord\n47. 65 5:35 Overlord\n48. 65 5:42 Roach ×4\n49. 73 5:55 Overlord\n50. 73 5:56 Roach ×5",
    "type": "Player",
    "ID": "Player-1",
    "size": [
@@ -197,7 +201,7 @@
   },
   {
    "name": "blacksquall",
-   "description": "Blue Protoss build 294 units and killed 143 units.",
+   "description": "Blue Protoss build 294 units and killed 143 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:12 Probe · chrono possible\n3. 14 0:20 Probe · chrono possible\n4. 14 0:20 Pylon\n5. 15 0:38 Probe · chrono possible\n6. 15 0:41 Gateway\n7. 16 0:50 Probe\n8. 16 0:52 Assimilator\n9. 17 1:02 Probe\n10. 18 1:14 Probe\n11. 19 1:26 Probe\n12. 19 1:30 Zealot · chrono possible\n13. 20 1:34 Nexus\n14. 20 1:37 Cybernetics Core\n15. 22 1:47 Pylon\n16. 22 1:58 Zealot · chrono possible\n17. 22 2:04 Gateway\n18. 24 2:20 Probe\n19. 22 2:28 Adept\n20. 24 2:31 Shield Battery\n21. 24 2:32 Probe\n22. 25 2:44 Probe\n23. 26 2:52 Probe\n24. 26 2:52 Adept\n25. 26 2:56 Probe\n26. 30 3:04 Probe\n27. 31 3:07 Assimilator\n28. 31 3:08 Probe\n29. 31 3:11 Adept\n30. 34 3:16 Probe\n31. 35 3:20 Probe\n32. 36 3:28 Probe\n33. 36 3:33 Probe\n34. 38 3:40 Probe\n35. 39 3:45 Probe\n36. 40 3:52 Probe\n37. 41 3:57 Probe\n38. 42 4:04 Probe\n39. 42 4:09 Probe\n40. 44 4:10 Stargate\n41. 44 4:12 Stalker\n42. 44 4:13 Pylon\n43. 46 4:17 Pylon\n44. 46 4:17 Assimilator\n45. 46 4:19 Assimilator\n46. 46 4:31 Probe ×2 · chrono possible\n47. 46 4:31 Stalker\n48. 50 4:39 Probe ×2 · chrono possible\n49. 52 4:46 Void Ray · chrono possible\n50. 52 4:47 Pylon\n51. 52 4:47 Probe ×2 · chrono possible\n52. 52 4:50 Pylon\n53. 54 4:57 Probe ×2 · chrono possible\n54. 60 5:09 Probe ×2\n55. 60 5:11 Pylon\n56. 62 5:15 Pylon\n57. 62 5:21 Void Ray · chrono possible\n58. 62 5:21 Pylon\n59. 62 5:21 Probe ×2\n60. 62 5:25 Pylon\n61. 64 5:31 Pylon\n62. 64 5:33 Probe ×2\n63. 64 5:34 Warp Gate Research · chrono possible\n64. 70 5:40 Nexus\n65. 70 5:45 Adept ×2\n66. 70 5:46 Probe\n67. 70 5:47 Probe\n68. 76 5:55 Shield Battery",
    "type": "Player",
    "ID": "Player-2",
    "size": [
@@ -879,7 +883,11 @@
    ],
    "properties": {
     "time": "00:11:16",
-    "player": "lilTiGGer"
+    "player": "lilTiGGer",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -893,7 +901,11 @@
    ],
    "properties": {
     "time": "00:12:28",
-    "player": "lilTiGGer"
+    "player": "lilTiGGer",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -907,7 +919,11 @@
    ],
    "properties": {
     "time": "00:05:34",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 63,
+    "at supply": 64,
+    "started at": "00:05:34",
+    "steps": ""
    }
   },
   {
@@ -921,7 +937,11 @@
    ],
    "properties": {
     "time": "00:07:21",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -935,7 +955,11 @@
    ],
    "properties": {
     "time": "00:08:32",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -949,7 +973,11 @@
    ],
    "properties": {
     "time": "00:10:35",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -963,7 +991,11 @@
    ],
    "properties": {
     "time": "00:11:37",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -977,7 +1009,11 @@
    ],
    "properties": {
     "time": "00:10:32",
-    "player": "blacksquall"
+    "player": "blacksquall",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -992,7 +1028,11 @@
    "properties": {
     "time": "00:00:00",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1007,7 +1047,11 @@
    "properties": {
     "time": "00:00:19",
     "player": "lilTiGGer",
-    "type": "Spawning Pool"
+    "type": "Spawning Pool",
+    "step #": 1,
+    "at supply": 12,
+    "started at": "00:00:18",
+    "steps": ""
    }
   },
   {
@@ -1022,7 +1066,11 @@
    "properties": {
     "time": "00:01:20",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 7,
+    "at supply": 19,
+    "started at": "00:01:20",
+    "steps": ""
    }
   },
   {
@@ -1037,7 +1085,11 @@
    "properties": {
     "time": "00:03:06",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 20,
+    "at supply": 29,
+    "started at": "00:03:05",
+    "steps": ""
    }
   },
   {
@@ -1052,7 +1104,11 @@
    "properties": {
     "time": "00:03:24",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 26,
+    "at supply": 31,
+    "started at": "00:03:24",
+    "steps": ""
    }
   },
   {
@@ -1067,7 +1123,11 @@
    "properties": {
     "time": "00:04:39",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 34,
+    "at supply": 47,
+    "started at": "00:04:38",
+    "steps": ""
    }
   },
   {
@@ -1082,7 +1142,11 @@
    "properties": {
     "time": "00:04:55",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 37,
+    "at supply": 53,
+    "started at": "00:04:54",
+    "steps": ""
    }
   },
   {
@@ -1097,7 +1161,11 @@
    "properties": {
     "time": "00:04:47",
     "player": "lilTiGGer",
-    "type": "Roach Warren"
+    "type": "Roach Warren",
+    "step #": 35,
+    "at supply": 46,
+    "started at": "00:04:47",
+    "steps": ""
    }
   },
   {
@@ -1112,7 +1180,11 @@
    "properties": {
     "time": "00:05:12",
     "player": "lilTiGGer",
-    "type": "Spore Crawler"
+    "type": "Spore Crawler",
+    "step #": 41,
+    "at supply": 54,
+    "started at": "00:05:11",
+    "steps": ""
    }
   },
   {
@@ -1127,7 +1199,11 @@
    "properties": {
     "time": "00:05:13",
     "player": "lilTiGGer",
-    "type": "Spore Crawler"
+    "type": "Spore Crawler",
+    "step #": 42,
+    "at supply": 54,
+    "started at": "00:05:12",
+    "steps": ""
    }
   },
   {
@@ -1142,7 +1218,11 @@
    "properties": {
     "time": "00:06:07",
     "player": "lilTiGGer",
-    "type": "Spore Crawler"
+    "type": "Spore Crawler",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1157,7 +1237,11 @@
    "properties": {
     "time": "00:06:45",
     "player": "lilTiGGer",
-    "type": "Hydralisk Den"
+    "type": "Hydralisk Den",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1172,7 +1256,11 @@
    "properties": {
     "time": "00:07:22",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1187,7 +1275,11 @@
    "properties": {
     "time": "00:08:38",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1202,7 +1294,11 @@
    "properties": {
     "time": "00:08:46",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1217,7 +1313,11 @@
    "properties": {
     "time": "00:08:53",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1232,7 +1332,11 @@
    "properties": {
     "time": "00:08:55",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1247,7 +1351,11 @@
    "properties": {
     "time": "00:09:34",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1262,7 +1370,11 @@
    "properties": {
     "time": "00:09:35",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1277,7 +1389,11 @@
    "properties": {
     "time": "00:10:31",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1292,7 +1408,11 @@
    "properties": {
     "time": "00:10:33",
     "player": "lilTiGGer",
-    "type": "Extractor"
+    "type": "Extractor",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1307,7 +1427,11 @@
    "properties": {
     "time": "00:10:31",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber"
+    "type": "Evolution Chamber",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1322,7 +1446,11 @@
    "properties": {
     "time": "00:10:32",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber"
+    "type": "Evolution Chamber",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1337,7 +1465,11 @@
    "properties": {
     "time": "00:10:27",
     "player": "lilTiGGer",
-    "type": "Spire"
+    "type": "Spire",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1352,7 +1484,11 @@
    "properties": {
     "time": "00:10:51",
     "player": "lilTiGGer",
-    "type": "Spire"
+    "type": "Spire",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1367,7 +1503,11 @@
    "properties": {
     "time": "00:12:23",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber"
+    "type": "Evolution Chamber",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1382,7 +1522,11 @@
    "properties": {
     "time": "00:11:39",
     "player": "lilTiGGer",
-    "type": "Hatchery"
+    "type": "Hatchery",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1397,7 +1541,11 @@
    "properties": {
     "time": "00:12:22",
     "player": "lilTiGGer",
-    "type": "Infestation Pit"
+    "type": "Infestation Pit",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1412,7 +1560,11 @@
    "properties": {
     "time": "00:13:20",
     "player": "lilTiGGer",
-    "type": "Baneling Nest"
+    "type": "Baneling Nest",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1427,7 +1579,11 @@
    "properties": {
     "time": "00:13:54",
     "player": "lilTiGGer",
-    "type": "Extractor Rich"
+    "type": "Extractor Rich",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1442,7 +1598,11 @@
    "properties": {
     "time": "00:14:50",
     "player": "lilTiGGer",
-    "type": "Ultralisk Cavern"
+    "type": "Ultralisk Cavern",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1457,7 +1617,11 @@
    "properties": {
     "time": "00:00:00",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1472,7 +1636,11 @@
    "properties": {
     "time": "00:00:20",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 4,
+    "at supply": 14,
+    "started at": "00:00:20",
+    "steps": ""
    }
   },
   {
@@ -1487,7 +1655,11 @@
    "properties": {
     "time": "00:00:52",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 8,
+    "at supply": 16,
+    "started at": "00:00:52",
+    "steps": ""
    }
   },
   {
@@ -1502,7 +1674,11 @@
    "properties": {
     "time": "00:00:41",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 6,
+    "at supply": 15,
+    "started at": "00:00:41",
+    "steps": ""
    }
   },
   {
@@ -1517,7 +1693,11 @@
    "properties": {
     "time": "00:01:47",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 15,
+    "at supply": 22,
+    "started at": "00:01:47",
+    "steps": ""
    }
   },
   {
@@ -1532,7 +1712,11 @@
    "properties": {
     "time": "00:01:36",
     "player": "blacksquall",
-    "type": "Cybernetics Core"
+    "type": "Cybernetics Core",
+    "step #": 14,
+    "at supply": 20,
+    "started at": "00:01:37",
+    "steps": ""
    }
   },
   {
@@ -1547,7 +1731,11 @@
    "properties": {
     "time": "00:01:34",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 13,
+    "at supply": 20,
+    "started at": "00:01:34",
+    "steps": ""
    }
   },
   {
@@ -1562,7 +1750,11 @@
    "properties": {
     "time": "00:02:04",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 17,
+    "at supply": 22,
+    "started at": "00:02:04",
+    "steps": ""
    }
   },
   {
@@ -1577,7 +1769,11 @@
    "properties": {
     "time": "00:02:31",
     "player": "blacksquall",
-    "type": "Shield Battery"
+    "type": "Shield Battery",
+    "step #": 20,
+    "at supply": 24,
+    "started at": "00:02:31",
+    "steps": ""
    }
   },
   {
@@ -1592,7 +1788,11 @@
    "properties": {
     "time": "00:03:08",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 27,
+    "at supply": 31,
+    "started at": "00:03:07",
+    "steps": ""
    }
   },
   {
@@ -1607,7 +1807,11 @@
    "properties": {
     "time": "00:04:13",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 42,
+    "at supply": 44,
+    "started at": "00:04:13",
+    "steps": ""
    }
   },
   {
@@ -1622,7 +1826,11 @@
    "properties": {
     "time": "00:04:17",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 43,
+    "at supply": 46,
+    "started at": "00:04:17",
+    "steps": ""
    }
   },
   {
@@ -1637,7 +1845,11 @@
    "properties": {
     "time": "00:04:18",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 44,
+    "at supply": 46,
+    "started at": "00:04:17",
+    "steps": ""
    }
   },
   {
@@ -1652,7 +1864,11 @@
    "properties": {
     "time": "00:04:20",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 45,
+    "at supply": 46,
+    "started at": "00:04:19",
+    "steps": ""
    }
   },
   {
@@ -1667,7 +1883,11 @@
    "properties": {
     "time": "00:04:10",
     "player": "blacksquall",
-    "type": "Stargate"
+    "type": "Stargate",
+    "step #": 40,
+    "at supply": 44,
+    "started at": "00:04:10",
+    "steps": ""
    }
   },
   {
@@ -1682,7 +1902,11 @@
    "properties": {
     "time": "00:04:47",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 50,
+    "at supply": 52,
+    "started at": "00:04:47",
+    "steps": ""
    }
   },
   {
@@ -1697,7 +1921,11 @@
    "properties": {
     "time": "00:04:49",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 52,
+    "at supply": 52,
+    "started at": "00:04:50",
+    "steps": ""
    }
   },
   {
@@ -1712,7 +1940,11 @@
    "properties": {
     "time": "00:05:11",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 55,
+    "at supply": 60,
+    "started at": "00:05:11",
+    "steps": ""
    }
   },
   {
@@ -1727,7 +1959,11 @@
    "properties": {
     "time": "00:05:15",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 56,
+    "at supply": 62,
+    "started at": "00:05:15",
+    "steps": ""
    }
   },
   {
@@ -1742,7 +1978,11 @@
    "properties": {
     "time": "00:05:21",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 58,
+    "at supply": 62,
+    "started at": "00:05:21",
+    "steps": ""
    }
   },
   {
@@ -1757,7 +1997,11 @@
    "properties": {
     "time": "00:05:25",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 60,
+    "at supply": 62,
+    "started at": "00:05:25",
+    "steps": ""
    }
   },
   {
@@ -1772,7 +2016,11 @@
    "properties": {
     "time": "00:05:31",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 61,
+    "at supply": 64,
+    "started at": "00:05:31",
+    "steps": ""
    }
   },
   {
@@ -1787,7 +2035,11 @@
    "properties": {
     "time": "00:05:55",
     "player": "blacksquall",
-    "type": "Shield Battery"
+    "type": "Shield Battery",
+    "step #": 68,
+    "at supply": 76,
+    "started at": "00:05:55",
+    "steps": ""
    }
   },
   {
@@ -1802,7 +2054,11 @@
    "properties": {
     "time": "00:05:40",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 64,
+    "at supply": 70,
+    "started at": "00:05:40",
+    "steps": ""
    }
   },
   {
@@ -1817,7 +2073,11 @@
    "properties": {
     "time": "00:06:45",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1832,7 +2092,11 @@
    "properties": {
     "time": "00:06:48",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1847,7 +2111,11 @@
    "properties": {
     "time": "00:06:22",
     "player": "blacksquall",
-    "type": "Robotics Facility"
+    "type": "Robotics Facility",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1862,7 +2130,11 @@
    "properties": {
     "time": "00:06:23",
     "player": "blacksquall",
-    "type": "Robotics Facility"
+    "type": "Robotics Facility",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1877,7 +2149,11 @@
    "properties": {
     "time": "00:06:51",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1892,7 +2168,11 @@
    "properties": {
     "time": "00:06:40",
     "player": "blacksquall",
-    "type": "Forge"
+    "type": "Forge",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1907,7 +2187,11 @@
    "properties": {
     "time": "00:06:37",
     "player": "blacksquall",
-    "type": "Twilight Council"
+    "type": "Twilight Council",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1922,7 +2206,11 @@
    "properties": {
     "time": "00:06:42",
     "player": "blacksquall",
-    "type": "Forge"
+    "type": "Forge",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1937,7 +2225,11 @@
    "properties": {
     "time": "00:07:35",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1952,7 +2244,11 @@
    "properties": {
     "time": "00:07:29",
     "player": "blacksquall",
-    "type": "Templar Archive"
+    "type": "Templar Archive",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1967,7 +2263,11 @@
    "properties": {
     "time": "00:07:27",
     "player": "blacksquall",
-    "type": "Robotics Bay"
+    "type": "Robotics Bay",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1982,7 +2282,11 @@
    "properties": {
     "time": "00:08:03",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -1997,7 +2301,11 @@
    "properties": {
     "time": "00:07:58",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2012,7 +2320,11 @@
    "properties": {
     "time": "00:08:53",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2027,7 +2339,11 @@
    "properties": {
     "time": "00:08:56",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2042,7 +2358,11 @@
    "properties": {
     "time": "00:09:00",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2057,7 +2377,11 @@
    "properties": {
     "time": "00:09:06",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2072,7 +2396,11 @@
    "properties": {
     "time": "00:09:37",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2087,7 +2415,11 @@
    "properties": {
     "time": "00:09:41",
     "player": "blacksquall",
-    "type": "Assimilator"
+    "type": "Assimilator",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2102,7 +2434,11 @@
    "properties": {
     "time": "00:09:33",
     "player": "blacksquall",
-    "type": "Cybernetics Core"
+    "type": "Cybernetics Core",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2117,7 +2453,11 @@
    "properties": {
     "time": "00:09:43",
     "player": "blacksquall",
-    "type": "Photon Cannon"
+    "type": "Photon Cannon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2132,7 +2472,11 @@
    "properties": {
     "time": "00:09:45",
     "player": "blacksquall",
-    "type": "Photon Cannon"
+    "type": "Photon Cannon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2147,7 +2491,11 @@
    "properties": {
     "time": "00:09:56",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2162,7 +2510,11 @@
    "properties": {
     "time": "00:09:46",
     "player": "blacksquall",
-    "type": "Photon Cannon"
+    "type": "Photon Cannon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2177,7 +2529,11 @@
    "properties": {
     "time": "00:10:01",
     "player": "blacksquall",
-    "type": "Photon Cannon"
+    "type": "Photon Cannon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2192,7 +2548,11 @@
    "properties": {
     "time": "00:10:02",
     "player": "blacksquall",
-    "type": "Photon Cannon"
+    "type": "Photon Cannon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2207,7 +2567,11 @@
    "properties": {
     "time": "00:09:47",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2222,7 +2586,11 @@
    "properties": {
     "time": "00:09:48",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2237,7 +2605,11 @@
    "properties": {
     "time": "00:09:51",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2252,7 +2624,11 @@
    "properties": {
     "time": "00:09:27",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2267,7 +2643,11 @@
    "properties": {
     "time": "00:09:55",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2282,7 +2662,11 @@
    "properties": {
     "time": "00:09:58",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2297,7 +2681,11 @@
    "properties": {
     "time": "00:11:46",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2312,7 +2700,11 @@
    "properties": {
     "time": "00:11:48",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2327,7 +2719,11 @@
    "properties": {
     "time": "00:11:50",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2342,7 +2738,11 @@
    "properties": {
     "time": "00:11:31",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2357,7 +2757,11 @@
    "properties": {
     "time": "00:11:33",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2372,7 +2776,11 @@
    "properties": {
     "time": "00:11:35",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2387,7 +2795,11 @@
    "properties": {
     "time": "00:11:37",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2402,7 +2814,11 @@
    "properties": {
     "time": "00:11:39",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2417,7 +2833,11 @@
    "properties": {
     "time": "00:11:41",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2432,7 +2852,11 @@
    "properties": {
     "time": "00:11:43",
     "player": "blacksquall",
-    "type": "Gateway"
+    "type": "Gateway",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2447,7 +2871,11 @@
    "properties": {
     "time": "00:12:13",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2462,7 +2890,11 @@
    "properties": {
     "time": "00:12:43",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2477,7 +2909,11 @@
    "properties": {
     "time": "00:13:10",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2492,7 +2928,11 @@
    "properties": {
     "time": "00:13:53",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2507,7 +2947,11 @@
    "properties": {
     "time": "00:13:01",
     "player": "blacksquall",
-    "type": "Nexus"
+    "type": "Nexus",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2522,7 +2966,11 @@
    "properties": {
     "time": "00:13:58",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2537,7 +2985,11 @@
    "properties": {
     "time": "00:14:39",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2552,7 +3004,11 @@
    "properties": {
     "time": "00:14:50",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2567,7 +3023,11 @@
    "properties": {
     "time": "00:14:55",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2582,7 +3042,11 @@
    "properties": {
     "time": "00:14:45",
     "player": "blacksquall",
-    "type": "Cybernetics Core"
+    "type": "Cybernetics Core",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2597,7 +3061,11 @@
    "properties": {
     "time": "00:15:18",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2612,7 +3080,11 @@
    "properties": {
     "time": "00:15:21",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2627,7 +3099,11 @@
    "properties": {
     "time": "00:15:22",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2642,7 +3118,11 @@
    "properties": {
     "time": "00:15:23",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2657,7 +3137,11 @@
    "properties": {
     "time": "00:15:28",
     "player": "blacksquall",
-    "type": "Pylon"
+    "type": "Pylon",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2672,7 +3156,334 @@
    "properties": {
     "time": "00:15:06",
     "player": "blacksquall",
-    "type": "Stargate"
+    "type": "Stargate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Lair",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-114",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:05:06",
+    "player": "lilTiGGer",
+    "type": "Lair",
+    "step #": 39,
+    "at supply": 52,
+    "started at": "00:05:06",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-115",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:07:14",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-116",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:07:14",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-117",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:10:33",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-118",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:10:34",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-119",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:10:37",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-120",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:10:41",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-121",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:10:45",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-122",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:17",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-123",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:19",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-124",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:22",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-125",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:23",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-126",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:25",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-127",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:28",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Warp Gate",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-128",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:12:30",
+    "player": "blacksquall",
+    "type": "Warp Gate",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Hive",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-129",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:13:03",
+    "player": "lilTiGGer",
+    "type": "Hive",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
+   }
+  },
+  {
+   "name": "Greater Spire",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-130",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:14:51",
+    "player": "lilTiGGer",
+    "type": "Greater Spire",
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2732,7 +3543,11 @@
     "type": "Drone",
     "count": 12,
     "total at time": 12,
-    "supply": 12
+    "supply": 12,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2747,7 +3562,11 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 1,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -2762,7 +3581,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 13,
-    "supply": 1
+    "supply": 1,
+    "step #": 2,
+    "at supply": 12,
+    "started at": "00:00:21",
+    "steps": ""
    }
   },
   {
@@ -2777,7 +3600,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 15,
-    "supply": 2
+    "supply": 2,
+    "step #": 3,
+    "at supply": 12,
+    "started at": "00:00:26",
+    "steps": "3. 12 0:26 Drone / 4. 13 0:29 Drone"
    }
   },
   {
@@ -2792,7 +3619,11 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 2,
-    "supply": 0
+    "supply": 0,
+    "step #": 5,
+    "at supply": 14,
+    "started at": "00:00:39",
+    "steps": ""
    }
   },
   {
@@ -2807,7 +3638,11 @@
     "type": "Zergling",
     "count": 6,
     "total at time": 6,
-    "supply": 3
+    "supply": 3,
+    "step #": 6,
+    "at supply": 14,
+    "started at": "00:01:06",
+    "steps": ""
    }
   },
   {
@@ -2822,7 +3657,11 @@
     "type": "Zergling",
     "count": 4,
     "total at time": 10,
-    "supply": 2
+    "supply": 2,
+    "step #": 8,
+    "at supply": 19,
+    "started at": "00:01:24",
+    "steps": "8. 19 1:24 Zergling ×2 / 9. 17 1:28 Zergling ×2"
    }
   },
   {
@@ -2837,7 +3676,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 15,
-    "supply": 1
+    "supply": 1,
+    "step #": 11,
+    "at supply": 20,
+    "started at": "00:01:40",
+    "steps": ""
    }
   },
   {
@@ -2852,7 +3695,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 16,
-    "supply": 1
+    "supply": 1,
+    "step #": 12,
+    "at supply": 21,
+    "started at": "00:01:51",
+    "steps": ""
    }
   },
   {
@@ -2867,7 +3714,11 @@
     "type": "Queen",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 10,
+    "at supply": 17,
+    "started at": "00:01:32",
+    "steps": ""
    }
   },
   {
@@ -2882,7 +3733,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 17,
-    "supply": 2
+    "supply": 2,
+    "step #": 13,
+    "at supply": 20,
+    "started at": "00:02:25",
+    "steps": ""
    }
   },
   {
@@ -2897,7 +3752,11 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 3,
-    "supply": 0
+    "supply": 0,
+    "step #": 14,
+    "at supply": 20,
+    "started at": "00:02:27",
+    "steps": ""
    }
   },
   {
@@ -2912,7 +3771,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 18,
-    "supply": 1
+    "supply": 1,
+    "step #": 17,
+    "at supply": 22,
+    "started at": "00:02:35",
+    "steps": ""
    }
   },
   {
@@ -2927,7 +3790,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 20,
-    "supply": 2
+    "supply": 2,
+    "step #": 18,
+    "at supply": 26,
+    "started at": "00:02:46",
+    "steps": ""
    }
   },
   {
@@ -2942,7 +3809,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 22,
-    "supply": 2
+    "supply": 2,
+    "step #": 19,
+    "at supply": 28,
+    "started at": "00:02:54",
+    "steps": ""
    }
   },
   {
@@ -2957,7 +3828,11 @@
     "type": "Queen",
     "count": 2,
     "total at time": 3,
-    "supply": 4
+    "supply": 4,
+    "step #": 15,
+    "at supply": 22,
+    "started at": "00:02:31",
+    "steps": "15. 22 2:31 Queen / 16. 22 2:32 Queen"
    }
   },
   {
@@ -2972,7 +3847,11 @@
     "type": "Drone",
     "count": 3,
     "total at time": 24,
-    "supply": 3
+    "supply": 3,
+    "step #": 21,
+    "at supply": 29,
+    "started at": "00:03:08",
+    "steps": ""
    }
   },
   {
@@ -2987,7 +3866,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 25,
-    "supply": 1
+    "supply": 1,
+    "step #": 24,
+    "at supply": 31,
+    "started at": "00:03:21",
+    "steps": ""
    }
   },
   {
@@ -3002,7 +3885,11 @@
     "type": "Drone",
     "count": 3,
     "total at time": 28,
-    "supply": 3
+    "supply": 3,
+    "step #": 25,
+    "at supply": 31,
+    "started at": "00:03:23",
+    "steps": "25. 31 3:23 Drone / 27. 32 3:30 Drone ×2"
    }
   },
   {
@@ -3017,7 +3904,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 5,
-    "supply": 0
+    "supply": 0,
+    "step #": 22,
+    "at supply": 31,
+    "started at": "00:03:17",
+    "steps": "22. 31 3:17 Overlord / 23. 31 3:19 Overlord"
    }
   },
   {
@@ -3032,7 +3923,11 @@
     "type": "Drone",
     "count": 4,
     "total at time": 31,
-    "supply": 4
+    "supply": 4,
+    "step #": 29,
+    "at supply": 38,
+    "started at": "00:03:56",
+    "steps": ""
    }
   },
   {
@@ -3047,7 +3942,11 @@
     "type": "Drone",
     "count": 4,
     "total at time": 35,
-    "supply": 4
+    "supply": 4,
+    "step #": 30,
+    "at supply": 41,
+    "started at": "00:04:05",
+    "steps": ""
    }
   },
   {
@@ -3062,7 +3961,11 @@
     "type": "Queen",
     "count": 2,
     "total at time": 5,
-    "supply": 4
+    "supply": 4,
+    "step #": 28,
+    "at supply": 34,
+    "started at": "00:03:51",
+    "steps": ""
    }
   },
   {
@@ -3077,7 +3980,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 7,
-    "supply": 0
+    "supply": 0,
+    "step #": 31,
+    "at supply": 45,
+    "started at": "00:04:17",
+    "steps": "31. 45 4:17 Overlord / 32. 45 4:25 Overlord"
    }
   },
   {
@@ -3092,7 +3999,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 36,
-    "supply": 2
+    "supply": 2,
+    "step #": 33,
+    "at supply": 45,
+    "started at": "00:04:27",
+    "steps": ""
    }
   },
   {
@@ -3107,7 +4018,11 @@
     "type": "Drone",
     "count": 8,
     "total at time": 43,
-    "supply": 8
+    "supply": 8,
+    "step #": 36,
+    "at supply": 46,
+    "started at": "00:04:51",
+    "steps": ""
    }
   },
   {
@@ -3122,7 +4037,11 @@
     "type": "Drone",
     "count": 3,
     "total at time": 44,
-    "supply": 3
+    "supply": 3,
+    "step #": 40,
+    "at supply": 54,
+    "started at": "00:05:10",
+    "steps": "40. 54 5:10 Drone ×2 / 43. 54 5:12 Drone"
    }
   },
   {
@@ -3137,7 +4056,11 @@
     "type": "Queen",
     "count": 1,
     "total at time": 6,
-    "supply": 2
+    "supply": 2,
+    "step #": 38,
+    "at supply": 52,
+    "started at": "00:05:01",
+    "steps": ""
    }
   },
   {
@@ -3152,7 +4075,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 8,
-    "supply": 0
+    "supply": 0,
+    "step #": 44,
+    "at supply": 55,
+    "started at": "00:05:20",
+    "steps": ""
    }
   },
   {
@@ -3167,7 +4094,11 @@
     "type": "Roach",
     "count": 5,
     "total at time": 5,
-    "supply": 10
+    "supply": 10,
+    "step #": 45,
+    "at supply": 55,
+    "started at": "00:05:27",
+    "steps": ""
    }
   },
   {
@@ -3182,7 +4113,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 10,
-    "supply": 0
+    "supply": 0,
+    "step #": 46,
+    "at supply": 65,
+    "started at": "00:05:34",
+    "steps": "46. 65 5:34 Overlord / 47. 65 5:35 Overlord"
    }
   },
   {
@@ -3197,7 +4132,11 @@
     "type": "Roach",
     "count": 4,
     "total at time": 9,
-    "supply": 8
+    "supply": 8,
+    "step #": 48,
+    "at supply": 65,
+    "started at": "00:05:42",
+    "steps": ""
    }
   },
   {
@@ -3212,7 +4151,11 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 11,
-    "supply": 0
+    "supply": 0,
+    "step #": 49,
+    "at supply": 73,
+    "started at": "00:05:55",
+    "steps": ""
    }
   },
   {
@@ -3227,7 +4170,11 @@
     "type": "Roach",
     "count": 5,
     "total at time": 14,
-    "supply": 10
+    "supply": 10,
+    "step #": 50,
+    "at supply": 73,
+    "started at": "00:05:56",
+    "steps": ""
    }
   },
   {
@@ -3242,7 +4189,11 @@
     "type": "Roach",
     "count": 3,
     "total at time": 17,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3257,7 +4208,11 @@
     "type": "Roach",
     "count": 5,
     "total at time": 22,
-    "supply": 10
+    "supply": 10,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3272,7 +4227,11 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 12,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3287,7 +4246,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 14,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3302,7 +4265,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 42,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3317,7 +4284,11 @@
     "type": "Roach",
     "count": 5,
     "total at time": 27,
-    "supply": 10
+    "supply": 10,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3332,7 +4303,11 @@
     "type": "Drone",
     "count": 6,
     "total at time": 47,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3347,7 +4322,11 @@
     "type": "Drone",
     "count": 9,
     "total at time": 56,
-    "supply": 9
+    "supply": 9,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3362,7 +4341,11 @@
     "type": "Drone",
     "count": 4,
     "total at time": 59,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3377,7 +4360,11 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 17,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3392,7 +4379,11 @@
     "type": "Drone",
     "count": 6,
     "total at time": 65,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3407,7 +4398,11 @@
     "type": "Hydralisk",
     "count": 6,
     "total at time": 6,
-    "supply": 12
+    "supply": 12,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3422,7 +4417,11 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 11,
-    "supply": 10
+    "supply": 10,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3437,7 +4436,11 @@
     "type": "Drone",
     "count": 3,
     "total at time": 68,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3452,7 +4455,11 @@
     "type": "Drone",
     "count": 5,
     "total at time": 71,
-    "supply": 5
+    "supply": 5,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3467,7 +4474,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 72,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3482,7 +4493,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 74,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3497,7 +4512,11 @@
     "type": "Hydralisk",
     "count": 3,
     "total at time": 14,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3512,7 +4531,11 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 17,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3527,7 +4550,11 @@
     "type": "Hydralisk",
     "count": 7,
     "total at time": 21,
-    "supply": 14
+    "supply": 14,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3542,7 +4569,11 @@
     "type": "Drone",
     "count": 5,
     "total at time": 77,
-    "supply": 5
+    "supply": 5,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3557,7 +4588,11 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 17,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3572,7 +4607,11 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 17,
-    "supply": 10
+    "supply": 10,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3587,7 +4626,11 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 19,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3602,7 +4645,11 @@
     "type": "Drone",
     "count": 5,
     "total at time": 82,
-    "supply": 5
+    "supply": 5,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3617,7 +4664,11 @@
     "type": "Drone",
     "count": 1,
     "total at time": 79,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3632,7 +4683,11 @@
     "type": "Hydralisk",
     "count": 9,
     "total at time": 18,
-    "supply": 18
+    "supply": 18,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3647,7 +4702,11 @@
     "type": "Drone",
     "count": 7,
     "total at time": 84,
-    "supply": 7
+    "supply": 7,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3662,7 +4721,11 @@
     "type": "Zergling",
     "count": 16,
     "total at time": 16,
-    "supply": 8
+    "supply": 8,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3677,7 +4740,11 @@
     "type": "Queen",
     "count": 1,
     "total at time": 7,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3692,7 +4759,11 @@
     "type": "Zergling",
     "count": 22,
     "total at time": 38,
-    "supply": 11
+    "supply": 11,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3707,7 +4778,11 @@
     "type": "Zergling",
     "count": 32,
     "total at time": 70,
-    "supply": 16
+    "supply": 16,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3722,7 +4797,11 @@
     "type": "Zergling",
     "count": 40,
     "total at time": 110,
-    "supply": 20
+    "supply": 20,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3737,7 +4816,11 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 23,
-    "supply": 10
+    "supply": 10,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3752,7 +4835,11 @@
     "type": "Drone",
     "count": 2,
     "total at time": 81,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3767,7 +4854,11 @@
     "type": "Overlord",
     "count": 14,
     "total at time": 23,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3782,7 +4873,11 @@
     "type": "Overlord",
     "count": 4,
     "total at time": 27,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3797,7 +4892,11 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 30,
-    "supply": 0
+    "supply": 0,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3812,7 +4911,11 @@
     "type": "Queen",
     "count": 1,
     "total at time": 8,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3827,7 +4930,11 @@
     "type": "Mutalisk",
     "count": 8,
     "total at time": 8,
-    "supply": 16
+    "supply": 16,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3842,7 +4949,11 @@
     "type": "Mutalisk",
     "count": 16,
     "total at time": 24,
-    "supply": 32
+    "supply": 32,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3857,7 +4968,11 @@
     "type": "Drone",
     "count": 3,
     "total at time": 82,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3872,7 +4987,11 @@
     "type": "Roach",
     "count": 1,
     "total at time": 0,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3887,7 +5006,11 @@
     "type": "Roach",
     "count": 9,
     "total at time": 9,
-    "supply": 18
+    "supply": 18,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3902,7 +5025,11 @@
     "type": "Roach",
     "count": 9,
     "total at time": 17,
-    "supply": 18
+    "supply": 18,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3917,7 +5044,11 @@
     "type": "Roach",
     "count": 2,
     "total at time": 0,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3932,7 +5063,11 @@
     "type": "Ultralisk",
     "count": 4,
     "total at time": 4,
-    "supply": 24
+    "supply": 24,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3947,7 +5082,11 @@
     "type": "Probe",
     "count": 12,
     "total at time": 12,
-    "supply": 12
+    "supply": 12,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3962,7 +5101,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 13,
-    "supply": 1
+    "supply": 1,
+    "step #": 1,
+    "at supply": 12,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -3977,7 +5120,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 14,
-    "supply": 1
+    "supply": 1,
+    "step #": 2,
+    "at supply": 13,
+    "started at": "00:00:12",
+    "steps": ""
    }
   },
   {
@@ -3992,7 +5139,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 15,
-    "supply": 1
+    "supply": 1,
+    "step #": 3,
+    "at supply": 14,
+    "started at": "00:00:20",
+    "steps": ""
    }
   },
   {
@@ -4007,7 +5158,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 16,
-    "supply": 1
+    "supply": 1,
+    "step #": 5,
+    "at supply": 15,
+    "started at": "00:00:38",
+    "steps": ""
    }
   },
   {
@@ -4022,7 +5177,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 17,
-    "supply": 1
+    "supply": 1,
+    "step #": 7,
+    "at supply": 16,
+    "started at": "00:00:50",
+    "steps": ""
    }
   },
   {
@@ -4037,7 +5196,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 18,
-    "supply": 1
+    "supply": 1,
+    "step #": 9,
+    "at supply": 17,
+    "started at": "00:01:02",
+    "steps": ""
    }
   },
   {
@@ -4052,7 +5215,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 19,
-    "supply": 1
+    "supply": 1,
+    "step #": 10,
+    "at supply": 18,
+    "started at": "00:01:14",
+    "steps": ""
    }
   },
   {
@@ -4067,7 +5234,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 20,
-    "supply": 1
+    "supply": 1,
+    "step #": 11,
+    "at supply": 19,
+    "started at": "00:01:26",
+    "steps": ""
    }
   },
   {
@@ -4082,7 +5253,11 @@
     "type": "Zealot",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 12,
+    "at supply": 19,
+    "started at": "00:01:30",
+    "steps": ""
    }
   },
   {
@@ -4097,7 +5272,11 @@
     "type": "Zealot",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 16,
+    "at supply": 22,
+    "started at": "00:01:58",
+    "steps": ""
    }
   },
   {
@@ -4112,7 +5291,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 20,
-    "supply": 1
+    "supply": 1,
+    "step #": 18,
+    "at supply": 24,
+    "started at": "00:02:20",
+    "steps": ""
    }
   },
   {
@@ -4127,7 +5310,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 21,
-    "supply": 1
+    "supply": 1,
+    "step #": 21,
+    "at supply": 24,
+    "started at": "00:02:32",
+    "steps": ""
    }
   },
   {
@@ -4142,7 +5329,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 23,
-    "supply": 2
+    "supply": 2,
+    "step #": 22,
+    "at supply": 25,
+    "started at": "00:02:44",
+    "steps": "22. 25 2:44 Probe / 23. 26 2:52 Probe"
    }
   },
   {
@@ -4157,7 +5348,11 @@
     "type": "Adept",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 19,
+    "at supply": 22,
+    "started at": "00:02:28",
+    "steps": ""
    }
   },
   {
@@ -4172,7 +5367,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 24,
-    "supply": 1
+    "supply": 1,
+    "step #": 25,
+    "at supply": 26,
+    "started at": "00:02:56",
+    "steps": ""
    }
   },
   {
@@ -4187,7 +5386,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 26,
-    "supply": 2
+    "supply": 2,
+    "step #": 26,
+    "at supply": 30,
+    "started at": "00:03:04",
+    "steps": "26. 30 3:04 Probe / 28. 31 3:08 Probe"
    }
   },
   {
@@ -4202,7 +5405,11 @@
     "type": "Adept",
     "count": 1,
     "total at time": 2,
-    "supply": 2
+    "supply": 2,
+    "step #": 24,
+    "at supply": 26,
+    "started at": "00:02:52",
+    "steps": ""
    }
   },
   {
@@ -4217,7 +5424,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 28,
-    "supply": 2
+    "supply": 2,
+    "step #": 30,
+    "at supply": 34,
+    "started at": "00:03:16",
+    "steps": "30. 34 3:16 Probe / 31. 35 3:20 Probe"
    }
   },
   {
@@ -4232,7 +5443,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 30,
-    "supply": 2
+    "supply": 2,
+    "step #": 32,
+    "at supply": 36,
+    "started at": "00:03:28",
+    "steps": "32. 36 3:28 Probe / 33. 36 3:33 Probe"
    }
   },
   {
@@ -4247,7 +5462,11 @@
     "type": "Adept",
     "count": 1,
     "total at time": 3,
-    "supply": 2
+    "supply": 2,
+    "step #": 29,
+    "at supply": 31,
+    "started at": "00:03:11",
+    "steps": ""
    }
   },
   {
@@ -4262,7 +5481,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 31,
-    "supply": 1
+    "supply": 1,
+    "step #": 34,
+    "at supply": 38,
+    "started at": "00:03:40",
+    "steps": ""
    }
   },
   {
@@ -4277,7 +5500,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 33,
-    "supply": 2
+    "supply": 2,
+    "step #": 35,
+    "at supply": 39,
+    "started at": "00:03:45",
+    "steps": "35. 39 3:45 Probe / 36. 40 3:52 Probe"
    }
   },
   {
@@ -4292,7 +5519,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 34,
-    "supply": 1
+    "supply": 1,
+    "step #": 37,
+    "at supply": 41,
+    "started at": "00:03:57",
+    "steps": ""
    }
   },
   {
@@ -4307,7 +5538,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 36,
-    "supply": 2
+    "supply": 2,
+    "step #": 38,
+    "at supply": 42,
+    "started at": "00:04:04",
+    "steps": "38. 42 4:04 Probe / 39. 42 4:09 Probe"
    }
   },
   {
@@ -4322,7 +5557,11 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 41,
+    "at supply": 44,
+    "started at": "00:04:12",
+    "steps": ""
    }
   },
   {
@@ -4337,7 +5576,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 38,
-    "supply": 2
+    "supply": 2,
+    "step #": 46,
+    "at supply": 46,
+    "started at": "00:04:31",
+    "steps": ""
    }
   },
   {
@@ -4352,7 +5595,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 40,
-    "supply": 2
+    "supply": 2,
+    "step #": 48,
+    "at supply": 50,
+    "started at": "00:04:39",
+    "steps": ""
    }
   },
   {
@@ -4367,7 +5614,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 42,
-    "supply": 2
+    "supply": 2,
+    "step #": 51,
+    "at supply": 52,
+    "started at": "00:04:47",
+    "steps": ""
    }
   },
   {
@@ -4382,7 +5633,11 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 2,
-    "supply": 2
+    "supply": 2,
+    "step #": 47,
+    "at supply": 46,
+    "started at": "00:04:31",
+    "steps": ""
    }
   },
   {
@@ -4397,7 +5652,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 44,
-    "supply": 2
+    "supply": 2,
+    "step #": 53,
+    "at supply": 54,
+    "started at": "00:04:57",
+    "steps": ""
    }
   },
   {
@@ -4412,7 +5671,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 46,
-    "supply": 2
+    "supply": 2,
+    "step #": 54,
+    "at supply": 60,
+    "started at": "00:05:09",
+    "steps": ""
    }
   },
   {
@@ -4427,7 +5690,11 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 1,
-    "supply": 4
+    "supply": 4,
+    "step #": 49,
+    "at supply": 52,
+    "started at": "00:04:46",
+    "steps": ""
    }
   },
   {
@@ -4442,7 +5709,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 48,
-    "supply": 2
+    "supply": 2,
+    "step #": 59,
+    "at supply": 62,
+    "started at": "00:05:21",
+    "steps": ""
    }
   },
   {
@@ -4457,7 +5728,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 49,
-    "supply": 1
+    "supply": 1,
+    "step #": 62,
+    "at supply": 64,
+    "started at": "00:05:33",
+    "steps": ""
    }
   },
   {
@@ -4472,7 +5747,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 50,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4487,7 +5766,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 52,
-    "supply": 2
+    "supply": 2,
+    "step #": 66,
+    "at supply": 70,
+    "started at": "00:05:46",
+    "steps": "66. 70 5:46 Probe / 67. 70 5:47 Probe"
    }
   },
   {
@@ -4502,7 +5785,11 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 2,
-    "supply": 4
+    "supply": 4,
+    "step #": 57,
+    "at supply": 62,
+    "started at": "00:05:21",
+    "steps": ""
    }
   },
   {
@@ -4517,7 +5804,11 @@
     "type": "Adept",
     "count": 2,
     "total at time": 5,
-    "supply": 4
+    "supply": 4,
+    "step #": 65,
+    "at supply": 70,
+    "started at": "00:05:45",
+    "steps": ""
    }
   },
   {
@@ -4532,7 +5823,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 54,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4547,7 +5842,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 56,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4562,7 +5861,11 @@
     "type": "Oracle",
     "count": 1,
     "total at time": 1,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4577,7 +5880,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 57,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4592,7 +5899,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 59,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4607,7 +5918,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 60,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4622,7 +5937,11 @@
     "type": "Probe",
     "count": 3,
     "total at time": 63,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4637,7 +5956,11 @@
     "type": "Probe",
     "count": 3,
     "total at time": 66,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4652,7 +5975,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 67,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4667,7 +5994,11 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 1,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4682,7 +6013,11 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 2,
-    "supply": 8
+    "supply": 8,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4697,7 +6032,11 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 2,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4712,7 +6051,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 62,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4727,7 +6070,11 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 3,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4742,7 +6089,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 63,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4757,7 +6108,11 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 4,
-    "supply": 8
+    "supply": 8,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4772,7 +6127,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 65,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4787,7 +6146,11 @@
     "type": "Observer",
     "count": 1,
     "total at time": 1,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4802,7 +6165,11 @@
     "type": "Disruptor",
     "count": 1,
     "total at time": 1,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4817,7 +6184,11 @@
     "type": "Disruptor",
     "count": 1,
     "total at time": 2,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4832,7 +6203,11 @@
     "type": "Probe",
     "count": 2,
     "total at time": 66,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4847,7 +6222,11 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 3,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4862,7 +6241,11 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 4,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4877,7 +6260,11 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 6,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4892,7 +6279,11 @@
     "type": "Probe",
     "count": 4,
     "total at time": 70,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4907,7 +6298,11 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 7,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4922,7 +6317,11 @@
     "type": "High Templar",
     "count": 4,
     "total at time": 4,
-    "supply": 8
+    "supply": 8,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4937,7 +6336,11 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 5,
-    "supply": 8
+    "supply": 8,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4952,7 +6355,11 @@
     "type": "Probe",
     "count": 3,
     "total at time": 73,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4967,7 +6374,11 @@
     "type": "Zealot",
     "count": 2,
     "total at time": 2,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4982,7 +6393,11 @@
     "type": "Observer",
     "count": 2,
     "total at time": 3,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -4997,7 +6412,11 @@
     "type": "Zealot",
     "count": 7,
     "total at time": 9,
-    "supply": 14
+    "supply": 14,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5012,7 +6431,11 @@
     "type": "Oracle",
     "count": 1,
     "total at time": 1,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5027,7 +6450,11 @@
     "type": "Stalker",
     "count": 6,
     "total at time": 13,
-    "supply": 12
+    "supply": 12,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5042,7 +6469,11 @@
     "type": "Disruptor",
     "count": 2,
     "total at time": 3,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5057,7 +6488,11 @@
     "type": "Observer",
     "count": 1,
     "total at time": 3,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5072,7 +6507,11 @@
     "type": "Observer",
     "count": 1,
     "total at time": 4,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5087,7 +6526,11 @@
     "type": "Zealot",
     "count": 6,
     "total at time": 15,
-    "supply": 12
+    "supply": 12,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5102,7 +6545,11 @@
     "type": "Observer",
     "count": 2,
     "total at time": 6,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5117,7 +6564,11 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 15,
-    "supply": 4
+    "supply": 4,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5132,7 +6583,11 @@
     "type": "Observer",
     "count": 1,
     "total at time": 6,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5147,7 +6602,11 @@
     "type": "Observer",
     "count": 1,
     "total at time": 7,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5162,7 +6621,11 @@
     "type": "Warp Prism",
     "count": 1,
     "total at time": 1,
-    "supply": 2
+    "supply": 2,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5177,7 +6640,11 @@
     "type": "High Templar",
     "count": 11,
     "total at time": 15,
-    "supply": 22
+    "supply": 22,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5192,7 +6659,11 @@
     "type": "Archon",
     "count": 5,
     "total at time": 5,
-    "supply": 20
+    "supply": 20,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5207,7 +6678,11 @@
     "type": "Zealot",
     "count": 3,
     "total at time": 17,
-    "supply": 6
+    "supply": 6,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5222,7 +6697,11 @@
     "type": "Probe",
     "count": 3,
     "total at time": 43,
-    "supply": 3
+    "supply": 3,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5237,7 +6716,11 @@
     "type": "Stalker",
     "count": 8,
     "total at time": 20,
-    "supply": 16
+    "supply": 16,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5252,7 +6735,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 44,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5267,7 +6754,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 45,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5282,7 +6773,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 46,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
@@ -5297,7 +6792,11 @@
     "type": "Probe",
     "count": 1,
     "total at time": 47,
-    "supply": 1
+    "supply": 1,
+    "step #": 0,
+    "at supply": 0,
+    "started at": "00:00:00",
+    "steps": ""
    }
   },
   {
