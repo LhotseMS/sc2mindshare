@@ -90,8 +90,12 @@ def test_6_clocks():
     r = lay([it("Chat-1", "Chat", 5), it("Stats-1", "Stats", 15), it("Chat-2", "Chat", 3685)], clocks=clocks)
     names = [c.file_name for c in r.extra_nodes]
     assert names == ["0-10.png", "0-10.png", "61-30.png", "61-30.png"]  # none in the Stats window; total minutes (B7)
+    assert r.clock_names == ["0-10.png", "61-30.png"]  # CR-069: the clocks the sweep wants, one per window
     missing = lay([it("Chat-1", "Chat", 5)], clocks={})
-    assert missing.extra_nodes == [] and missing.warnings == ["no clock image for 0-10.png (G6)"]
+    # CR-069: one warning per missing clock, pointing to the command that uploads it
+    assert missing.extra_nodes == [] and missing.warnings == ["no clock image for 0-10.png: run sc2mindshare upload-clocks (G6)"]
+    assert missing.clock_names == ["0-10.png"]  # wanted, map or not
+    assert lay([it("Chat-1", "Chat", 5)]).clock_names == ["0-10.png"]
 
 
 # the block starts in empty window 1: compressed, that is the next occupied row (window 4)

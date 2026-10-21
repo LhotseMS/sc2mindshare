@@ -314,3 +314,13 @@ def test_schemas_the_checker_cannot_evaluate_are_refused_at_construction(schema)
 def test_additional_properties_false_is_the_one_boolean_subschema():
     assert subset.Checker({"additionalProperties": False}).errors({}) == []
     assert subset.Checker({"additionalProperties": False}).errors({"a": 1}) != []
+
+
+def test_a_clock_node_needs_its_picture_id(doc):
+    """CR-069: a clock node shows its picture by ``nodeImage``, a non-empty picture ID."""
+    clock = next(n for n in doc["nodes"] if n["type"] == "image")
+    assert isinstance(clock["nodeImage"], str) and clock["nodeImage"]
+    for change in (lambda n: n.pop("nodeImage"), lambda n: n.update(nodeImage=7)):
+        bad = copy.deepcopy(doc)
+        change(next(n for n in bad["nodes"] if n["type"] == "image"))
+        assert any("nodeImage" in e for e in CHECK.errors(bad)), change

@@ -256,3 +256,29 @@ def test_a_set_git_dir_is_ignored(tmp_path, monkeypatch):
     )
     assert log.returncode != 0 and "does not have any commits" in log.stderr  # nothing reached the decoy
     assert "GIT_DIR" not in cgd.git_env() and "GIT_WORK_TREE" not in cgd.git_env()
+
+
+# --- CR-069: clock nodes in the local form are keyed by their clock and side, without a clock map ---------------------
+
+
+def _local_clocks(*clocks, picture="p"):
+    return [
+        {"type": "image", "name": name, "ID": f"clock-{name.removesuffix('.png')}-{side}", "nodeImage": picture + name,
+         "size": [1.1, 0.75], "properties": {}}
+        for name, side in clocks
+    ]  # fmt: skip
+
+
+def test_local_clocks_are_checked_without_a_clock_map(tmp_path):
+    old = _write(tmp_path / "old.json", {"nodes": BASE["nodes"] + _local_clocks(("0-10.png", 1), ("0-10.png", 2)), "links": []})
+    new = {"nodes": BASE["nodes"] + _local_clocks(("0-10.png", 1), ("0-10.png", 2), picture="q"), "links": []}
+    entry = _entry(old, [{"select": {"type": "image"}, "fields": ["nodeImage"], "count": 2}])
+    assert cgd.check_delta(entry, old, _write(tmp_path / "new.json", new)) == []
+
+
+def test_a_moved_local_clock_is_a_removal_and_an_addition(tmp_path):
+    old = _write(tmp_path / "old.json", {"nodes": BASE["nodes"] + _local_clocks(("0-10.png", 1)), "links": []})
+    new = {"nodes": BASE["nodes"] + _local_clocks(("0-20.png", 1)), "links": []}
+    problems = cgd.check_delta(_entry(old, []), old, _write(tmp_path / "new.json", new))
+    assert "unlisted change: <clock:0-20.png>#1#1 added" in problems
+    assert "unlisted change: <clock:0-10.png>#1#1 removed" in problems

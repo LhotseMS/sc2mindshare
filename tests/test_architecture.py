@@ -22,7 +22,7 @@ ALLOWED = {
     "layout": {"domain", "config"},
     "export": {"layout", "domain", "config"},
     "media": set(),  # CR-069: the local Mindshare media client
-    "cli": {"reader", "analysis", "layout", "export", "domain", "config", "gamedata"},
+    "cli": {"reader", "analysis", "layout", "export", "domain", "config", "gamedata", "media"},
 }
 MAY_IMPORT_SC2READER = {"reader", "decoding"}
 STDLIB_ONLY = {"decoding": {"sc2reader"}, "gamedata": set(), "media": set()}  # extra third-party roots allowed

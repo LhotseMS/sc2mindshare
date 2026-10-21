@@ -395,3 +395,51 @@ def test_m2_reads_the_trailing_media_id_whatever_the_host(view_golden, clock_map
 def test_an_unknown_clock_is_counted(view_golden, clock_map):
     report = golden.diff_json(_with_clock(view_golden, "f" * 24, "1"), _with_clock(view_golden, "f" * 24, "1"), clock_map)
     assert report.budget_expected["M2 unknown"] == 1
+
+
+# --- CR-069: M2 reads the local clock form too ----------------------------------------------------------------------
+
+
+def _with_local_clock(view, name, node_id, picture="8d4e894d-f6b7-41a6-80df-b999b322349c"):
+    doc = copy.deepcopy(view)
+    doc["nodes"].append(
+        {"type": "image", "name": name, "ID": node_id, "nodeImage": picture, "size": [1.1, 0.75], "properties": {}}
+    )
+    return doc
+
+
+def test_m2_reads_the_local_form_without_a_clock_map(view_golden):
+    ref = _with_local_clock(view_golden, "0-10.png", "clock-0-10-1")
+    report = golden.diff_json(ref, _with_local_clock(view_golden, "0-10.png", "clock-0-10-1"))
+    assert report.ok and report.budget_actual["M2"] == 1 and report.budget_actual["M2 unknown"] == 0
+    assert not golden.diff_json(ref, _with_local_clock(view_golden, "0-10.png", "clock-0-10-2")).ok  # the side
+    assert not golden.diff_json(ref, _with_local_clock(view_golden, "0-20.png", "clock-0-20-1")).ok  # the clock
+    assert not golden.diff_json(ref, _with_local_clock(view_golden, "0-10.png", "clock-0-10-1", picture="other")).ok
+
+
+def test_m2_gives_both_forms_the_same_tokens(view_golden, clock_map):
+    """An old-form clock node (dead media host) and the same clock in the local form compare equal under M2, but for
+    nodeImage, which only the local form has: what CK1's entry lists."""
+    by_name = {name: mid for mid, name in clock_map.items()}
+    old = _with_clock(view_golden, by_name["0-10.png"], "1")
+    new = _with_local_clock(view_golden, "0-10.png", "clock-0-10-1")
+    report = golden.diff_json(old, new, clock_map)
+    assert [path for _key, path in report.changed] == ["nodeImage"]
+
+
+def test_a_local_clock_that_disagrees_with_itself_is_unknown(view_golden):
+    report = golden.diff_json(*(2 * [_with_local_clock(view_golden, "0-10.png", "clock-0-20-1")]))
+    assert report.budget_actual["M2 unknown"] == 1
+
+
+def test_the_fixture_record_is_what_its_script_makes():
+    """tests/golden/clock-record-fixture.csv: 480 clocks, uuid5 IDs, localhost:3042 (make_clock_record_fixture.py)."""
+    images = _root() / "MS SC" / "ClockImages"
+    if not images.is_dir():
+        if golden.strict():
+            pytest.fail(f"missing input {images}")
+        pytest.skip(f"missing input {images}")
+    make = _load("make_clock_record_fixture", HERE / "make_clock_record_fixture.py")
+    assert make.fixture_text(images) == (HERE / "clock-record-fixture.csv").read_text(encoding="utf-8")
+    mapping = golden.fixture_clock_map()
+    assert len(mapping) == 480 and mapping["0-10.png"] == "1bfc4c8f-e94e-5eef-8edd-ee13ca181708"

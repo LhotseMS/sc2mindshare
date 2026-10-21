@@ -3,7 +3,6 @@
 
 import contextlib
 import copy
-import csv
 import importlib.util
 import io
 import json
@@ -61,8 +60,8 @@ def need(path, what):
 
 @pytest.fixture(scope="module")
 def clock_map():
-    with need(MS_SC / "TimeImageTracking.csv", "TimeImageTracking.csv").open(encoding="utf-8") as f:
-        return {r["imageName"]: r["imageID"] for r in csv.DictReader(f)}
+    """CR-069: the clocks' picture IDs from the committed fixture record (localhost:3042), as the goldens are built."""
+    return golden.fixture_clock_map()
 
 
 @pytest.fixture(scope="module")
@@ -225,10 +224,10 @@ def test_snapshot(graph, clock_map, mode):
     text = to_json(doc)
     assert text == to_json(_document(graph, clock_map, mode))  # byte-identical runs
     expected = json.loads((GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
-    by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")  # media id -> file name, for the M2 mask
-    report = golden.diff_json(expected, doc, by_media)
+    report = golden.diff_json(expected, doc)  # CR-069: clock nodes in the local form need no clock map for M2
     assert report.ok, str(report)
     assert report.budget_actual["M2"] == 140 and report.budget_actual["M2 unknown"] == 0  # 136 before P10b
+    assert text == (GOLDEN / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8")  # and byte for byte
     assert all(n["position"]["z"] == 0.01 for n in doc["nodes"])
 
 
@@ -236,9 +235,8 @@ def test_snapshot(graph, clock_map, mode):
 def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     """The laid-out document against G-VIEW-current under the view masks, independent of G-SNAP-current."""
     doc = _document(graph, clock_map, mode)
-    by_media = golden.load_clock_map(MS_SC / "TimeImageTracking.csv")
     current = json.loads((GOLDEN / "G-VIEW-current.json").read_text(encoding="utf-8"))
-    view_report = golden.diff_json(current, copy.deepcopy(doc), by_media, view=True)
+    view_report = golden.diff_json(current, copy.deepcopy(doc), view=True)
     assert view_report.ok, str(view_report)
     # diff_json leaves the M4 counts out of its budget comparison (a view golden has no positions or
     # clocks), so they are asserted here (Morgan's CR-014 P2): every one of the 665 graph nodes has a
