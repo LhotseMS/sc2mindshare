@@ -43,7 +43,6 @@ class Profile:
     grid_step: float = 3.0  # P:749-767
     grid_columns: int = 4
     clock_size: tuple[float, float] = (1.1, 0.75)  # IMG:28
-    clock_host: str = "https://media.api.mindshare.touch4dev.net/media/resource/"  # ImageNode (2024-07)
     fixed_sizes: dict[str, object] = field(
         default_factory=lambda: {
             "Ability": [1.6, 0.88],  # SRN:130

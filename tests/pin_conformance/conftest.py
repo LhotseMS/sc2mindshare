@@ -15,7 +15,17 @@ ROOT = Path(__file__).resolve().parents[2]
 #: Upstream tests that load maps from Battle.net (``load_map=True``): they need the network.
 #: Offline, deselect them with ``-m "not network"``. sc2reader keeps downloaded maps in memory
 #: only (no file cache unless SC2READER_CACHE_DIR is set, which scripts/py-env unsets).
-NETWORK_TESTS = {"test_map_info", "test_creepTracker"}
+#: CR-069: the network guard (tests/conftest.py) found six more that reach Battle.net's depot (maps, s2gs).
+NETWORK_TESTS = {
+    "test_map_info",
+    "test_creepTracker",
+    "test_30_map",
+    "test_funny_minerals",
+    "test_lotv_creepTracker",
+    "test_lotv_map",
+    "test_a_LotV_s2gs",
+    "test_a_WoL_s2gs",
+}
 
 
 def pytest_collection_modifyitems(items):

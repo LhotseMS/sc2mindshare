@@ -3,6 +3,7 @@
 
     scripts/py-env .venv/bin/python scripts/check_golden_delta.py --entry P1 \
         --old <golden before> --new <golden after> [--clock-map <TimeImageTracking.csv>]
+        (the clock map is needed only for clock nodes in the old, media-host form; CR-069)
     scripts/py-env .venv/bin/python scripts/check_golden_delta.py --entry P1 --git <base>..<head>
 
 Entries are fenced ``json`` blocks in CHANGES.md:
@@ -122,8 +123,10 @@ def renumber_map(
 
 
 def _keyed_as_c3(nodes: Sequence[Mapping[str, Any]], clock_map: Mapping[str, str] | None) -> list[tuple[str, str, Any]]:
-    """(ID, key, type) per node as C3 keys them: clock nodes by their clock (M2), when a clock map is given."""
-    if clock_map is not None and any(n.get("type") == "image" for n in nodes):
+    """(ID, key, type) per node as C3 keys them: clock nodes by their clock and side (M2), when a clock map is
+    given or every clock node is in the local form, which needs none (CR-069)."""
+    clocks = [n for n in nodes if n.get("type") == "image"]
+    if clocks and (clock_map is not None or all(golden.is_local_clock(n) for n in clocks)):
         nodes, _ = golden.normalise_nodes(nodes, clock_map, False)
     return [(str(n.get("ID")), key, n.get("type")) for n, key in zip(nodes, golden.node_keys(nodes), strict=True)]
 

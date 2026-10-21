@@ -276,9 +276,10 @@ def test_local_clocks_are_checked_without_a_clock_map(tmp_path):
     assert cgd.check_delta(entry, old, _write(tmp_path / "new.json", new)) == []
 
 
-def test_a_moved_local_clock_is_a_removal_and_an_addition(tmp_path):
+def test_a_moved_local_clock_is_an_unlisted_change(tmp_path):
     old = _write(tmp_path / "old.json", {"nodes": BASE["nodes"] + _local_clocks(("0-10.png", 1)), "links": []})
     new = {"nodes": BASE["nodes"] + _local_clocks(("0-20.png", 1)), "links": []}
     problems = cgd.check_delta(_entry(old, []), old, _write(tmp_path / "new.json", new))
-    assert "unlisted change: <clock:0-20.png>#1#1 added" in problems
-    assert "unlisted change: <clock:0-10.png>#1#1 removed" in problems
+    # C3 pairs the lone clock record by sequence, as for any type: the moved clock shows as its clock token changed
+    assert "unlisted change: <clock:0-10.png>#1#1 name" in problems
+    assert "unlisted change: <clock:0-10.png>#1#1 ID" in problems

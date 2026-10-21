@@ -11,7 +11,8 @@ JSON level: key order ignored, list order kept, type classes must match (``true`
 not ``1``), numbers rounded to 4 dp with ``-0.0`` as ``0.0`` (``2 == 2.0``), non-finite
 numbers fail. Masks: M1 ``images`` arrays (each URL -> ``<img>``, length kept); M2 clock
 nodes (``type == "image"``) mapped back through the clock map to ``<clock:0-50.png>`` and
-``<clock:0-50.png>#1``; and, for the view comparison only, M3 Supply Block ``size`` ->
+``<clock:0-50.png>#1`` (CR-069: a clock in the local form gives the same tokens from its file name and its
+``clock-0-50-1`` ID, with no clock map); and, for the view comparison only, M3 Supply Block ``size`` ->
 ``<layout-owned>`` and M4 (``position`` removed, clock nodes removed).
 
 Records are keyed by ``(ID, occurrence)`` (``Harrasment-0#3``), because node IDs repeat.
@@ -238,6 +239,38 @@ def clock_id(node_id: str, clock_map: Mapping[str, str]) -> str:
     return f"<clock:{clock_map[m.group(1)]}>#{m.group(2)}" if m and m.group(1) in clock_map else UNKNOWN_CLOCK
 
 
+_LOCAL_NAME = re.compile(r"^\d+-\d{2}\.png$")
+_LOCAL_ID = re.compile(r"^clock-(\d+)-(\d{2})-([12])$")
+#: CR-069: the clock record the current goldens are built from (tests/golden/make_clock_record_fixture.py).
+FIXTURE_RECORD = Path(__file__).resolve().with_name("clock-record-fixture.csv")
+FIXTURE_SERVER = "localhost:3042"
+
+
+def fixture_clock_map() -> dict[str, str]:
+    """File name -> picture ID, from the fixture record's rows for ``localhost:3042``."""
+    out = {}
+    for line in FIXTURE_RECORD.read_text(encoding="utf-8").splitlines()[1:]:
+        name, picture_id, server, _uploaded_at, _sha256 = line.split(",")
+        if server == FIXTURE_SERVER:
+            out[name] = picture_id
+    return out
+
+
+def is_local_clock(node: Mapping[str, Any]) -> bool:
+    """A clock node in the local Mindshare's form (CR-069): named by its file, ``clock-<m>-<ss>-<side>``."""
+    return bool(_LOCAL_NAME.match(str(node.get("name", "")))) or str(node.get("ID", "")).startswith("clock-")
+
+
+def local_clock_tokens(node: Mapping[str, Any]) -> tuple[str, str]:
+    """M2 for the local form: the same tokens as the old form's (``<clock:0-50.png>``, ``<clock:0-50.png>#1``),
+    read from the file name and the ID, no clock map needed; an ID that names another clock is unknown."""
+    name = str(node.get("name", ""))
+    m = _LOCAL_ID.match(str(node.get("ID", "")))
+    if not _LOCAL_NAME.match(name) or not m or f"{int(m.group(1))}-{m.group(2)}.png" != name:
+        return (f"<clock:{name}>" if _LOCAL_NAME.match(name) else UNKNOWN_CLOCK), UNKNOWN_CLOCK
+    return f"<clock:{name}>", f"<clock:{name}>#{m.group(3)}"
+
+
 def normalise_nodes(
     nodes: Sequence[Mapping[str, Any]], clock_map: Mapping[str, str] | None, view: bool
 ) -> tuple[list[dict[str, Any]], Counter[str]]:
@@ -249,10 +282,13 @@ def normalise_nodes(
             if view:
                 budget["M4 clock"] += 1
                 continue
-            if clock_map is None:
+            if is_local_clock(n):
+                n["name"], n["ID"] = local_clock_tokens(n)
+            elif clock_map is None:
                 raise InputMissing("clock map (TimeImageTracking.csv) needed for clock nodes")
-            n["name"] = clock_name(str(n.get("name", "")), clock_map)
-            n["ID"] = clock_id(str(n.get("ID", "")), clock_map)
+            else:
+                n["name"] = clock_name(str(n.get("name", "")), clock_map)
+                n["ID"] = clock_id(str(n.get("ID", "")), clock_map)
             budget["M2"] += 1
             if UNKNOWN_CLOCK in (n["name"], n["ID"]):
                 budget["M2 unknown"] += 1

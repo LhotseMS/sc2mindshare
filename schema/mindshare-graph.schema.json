@@ -72,8 +72,9 @@
    ]
   },
   "clock": {
-   "description": "A clock image node appended by the layout (layout-spec.md §5.9): no description, no properties",
-   "properties": {"size": {"$ref": "#/$defs/rectangle"}, "properties": {"type": "object", "maxProperties": 0}}
+   "description": "A clock image node appended by the layout (layout-spec.md §5.9): no description, no properties; CR-069: the picture by its ID on the local Mindshare (nodeImage), named by its file",
+   "required": ["nodeImage"],
+   "properties": {"size": {"$ref": "#/$defs/rectangle"}, "properties": {"type": "object", "maxProperties": 0}, "nodeImage": {"type": "string"}}
   },
   "timelineProperties": {
    "type": "object",
