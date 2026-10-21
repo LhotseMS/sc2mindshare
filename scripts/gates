@@ -3,7 +3,11 @@
 # or changed files; the fork's ruff findings (1,026 on the whole tree at 16beefa, TD-49) are a frozen baseline, see
 # docs/dev/baselines.md).
 #
-#   scripts/gates [PATH ...]      # default: src scripts tests
+#   scripts/gates [--network] [PATH ...]      # default: src scripts tests
+#
+# D55a (CR-007): pytest leaves out the tests marked `network` (upstream's map and s2gs downloads from
+# Battle.net, tests/pin_conformance/conftest.py NETWORK_TESTS): a gate never depends on a third-party service.
+# `--network` runs them too; it is run only with Stefan's OK, when sc2reader changes.
 #
 # - ruff check and ruff format --check, with the repository's ruff.toml passed (upstream's
 #   vendored pin-conformance tests excluded: they stay byte-identical to v1.9.0)
@@ -16,6 +20,16 @@ script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 checkout=$(dirname -- "$script_dir")
 py_env="$script_dir/py-env"
 venv="$checkout/.venv"
+network=no
+if [ "$#" -gt 0 ] && [ "$1" = "--network" ]; then
+    network=yes
+    shift
+fi
+for p in "$@"; do
+    case $p in
+        -*) echo "gates: unknown option: $p (scripts/gates [--network] [PATH ...])" >&2; exit 2 ;;
+    esac
+done
 [ "$#" -gt 0 ] || set -- "$checkout/src" "$checkout/scripts" "$checkout/tests"
 # Canonical absolute paths (no "." or ".." left), so the excludes below match and mypy can run from a
 # fixed folder (D14a; Morgan's G6 on 2053a49). ruff's import order does not depend on the folder it runs
@@ -71,6 +85,11 @@ for path in map(pathlib.Path, paths):
 typed = sorted(str(f) for f in found if f.suffix == ".py" and not f.name.startswith("test_") and f.name != "conftest.py" and str(f) not in skip)
 sys.exit(subprocess.call([mypy, "--config-file", checkout + "/pyproject.toml", "--strict", *typed]) if typed else 0)
 ' "$checkout" "$venv/bin/mypy" "$@") || status=1
-echo "== pytest"
-"$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
+if [ "$network" = yes ]; then
+    echo "== pytest (network tests included: --network)"
+    "$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q "$@" || status=1
+else
+    echo "== pytest (network tests left out; scripts/gates --network runs them)"
+    "$py_env" "$venv/bin/pytest" -p no:cacheprovider --import-mode=importlib --rootdir="$checkout" -q -m "not network" "$@" || status=1
+fi
 exit $status
