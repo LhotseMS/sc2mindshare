@@ -12,7 +12,7 @@ from pathlib import Path
 
 GATES = Path(__file__).resolve().parents[1] / "gates"
 
-PROBE = '''import pytest
+PROBE = """import pytest
 
 
 @pytest.mark.network
@@ -22,7 +22,7 @@ def test_marked_network():
 
 def test_plain():
     pass
-'''
+"""
 
 
 def _gates(tmp_path: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -30,7 +30,7 @@ def _gates(tmp_path: Path, *args: str) -> subprocess.CompletedProcess[str]:
     probe.mkdir(exist_ok=True)
     (probe / "test_probe.py").write_text(PROBE, encoding="utf-8")
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
-    return subprocess.run([str(GATES), *args, str(probe)], capture_output=True, text=True, env=env, timeout=600)
+    return subprocess.run([str(GATES), *args, str(probe)], capture_output=True, text=True, env=env, timeout=600, check=False)
 
 
 def test_the_gates_leave_out_the_network_tests_by_default(tmp_path):
