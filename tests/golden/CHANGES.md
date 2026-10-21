@@ -611,3 +611,18 @@ CR-068 lands before CR-067, so the merge of cr-068 into cr-067 kept CR-068's gol
 ```json
 {"entry": "G2r-snap-linear", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "74c1513a590c5223352e4c1e98c4e2839c65c00dee9745b45544bdb4cbd3b0a2", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### CK1: the clock nodes point at the local Mindshare's pictures (CR-069; D41a, D42a, D45a, D51a)
+
+The layout's clock nodes name a picture on the 2024 dev media host (`name` = `https://media.api.mindshare.touch4dev.net/media/resource/<24-hex id>`, `ID` = the id plus the side), a server that no longer exists, so Mindshare shows grey placeholders. Fix (story CR-069): a clock node is written in the local Mindshare's format: `name` is the clock's file name (`0-10.png`), `ID` is `clock-<m>-<ss>-<side>` (`clock-0-10-1`, server-independent and unique, one clock per window), and the new `nodeImage` holds the picture ID the clock got on the chosen server, read from the clock record (`MS SC/ClockImageRecord.csv`; for the goldens the committed fixture `tests/golden/clock-record-fixture.csv`, 480 clocks with uuid5 IDs on `localhost:3042`). Type, size, properties, position and order are unchanged, and so is which windows get a clock. The export no longer reads `TimeImageTracking.csv`.
+
+How C3 sees it: mask M2 already compares a clock node by its clock, not by its media id (`<clock:0-10.png>` and `<clock:0-10.png>#1`, through `TimeImageTracking.csv` for the old form). The new form gives the same tokens from the file name and the `clock-...` ID, without a clock map (golden.py; `check_golden_delta` keys new-form clocks without a map, the checker change of this story). So `name` and `ID` compare equal under M2, their raw form is pinned by the CR-069 export tests (AC-9), and the one listed change is the added `nodeImage` on every clock node. Predicted from today's goldens: 140 clock nodes (70 clocks x 2 sides) in each snapshot (CR-069's 136/68 predate CR-023 P10b, whose two battery starts open two more windows). G-VIEW-current has no clock nodes: no change. The frozen G-SNAP-1 keeps today's form.
+
+```json
+{"entry": "CK1-snap-compressed", "task": "CR-069", "defect": "CK1 the clock nodes point at the dead 2024 media host (D41a, D42a)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "33fb8d536a7cb9c692a46ac857f1ee144451bc389749283b2b9623780db25ab5", "changes": [{"select": {"type": "image"}, "fields": ["nodeImage"], "count": 140}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "CK1-snap-linear", "task": "CR-069", "defect": "CK1 the clock nodes point at the dead 2024 media host (D41a, D42a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "50736726618cda8c6372b208239e9ea52dbfc221f18da18a17173af89c9cc659", "changes": [{"select": {"type": "image"}, "fields": ["nodeImage"], "count": 140}], "added": [], "removed": []}
+```
