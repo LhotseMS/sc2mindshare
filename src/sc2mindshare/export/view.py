@@ -173,7 +173,8 @@ def step_properties(node: Node) -> dict[str, Any]:
     return {
         "step #": first.number if first else 0,
         "at supply": first.supply if first else 0,
-        "started at": game_hms(first.second if first else 0),
+        # a pre-game start shows 00:00:00, as every pre-game time property does (P3d); its sign is in the line
+        "started at": game_hms(max(0, first.second) if first else 0),
         "steps": " / ".join(s.line() for s in node.steps) if len(node.steps) > 1 else "",
     }
 

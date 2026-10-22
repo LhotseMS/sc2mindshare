@@ -13,10 +13,13 @@ import io
 import json
 import os
 import pathlib
+from dataclasses import replace
+from fractions import Fraction
 
 import pytest
 
 from sc2mindshare.analysis.build_steps import RETURN_LOOPS, build_order, with_build_order
+from sc2mindshare.analysis.exposed import research_row
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
@@ -32,7 +35,7 @@ from sc2mindshare.domain.exposed import (
     UpgradeDone,
 )
 from sc2mindshare.domain.models import Graph, Node
-from sc2mindshare.domain.steps import NodeSource
+from sc2mindshare.domain.steps import BuildStep, NodeSource
 from sc2mindshare.domain.time import GameTime
 from sc2mindshare.export.mindshare_json import build_document, load_config
 from sc2mindshare.export.view import node_view
@@ -819,7 +822,7 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
     gateway = next(n for n in doc["nodes"] if n["name"] == "Gateway" and n["properties"]["player"] == "blacksquall")
     assert steps_of(gateway) == {"step #": 6, "at supply": 15, "started at": "00:00:41", "steps": ""}
     wgr = next(n for n in doc["nodes"] if n["name"] == "Warp Gate Research")
-    assert steps_of(wgr) | {"steps": ""} == {"step #": 63, "at supply": 64, "started at": "00:05:34", "steps": ""}
+    assert steps_of(wgr) == {"step #": 63, "at supply": 64, "started at": "00:05:34", "steps": ""}  # one step: no list
     lings = next(n for n in doc["nodes"] if n["type"] == "Units" and n["properties"]["step #"] == 6)
     assert (lings["name"], lings["properties"]["time"], lings["properties"]["at supply"]) == ("6 Zerglings", "00:01:20", 14)
     assert steps_of(by_id["Building-1"]) == ZEROS  # lilTiGGer's "Main base"
@@ -874,11 +877,73 @@ def test_s21_building_alcyone_twice_gives_the_same_steps(alcyone):
     assert again == order
 
 
-def test_d60a_an_estimated_start_goes_to_the_log_only(alcyone, capsys):
+def test_d60a_an_estimated_start_goes_to_the_log_only():
+    order = build_order(game(upgrades=[UpgradeDone(Z, "MadeUpUpgrade", 3000, 1)]), FIXES)
+    assert order.estimated == (
+        "CR-034: no build or research time for MadeUpUpgrade (player 1): its start is estimated at loop 3000",
+    )
+    assert [s.line() for s in order.of(Z)] == ["1. 12 2:13 Made Up Upgrade"]  # no note on the step (D60a)
+
+
+def test_d63a_every_alcyone_upgrade_has_its_research_time(alcyone, capsys):
     result, order, _, _ = alcyone
+    assert order.estimated == ()
     to_graph(result)
-    assert "CR-034: no build or research time for GlialReconstitution (player 1)" in capsys.readouterr().out
-    assert "estimated" not in "".join(s.line() for s in order.steps)
+    assert "no build or research time" not in capsys.readouterr().out
+
+
+@pytest.mark.parametrize(
+    ("upgrade", "row"),
+    [
+        ("WarpGateResearch", ("WarpGateResearch", "100")),  # the id itself
+        ("zerglingmovementspeed", ("zerglingmovementspeed", "79")),
+        ("GlialReconstitution", ("Glial Reconstitution", "79")),  # a display-name row
+        ("EvolveMuscularAugments", ("Muscular Augments", "64")),  # without "Evolve"
+        ("AnabolicSynthesis", ("Anabolic Synthesis", "42.9")),
+        ("ProtossGroundArmorsLevel2", ("ProtossGroundArmorLevel2", "145")),  # Armors / Armor
+        ("ZergMeleeWeaponsLevel1", ("Melee Attacks Level 1", "114")),  # UPGRADE_ALIASES
+        ("ZergGroundArmorsLevel3", ("Ground Carapace Level 3", "157")),
+        ("overlordspeed", ("Pneumatized Carapace", "43")),
+        ("MadeUpUpgrade", None),  # not in the sheet: D60a
+    ],
+)
+def test_d63a_research_times_are_found_by_upgrade_id(alcyone, upgrade, row):
+    result, _, _, _ = alcyone
+    assert research_row(upgrade, result.exposed.tables.research_times) == row
+
+
+def test_d63a_a_display_name_row_names_the_step():
+    research = (("Pneumatized Carapace", "43"), ("Melee Attacks Level 1", "114"))
+    exposed = replace(game(upgrades=[UpgradeDone(Z, "overlordspeed", 7206, 1)]), tables=TimeTables((), research, "", ""))
+    assert lines(exposed) == ["1. 12 4:38 Pneumatized Carapace"]  # 7206 - 963.2 = 6242.8
+
+
+def test_n0_a_start_before_the_game_keeps_its_sign():
+    step = BuildStep(Z, 1, "unit", "Zergling", "Zergling", Fraction(-112), 12, (uid(1),))
+    assert step.line() == "1. 12 -0:05 Zergling"
+    node = _node("Units", "Units-1", source=NodeSource(unit_ids=(uid(1),)))
+    assert _steps(replace(node, steps=(step,)))["started at"] == "00:00:00"
+
+
+def test_p3_a_step_no_node_holds_is_logged(capsys):
+    _need(SPINE)
+    with contextlib.redirect_stdout(io.StringIO()):
+        result = analyse(load_replay(SPINE), MS_SC)
+    to_graph(result)
+    out = capsys.readouterr().out
+    assert "CR-034: step 8 of player 1 (building Extractor) has no node; it is in the list only" in out  # cancelled
+    assert "CR-034: step 60 of player 1 (upgrade GlialReconstitution) has no node; it is in the list only" in out
+
+
+def test_the_exposed_values_are_computed_for_the_run_with_every_layer_fix_only():
+    _need(SPINE)
+    with contextlib.redirect_stdout(io.StringIO()):
+        fixed = analyse(load_replay(SPINE), MS_SC)
+        faithful = analyse(load_replay(SPINE), MS_SC, fixes=())
+        partial = analyse(load_replay(SPINE), MS_SC, fixes=("P1",))
+        asked = analyse(load_replay(SPINE), MS_SC, fixes=(), with_exposed=True)
+    assert fixed.exposed is not None and asked.exposed is not None
+    assert faithful.exposed is None and partial.exposed is None
 
 
 def test_s15_spine_the_cancelled_extractor_and_the_returning_drone():
@@ -892,3 +957,19 @@ def test_s15_spine_the_cancelled_extractor_and_the_returning_drone():
     assert [(s.item, s.unit_ids, s.second) for s in cancelled] == [("Extractor", (60293121,), 75)]
     assert cancelled[0].line().endswith(" 1:15 Extractor · cancelled")
     assert not [s for s in order.steps if 60293122 in s.unit_ids]  # the Drone born at 1:25 comes back; nobody built it
+
+
+def test_d63a_spine_upgrades_start_at_done_minus_their_research_time():
+    """Rex's P2 on 6a92031: Pneumatized Carapace (``overlordspeed``) was step 52 at its finish, 5:21, under its raw
+    id; Glial Reconstitution (done 7:39 - 79 s) was missing. Both are now steps at their start."""
+    _need(SPINE)
+    with contextlib.redirect_stdout(io.StringIO()):
+        result = analyse(load_replay(SPINE), MS_SC)
+    order = build_order(result.exposed, result.fixes)
+    upgrades = [s.line() for s in order.of(1) if s.kind == "upgrade"]
+    assert upgrades == [
+        "24. 31 3:23 Zergling Movement Speed",
+        "38. 57 4:38 Pneumatized Carapace",
+        "60. 65 5:59 Glial Reconstitution",
+    ]
+    assert len(order.of(1)) == 60 and order.estimated == ()

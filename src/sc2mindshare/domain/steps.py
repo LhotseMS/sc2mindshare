@@ -15,8 +15,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 
-#: Game loops per real second as a fraction (22.4), so a start's second is exact.
-LOOPS_PER_SECOND = Fraction(112, 5)
+from sc2mindshare.domain.time import LOOPS_PER_SECOND
+
+#: ``domain.time.LOOPS_PER_SECOND`` (22.4) as an exact fraction (112/5), so a start's second is exact.
+_LOOPS_PER_SECOND = Fraction(str(LOOPS_PER_SECOND))
 
 #: The step kinds (P0-2 §3): a worker or another unit (born, or warped in), a building (its init), a building
 #: morph (Lair, Warp Gate: a Building node of its own, D53b), a unit morph (Baneling, Ravager, Overseer: a step
@@ -26,7 +28,12 @@ KINDS = ("worker", "unit", "building", "building morph", "unit morph", "upgrade"
 
 def second_of(loop: Fraction) -> int:
     """The whole game second a loop falls in, rounded down (``floor(loop / 22.4)``)."""
-    return int(loop // LOOPS_PER_SECOND)
+    return int(loop // _LOOPS_PER_SECOND)
+
+
+def loops_of(seconds: Fraction) -> Fraction:
+    """A duration in seconds as game loops, exactly (12 s is 268.8 loops)."""
+    return seconds * _LOOPS_PER_SECOND
 
 
 @dataclass(frozen=True)
@@ -60,8 +67,11 @@ class BuildStep:
         return second_of(self.start)
 
     def line(self) -> str:
-        """``<step>. <supply> <m:ss> <item>[ ×n][ · note]`` (Iris, AC-10): ``36. 46 4:51 Drone ×8``."""
-        text = f"{self.number}. {self.supply} {self.second // 60}:{self.second % 60:02d} {self.name}"
+        """``<step>. <supply> <m:ss> <item>[ ×n][ · note]`` (Iris, AC-10): ``36. 46 4:51 Drone ×8``. A start before
+        the game (a unit born after loop 0 but sooner than its build time; none in the sample replays) keeps its
+        sign, ``-0:05``, as the pre-game note does (``analysis.fixes.signed_hhmmss``), rather than wrapping."""
+        sign, second = ("-", -self.second) if self.second < 0 else ("", self.second)
+        text = f"{self.number}. {self.supply} {sign}{second // 60}:{second % 60:02d} {self.name}"
         if self.count > 1:
             text += f" ×{self.count}"
         if self.cancelled:

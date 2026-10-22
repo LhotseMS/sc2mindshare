@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +50,45 @@ UNIT_ALIASES = {
     "Ventral Sacs Overlord": "OverlordTransport",
     "Stasis Ward": "OracleStasisTrap",
 }
+#: CR-034 (D63a): upgradesInfo.csv rows named neither by the upgrade id the replay writes nor by its letters: the
+#: id (or its part before ``LevelN``) and the row's name (before `` Level N``).
+UPGRADE_ALIASES = {
+    "overlordspeed": "Pneumatized Carapace",
+    "ZergMeleeWeapons": "Melee Attacks",
+    "ZergMissileWeapons": "Missile Attacks",
+    "ZergFlyerWeapons": "Flyer Attacks",
+    "ZergGroundArmors": "Ground Carapace",
+    "ZergFlyerArmors": "Flyer Carapace",
+}
+
+
+def _squash(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def research_row(upgrade: str, research_times: Iterable[tuple[str, str]]) -> tuple[str, str] | None:
+    """The upgradesInfo.csv row (its name, its time text) of the upgrade id ``upgrade`` (CR-034, D63a), or None.
+
+    The rows are partly ids (``WarpGateResearch``) and partly display names (``Glial Reconstitution``); the
+    replay's ids may start with ``Evolve`` and write ``Armors`` where the sheet has ``Armor``. So: the id itself,
+    then the id squashed to letters and digits against the squashed row names, without ``Evolve``, with
+    ``Armor``, and through ``UPGRADE_ALIASES``."""
+    rows = dict(research_times)
+    if upgrade in rows:
+        return upgrade, rows[upgrade]
+    squashed = {_squash(name): name for name in rows}
+    level = re.search(r"Level\d+$", upgrade)
+    base = upgrade[: level.start()] if level else upgrade
+    candidates = [upgrade, upgrade.removeprefix("Evolve"), upgrade.replace("Armors", "Armor")]
+    if base in UPGRADE_ALIASES:
+        candidates.append(UPGRADE_ALIASES[base] + (level.group() if level else ""))
+    for candidate in candidates:
+        name = squashed.get(_squash(candidate))
+        if name is not None:
+            return name, rows[name]
+    return None
+
+
 #: The sheet's rows for the layer's base names, which are not unit types.
 _BASE_ROW = re.compile(r"(Main base|Natural|\d+(st|nd|rd|th) base)")
 

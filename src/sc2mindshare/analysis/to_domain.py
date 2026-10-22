@@ -158,4 +158,8 @@ def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] |
         for note in order.estimated:  # D60a: an estimated start is a data-quality finding for the run log only
             print(note)
         graph = with_build_order(graph, order, result.fixes)
+        placed = {(s.player, s.number) for n in graph.nodes for s in n.steps}
+        for s in order.steps:  # in the Player list only: say so in the run log, never drop it silently
+            if (s.player, s.number) not in placed:
+                print(f"CR-034: step {s.number} of player {s.player} ({s.kind} {s.item}) has no node; it is in the list only")
     return graph

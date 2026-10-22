@@ -37,14 +37,16 @@ from collections.abc import Iterable
 from dataclasses import dataclass, replace
 from fractions import Fraction
 
+from sc2mindshare.analysis.exports.node import X_LD  # the layer's line break in descriptions
+from sc2mindshare.analysis.exposed import research_row
 from sc2mindshare.domain.exposed import Exposed, UnitLife
 from sc2mindshare.domain.models import Graph, Node
 from sc2mindshare.domain.steps import (
-    LOOPS_PER_SECOND,
     BuildingMorph,
     BuildOrder,
     BuildStep,
     NodeSource,
+    loops_of,
     second_of,
 )
 from sc2mindshare.domain.time import GameTime
@@ -113,8 +115,6 @@ PRODUCERS: dict[str, frozenset[str]] = {
 }
 _SAME_PRODUCER = {"WarpGate": "Gateway"}
 
-#: The legacy layer's line break in descriptions (``export.view`` writes it as a newline).
-X_LD = "X_LD"
 #: The kind of node that holds a step of each kind (a building morph's node is made here; a unit morph has none).
 _HELD_BY = {"building": "Building", "worker": "Units", "unit": "Units", "upgrade": "Upgrade"}
 
@@ -138,6 +138,7 @@ class _Start:
     done: int | None  # the end of its production, for the chrono overlap (None: never chrono'd)
     cancelled: bool = False
     morph: BuildingMorph | None = None
+    name: str | None = None  # the display name, when not the item's own (an upgrade's display-name row)
 
 
 def _cancelled(u: UnitLife) -> bool:
@@ -169,7 +170,6 @@ def _returning_drones(units: Iterable[UnitLife]) -> set[int]:
 def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
     """Every started thing of the game (P0-2 §3), before the horizon and the grouping."""
     times = {k: _seconds(v) for k, v in exposed.tables.build_times}
-    research = {k: _seconds(v) for k, v in exposed.tables.research_times}
     returning = _returning_drones(exposed.units)
 
     def derived(player: int, item: str, end: int, seconds: Fraction | None) -> Fraction:
@@ -178,7 +178,7 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
                 f"CR-034: no build or research time for {item} (player {player}): its start is estimated at loop {end}"
             )
             return Fraction(end)
-        return end - seconds * LOOPS_PER_SECOND
+        return end - loops_of(seconds)
 
     out: list[_Start] = []
     owner: dict[int, UnitLife] = {}
@@ -212,8 +212,10 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
     for up in exposed.upgrades:
         if up.loop == 0 or up.count == 0 or EXCLUDED_UPGRADES.fullmatch(up.upgrade):
             continue
-        start = derived(up.player, up.upgrade, up.loop, research.get(up.upgrade))
-        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop))
+        row = research_row(up.upgrade, exposed.tables.research_times)  # D63a: by upgrade id
+        start = derived(up.player, up.upgrade, up.loop, _seconds(row[1]) if row else None)
+        name = row[0] if row and " " in row[0] else None  # a row named for display names the step
+        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop, name=name))
     return out
 
 
@@ -292,7 +294,7 @@ def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
                     number=number,
                     kind=first.kind,
                     item=first.item,
-                    name=clean_name(first.item, True, names),
+                    name=first.name or clean_name(first.item, True, names),
                     start=first.start,
                     supply=food[at - 1] if at else START_SUPPLY,
                     unit_ids=tuple(m.unit_id for m in members if m.unit_id is not None),

@@ -43,16 +43,17 @@ def configure(support_root: str | Path) -> None:
 
 
 def analyse(
-    replay: Any, support_root: str | Path, *, with_exposed: bool = True, fixes: Iterable[str] = LAYER_FIXES
+    replay: Any, support_root: str | Path, *, with_exposed: bool | None = None, fixes: Iterable[str] = LAYER_FIXES
 ) -> AnalysisResult:
     """Run the layer on ``replay``. **Consumes the replay**: its events, units and players are
     switched to their fork-flavoured classes in place (``flavour_replay``), so hand ``analyse`` a
     replay of its own (stream 3's decoders read theirs first, or load it a second time).
 
     ``with_exposed`` also computes ``AnalysisResult.exposed`` (``analysis.exposed.expose``, which
-    reads the support tables' bytes too). On by default since CR-034: the current graph's build steps are
-    built from it (D47a); it was off before so that nothing it does could break a build that did not ask
-    for it (Morgan's G6 N1 on CR-021). ``fixes``: the layer fixes to apply, by ledger id
+    reads the support tables' bytes too). By default (None) it is computed for the run with every layer fix,
+    whose current graph carries the build steps made from it (CR-034, D47a), and not for any other run (the
+    bug-faithful one and the mixed test runs have no steps); True or False decides it. Before CR-034 it was
+    off unless asked for (Morgan's G6 N1 on CR-021). ``fixes``: the layer fixes to apply, by ledger id
     (``analysis.fixes.LAYER_FIXES``, all of them by default); ``()`` for the bug-faithful run, the one
     the legacy CSV oracle and the frozen models describe."""
     applied = check_layer_fixes(fixes)
@@ -78,6 +79,8 @@ def analyse(
         + ctx.actions.scouting
     )
     links = ctx.singles.links + ctx.battles.links + ctx.simple.links
+    if with_exposed is None:
+        with_exposed = applied == frozenset(LAYER_FIXES)
     exposed = expose(replay, ctx, Path(support_root)) if with_exposed else None
     return AnalysisResult(tuple(nodes), tuple(links), FileHandler.intervals, exposed, applied)
 
