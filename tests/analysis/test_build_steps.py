@@ -18,8 +18,8 @@ from fractions import Fraction
 
 import pytest
 
-from sc2mindshare.analysis.build_steps import RETURN_LOOPS, build_order, with_build_order
-from sc2mindshare.analysis.exposed import research_row
+from sc2mindshare.analysis.build_steps import PRODUCERS, RETURN_LOOPS, build_order, with_build_order
+from sc2mindshare.analysis.exposed import UPGRADE_ALIASES, research_row
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
@@ -910,6 +910,34 @@ def test_d63a_every_alcyone_upgrade_has_its_research_time(alcyone, capsys):
 def test_d63a_research_times_are_found_by_upgrade_id(alcyone, upgrade, row):
     result, _, _, _ = alcyone
     assert research_row(upgrade, result.exposed.tables.research_times) == row
+
+
+def test_d63a_every_upgrade_the_chrono_table_names_and_every_alias_finds_its_row(alcyone):
+    """Rex's round-2 P2: each upgrade id ``PRODUCERS`` names, the replay ids of his probe, and every alias reach a
+    row of upgradesInfo.csv. sc2reader's data cannot give the full list for this replay version: it lists research
+    commands (``ResearchCombatShield``), not the ids an UpgradeCompleteEvent writes (``ShieldWall``)."""
+    result, _, _, _ = alcyone
+    rows = result.exposed.tables.research_times
+    units = {u for producer in ("Nexus", "Gateway", "RoboticsFacility", "Stargate") for u in PRODUCERS[producer]}
+    upgrades = {u for made in PRODUCERS.values() for u in made} - units
+    probe = {
+        "ShieldWall", "PunisherGrenades", "zerglingattackspeed", "CentrificalHooks", "LurkerRange", "DiggingClaws",
+        "overlordtransport", "BansheeCloak", "DrillClaws", "TerranBuildingArmor", "HighCapacityBarrels", "Burrow",
+        "TunnelingClaws", "ChitinousPlating", "NeuralParasite", "Stimpack", "PersonalCloaking", "HiSecAutoTracking",
+        "SmartServos", "TerranInfantryWeaponsLevel1", "TerranInfantryArmorsLevel1", "ZergFlyerWeaponsLevel3",
+    }  # fmt: skip
+    aliased = {a + ("Level1" if a.startswith("Zerg") else "") for a in UPGRADE_ALIASES}
+    missing = sorted(u for u in upgrades | probe | aliased if research_row(u, rows) is None)
+    assert missing == []
+    assert research_row("AdeptPiercingAttack", rows) == ("Resonating Glaives", "100")
+    assert research_row("ShieldWall", rows) == ("Combat Shield", "79")
+
+
+def test_d63a_the_name_match_ignores_case():
+    """The squash lowers the case: a replay id may differ from its row only in case (``zerglingmovementspeed``, all
+    lower case, against a CamelCase row)."""
+    assert research_row("zerglingmovementspeed", (("ZerglingMovementSpeed", "79"),)) == ("ZerglingMovementSpeed", "79")
+    assert research_row("WARPGATERESEARCH", (("WarpGateResearch", "100"),)) == ("WarpGateResearch", "100")
 
 
 def test_d63a_a_display_name_row_names_the_step():

@@ -52,13 +52,45 @@ UNIT_ALIASES = {
 }
 #: CR-034 (D63a): upgradesInfo.csv rows named neither by the upgrade id the replay writes nor by its letters: the
 #: id (or its part before ``LevelN``) and the row's name (before `` Level N``).
+#: Rows the game no longer has, or whose replay id is not known here, have no alias (Hurricane Engines, Rapid Fire
+#: Launchers, Nitro Packs, Enhanced Munitions, Mag-Field Launchers, Recalibrated Explosives, Moebius Reactor,
+#: Transformation Servos, Structure Armor, Graviton Catapult, Flying Locusts): an id that reaches none is logged (D60a).
 UPGRADE_ALIASES = {
+    # Zerg
     "overlordspeed": "Pneumatized Carapace",
+    "overlordtransport": "Ventral Sacs",
+    "zerglingattackspeed": "Adrenal Glands",
+    "CentrificalHooks": "Centrifugal Hooks",  # the game's own spelling
+    "LurkerRange": "Seismic Spines",
+    "DiggingClaws": "Adaptive Talons",
+    "InfestorEnergyUpgrade": "Pathogen Glands",
+    "MicrobialShroud": "Evolve Microbial Shroud",
     "ZergMeleeWeapons": "Melee Attacks",
     "ZergMissileWeapons": "Missile Attacks",
     "ZergFlyerWeapons": "Flyer Attacks",
     "ZergGroundArmors": "Ground Carapace",
     "ZergFlyerArmors": "Flyer Carapace",
+    # Protoss
+    "AdeptPiercingAttack": "Resonating Glaives",
+    "DarkTemplarBlinkUpgrade": "Shadow Stride",
+    "ObserverGraviticBooster": "Gravitic Boosters",
+    "PhoenixRangeUpgrade": "Anion Pulse-Crystals",
+    "VoidRaySpeedUpgrade": "Flux Vanes",
+    "TempestGroundAttackUpgrade": "Tectonic Destabilizers",
+    # Terran
+    "ShieldWall": "Combat Shield",
+    "PunisherGrenades": "Concussive Shells",
+    "BansheeCloak": "Cloaking Field",
+    "BansheeSpeed": "Hyperflight Rotors",
+    "DrillClaws": "Drilling Claws",
+    "TerranBuildingArmor": "Neosteel Armor",
+    "HighCapacityBarrels": "Infernal Pre-Igniter",
+    "MedivacIncreaseSpeedBoost": "Rapid Reignition System",
+    "MedivacCaduceusReactor": "Caduceus Reactor",
+    "RavenCorvidReactor": "Corvid Reactor",
+    "BattlecruiserEnableSpecializations": "Weapon Refit",
+    "BattlecruiserBehemothReactor": "Behemoth Reactor",
+    "CycloneLockOnDamageUpgrade": "Mag-Field Accelerator",
 }
 
 
