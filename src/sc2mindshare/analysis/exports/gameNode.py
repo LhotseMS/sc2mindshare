@@ -2,10 +2,20 @@ from datetime import datetime, timedelta
 from sc2mindshare.analysis.exports.node import SimpleNode, X_LD
 from sc2mindshare.analysis.offline import ImageUploader
 
+def utc_offset(hours):
+    """CR-023 P9: ``UTC-5``, ``UTC+1``, ``UTC+5:30``; ``UTC`` for no offset."""
+    if not hours:
+        return "UTC"
+    sign = "+" if hours > 0 else "-"
+    minutes = round(abs(hours) * 60)
+    return f"UTC{sign}{minutes // 60}" + (f":{minutes % 60:02d}" if minutes % 60 else "")
+
+
 # TODO this should probably be a supertype of Node that doesn't have time etc. now its just ommitted
 class GameNode(SimpleNode): 
 
-    def __init__(self, replay, heatMapID) -> None:
+    def __init__(self, replay, heatMapID, *, fixes) -> None:
+        self.fixes = fixes
         self.id = None
         self.seq = 1
         self.images = list()
@@ -18,7 +28,9 @@ class GameNode(SimpleNode):
         else:
             self.winningPlayer = replay.players[1].name
 
-        if replay.time_zone == 0:
+        if "P9" in self.fixes:  # CR-023 P9 (D17a): the recording PC's offset; the date itself is UTC
+            self.timeZone = utc_offset(replay.time_zone)
+        elif replay.time_zone == 0:
             self.timeZone = "UTC"
         elif replay.time_zone > 0:
             self.timeZone = "UTC+".format(replay.time_zone)
@@ -51,7 +63,8 @@ class GameNode(SimpleNode):
         return nameStr
         
     def getNodeDescription(self):
-        return "Played on {} {} for {}.{}The game was won by {}".format(self.datePlayed, self.timeZone, self.duration, X_LD, self.winningPlayer)
+        zone = "UTC" if "P9" in self.fixes else self.timeZone  # CR-023 P9: replay.date is UTC
+        return "Played on {} {} for {}.{}The game was won by {}".format(self.datePlayed, zone, self.duration, X_LD, self.winningPlayer)
     
     def getProperties(self, sep):
         return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(self.speed, sep,

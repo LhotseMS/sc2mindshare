@@ -1,3 +1,4 @@
+from sc2mindshare.reader.compat import clean_name
 import re
 
 from sc2mindshare.analysis.exports.node import SimpleNode
@@ -9,8 +10,8 @@ class UpgradeNode(SimpleNode):
     
     LEVELS_PATTERN = r'Level \d+$'
 
-    def __init__(self, e : UpgradeCompleteEvent, upgradeTime, seq) -> None:
-        super().__init__(e, seq)
+    def __init__(self, e : UpgradeCompleteEvent, upgradeTime, seq, *, fixes) -> None:
+        super().__init__(e, seq, fixes=fixes)
 
         name = self.getNodeName()
         self.subtype = re.sub(self.LEVELS_PATTERN, '', name).strip()
@@ -32,7 +33,7 @@ class UpgradeNode(SimpleNode):
         self.type = "Upgrade"
 
     def getNodeName(self):
-        return "{}".format(self.event.replaceStrings(self.event.upgrade_type_name, True).strip())
+        return "{}".format(clean_name(self.event.upgrade_type_name, True, self.fixes).strip())
 
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):

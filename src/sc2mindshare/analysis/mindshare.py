@@ -107,11 +107,20 @@ class Base(Location):
 
         self.baseID = baseInitEvent.unit.id
         self.isUp = True
+        # CR-023 P1c: every town hall of this base, (start frame, unit): the founder and any rebuild
+        self.townHalls = [(baseInitEvent.frame, baseInitEvent.unit)]
 
     def newBase(self, e):
         self.isUp = True
         self.base = e.unit
         self.location = e.location
+        self.townHalls.append((e.frame, e.unit))
+
+    def standsAt(self, second):
+        """CR-023 P1c (D10a): one of the town halls was started at or before ``second`` and had not died
+        before it (one that dies in that second still stood), in whole seconds int(frame / 22.4)."""
+        return any(int(start / 22.4) <= second and (hall.died_at is None or int(hall.died_at / 22.4) >= second)
+                   for start, hall in self.townHalls)
 
     def isBaseUpAtEvent(self, e):
         return self.raisedSec < e.second and self.isLocationOnScreen(e.x, e.y)

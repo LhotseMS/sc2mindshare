@@ -47,7 +47,72 @@ def tracker_time(event: Any) -> str:
     return game_time(event).replace(".", ":")
 
 
+def type_at(unit: Any, frame: int) -> str:
+    """The unit's type at ``frame`` (upstream's ``Unit.type_history``: frame -> type, in order), by its id
+    such as ``Hatchery``; the unit's current type when the history has nothing at or before ``frame``."""
+    name = None
+    for changed_at, unit_type in unit.type_history.items():
+        if changed_at > frame:
+            break
+        name = unit_type.name
+    return str(name if name is not None else unit.name)
+
+
+#: CR-023 S8: the types missing from sc2reader's datapack that are a mode or a cocoon of a type the unit already
+#: was (the value), whose supply the unit keeps, as in the game (Vera confirmed the mode switch). The names are
+#: sc2reader's type titles, which the type history holds (OverlordCocoon's title is OverseerCocoon, in the
+#: datapack, so it is not listed; nor are Viking, BattleHellion, DroneBurrowed or SwarmHostBurrowed).
+MODES_MISSING_FROM_THE_DATAPACK = {
+    "ObserverSiegeMode": "Observer",
+    "OverseerSiegeMode": "Overseer",
+    "OverlordTransport": "Overlord",
+    "TransportOverlordCocoon": "Overlord",
+    "LiberatorAG": "Liberator",
+    "ThorAP": "Thor",
+    "RavagerBurrowed": "Ravager",
+    "LurkerBurrowed": "Lurker",
+}
+
+
+def _datapack_names() -> set[str]:
+    from sc2reader.data import unit_lookup  # type: ignore[import-untyped]
+
+    return {name for race in ("Protoss", "Terran", "Zerg") for name in unit_lookup[race]}
+
+
+def unnamed_missing_type(unit: Any, frame: int) -> str | None:
+    """CR-023 S8: the unit's type at ``frame`` when it is missing from the datapack and not a named mode
+    (``MODES_MISSING_FROM_THE_DATAPACK``); None otherwise."""
+    name = type_at(unit, frame)
+    if name.lower() in _datapack_names() or name in MODES_MISSING_FROM_THE_DATAPACK:
+        return None
+    return name
+
+
+def supply_at(unit: Any, frame: int) -> float:
+    """The unit's supply at ``frame`` (CR-023 S6, D15a): the supply of its type then, by upstream's type history
+    and datapack (a cocoon counts its target's, RavagerCocoon 3); a type missing from the datapack keeps the
+    supply the unit had (ObserverSiegeMode has none there). The unit's current type when the history is empty."""
+    known = _datapack_names()
+    supply: float | None = None
+    for changed_at, unit_type in unit.type_history.items():
+        if changed_at > frame:
+            break
+        if supply is None or str(unit_type.name).lower() in known:
+            supply = float(unit_type.supply)
+    return supply if supply is not None else float(unit.supply)
+
+
+def unit_text_at(unit: Any, frame: int, fixes: frozenset[str]) -> str:
+    """``object_text(unit, fixes)`` for the unit's type at ``frame`` instead of its final type (CR-023 N1):
+    the text the layer names and groups a unit by when ``N1`` is in its fixes."""
+    return clean_name(f"{type_at(unit, frame)} ", True, fixes)
+
+
 # --- names -------------------------------------------------------------------------------
+
+#: The two removals CR-023 P2 skips: a race word anywhere in a name.
+_BARE_RACE_WORDS = (("Terran", ""), ("Zerg", ""))
 
 #: The fork's ``MsUtils.replaceStrings`` table, in its order (python bug 2 included: "Zerg" and
 #: "Terran" are removed anywhere, so "Zergling" becomes "ling").
@@ -69,7 +134,7 @@ _REPLACEMENTS = (
 )
 
 
-def object_text(value: Any) -> str:
+def object_text(value: Any, fixes: frozenset[str] = frozenset()) -> str:
     """The text the fork's ``__str__`` gave a unit or a player, made explicit (CR-011c).
 
     The legacy layer built names and descriptions with ``str(unit)`` and ``"{}".format(player)``,
@@ -77,20 +142,26 @@ def object_text(value: Any) -> str:
     upstream objects, those calls would print ``Zealot [2C80001]`` and ``Player 1 - name (Zerg)``.
     Every such call site now goes through this function; anything else is ``str()``.
     """
-    from sc2reader.data import Unit  # type: ignore[import-untyped]
+    from sc2reader.data import Unit
     from sc2reader.objects import Player  # type: ignore[import-untyped]
 
     if isinstance(value, Unit):
-        return clean_name(f"{value.name} ", True)
+        return clean_name(f"{value.name} ", True, fixes)
     if isinstance(value, Player):
         return str(value.name)
     return str(value)
 
 
-def clean_name(value: Any, split: bool = False) -> str:
-    """The fork's ``MsUtils.replaceStrings`` / ``Renamer.replaceStrings`` (bug-faithful)."""
-    text = value if isinstance(value, str) else object_text(value)
+def clean_name(value: Any, split: bool = False, fixes: frozenset[str] = frozenset()) -> str:
+    """The fork's ``MsUtils.replaceStrings`` / ``Renamer.replaceStrings``: bug-faithful with no ``fixes``.
+
+    CR-023 P2 (in ``fixes``): the two bare race-word removals (``"Terran"``, ``"Zerg"`` anywhere, python
+    bug 2: "Zergling" -> "ling") are skipped. The layer passes its ``ctx.fixes`` at every site whose text
+    reaches the output; the default keeps the bug-faithful text (QA's oracle)."""
+    text = value if isinstance(value, str) else object_text(value, fixes)
     for old, new in _REPLACEMENTS:
+        if "P2" in fixes and (old, new) in _BARE_RACE_WORDS:
+            continue
         text = text.replace(old, new)
     text = re.sub(r"\[\w+\]", "", text)
     if split:

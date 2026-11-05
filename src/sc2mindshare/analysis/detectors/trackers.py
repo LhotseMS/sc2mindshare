@@ -3,7 +3,8 @@ from sc2mindshare.analysis.exports.supplyBlockNode import SupplyBlockNode
 from sc2mindshare.analysis.exports.energyNode import EnergyNode 
 from sc2mindshare.analysis.exports.injectNode import InjecDelayNode 
 from sc2mindshare.analysis.utils import MsUtils
-from sc2mindshare.reader.fork_api import Length
+from sc2mindshare.reader.compat import object_text, type_at
+from sc2mindshare.reader.fork_api import Length, UnitDiedEvent
 from datetime import datetime, timedelta
 
 import sc2mindshare.analysis.detectors.detectors
@@ -11,12 +12,21 @@ import sc2mindshare.analysis.detectors.detectors
 from enum import Enum
 from sc2mindshare.analysis.text import colored
 
+#: CR-023 S1 (D9a): what each supply provider gives, by its type at the event (S3, S4)
+PROVIDERS_AT_EVENT = {
+    "Overlord": 8, "Overseer": 8, "OverlordTransport": 8, "OverseerSiegeMode": 8,
+    "Pylon": 8, "SupplyDepot": 8, "SupplyDepotLowered": 8,
+    "CommandCenter": 15, "OrbitalCommand": 15, "PlanetaryFortress": 15, "Nexus": 15,
+    "Hatchery": 6, "Lair": 6, "Hive": 6,
+}
+
 class Tracker: 
 
-    def __init__(self, player1, player2) -> None:
+    def __init__(self, player1, player2, fixes) -> None:
 
         self.player1 = player1
         self.player2 = player2
+        self.fixes = fixes  # CR-023: the layer fixes (the nodes a tracker makes clean their names with them, P2)
 
         self.seq = 0
         pass
@@ -27,8 +37,8 @@ class InjectTracker(Tracker):
     INJECT_DURATION = 29
     THRESHOLD = 10
 
-    def __init__(self, player1, player2) -> None:
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2, fixes) -> None:
+        super().__init__(player1, player2, fixes)
 
         self.hatcheries = {}
 
@@ -58,7 +68,7 @@ class InjectTracker(Tracker):
             if currentInjectTime > injectDurationUntil:
 
                 if injectLastingFor > timedelta(seconds=self.THRESHOLD):
-                    self.injectDelays[event.player].append(InjecDelayNode(event.target, injectDurationUntil.strftime("%M.%S"), currentInjectTime.strftime("%M.%S"), injectLastingFor, self.THRESHOLD, self.seq))
+                    self.injectDelays[event.player].append(InjecDelayNode(event.target, injectDurationUntil.strftime("%M.%S"), currentInjectTime.strftime("%M.%S"), injectLastingFor, self.THRESHOLD, self.seq, fixes=self.fixes))
                     self.seq += 1
                 
                 injectDurationUntil = currentInjectTime + injectDuration
@@ -144,7 +154,7 @@ class EnergyTracker(Tracker):
         "Viper": {"BlindingCloud": 100, "ParasiticBomb": 125}
     }
 
-    UNITS_FROM_STATE_CHANGE = ("OrbitalCommand")
+    UNITS_FROM_STATE_CHANGE = ("OrbitalCommand",)  # CR-023 P12: a tuple (it was a string: a substring test)
 
     UNIT_SURPLAS = {
         "Nexus": {3:50, 6:50, 12:100},
@@ -164,8 +174,8 @@ class EnergyTracker(Tracker):
     ENERGY_ANGLE = 38.33
     TOLLERABLE_excess_INTERVAL = 2
     
-    def __init__(self, player1, player2):
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2, fixes):
+        super().__init__(player1, player2, fixes)
         
         self.energyHistory = {}
         self.excessEnergy = {}
@@ -248,7 +258,7 @@ class EnergyTracker(Tracker):
         if energy >= excessThreshold:
             excessStart = MsUtils.calculateY1(MsUtils.timeToSeconds(time), excessThreshold, energy, self.ENERGY_ANGLE)
             if MsUtils.intervalBetween(str(Length(seconds=excessStart)), time) > self.TOLLERABLE_excess_INTERVAL:
-                self.excessEnergy[unit.player].append(EnergyNode(unit, str(Length(seconds=excessStart)), time, energy, excessThreshold, self.seq))
+                self.excessEnergy[unit.player].append(EnergyNode(unit, str(Length(seconds=excessStart)), time, energy, excessThreshold, self.seq, fixes=self.fixes))
                 self.seq += 1
                 return True
             else:
@@ -339,9 +349,10 @@ class SupplyTracker(Tracker):
         "Nexus" : 15,
         "Hatchery" : 15 
     }
-
-    def __init__(self, player1, player2):
-        super().__init__(player1, player2)
+    def __init__(self, player1, player2, fixes):
+        super().__init__(player1, player2, fixes)
+        self.addedProviders = set()  # CR-023 S1 (S5): the providers whose limit was added (finished)
+        self.providedLimit = {}  # CR-023 S7: player -> the providers' total, which the limit caps at 200
 
         self.supplyHistory = {}
         self.supplyHistory[player1] = list()
@@ -360,24 +371,52 @@ class SupplyTracker(Tracker):
 
         return False
 
+    def providerOf(self, e):
+        """The supply provider the unit of ``e`` is, or None. CR-023 S1: by its type at the event (S4)."""
+        if "S1" in self.fixes:
+            name = type_at(e.unit, e.frame)
+            if name not in PROVIDERS_AT_EVENT:
+                return None
+            if isinstance(e, UnitDiedEvent):  # S5: an unfinished provider never raised the limit
+                return name if e.unit_id in self.addedProviders else None
+            self.addedProviders.add(e.unit_id)
+            return name
+        name = object_text(e.unit)
+        return name if self.isSupplyProvider(name) else None
+
+    def providedBy(self, supplyProvider):
+        return (PROVIDERS_AT_EVENT if "S1" in self.fixes else self.SUPPLY_PROVIDERS)[supplyProvider]
+
     def getPreviousSupply(self, player):
 
         if len(self.supplyHistory[player]) > 0:
             return self.supplyHistory[player][-1]
+        elif "S1" in self.fixes:  # CR-023 S1 (S1, S2): the starting units and providers are counted as events
+            return SupplyStatus("00:00:00", 0, 0)
         else:
             return SupplyStatus("00:00:00", self.INITIAL_SUPPLY, self.INITIAL_LIMIT)
 
-    def changeSupply(self, player, time, change):
+    def changeSupply(self, player, time, change, frame=None):
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply + change, prevSupply.limit))
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply + change, prevSupply.limit, frame))
         
-    def increaseLimit(self, player, time, supplyProvider):
-        prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit + self.SUPPLY_PROVIDERS[supplyProvider]))
+    def increaseLimit(self, player, time, supplyProvider, frame=None):
+        self.changeLimit(player, time, self.providedBy(supplyProvider), frame)
     
-    def decreaseLimit(self, player, time, supplyProvider):
+    def decreaseLimit(self, player, time, supplyProvider, frame=None):
+        self.changeLimit(player, time, -self.providedBy(supplyProvider), frame)
+
+    def changeLimit(self, player, time, change, frame=None):
+        """The limit moves by ``change``; with S7 (CR-023) it is the providers' total capped at 200, as in the
+        game, the total itself still kept (a provider lost above the cap may leave the limit at 200)."""
         prevSupply = self.getPreviousSupply(player)
-        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, prevSupply.limit - self.SUPPLY_PROVIDERS[supplyProvider]))
+        if "S7" in self.fixes:
+            total = self.providedLimit.get(player, prevSupply.limit) + change
+            self.providedLimit[player] = total
+            limit = min(total, self.MAX_SUPPLY)
+        else:
+            limit = prevSupply.limit + change
+        self.supplyHistory[player].append(SupplyStatus(time, prevSupply.supply, limit, frame))
 
     def getSupplyBlocks(self):
         self.findSupplyBlocks(self.player1)
@@ -388,13 +427,17 @@ class SupplyTracker(Tracker):
     def findSupplyBlocks(self, player):
 
         blockStart = None
-        for curStatus in self.supplyHistory[player]:
+        history = self.supplyHistory[player]
+        for index, curStatus in enumerate(history):
+            # CR-023 S1 (Q-b2): every event of one loop is applied before a block is judged
+            if "S1" in self.fixes and index + 1 < len(history) and history[index + 1].frame == curStatus.frame:
+                continue
 
             if curStatus.supply >= curStatus.limit and blockStart == None and curStatus.supply != self.MAX_SUPPLY:
                 blockStart = curStatus
 
             elif curStatus.supply < curStatus.limit and blockStart != None:
-                self.supplyBlocks[player].append(SupplyBlockNode(player, blockStart.time, curStatus.time, self.seq))
+                self.supplyBlocks[player].append(SupplyBlockNode(player, blockStart.time, curStatus.time, self.seq, fixes=self.fixes))
                 blockStart = None
                 self.seq += 1
 
@@ -404,10 +447,11 @@ class SupplyTracker(Tracker):
 
 class SupplyStatus():
 
-    def __init__(self, time, currentSupply, supplyLimit) -> None:
+    def __init__(self, time, currentSupply, supplyLimit, frame=None) -> None:
         self.time = time
         self.supply = currentSupply
         self.limit = supplyLimit
+        self.frame = frame  # CR-023 S1: the loop of the event, for judging a block once per loop
 
     def __str__(self) -> str:
         return "{} : {}/{}".format(self.time, self.supply, self.limit)

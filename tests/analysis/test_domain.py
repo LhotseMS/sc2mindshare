@@ -59,7 +59,7 @@ def need(path, what):
 
 def graph_of(path):
     with contextlib.redirect_stdout(io.StringIO()):
-        return to_graph(analyse(load_replay(path), MS_SC), fixes=())  # bug-faithful: renders the legacy CSV
+        return to_graph(analyse(load_replay(path), MS_SC, fixes=()), fixes=())  # bug-faithful: renders the legacy CSV
 
 
 @pytest.fixture(scope="module")

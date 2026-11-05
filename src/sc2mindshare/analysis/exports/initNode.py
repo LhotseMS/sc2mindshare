@@ -1,15 +1,15 @@
 from sc2mindshare.analysis.exports.buildingNode import BuildingNode
-from sc2mindshare.reader.compat import object_text
+from sc2mindshare.reader.compat import clean_name, object_text
 from sc2mindshare.reader.fork_api import UnitInitEvent
 
 
 #TODO add building deaths. Unit killed them. Tied to battle? Was that unit in battle? 
 class InitNode(BuildingNode):
 
-    def __init__(self, e : UnitInitEvent, seq) -> None:
-        super().__init__(e, 0, seq)
+    def __init__(self, e : UnitInitEvent, seq, *, fixes) -> None:
+        super().__init__(e, 0, seq, fixes=fixes)
 
-        self.subtype = self.event.replaceStrings(self.event.unit, False).strip()
+        self.subtype = clean_name(self.unitText(), False, self.fixes).strip()
 
         self.event.unit.initNode = self
         if self.event.unit.deathEvent == None:
@@ -23,7 +23,7 @@ class InitNode(BuildingNode):
 
     # TODO get a clean name withou race in ()
     def getNodeName(self):
-        nameStr = self.event.replaceStrings(self.event.unit, True).strip()
+        nameStr = clean_name(self.unitText(), True, self.fixes).strip()
 
         if self.index != None and self.index > 0:
             nameStr += " " + str(self.index)
@@ -33,9 +33,9 @@ class InitNode(BuildingNode):
     # TODO time from last upgrade, player completed upgrade at time 
     def getNodeDescription(self):
         if self.cancelled:
-            return "{} started building at {} but was cancelled".format(object_text(self.event.unit), self.getNodeTime())
+            return "{} started building at {} but was cancelled".format(object_text(self.unitText(), self.fixes), self.getNodeTime())
         else:
-            return "{} started building at {} but was killed".format(object_text(self.event.unit), self.getNodeTime())
+            return "{} started building at {} but was killed".format(object_text(self.unitText(), self.fixes), self.getNodeTime())
     
     def getProperties(self, sep):
         return "{}{}{}".format(super().getProperties(sep),

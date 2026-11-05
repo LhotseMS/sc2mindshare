@@ -1,4 +1,4 @@
-from sc2mindshare.reader.compat import object_text
+from sc2mindshare.reader.compat import clean_name, object_text, unit_text_at
 # add focus fire, a moves, abilities
 import datetime
 import sc2mindshare.analysis.detectors.detectors
@@ -325,7 +325,7 @@ class Battle(PlayerHandler):
         for player, deathBaseEvents in self.workerDeathBases.items():
             for base, deathEvents in deathBaseEvents.items():
                 pullEvent = self.ctx.actions.getPullEventForBase(player, self.startSec, self.endSec, base)
-                self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq))
+                self.harrasmentNodes.append(HarrasmentNode(deathEvents, pullEvent, base, self.harrasSeq, fixes=self.ctx.fixes))
                 self.harrasSeq += 1 
 
         # player 2 killed more
@@ -358,7 +358,7 @@ class Battle(PlayerHandler):
         return self.player2 if player == self.player1 else self.player1
 
     def processBaseEvent(self, e, potentialOwnerList):
-        locationBase = self.ctx.bases.getClosestBase(e)
+        locationBase = self.ctx.bases.getClosestBase(e, self.startSec)
 
         if locationBase != None and len([b for b in potentialOwnerList if b.name == locationBase.name]) == 0:
             potentialOwnerList.append(locationBase)
@@ -368,16 +368,18 @@ class Battle(PlayerHandler):
     def processLocationEvent(self, e):
         if isinstance(e, TargetPointCommandEvent) or isinstance(e, TargetUnitCommandEvent):
             if e.isCombat():
-                MsUtils.iterateType(self.combatAbilitiesTypes[e.player], e.replaceStrings(e.ability_name, True)) #TODO most of times e.str method is used to get string rep but sometimes its set outside of the event, redo 
+                MsUtils.iterateType(self.combatAbilitiesTypes[e.player], clean_name(e.ability_name, True, self.ctx.fixes)) #TODO most of times e.str method is used to get string rep but sometimes its set outside of the event, redo 
             else:
-                MsUtils.iterateType(self.nonCombatAbilitiesTypes[e.player],e.replaceStrings(e.ability_name, True))
+                MsUtils.iterateType(self.nonCombatAbilitiesTypes[e.player],clean_name(e.ability_name, True, self.ctx.fixes))
         elif isinstance(e, UnitDiedEvent) and isinstance(e.unit.killing_unit, Unit):
             if e.buildingDeath():
-                MsUtils.iterateType(self.deadBuildingsTypes[e.player], object_text(e.unit))
+                MsUtils.iterateType(self.deadBuildingsTypes[e.player], object_text(e.unit, self.ctx.fixes))
             else:
                 # TODO the logic of the key (string of unit names) should be somewher else
-                MsUtils.iterateType(self.killersTypes[self.otherPlayer(e.player)], e.replaceStrings(e.killing_unit, True) + " killed " + e.replaceStrings(e.unit, True))
-                MsUtils.iterateType(self.deadTypes[e.player], e.replaceStrings(e.unit, True)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
+                # the killer by its type at the kill under N1 (CR-023, D6a)
+                killer = unit_text_at(e.killing_unit, e.frame, self.ctx.fixes) if "N1" in self.ctx.fixes else e.killing_unit
+                MsUtils.iterateType(self.killersTypes[self.otherPlayer(e.player)], clean_name(killer, True, self.ctx.fixes) + " killed " + clean_name(e.unit, True, self.ctx.fixes))
+                MsUtils.iterateType(self.deadTypes[e.player], clean_name(e.unit, True, self.ctx.fixes)) # TODO maybe we can drop replace strings here as unit should call it now TEST it
 
     def assignEventToScreen(self, event) -> bool:
         for s in self.mapLocations[event.player]:

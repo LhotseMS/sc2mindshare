@@ -4,8 +4,8 @@ from sc2mindshare.analysis.utils import MsUtils
 
 class HarrasmentNode(MultiNode):
     
-    def __init__(self, deathEvents, pullEvent, base, seq):
-        super().__init__(deathEvents, deathEvents[0].time, seq)
+    def __init__(self, deathEvents, pullEvent, base, seq, *, fixes):
+        super().__init__(deathEvents, deathEvents[0].time, seq, fixes=fixes)
 
         self.diedBeforePull = 0
         self.pullDelay = None

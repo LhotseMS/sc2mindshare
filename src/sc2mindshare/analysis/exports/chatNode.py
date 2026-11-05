@@ -5,8 +5,8 @@ from sc2mindshare.reader.fork_api import ChatEvent
 
 class ChatNode(SimpleNode):
     
-    def __init__(self, e : ChatEvent, seq, player) -> None:
-        super().__init__(e, seq)
+    def __init__(self, e : ChatEvent, seq, player, *, fixes) -> None:
+        super().__init__(e, seq, fixes=fixes)
 
         # TODO change pid to player name
         self.player = player
@@ -19,7 +19,7 @@ class ChatNode(SimpleNode):
         return "{}".format(self.text).replace(";",":")
 
     def getNodeDescription(self):
-        return "{}: {}".format(object_text(self.player), self.text).replace(";",":")
+        return "{}: {}".format(object_text(self.player, self.fixes), self.text).replace(";",":")
     
     def getProperties(self, sep):
         return "{}".format(super().getProperties(sep))

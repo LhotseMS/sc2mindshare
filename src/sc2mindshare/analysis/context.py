@@ -8,7 +8,7 @@ context it belongs to, and the order is in ``detectors.createDetectors``.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 
@@ -20,3 +20,5 @@ class AnalysisContext:
     simple: Any = None  # SimpleDetector
     battles: Any = None  # BattleDetector (expects the units nodes linked to the units)
     singles: Any = None  # SinglesDetector (uses the battles' heatmap ids)
+    #: The layer fixes switched on, by ledger id (``analysis.fixes.LAYER_FIXES``); none for the bug-faithful run.
+    fixes: frozenset[str] = field(default_factory=frozenset)

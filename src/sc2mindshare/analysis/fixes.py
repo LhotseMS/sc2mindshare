@@ -1,14 +1,17 @@
-"""Defect fixes applied to the domain graph (CR-014 onwards), one function per ledger entry.
+"""Defect fixes (CR-014 onwards), one per ledger entry, each with an entry in tests/golden/CHANGES.md
+written before it.
 
-The moved legacy layer stays bug-faithful, so its CSV oracle keeps proving the move changed
-nothing; each fix here changes the graph on purpose, with an entry in tests/golden/CHANGES.md
-written before it. ``to_domain.to_graph`` applies ``FIXES`` in order.
+Two kinds. A graph fix here is a function on the domain graph; ``to_domain.to_graph`` applies
+``FIXES`` in order. A layer fix (``LAYER_FIXES``) changes how the moved legacy layer computes
+something, so it lives at its call site in the layer, switched by its ledger id in
+``AnalysisContext.fixes``. Both are off for the bug-faithful run (``analyse(..., fixes=())`` and
+``to_graph(..., fixes=())``), so its CSV oracle keeps proving the move changed nothing.
 """
 
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import replace
 
 from sc2mindshare.domain.models import Graph
@@ -77,3 +80,37 @@ def pre_game_display(graph: Graph) -> Graph:
 
 #: The fixes, in ledger order.
 FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_display)
+
+#: The layer fixes, by ledger id (CR-023): P1, ``BaseDetector.getClosestBase`` compares real distances;
+#: P1b (D8a), it skips a base whose init/born second is after the battle's start; P1c (D10a), and one
+#: whose town hall is not standing then (destroyed, not yet rebuilt); S1 (D9a, TD-27), the supply
+#: tracker: no double count of the starting units and providers, real provider values by the type at
+#: the event, and a block judged once per loop; P8, the last Units interval is written; P2, race words
+#: are no longer stripped from inside names (the name cleaning takes the fixes explicitly); P11 (D11a),
+#: ``BaseDetector.isNearMinerals`` needs a mineral field within 7 cells on both axes; N1 (D6a), units,
+#: buildings and battle killers are named by their type at the time of the event, not their final type;
+#: P10, spell effects (Disruptor Phased, Adept Phase Shift) are no units, and eligibility reads the type at
+#: the event; S6 (D15a), a unit counts its type's supply when it finishes and the difference at each type
+#: change, and a Units group adds its units' supply at their event; P9 (D17a), the Game node's time zone is
+#: the recording PC's offset (UTC-5), and its description says UTC (the date is UTC); P10b (D18a), Shield
+#: Batteries and rich Extractors are structures (Building and Initiated nodes), not units; S7, a Drone's supply
+#: leaves when its structure is placed, and the limit is the providers' total capped at 200; S8, a type missing
+#: from the datapack that is not a named mode is flagged (SimpleDetector.supplyFlags) when a counted unit takes it.
+LAYER_FIXES: tuple[str, ...] = ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8")
+
+
+#: The export fixes, by ledger id (CR-023): fixes of what the view emits, carried by the domain graph
+#: (``Graph.export_fixes``) and on with the graph fixes: B3, an Ability's ``combat``, ``queued`` and
+#: ``minimap`` are emitted (the workbook never set ``combatSet``); P13 (B11), every time property is
+#: ``hh:mm:ss`` of game time (export.time_text); B12 (D16a), ``detail`` lists only properties that exist.
+EXPORT_FIXES: tuple[str, ...] = ("B3", "P13", "B12")
+
+
+def check_layer_fixes(fixes: Iterable[str]) -> frozenset[str]:
+    """The layer fix ids as a set; an id that is not in ``LAYER_FIXES`` is refused (a misspelt id would
+    otherwise switch nothing on, silently)."""
+    chosen = frozenset(fixes)
+    unknown = sorted(chosen - set(LAYER_FIXES))
+    if unknown:
+        raise ValueError(f"unknown layer fix ids {unknown}; the layer fixes are {list(LAYER_FIXES)}")
+    return chosen

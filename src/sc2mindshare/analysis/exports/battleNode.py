@@ -2,7 +2,7 @@ import sc2mindshare.analysis
 import sc2mindshare.analysis.detectors.detectors
 from sc2mindshare.analysis.battle import Battle
 from sc2mindshare.analysis.exports.node import X_LD, Node
-from sc2mindshare.reader.compat import object_text
+from sc2mindshare.reader.compat import clean_name, object_text, type_at
 
 # TODO ADD SUPPLY WON 
 # TODO WINNER PLAYER
@@ -11,7 +11,7 @@ class BattleNode(Battle, Node):
 
     def __init__(self, p1, p2, startSec, endSec, events, secondsOD, seq, ctx):
         Battle.__init__(self, p1, p2, startSec, endSec, events, secondsOD, ctx)
-        Node.__init__(self, seq)
+        Node.__init__(self, seq, fixes=ctx.fixes)
 
         self.propertiesCount = 7 
 
@@ -27,9 +27,11 @@ class BattleNode(Battle, Node):
         locationPart = ""
 
         if self.deathCount == 1:
+            death = self.deadUnits[0]  # the killer by its type at the kill under N1 (CR-023, D6a)
+            killer = type_at(death.killing_unit, death.frame) if "N1" in self.fixes else death.killing_unit.name
             unitPart = "{} killed {}".format(
-                self.events[0].replaceStrings(self.deadUnits[0].killing_unit.name), 
-                self.events[0].replaceStrings(self.deadUnits[0].unit.name)) #TODO hAXorz, replace str doesn't need to be on event
+                clean_name(killer, False, self.fixes), 
+                clean_name(self.deadUnits[0].unit.name, False, self.fixes)) #TODO hAXorz, replace str doesn't need to be on event
         elif len(self.killersTypes.items()) == 1:
             for key, value in self.killersTypes.items(): # TODO how to take just one key and value from dict?
                 unitPart = "{} {}".format(key, value)
@@ -48,7 +50,7 @@ class BattleNode(Battle, Node):
             unitPart = "{} units died".format(self.deathCount) 
 
         if len(self.basesWhereDeaths) > 0:
-            locationPart = " near {} {}".format(object_text(self.basesWhereDeaths[0].player), self.basesWhereDeaths[0])
+            locationPart = " near {} {}".format(object_text(self.basesWhereDeaths[0].player, self.fixes), self.basesWhereDeaths[0])
 
         return unitPart + locationPart
     
@@ -64,7 +66,7 @@ class BattleNode(Battle, Node):
                 self.minLost[self.player1],
                 self.gasLost[self.player1])
         elif self.p1dc > 0:
-            desc += "{} lost an {}.".format(self.player1.name, object_text(self.deadUnitsByPlayer[self.player1][0].unit))
+            desc += "{} lost an {}.".format(self.player1.name, object_text(self.deadUnitsByPlayer[self.player1][0].unit, self.fixes))
         
         if self.supplyLost[self.player2] > 0:
             desc += "{}{}{} lost {} units, {} supply, {} min {} gas.".format(
@@ -76,7 +78,7 @@ class BattleNode(Battle, Node):
                 self.minLost[self.player2],
                 self.gasLost[self.player2])
         elif self.p2dc > 0:
-            desc += "{}{} lost an {}.".format(X_LD,self.player2.name, object_text(self.deadUnitsByPlayer[self.player2][0].unit))
+            desc += "{}{} lost an {}.".format(X_LD,self.player2.name, object_text(self.deadUnitsByPlayer[self.player2][0].unit, self.fixes))
         
         if self.startTime == self.endTime:
             desc += "{}{}At {}.".format(X_LD, X_LD, self.startTime)

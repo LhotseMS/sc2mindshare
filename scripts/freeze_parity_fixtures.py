@@ -133,7 +133,7 @@ def to_text(doc: dict[str, Any]) -> str:
 
 def faithful_graph(replay: Path, support_root: Path) -> Graph:
     with contextlib.redirect_stdout(io.StringIO()):  # the moved layer prints debug text
-        return to_graph(analyse(load_replay(replay), support_root), fixes=())
+        return to_graph(analyse(load_replay(replay), support_root, fixes=()), fixes=())
 
 
 # --- the reader summary ----------------------------------------------------------------------------

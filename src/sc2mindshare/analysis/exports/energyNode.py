@@ -2,13 +2,13 @@ from datetime import datetime
 
 from sc2mindshare.analysis.exports.node import Node
 from sc2mindshare.analysis.utils import MsUtils
-from sc2mindshare.reader.compat import object_text
+from sc2mindshare.reader.compat import clean_name, object_text
 
 
 class EnergyNode(Node):
     
-    def __init__(self, unit, excessStart, curTime, curEnergy, excessThreshold, seq):
-        super().__init__(seq)
+    def __init__(self, unit, excessStart, curTime, curEnergy, excessThreshold, seq, *, fixes):
+        super().__init__(seq, fixes=fixes)
 
         self.player = unit.player
         self.unitName = unit.name
@@ -47,7 +47,7 @@ class EnergyNode(Node):
                                self.unitName, sep)
         
     def getNodePlayer(self):
-        return MsUtils.replaceStrings(self.player)
+        return clean_name(self.player, False, self.fixes)
     
     def getNodeTime(self):
         return self.start.replace(".",":").strip()

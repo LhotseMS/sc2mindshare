@@ -1,11 +1,12 @@
+from sc2mindshare.reader.compat import clean_name
 from datetime import datetime
 from sc2mindshare.analysis.exports.node import Node
 from sc2mindshare.analysis.utils import MsUtils
 
 class SupplyBlockNode(Node):
     
-    def __init__(self, player, blockStart, blockEnd, seq):
-        super().__init__(seq)
+    def __init__(self, player, blockStart, blockEnd, seq, *, fixes):
+        super().__init__(seq, fixes=fixes)
 
         self.player = player
         self.start = "00:" + blockStart
@@ -32,7 +33,7 @@ class SupplyBlockNode(Node):
                                self.duration, sep)
         
     def getNodePlayer(self):
-        return MsUtils.replaceStrings(self.player)
+        return clean_name(self.player, False, self.fixes)
     
     def getNodeTime(self):
         return self.start.replace(".",":").strip()

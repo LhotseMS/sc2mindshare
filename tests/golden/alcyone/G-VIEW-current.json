@@ -90,8 +90,7 @@
     "col. rate Min",
     "col. rate Gas",
     "army Min",
-    "army Gas",
-    "eco Min"
+    "army Gas"
    ]
   },
   {
@@ -104,7 +103,7 @@
    "nodeType": "Initiated",
    "properties": [
     "time",
-    "subtype"
+    "type"
    ]
   },
   {
@@ -186,8 +185,8 @@
    "properties": {}
   },
   {
-   "name": "Zealot killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:02. \n\n====lilTiGGer====   \nCOMBAT: A move(13),  \nNON-COMBAT: Right Click(20),   \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(14), Build Gateway,  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:02. \n\n====lilTiGGer====   \nCOMBAT: A move(13),  \nNON-COMBAT: Right Click(20),   \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(14), Build Gateway,  ",
    "type": "Battle",
    "ID": "Battle-1",
    "size": 0.7,
@@ -198,12 +197,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:02"
+    "end time": "00:02:02"
    }
   },
   {
-   "name": "lings Zealots Probes died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 3 units, 1.5 supply, 75 min 0 gas.\n\nblacksquall lost 2 units, 3 supply, 150 min 0 gas.\n\nFrom 0:02:10 to 0:02:18. \n\n====lilTiGGer==== \nKILLS(s): ling killed Zealot, ling killed Probe, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(41),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling(2), Probe killed ling, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(15),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "Zerglings Zealots Probes died near blacksquall Natural",
+   "description": "lilTiGGer lost 3 units, 1.5 supply, 75 min 0 gas.\n\nblacksquall lost 2 units, 3 supply, 150 min 0 gas.\n\nFrom 0:02:10 to 0:02:18. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Zealot, Zergling killed Probe, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(41),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling(2), Probe killed Zergling, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(15),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-2",
    "size": 1.2,
@@ -214,12 +213,12 @@
     "p1 dead": 3,
     "p2 dead": 2,
     "supply dead": 4.5,
-    "end time": "0:02:18"
+    "end time": "00:02:18"
    }
   },
   {
-   "name": "Zealot killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:43. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(23),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Right Click(11),  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:43. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(23),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Right Click(11),  ",
    "type": "Battle",
    "ID": "Battle-3",
    "size": 0.7,
@@ -230,12 +229,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:43"
+    "end time": "00:02:43"
    }
   },
   {
-   "name": "Zealot killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:55. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(35),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(4),  \nNON-COMBAT: Right Click(10),  ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:02:55. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(35),  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(4),  \nNON-COMBAT: Right Click(10),  ",
    "type": "Battle",
    "ID": "Battle-4",
    "size": 0.7,
@@ -246,12 +245,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:02:55"
+    "end time": "00:02:55"
    }
   },
   {
-   "name": "Zealot killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:03:00. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(26),   \n\n====blacksquall==== \nKILLS(s): Zealot killed ling, \n  \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "Zealot killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:03:00. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(26),   \n\n====blacksquall==== \nKILLS(s): Zealot killed Zergling, \n  \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-5",
    "size": 0.7,
@@ -262,11 +261,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:03:00"
+    "end time": "00:03:00"
    }
   },
   {
-   "name": "Adept killed Drone near lilTiGGer Natural",
+   "name": "Adept killed Drone near lilTiGGer 3rd base",
    "description": "lilTiGGer lost 1 units, 1 supply, 50 min 0 gas.\n\nAt 0:03:56. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(8), Build Creep Tumor,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed Drone, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(7),  \n\nCONTROL GROUPS: \n1: \n4: ",
    "type": "Battle",
    "ID": "Battle-6",
@@ -278,11 +277,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 1,
-    "end time": "0:03:56"
+    "end time": "00:03:56"
    }
   },
   {
-   "name": "Stalker killed Overlord near lilTiGGer Natural",
+   "name": "Stalker killed Overlord near blacksquall Natural",
    "description": "lilTiGGer lost an Overlord.\n\nAt 0:05:09. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Build Spore Crawler,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Stalker killed Overlord, \n   \nNON-COMBAT: Right Click, Build Pylon(4),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-7",
@@ -294,12 +293,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:05:09"
+    "end time": "00:05:09"
    }
   },
   {
-   "name": "Adept killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:05:38. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed ling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9), Build Nexus,  ",
+   "name": "Adept killed Zergling near blacksquall Main base",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:05:38. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n5:  \n\n====blacksquall==== \nKILLS(s): Adept killed Zergling, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9), Build Nexus,  ",
    "type": "Battle",
    "ID": "Battle-8",
    "size": 0.7,
@@ -310,11 +309,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:05:38"
+    "end time": "00:05:38"
    }
   },
   {
-   "name": "VoidRay killed Overlord near lilTiGGer Natural",
+   "name": "VoidRay killed Overlord near blacksquall Natural",
    "description": "lilTiGGer lost an Overlord.\n\nAt 0:06:24. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Creep Tumor(2), Build Creep Tumor,  \n\nCONTROL GROUPS: \n5: \n4:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overlord, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(2),  ",
    "type": "Battle",
    "ID": "Battle-9",
@@ -326,12 +325,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:06:24"
+    "end time": "00:06:24"
    }
   },
   {
-   "name": "VoidRay killed ling near lilTiGGer Natural",
-   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:06:32. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed ling, \n   \nNON-COMBAT: Right Click(8),  \n\nCONTROL GROUPS: \n4: ",
+   "name": "VoidRay killed Zergling near blacksquall Natural",
+   "description": "lilTiGGer lost 1 units, 0.5 supply, 25 min 0 gas.\n\nAt 0:06:32. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(10),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Zergling, \n   \nNON-COMBAT: Right Click(8),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-10",
    "size": 0.7,
@@ -342,11 +341,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0.5,
-    "end time": "0:06:32"
+    "end time": "00:06:32"
    }
   },
   {
-   "name": "VoidRay killed Overlord near lilTiGGer Natural",
+   "name": "VoidRay killed Overlord near blacksquall 3rd base",
    "description": "lilTiGGer lost an Overlord.\n\nAt 0:06:55. \n\n====lilTiGGer====   \nCOMBAT: A move,  \nNON-COMBAT: Right Click(9),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overlord, \n  \nCOMBAT: A move,   \n\nCONTROL GROUPS: \n3: ",
    "type": "Battle",
    "ID": "Battle-11",
@@ -358,12 +357,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:06:55"
+    "end time": "00:06:55"
    }
   },
   {
-   "name": "Roachs lings Adepts Zealots Stalkers Probes died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 16 units, 24 supply, 1375 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(2), Roach killed Probe(6), Ravager killed Stalker, \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed ling, \n \nLOST: Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
+   "name": "Roachs Zerglings Adepts Zealots Stalkers Probes died near blacksquall Natural",
+   "description": "lilTiGGer lost 6 units, 10.5 supply, 400 min 125 gas.\n\nblacksquall lost 16 units, 24 supply, 1375 min 275 gas.\n\nFrom 0:07:36 to 0:07:57. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Adept(5), Roach killed Zealot, Roach killed Stalker(3), Roach killed Probe(6), \n  \nCOMBAT: A move(35),  \nNON-COMBAT: Right Click(49),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach(5), Stalker killed Zergling, \n \nLOST: Pylon,  \nCOMBAT: A move(3), Battery Overcharge,  \nNON-COMBAT: Right Click(10), Build Assimilator(2), Warp In Stalker(7), Build Nexus, Build Pylon,  \n\nCONTROL GROUPS: \n1: \n4: \n3: ",
    "type": "Battle",
    "ID": "Battle-12",
    "size": 2.3449999999999998,
@@ -374,11 +373,11 @@
     "p1 dead": 6,
     "p2 dead": 16,
     "supply dead": 34.5,
-    "end time": "0:07:57"
+    "end time": "00:07:57"
    }
   },
   {
-   "name": "Ravager Cocoons Roachs Probes Stalkers died near lilTiGGer Natural",
+   "name": "Ravager Cocoons Roachs Probes Stalkers died near blacksquall 3rd base",
    "description": "lilTiGGer lost 3 units, 7 supply, 250 min 150 gas.\n\nblacksquall lost 3 units, 3 supply, 575 min 50 gas.\n\nFrom 0:08:06 to 0:08:18. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Probe, Roach killed Stalker, \n  \nCOMBAT: A move(15), Ravager Corrosive Bile(4),  \nNON-COMBAT: Right Click(16),  \n\nCONTROL GROUPS: \n0: \n5: \n4: \n6: \n8:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Ravager Cocoon, Stalker killed Roach, Void Ray killed Roach, \n \nLOST: Nexus,  \nCOMBAT: A move(6),  \nNON-COMBAT: Right Click(4), Warp In Stalker(4),  \n\nCONTROL GROUPS: \n4: \n3: ",
    "type": "Battle",
    "ID": "Battle-13",
@@ -390,11 +389,11 @@
     "p1 dead": 3,
     "p2 dead": 3,
     "supply dead": 10,
-    "end time": "0:08:18"
+    "end time": "00:08:18"
    }
   },
   {
-   "name": "Ravagers Roachs died near lilTiGGer Natural",
+   "name": "Ravagers Roachs died near blacksquall Natural",
    "description": "lilTiGGer lost 4 units, 9 supply, 325 min 175 gas.\nblacksquall lost an Cybernetics Core.\n\nFrom 0:08:23 to 0:08:28. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(21), Spawn Larva(11),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Ravager, Void Ray killed Roach(3), \n \nLOST: Cybernetics Core,  \nCOMBAT: A move, Chrono Boost Energy Cost,  \nNON-COMBAT: Right Click(4),  \n\nCONTROL GROUPS: \n4: ",
    "type": "Battle",
    "ID": "Battle-14",
@@ -406,11 +405,11 @@
     "p1 dead": 4,
     "p2 dead": 1,
     "supply dead": 9,
-    "end time": "0:08:28"
+    "end time": "00:08:28"
    }
   },
   {
-   "name": "VoidRay killed Roach near lilTiGGer Natural",
+   "name": "VoidRay killed Roach near blacksquall Natural",
    "description": "lilTiGGer lost 1 units, 2 supply, 75 min 25 gas.\n\nAt 0:08:34. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Spawn Larva(35), Build Extractor(2),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Roach, \n  \nCOMBAT: Chrono Boost Energy Cost, A move,  \nNON-COMBAT: Right Click(5),  \n\nCONTROL GROUPS: \n4: \n1: ",
    "type": "Battle",
    "ID": "Battle-15",
@@ -422,11 +421,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 2,
-    "end time": "0:08:34"
+    "end time": "00:08:34"
    }
   },
   {
-   "name": "Probes died near lilTiGGer Natural",
+   "name": "Probes died near blacksquall 3rd base",
    "description": "\n\nblacksquall lost 2 units, 1 supply, 150 min 0 gas.\n\nFrom 0:09:56 to 0:09:58. \n\n====lilTiGGer==== \nKILLS(s): Roach killed Probe, \n  \nCOMBAT: A move(6),  \nNON-COMBAT: Right Click(26),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall====  \nLOST: Pylon,  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(2), Build Gateway(2), Build Photon Cannon(2),  \n\nCONTROL GROUPS: \n4: \n1: ",
    "type": "Battle",
    "ID": "Battle-16",
@@ -438,11 +437,11 @@
     "p1 dead": 0,
     "p2 dead": 2,
     "supply dead": 1,
-    "end time": "0:09:58"
+    "end time": "00:09:58"
    }
   },
   {
-   "name": "Hydralisks Roachs Overseers Disruptors Immortals died near lilTiGGer Natural",
+   "name": "Hydralisks Roachs Overseers Disruptors Immortals died near lilTiGGer Main base",
    "description": "lilTiGGer lost 31 units, 58 supply, 2900 min 1250 gas.\n\nblacksquall lost 2 units, 7 supply, 400 min 250 gas.\n\nFrom 0:10:05 to 0:10:28. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Disruptor, Roach killed Immortal, \n  \nCOMBAT: A move(19),  \nNON-COMBAT: Right Click(66), Spawn Larva(22), Build Spire, Build Evolution Chamber(2), Build Extractor(2),  \n\nCONTROL GROUPS: \n5: \n0:  \n\n====blacksquall==== \nKILLS(s): Disruptor killed Hydralisk(8), Disruptor killed Roach(5), Immortal killed Roach(4), Immortal killed Hydralisk(4), Stalker killed Roach(3), Void Ray killed Hydralisk(2), Oracle killed Hydralisk(3), Void Ray killed Overseer(2), \n  \nCOMBAT: Purification Nova Targeted(2), A move(7), Battery Overcharge,  \nNON-COMBAT: Right Click(34), Warp In Stalker(4),  \n\nCONTROL GROUPS: \n1: \n4: \n3: \n5: ",
    "type": "Battle",
    "ID": "Battle-17",
@@ -454,11 +453,11 @@
     "p1 dead": 31,
     "p2 dead": 2,
     "supply dead": 65,
-    "end time": "0:10:28"
+    "end time": "00:10:28"
    }
   },
   {
-   "name": "VoidRay killed Overseer near lilTiGGer Natural",
+   "name": "VoidRay killed Overseer near lilTiGGer 4th base",
    "description": "lilTiGGer lost an Overseer.\n\nAt 0:10:35. \n\n====lilTiGGer====    \nNON-COMBAT: Right Click(6), Spawn Larva(7),  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Void Ray killed Overseer, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(2), Warp In Stalker(5),  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-18",
@@ -470,11 +469,11 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:10:35"
+    "end time": "00:10:35"
    }
   },
   {
-   "name": "Queen killed Oracle near lilTiGGer Natural",
+   "name": "Queen killed Oracle near lilTiGGer 4th base",
    "description": "\n\nblacksquall lost 1 units, 3 supply, 150 min 150 gas.\n\nAt 0:11:05. \n\n====lilTiGGer==== \nKILLS(s): Queen killed Oracle, \n  \nCOMBAT: A move,  \nNON-COMBAT: Spawn Larva, Right Click(9),  \n\nCONTROL GROUPS: \n4:  \n\n====blacksquall====    \nNON-COMBAT: Warp In High Templar(6), Right Click(5),  \n\nCONTROL GROUPS: \n2: \n5: ",
    "type": "Battle",
    "ID": "Battle-19",
@@ -486,11 +485,11 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 3,
-    "end time": "0:11:05"
+    "end time": "00:11:05"
    }
   },
   {
-   "name": "Hydralisk killed Observer near lilTiGGer Natural",
+   "name": "Hydralisk killed Observer near lilTiGGer 4th base",
    "description": "\n\nblacksquall lost 1 units, 1 supply, 25 min 75 gas.\n\nAt 0:12:15. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Observer, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(3), Build Creep Tumor(7),  \n\nCONTROL GROUPS: \n0:  \n\n====blacksquall====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(11),  \n\nCONTROL GROUPS: \n5: \n1: ",
    "type": "Battle",
    "ID": "Battle-20",
@@ -502,11 +501,11 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 1,
-    "end time": "0:12:15"
+    "end time": "00:12:15"
    }
   },
   {
-   "name": "Hydralisk killed CreepTumorBurrowed near lilTiGGer Natural",
+   "name": "Hydralisk killed CreepTumorBurrowed near lilTiGGer 4th base",
    "description": "lilTiGGer lost an Creep Tumor Burrowed.\n\nAt 0:12:23. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move,  \nNON-COMBAT: Build Evolution Chamber(3),  \n\nCONTROL GROUPS: \n5: \n0:  \n\n====blacksquall====    \nNON-COMBAT: Right Click, Build Nexus(2), Build Pylon,  ",
    "type": "Battle",
    "ID": "Battle-21",
@@ -518,12 +517,12 @@
     "p1 dead": 1,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:12:23"
+    "end time": "00:12:23"
    }
   },
   {
-   "name": "lings Roachs Hydralisks Overseers Overlords died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 22 units, 13.5 supply, 1000 min 175 gas.\nblacksquall lost an Pylon.\n\nFrom 0:12:48 to 0:13:18. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move(11),  \nNON-COMBAT: Right Click(81), Spawn Larva(54), Build Baneling Nest,  \n\nCONTROL GROUPS: \n0: \n9:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed ling(11), Zealot killed ling(2), Stalker killed ling(2), Zealot killed Roach, Zealot killed Hydralisk(2), Void Ray killed Overseer, Stalker killed Overlord(2), \n \nLOST: Pylon(3), Nexus,  \nCOMBAT: A move(10),  \nNON-COMBAT: Right Click(21), Warp In Stalker(4), Build Nexus,  \n\nCONTROL GROUPS: \n5: \n1: ",
+   "name": "Zerglings Roachs Hydralisks Overseers Overlords died near lilTiGGer Main base",
+   "description": "lilTiGGer lost 22 units, 13.5 supply, 1000 min 175 gas.\nblacksquall lost an Pylon.\n\nFrom 0:12:48 to 0:13:18. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed,  \nCOMBAT: A move(11),  \nNON-COMBAT: Right Click(81), Spawn Larva(54), Build Baneling Nest,  \n\nCONTROL GROUPS: \n0: \n9:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Zergling(11), Zealot killed Zergling(2), Stalker killed Zergling(2), Zealot killed Roach, Zealot killed Hydralisk(2), Void Ray killed Overseer, Stalker killed Overlord(2), \n \nLOST: Pylon(3), Nexus,  \nCOMBAT: A move(10),  \nNON-COMBAT: Right Click(21), Warp In Stalker(4), Build Nexus,  \n\nCONTROL GROUPS: \n5: \n1: ",
    "type": "Battle",
    "ID": "Battle-22",
    "size": 1.6,
@@ -534,11 +533,11 @@
     "p1 dead": 22,
     "p2 dead": 4,
     "supply dead": 13.5,
-    "end time": "0:13:18"
+    "end time": "00:13:18"
    }
   },
   {
-   "name": "Overlords died near lilTiGGer Natural",
+   "name": "Overlords died near blacksquall 6th base",
    "description": "lilTiGGer lost an Overlord.\n\nFrom 0:13:31 to 0:13:32. \n\n====lilTiGGer====    \nNON-COMBAT: Spawn Larva(4), Right Click(9), Build Extractor,  \n\nCONTROL GROUPS: \n0: \n5:  \n\n====blacksquall==== \nKILLS(s): Stalker killed Overlord, Void Ray killed Overlord, \n  \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(4),  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-23",
@@ -550,11 +549,11 @@
     "p1 dead": 2,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:13:32"
+    "end time": "00:13:32"
    }
   },
   {
-   "name": "Creep Tumor Burroweds died near lilTiGGer Natural",
+   "name": "Creep Tumor Burroweds died near blacksquall 6th base",
    "description": "lilTiGGer lost an Creep Tumor Burrowed.\n\nFrom 0:13:38 to 0:13:47. \n\n====lilTiGGer====  \nLOST: Creep Tumor Burrowed(14),  \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(23),  \n\nCONTROL GROUPS: \n0: \n9: \n5:  \n\n====blacksquall====   \nCOMBAT: A move(8),  \nNON-COMBAT: Right Click(19),  \n\nCONTROL GROUPS: \n5: \n1: ",
    "type": "Battle",
    "ID": "Battle-24",
@@ -566,11 +565,11 @@
     "p1 dead": 14,
     "p2 dead": 0,
     "supply dead": 0,
-    "end time": "0:13:47"
+    "end time": "00:13:47"
    }
   },
   {
-   "name": "Hydralisk killed Pylon near lilTiGGer Natural",
+   "name": "Hydralisk killed Pylon near blacksquall 6th base",
    "description": "\nblacksquall lost an Pylon.\n\nAt 0:13:54. \n\n====lilTiGGer====   \nCOMBAT: A move(4),  \nNON-COMBAT: Spawn Larva, Right Click(7),  \n\nCONTROL GROUPS: \n0: \n9:  \n\n====blacksquall====  \nLOST: Pylon,  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(5), Build Pylon(2),  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-25",
@@ -582,12 +581,12 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 0,
-    "end time": "0:13:54"
+    "end time": "00:13:54"
    }
   },
   {
-   "name": "lings Overseers Hydralisks Roachs Probes Stalkers Zealots died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 21 units, 38.5 supply, 2050 min 975 gas.\n\nblacksquall lost 36 units, 35 supply, 2475 min 50 gas.\n\nFrom 0:13:59 to 0:14:26. \n\n====lilTiGGer==== \nKILLS(s): ling killed Probe(26), Hydralisk killed Stalker, Hydralisk killed Probe(4), Baneling killed Probe, Hydralisk killed Zealot, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(83), Spawn Larva(35),  \n\nCONTROL GROUPS: \n0: \n5: \n9: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed ling, Photon Cannon killed Overseer, Photon Cannon killed Hydralisk(3), Zealot killed Hydralisk(12), Stalker killed Hydralisk, Immortal killed Hydralisk(2), Zealot killed Roach, \n \nLOST: Nexus, Photon Cannon(2),  \nCOMBAT: A move(7), Chrono Boost Energy Cost,  \nNON-COMBAT: Right Click(20), Warp In High Templar(13),  \n\nCONTROL GROUPS: \n1: \n4: ",
+   "name": "Zerglings Overseers Hydralisks Roachs Probes Stalkers Zealots died near blacksquall 5th base",
+   "description": "lilTiGGer lost 21 units, 38.5 supply, 2050 min 975 gas.\n\nblacksquall lost 36 units, 35 supply, 2475 min 50 gas.\n\nFrom 0:13:59 to 0:14:26. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe(27), Hydralisk killed Stalker, Hydralisk killed Probe(4), Hydralisk killed Zealot, \n  \nCOMBAT: A move(15),  \nNON-COMBAT: Right Click(83), Spawn Larva(35),  \n\nCONTROL GROUPS: \n0: \n5: \n9: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Zergling, Photon Cannon killed Overseer, Photon Cannon killed Hydralisk(3), Zealot killed Hydralisk(12), Stalker killed Hydralisk, Immortal killed Hydralisk(2), Zealot killed Roach, \n \nLOST: Nexus, Photon Cannon(2),  \nCOMBAT: A move(7), Chrono Boost Energy Cost,  \nNON-COMBAT: Right Click(20), Warp In High Templar(13),  \n\nCONTROL GROUPS: \n1: \n4: ",
    "type": "Battle",
    "ID": "Battle-26",
    "size": 2.735,
@@ -598,12 +597,12 @@
     "p1 dead": 21,
     "p2 dead": 36,
     "supply dead": 73.5,
-    "end time": "0:14:26"
+    "end time": "00:14:26"
    }
   },
   {
-   "name": "lings Probes Zealots died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 15 units, 3 supply, 1675 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): ling killed Probe, ling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed ling(41), Zealot killed ling(9), Immortal killed ling(3), Stalker killed ling(6), Void Ray killed ling(11), High Templar killed ling, \n \nLOST: Pylon(9), Assimilator(3), Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
+   "name": "Zerglings Probes Zealots died near blacksquall Natural",
+   "description": "lilTiGGer lost 71 units, 35.5 supply, 1775 min 0 gas.\n\nblacksquall lost 15 units, 3 supply, 1675 min 0 gas.\n\nFrom 0:14:31 to 0:15:05. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Probe, Zergling killed Zealot, \n  \nCOMBAT: A move(3),  \nNON-COMBAT: Spawn Larva(17), Right Click(73), Build Ultralisk Cavern, Build Creep Tumor,  \n\nCONTROL GROUPS: \n0: \n5: \n1:  \n\n====blacksquall==== \nKILLS(s): Archon killed Zergling(41), Zealot killed Zergling(9), Immortal killed Zergling(3), Stalker killed Zergling(6), Void Ray killed Zergling(11), High Templar killed Zergling, \n \nLOST: Pylon(9), Assimilator(3), Nexus,  \nCOMBAT: Chrono Boost Energy Cost, A move(6),  \nNON-COMBAT: Right Click(11), Warp In Zealot(10), Build Pylon(8), Build Cybernetics Core, Build Stargate,  \n\nCONTROL GROUPS: \n4: \n1: \n2: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-27",
    "size": 2.385,
@@ -614,11 +613,11 @@
     "p1 dead": 71,
     "p2 dead": 15,
     "supply dead": 38.5,
-    "end time": "0:15:05"
+    "end time": "00:15:05"
    }
   },
   {
-   "name": "ling killed Pylon near lilTiGGer Natural",
+   "name": "Zergling killed Pylon near blacksquall Main base",
    "description": "\nblacksquall lost an Pylon.\n\nAt 0:15:11. \n\n====lilTiGGer====   \nCOMBAT: A move(3),  \nNON-COMBAT: Right Click(11), Spawn Larva,  \n\nCONTROL GROUPS: \n0: \n1: \n5:  \n\n====blacksquall====  \nLOST: Pylon,  \nCOMBAT: A move,  \nNON-COMBAT: Right Click,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-28",
@@ -630,12 +629,12 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 0,
-    "end time": "0:15:11"
+    "end time": "00:15:11"
    }
   },
   {
-   "name": "Overseers Mutalisks lings Roachs Probes Void Rays Stalkers Zealots died near lilTiGGer Natural",
-   "description": "lilTiGGer lost 15 units, 26.5 supply, 1450 min 1275 gas.\n\nblacksquall lost 5 units, 9 supply, 675 min 200 gas.\n\nFrom 0:15:17 to 0:15:30. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Probe, Mutalisk killed Void Ray, Mutalisk killed Stalker, ling killed Zealot, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Spawn Larva(3), Right Click(56),  \n\nCONTROL GROUPS: \n0: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Overseer, Stalker killed Mutalisk(5), High Templar killed Mutalisk(3), Archon killed Mutalisk(4), Zealot killed ling, Zealot killed Roach, \n \nLOST: Warp Gate,  \nCOMBAT: A move(4), Feedback(2),  \nNON-COMBAT: Right Click(5), Build Pylon(5), Psionic Storm,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
+   "name": "Overseers Mutalisks Zerglings Roachs Probes Void Rays Stalkers Zealots died near blacksquall 6th base",
+   "description": "lilTiGGer lost 15 units, 26.5 supply, 1450 min 1275 gas.\n\nblacksquall lost 5 units, 9 supply, 675 min 200 gas.\n\nFrom 0:15:17 to 0:15:30. \n\n====lilTiGGer==== \nKILLS(s): Hydralisk killed Probe, Mutalisk killed Void Ray, Mutalisk killed Stalker, Zergling killed Zealot, \n  \nCOMBAT: A move(5),  \nNON-COMBAT: Spawn Larva(3), Right Click(56),  \n\nCONTROL GROUPS: \n0: \n1:  \n\n====blacksquall==== \nKILLS(s): Photon Cannon killed Overseer, Stalker killed Mutalisk(5), High Templar killed Mutalisk(3), Archon killed Mutalisk(4), Zealot killed Zergling, Zealot killed Roach, \n \nLOST: Warp Gate,  \nCOMBAT: A move(4), Feedback(2),  \nNON-COMBAT: Right Click(5), Build Pylon(5), Psionic Storm,  \n\nCONTROL GROUPS: \n1: \n2: \n3: \n4: \n5: \n6: ",
    "type": "Battle",
    "ID": "Battle-29",
    "size": 2.355,
@@ -646,11 +645,11 @@
     "p1 dead": 15,
     "p2 dead": 5,
     "supply dead": 35.5,
-    "end time": "0:15:30"
+    "end time": "00:15:30"
    }
   },
   {
-   "name": "Immortal killed Stalker near lilTiGGer Natural",
+   "name": "Immortal killed Stalker near blacksquall 6th base",
    "description": "\n\nblacksquall lost 1 units, 2 supply, 125 min 50 gas.\n\nAt 0:15:42. \n\n====lilTiGGer==== \nKILLS(s): Immortal killed Stalker, \n  \nCOMBAT: A move,  \nNON-COMBAT: Right Click(12),  \n\nCONTROL GROUPS: \n5: \n0:  \n\n====blacksquall====   \nCOMBAT: A move(2),  \nNON-COMBAT: Right Click(4), Build Nexus, Warp In Stalker,  \n\nCONTROL GROUPS: \n1: ",
    "type": "Battle",
    "ID": "Battle-30",
@@ -662,7 +661,7 @@
     "p1 dead": 0,
     "p2 dead": 1,
     "supply dead": 2,
-    "end time": "0:15:42"
+    "end time": "00:15:42"
    }
   },
   {
@@ -675,7 +674,7 @@
     1
    ],
    "properties": {
-    "time": "06:28:00",
+    "time": "00:06:28",
     "player": "lilTiGGer"
    }
   },
@@ -689,7 +688,7 @@
     1
    ],
    "properties": {
-    "time": "07:43:00",
+    "time": "00:07:43",
     "player": "lilTiGGer"
    }
   },
@@ -703,7 +702,7 @@
     1
    ],
    "properties": {
-    "time": "07:49:00",
+    "time": "00:07:49",
     "player": "blacksquall"
    }
   },
@@ -717,13 +716,13 @@
     1
    ],
    "properties": {
-    "time": "10:04:00",
+    "time": "00:10:04",
     "player": "lilTiGGer"
    }
   },
   {
    "name": "1 dief, before pull",
-   "description": "1 workers died at 5th base from 10:06 to 10:06.\nPull occured after 24.0s with 0 workers dead.",
+   "description": "1 workers died at 4th base from 10:06 to 10:06.\nPull occured after 24.0s with 0 workers dead.",
    "type": "Harrasment",
    "ID": "Harrasment-5",
    "size": [
@@ -731,13 +730,13 @@
     1
    ],
    "properties": {
-    "time": "10:06:00",
+    "time": "00:10:06",
     "player": "lilTiGGer"
    }
   },
   {
    "name": "1 died, no pull",
-   "description": "1 workers died at 8th base from 12:50 to 12:50.",
+   "description": "1 workers died at 5th base from 12:50 to 12:50.",
    "type": "Harrasment",
    "ID": "Harrasment-6",
    "size": [
@@ -745,13 +744,13 @@
     1
    ],
    "properties": {
-    "time": "12:50:00",
+    "time": "00:12:50",
     "player": "lilTiGGer"
    }
   },
   {
-   "name": "1 died, no pull",
-   "description": "1 workers died at 4th base from 14:03 to 14:03.",
+   "name": "1 dief, before pull",
+   "description": "1 workers died at 5th base from 14:15 to 14:15.\nPull occured after 7.0s with 0 workers dead.",
    "type": "Harrasment",
    "ID": "Harrasment-7",
    "size": [
@@ -759,21 +758,7 @@
     1
    ],
    "properties": {
-    "time": "14:03:00",
-    "player": "lilTiGGer"
-   }
-  },
-  {
-   "name": "1 dief, before pull",
-   "description": "1 workers died at 8th base from 14:15 to 14:15.\nPull occured after 7.0s with 0 workers dead.",
-   "type": "Harrasment",
-   "ID": "Harrasment-8",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "14:15:00",
+    "time": "00:14:15",
     "player": "lilTiGGer"
    }
   },
@@ -781,13 +766,13 @@
    "name": "1 died, no pull",
    "description": "1 workers died at 5th base from 13:59 to 13:59.",
    "type": "Harrasment",
-   "ID": "Harrasment-9",
+   "ID": "Harrasment-8",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "13:59:00",
+    "time": "00:13:59",
     "player": "blacksquall"
    }
   },
@@ -795,13 +780,13 @@
    "name": "12 died, no pull",
    "description": "12 workers died at Main base from 14:07 to 14:13.",
    "type": "Harrasment",
-   "ID": "Harrasment-10",
+   "ID": "Harrasment-9",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "14:07:00",
+    "time": "00:14:07",
     "player": "blacksquall"
    }
   },
@@ -809,13 +794,13 @@
    "name": "2 dief, before pull",
    "description": "2 workers died at 4th base from 14:08 to 14:09.\nPull occured after 7.0s with 0 workers dead.",
    "type": "Harrasment",
-   "ID": "Harrasment-11",
+   "ID": "Harrasment-10",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "14:08:00",
+    "time": "00:14:08",
     "player": "blacksquall"
    }
   },
@@ -823,13 +808,13 @@
    "name": "14 died, no pull",
    "description": "14 workers died at Natural from 14:20 to 14:26.",
    "type": "Harrasment",
-   "ID": "Harrasment-12",
+   "ID": "Harrasment-11",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "14:20:00",
+    "time": "00:14:20",
     "player": "blacksquall"
    }
   },
@@ -837,13 +822,13 @@
    "name": "1 dief, before pull",
    "description": "1 workers died at Main base from 14:45 to 14:45.\nPull occured after 3.0s with 0 workers dead.",
    "type": "Harrasment",
-   "ID": "Harrasment-13",
+   "ID": "Harrasment-12",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "14:45:00",
+    "time": "00:14:45",
     "player": "blacksquall"
    }
   },
@@ -851,19 +836,19 @@
    "name": "1 died, no pull",
    "description": "1 workers died at 6th base from 15:17 to 15:17.",
    "type": "Harrasment",
-   "ID": "Harrasment-14",
+   "ID": "Harrasment-13",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "15:17:00",
+    "time": "00:15:17",
     "player": "blacksquall"
    }
   },
   {
-   "name": "ling Movement Speed",
-   "description": "lilTiGGer completed ling Movement Speed at 00:11:16",
+   "name": "Zergling Movement Speed",
+   "description": "lilTiGGer completed Zergling Movement Speed at 00:11:16",
    "type": "Upgrade",
    "ID": "Upgrade-9",
    "size": [
@@ -985,7 +970,7 @@
    "properties": {
     "time": "00:00:00",
     "player": "lilTiGGer",
-    "type": "Hive"
+    "type": "Hatchery"
    }
   },
   {
@@ -1022,7 +1007,7 @@
    "name": "Extractor",
    "description": "",
    "type": "Building",
-   "ID": "Building-12",
+   "ID": "Building-13",
    "size": [
     2.65,
     1
@@ -1037,7 +1022,7 @@
    "name": "3rd base",
    "description": "",
    "type": "Building",
-   "ID": "Building-16",
+   "ID": "Building-17",
    "size": [
     2.65,
     1
@@ -1052,7 +1037,7 @@
    "name": "Extractor 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-20",
+   "ID": "Building-21",
    "size": [
     2.65,
     1
@@ -1067,7 +1052,7 @@
    "name": "Extractor 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-23",
+   "ID": "Building-24",
    "size": [
     2.65,
     1
@@ -1082,7 +1067,7 @@
    "name": "Roach Warren",
    "description": "",
    "type": "Building",
-   "ID": "Building-24",
+   "ID": "Building-25",
    "size": [
     2.65,
     1
@@ -1097,7 +1082,7 @@
    "name": "Spore Crawler",
    "description": "",
    "type": "Building",
-   "ID": "Building-27",
+   "ID": "Building-28",
    "size": [
     2.65,
     1
@@ -1112,7 +1097,7 @@
    "name": "Spore Crawler 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-28",
+   "ID": "Building-29",
    "size": [
     2.65,
     1
@@ -1127,7 +1112,7 @@
    "name": "Spore Crawler 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-32",
+   "ID": "Building-34",
    "size": [
     2.65,
     1
@@ -1142,7 +1127,7 @@
    "name": "Hydralisk Den",
    "description": "",
    "type": "Building",
-   "ID": "Building-42",
+   "ID": "Building-44",
    "size": [
     2.65,
     1
@@ -1157,7 +1142,7 @@
    "name": "Extractor 3",
    "description": "",
    "type": "Building",
-   "ID": "Building-43",
+   "ID": "Building-45",
    "size": [
     2.65,
     1
@@ -1172,7 +1157,7 @@
    "name": "Extractor 4",
    "description": "",
    "type": "Building",
-   "ID": "Building-48",
+   "ID": "Building-50",
    "size": [
     2.65,
     1
@@ -1187,7 +1172,7 @@
    "name": "Extractor 5",
    "description": "",
    "type": "Building",
-   "ID": "Building-49",
+   "ID": "Building-51",
    "size": [
     2.65,
     1
@@ -1199,10 +1184,10 @@
    }
   },
   {
-   "name": "4th base",
+   "name": "Hatchery",
    "description": "",
    "type": "Building",
-   "ID": "Building-57",
+   "ID": "Building-59",
    "size": [
     2.65,
     1
@@ -1214,10 +1199,10 @@
    }
   },
   {
-   "name": "5th base",
+   "name": "4th base",
    "description": "",
    "type": "Building",
-   "ID": "Building-58",
+   "ID": "Building-60",
    "size": [
     2.65,
     1
@@ -1229,10 +1214,10 @@
    }
   },
   {
-   "name": "6th base",
+   "name": "Hatchery 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-72",
+   "ID": "Building-74",
    "size": [
     2.65,
     1
@@ -1244,10 +1229,10 @@
    }
   },
   {
-   "name": "7th base",
+   "name": "Hatchery 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-73",
+   "ID": "Building-75",
    "size": [
     2.65,
     1
@@ -1262,7 +1247,7 @@
    "name": "Extractor 6",
    "description": "",
    "type": "Building",
-   "ID": "Building-74",
+   "ID": "Building-76",
    "size": [
     2.65,
     1
@@ -1277,7 +1262,7 @@
    "name": "Extractor 7",
    "description": "",
    "type": "Building",
-   "ID": "Building-75",
+   "ID": "Building-77",
    "size": [
     2.65,
     1
@@ -1292,7 +1277,7 @@
    "name": "Evolution Chamber",
    "description": "",
    "type": "Building",
-   "ID": "Building-76",
+   "ID": "Building-78",
    "size": [
     2.65,
     1
@@ -1307,7 +1292,7 @@
    "name": "Evolution Chamber 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-77",
+   "ID": "Building-79",
    "size": [
     2.65,
     1
@@ -1319,10 +1304,10 @@
    }
   },
   {
-   "name": "Greater Spire",
+   "name": "Spire",
    "description": "",
    "type": "Building",
-   "ID": "Building-78",
+   "ID": "Building-80",
    "size": [
     2.65,
     1
@@ -1330,14 +1315,14 @@
    "properties": {
     "time": "00:10:27",
     "player": "lilTiGGer",
-    "type": "Greater Spire"
+    "type": "Spire"
    }
   },
   {
-   "name": "Spire",
+   "name": "Spire 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-79",
+   "ID": "Building-81",
    "size": [
     2.65,
     1
@@ -1352,7 +1337,7 @@
    "name": "Evolution Chamber 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-91",
+   "ID": "Building-93",
    "size": [
     2.65,
     1
@@ -1364,10 +1349,10 @@
    }
   },
   {
-   "name": "8th base",
+   "name": "5th base",
    "description": "",
    "type": "Building",
-   "ID": "Building-92",
+   "ID": "Building-94",
    "size": [
     2.65,
     1
@@ -1382,7 +1367,7 @@
    "name": "Infestation Pit",
    "description": "",
    "type": "Building",
-   "ID": "Building-93",
+   "ID": "Building-95",
    "size": [
     2.65,
     1
@@ -1397,7 +1382,7 @@
    "name": "Baneling Nest",
    "description": "",
    "type": "Building",
-   "ID": "Building-96",
+   "ID": "Building-98",
    "size": [
     2.65,
     1
@@ -1409,10 +1394,25 @@
    }
   },
   {
+   "name": "Extractor Rich",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-101",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:13:54",
+    "player": "lilTiGGer",
+    "type": "Extractor Rich"
+   }
+  },
+  {
    "name": "Ultralisk Cavern",
    "description": "",
    "type": "Building",
-   "ID": "Building-104",
+   "ID": "Building-107",
    "size": [
     2.65,
     1
@@ -1469,7 +1469,7 @@
    }
   },
   {
-   "name": "Warp Gate",
+   "name": "Gateway",
    "description": "",
    "type": "Building",
    "ID": "Building-6",
@@ -1478,9 +1478,9 @@
     1
    ],
    "properties": {
-    "time": "00:01:20",
+    "time": "00:00:41",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
@@ -1529,7 +1529,7 @@
    }
   },
   {
-   "name": "Warp Gate 1",
+   "name": "Gateway 1",
    "description": "",
    "type": "Building",
    "ID": "Building-11",
@@ -1538,16 +1538,31 @@
     1
    ],
    "properties": {
-    "time": "00:02:43",
+    "time": "00:02:04",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
+   }
+  },
+  {
+   "name": "Shield Battery",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-12",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:31",
+    "player": "blacksquall",
+    "type": "Shield Battery"
    }
   },
   {
    "name": "Assimilator 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-13",
+   "ID": "Building-14",
    "size": [
     2.65,
     1
@@ -1562,7 +1577,7 @@
    "name": "Pylon 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-14",
+   "ID": "Building-15",
    "size": [
     2.65,
     1
@@ -1577,7 +1592,7 @@
    "name": "Pylon 3",
    "description": "",
    "type": "Building",
-   "ID": "Building-15",
+   "ID": "Building-16",
    "size": [
     2.65,
     1
@@ -1592,7 +1607,7 @@
    "name": "Assimilator 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-17",
+   "ID": "Building-18",
    "size": [
     2.65,
     1
@@ -1607,7 +1622,7 @@
    "name": "Assimilator 3",
    "description": "",
    "type": "Building",
-   "ID": "Building-18",
+   "ID": "Building-19",
    "size": [
     2.65,
     1
@@ -1622,7 +1637,7 @@
    "name": "Stargate",
    "description": "",
    "type": "Building",
-   "ID": "Building-19",
+   "ID": "Building-20",
    "size": [
     2.65,
     1
@@ -1637,7 +1652,7 @@
    "name": "Pylon 4",
    "description": "",
    "type": "Building",
-   "ID": "Building-21",
+   "ID": "Building-22",
    "size": [
     2.65,
     1
@@ -1652,7 +1667,7 @@
    "name": "Pylon 5",
    "description": "",
    "type": "Building",
-   "ID": "Building-22",
+   "ID": "Building-23",
    "size": [
     2.65,
     1
@@ -1667,7 +1682,7 @@
    "name": "Pylon 6",
    "description": "",
    "type": "Building",
-   "ID": "Building-25",
+   "ID": "Building-26",
    "size": [
     2.65,
     1
@@ -1682,7 +1697,7 @@
    "name": "Pylon 7",
    "description": "",
    "type": "Building",
-   "ID": "Building-26",
+   "ID": "Building-27",
    "size": [
     2.65,
     1
@@ -1697,7 +1712,7 @@
    "name": "Pylon 8",
    "description": "",
    "type": "Building",
-   "ID": "Building-29",
+   "ID": "Building-30",
    "size": [
     2.65,
     1
@@ -1712,7 +1727,7 @@
    "name": "Pylon 9",
    "description": "",
    "type": "Building",
-   "ID": "Building-30",
+   "ID": "Building-31",
    "size": [
     2.65,
     1
@@ -1727,7 +1742,7 @@
    "name": "Pylon 10",
    "description": "",
    "type": "Building",
-   "ID": "Building-31",
+   "ID": "Building-32",
    "size": [
     2.65,
     1
@@ -1739,10 +1754,25 @@
    }
   },
   {
-   "name": "3rd base",
+   "name": "Shield Battery 1",
    "description": "",
    "type": "Building",
    "ID": "Building-33",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:05:55",
+    "player": "blacksquall",
+    "type": "Shield Battery"
+   }
+  },
+  {
+   "name": "3rd base",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-35",
    "size": [
     2.65,
     1
@@ -1757,7 +1787,7 @@
    "name": "Pylon 11",
    "description": "",
    "type": "Building",
-   "ID": "Building-34",
+   "ID": "Building-36",
    "size": [
     2.65,
     1
@@ -1772,7 +1802,7 @@
    "name": "Pylon 12",
    "description": "",
    "type": "Building",
-   "ID": "Building-35",
+   "ID": "Building-37",
    "size": [
     2.65,
     1
@@ -1787,7 +1817,7 @@
    "name": "Robotics Facility",
    "description": "",
    "type": "Building",
-   "ID": "Building-36",
+   "ID": "Building-38",
    "size": [
     2.65,
     1
@@ -1802,7 +1832,7 @@
    "name": "Robotics Facility 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-37",
+   "ID": "Building-39",
    "size": [
     2.65,
     1
@@ -1817,7 +1847,7 @@
    "name": "Pylon 13",
    "description": "",
    "type": "Building",
-   "ID": "Building-38",
+   "ID": "Building-40",
    "size": [
     2.65,
     1
@@ -1832,7 +1862,7 @@
    "name": "Forge",
    "description": "",
    "type": "Building",
-   "ID": "Building-39",
+   "ID": "Building-41",
    "size": [
     2.65,
     1
@@ -1847,7 +1877,7 @@
    "name": "Twilight Council",
    "description": "",
    "type": "Building",
-   "ID": "Building-40",
+   "ID": "Building-42",
    "size": [
     2.65,
     1
@@ -1862,7 +1892,7 @@
    "name": "Forge 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-41",
+   "ID": "Building-43",
    "size": [
     2.65,
     1
@@ -1877,7 +1907,7 @@
    "name": "Pylon 14",
    "description": "",
    "type": "Building",
-   "ID": "Building-44",
+   "ID": "Building-46",
    "size": [
     2.65,
     1
@@ -1892,7 +1922,7 @@
    "name": "Templar Archive",
    "description": "",
    "type": "Building",
-   "ID": "Building-45",
+   "ID": "Building-47",
    "size": [
     2.65,
     1
@@ -1907,7 +1937,7 @@
    "name": "Robotics Bay",
    "description": "",
    "type": "Building",
-   "ID": "Building-46",
+   "ID": "Building-48",
    "size": [
     2.65,
     1
@@ -1922,7 +1952,7 @@
    "name": "Pylon 15",
    "description": "",
    "type": "Building",
-   "ID": "Building-47",
+   "ID": "Building-49",
    "size": [
     2.65,
     1
@@ -1937,7 +1967,7 @@
    "name": "4th base",
    "description": "",
    "type": "Building",
-   "ID": "Building-50",
+   "ID": "Building-52",
    "size": [
     2.65,
     1
@@ -1952,7 +1982,7 @@
    "name": "Pylon 16",
    "description": "",
    "type": "Building",
-   "ID": "Building-51",
+   "ID": "Building-53",
    "size": [
     2.65,
     1
@@ -1967,7 +1997,7 @@
    "name": "Assimilator 4",
    "description": "",
    "type": "Building",
-   "ID": "Building-52",
+   "ID": "Building-54",
    "size": [
     2.65,
     1
@@ -1982,7 +2012,7 @@
    "name": "Assimilator 5",
    "description": "",
    "type": "Building",
-   "ID": "Building-53",
+   "ID": "Building-55",
    "size": [
     2.65,
     1
@@ -1997,7 +2027,7 @@
    "name": "Pylon 17",
    "description": "",
    "type": "Building",
-   "ID": "Building-54",
+   "ID": "Building-56",
    "size": [
     2.65,
     1
@@ -2012,7 +2042,7 @@
    "name": "Assimilator 6",
    "description": "",
    "type": "Building",
-   "ID": "Building-55",
+   "ID": "Building-57",
    "size": [
     2.65,
     1
@@ -2027,7 +2057,7 @@
    "name": "Assimilator 7",
    "description": "",
    "type": "Building",
-   "ID": "Building-56",
+   "ID": "Building-58",
    "size": [
     2.65,
     1
@@ -2042,7 +2072,7 @@
    "name": "Cybernetics Core 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-59",
+   "ID": "Building-61",
    "size": [
     2.65,
     1
@@ -2057,7 +2087,7 @@
    "name": "Photon Cannon",
    "description": "",
    "type": "Building",
-   "ID": "Building-60",
+   "ID": "Building-62",
    "size": [
     2.65,
     1
@@ -2072,7 +2102,7 @@
    "name": "Photon Cannon 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-61",
+   "ID": "Building-63",
    "size": [
     2.65,
     1
@@ -2087,7 +2117,7 @@
    "name": "Pylon 18",
    "description": "",
    "type": "Building",
-   "ID": "Building-62",
+   "ID": "Building-64",
    "size": [
     2.65,
     1
@@ -2102,7 +2132,7 @@
    "name": "Photon Cannon 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-63",
+   "ID": "Building-65",
    "size": [
     2.65,
     1
@@ -2117,7 +2147,7 @@
    "name": "Photon Cannon 3",
    "description": "",
    "type": "Building",
-   "ID": "Building-64",
+   "ID": "Building-66",
    "size": [
     2.65,
     1
@@ -2132,7 +2162,7 @@
    "name": "Photon Cannon 4",
    "description": "",
    "type": "Building",
-   "ID": "Building-65",
+   "ID": "Building-67",
    "size": [
     2.65,
     1
@@ -2144,37 +2174,7 @@
    }
   },
   {
-   "name": "Warp Gate 2",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-66",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:26",
-    "player": "blacksquall",
-    "type": "Warp Gate"
-   }
-  },
-  {
-   "name": "Warp Gate 3",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-67",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:27",
-    "player": "blacksquall",
-    "type": "Warp Gate"
-   }
-  },
-  {
-   "name": "Warp Gate 4",
+   "name": "Gateway 2",
    "description": "",
    "type": "Building",
    "ID": "Building-68",
@@ -2183,16 +2183,46 @@
     1
    ],
    "properties": {
-    "time": "00:10:30",
+    "time": "00:09:47",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
+   }
+  },
+  {
+   "name": "Gateway 3",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-69",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:09:48",
+    "player": "blacksquall",
+    "type": "Gateway"
+   }
+  },
+  {
+   "name": "Gateway 4",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-70",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:09:51",
+    "player": "blacksquall",
+    "type": "Gateway"
    }
   },
   {
    "name": "Nexus",
    "description": "",
    "type": "Building",
-   "ID": "Building-69",
+   "ID": "Building-71",
    "size": [
     2.65,
     1
@@ -2204,40 +2234,40 @@
    }
   },
   {
-   "name": "Warp Gate 5",
+   "name": "Gateway 5",
    "description": "",
    "type": "Building",
-   "ID": "Building-70",
+   "ID": "Building-72",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "00:10:34",
+    "time": "00:09:55",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
-   "name": "Warp Gate 6",
+   "name": "Gateway 6",
    "description": "",
    "type": "Building",
-   "ID": "Building-71",
+   "ID": "Building-73",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "00:10:37",
+    "time": "00:09:58",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
    "name": "Pylon 19",
    "description": "",
    "type": "Building",
-   "ID": "Building-80",
+   "ID": "Building-82",
    "size": [
     2.65,
     1
@@ -2252,7 +2282,7 @@
    "name": "Pylon 20",
    "description": "",
    "type": "Building",
-   "ID": "Building-81",
+   "ID": "Building-83",
    "size": [
     2.65,
     1
@@ -2267,7 +2297,7 @@
    "name": "Pylon 21",
    "description": "",
    "type": "Building",
-   "ID": "Building-82",
+   "ID": "Building-84",
    "size": [
     2.65,
     1
@@ -2279,37 +2309,7 @@
    }
   },
   {
-   "name": "Warp Gate 7",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-83",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:10",
-    "player": "blacksquall",
-    "type": "Warp Gate"
-   }
-  },
-  {
-   "name": "Warp Gate 8",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-84",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:12",
-    "player": "blacksquall",
-    "type": "Warp Gate"
-   }
-  },
-  {
-   "name": "Warp Gate 9",
+   "name": "Gateway 7",
    "description": "",
    "type": "Building",
    "ID": "Building-85",
@@ -2318,13 +2318,13 @@
     1
    ],
    "properties": {
-    "time": "00:12:14",
+    "time": "00:11:31",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
-   "name": "Warp Gate 10",
+   "name": "Gateway 8",
    "description": "",
    "type": "Building",
    "ID": "Building-86",
@@ -2333,13 +2333,13 @@
     1
    ],
    "properties": {
-    "time": "00:12:16",
+    "time": "00:11:33",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
-   "name": "Warp Gate 11",
+   "name": "Gateway 9",
    "description": "",
    "type": "Building",
    "ID": "Building-87",
@@ -2348,13 +2348,13 @@
     1
    ],
    "properties": {
-    "time": "00:12:18",
+    "time": "00:11:35",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
-   "name": "Warp Gate 12",
+   "name": "Gateway 10",
    "description": "",
    "type": "Building",
    "ID": "Building-88",
@@ -2363,13 +2363,13 @@
     1
    ],
    "properties": {
-    "time": "00:12:20",
+    "time": "00:11:37",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
    }
   },
   {
-   "name": "Warp Gate 13",
+   "name": "Gateway 11",
    "description": "",
    "type": "Building",
    "ID": "Building-89",
@@ -2378,16 +2378,46 @@
     1
    ],
    "properties": {
-    "time": "00:12:22",
+    "time": "00:11:39",
     "player": "blacksquall",
-    "type": "Warp Gate"
+    "type": "Gateway"
+   }
+  },
+  {
+   "name": "Gateway 12",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-90",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:11:41",
+    "player": "blacksquall",
+    "type": "Gateway"
+   }
+  },
+  {
+   "name": "Gateway 13",
+   "description": "",
+   "type": "Building",
+   "ID": "Building-91",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:11:43",
+    "player": "blacksquall",
+    "type": "Gateway"
    }
   },
   {
    "name": "Pylon 22",
    "description": "",
    "type": "Building",
-   "ID": "Building-90",
+   "ID": "Building-92",
    "size": [
     2.65,
     1
@@ -2402,7 +2432,7 @@
    "name": "Pylon 23",
    "description": "",
    "type": "Building",
-   "ID": "Building-94",
+   "ID": "Building-96",
    "size": [
     2.65,
     1
@@ -2417,7 +2447,7 @@
    "name": "Pylon 24",
    "description": "",
    "type": "Building",
-   "ID": "Building-95",
+   "ID": "Building-97",
    "size": [
     2.65,
     1
@@ -2432,7 +2462,7 @@
    "name": "Pylon 25",
    "description": "",
    "type": "Building",
-   "ID": "Building-97",
+   "ID": "Building-99",
    "size": [
     2.65,
     1
@@ -2447,7 +2477,7 @@
    "name": "6th base",
    "description": "",
    "type": "Building",
-   "ID": "Building-98",
+   "ID": "Building-100",
    "size": [
     2.65,
     1
@@ -2462,7 +2492,7 @@
    "name": "Pylon 26",
    "description": "",
    "type": "Building",
-   "ID": "Building-99",
+   "ID": "Building-102",
    "size": [
     2.65,
     1
@@ -2477,7 +2507,7 @@
    "name": "Pylon 27",
    "description": "",
    "type": "Building",
-   "ID": "Building-100",
+   "ID": "Building-103",
    "size": [
     2.65,
     1
@@ -2492,7 +2522,7 @@
    "name": "Pylon 28",
    "description": "",
    "type": "Building",
-   "ID": "Building-101",
+   "ID": "Building-104",
    "size": [
     2.65,
     1
@@ -2507,7 +2537,7 @@
    "name": "Pylon 29",
    "description": "",
    "type": "Building",
-   "ID": "Building-102",
+   "ID": "Building-105",
    "size": [
     2.65,
     1
@@ -2522,7 +2552,7 @@
    "name": "Cybernetics Core 2",
    "description": "",
    "type": "Building",
-   "ID": "Building-103",
+   "ID": "Building-106",
    "size": [
     2.65,
     1
@@ -2537,7 +2567,7 @@
    "name": "Pylon 30",
    "description": "",
    "type": "Building",
-   "ID": "Building-105",
+   "ID": "Building-108",
    "size": [
     2.65,
     1
@@ -2552,7 +2582,7 @@
    "name": "Pylon 31",
    "description": "",
    "type": "Building",
-   "ID": "Building-106",
+   "ID": "Building-109",
    "size": [
     2.65,
     1
@@ -2567,7 +2597,7 @@
    "name": "Pylon 32",
    "description": "",
    "type": "Building",
-   "ID": "Building-107",
+   "ID": "Building-110",
    "size": [
     2.65,
     1
@@ -2582,7 +2612,7 @@
    "name": "Pylon 33",
    "description": "",
    "type": "Building",
-   "ID": "Building-108",
+   "ID": "Building-111",
    "size": [
     2.65,
     1
@@ -2597,7 +2627,7 @@
    "name": "Pylon 34",
    "description": "",
    "type": "Building",
-   "ID": "Building-109",
+   "ID": "Building-112",
    "size": [
     2.65,
     1
@@ -2612,7 +2642,7 @@
    "name": "Stargate 1",
    "description": "",
    "type": "Building",
-   "ID": "Building-110",
+   "ID": "Building-113",
    "size": [
     2.65,
     1
@@ -2744,30 +2774,30 @@
    }
   },
   {
-   "name": "6 lings",
-   "description": "6 lings completed by lilTiGGer in last 10s from 00:01:20",
+   "name": "6 Zerglings",
+   "description": "6 Zerglings completed by lilTiGGer in last 10s from 00:01:20",
    "type": "Units",
    "ID": "Units-13",
    "size": 0.75,
    "properties": {
     "time": "00:01:20",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 6,
     "total at time": 6,
     "supply": 3
    }
   },
   {
-   "name": "4 lings",
-   "description": "4 lings completed by lilTiGGer in last 10s from 00:01:40",
+   "name": "4 Zerglings",
+   "description": "4 Zerglings completed by lilTiGGer in last 10s from 00:01:40",
    "type": "Units",
    "ID": "Units-15",
    "size": 0.75,
    "properties": {
     "time": "00:01:40",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 4,
     "total at time": 10,
     "supply": 2
@@ -2834,17 +2864,17 @@
    }
   },
   {
-   "name": "Overseer",
-   "description": "Overseer completed by lilTiGGer in last 10s from 00:02:40",
+   "name": "Overlord",
+   "description": "Overlord completed by lilTiGGer in last 10s from 00:02:40",
    "type": "Units",
    "ID": "Units-24",
    "size": 0.75,
    "properties": {
     "time": "00:02:40",
     "player": "lilTiGGer",
-    "type": "Overseer",
+    "type": "Overlord",
     "count": 1,
-    "total at time": 1,
+    "total at time": 3,
     "supply": 0
    }
   },
@@ -2882,7 +2912,7 @@
    "name": "2 Drones",
    "description": "2 Drones completed by lilTiGGer in last 10s from 00:03:10",
    "type": "Units",
-   "ID": "Units-31",
+   "ID": "Units-30",
    "size": 0.75,
    "properties": {
     "time": "00:03:10",
@@ -2897,7 +2927,7 @@
    "name": "2 Queens",
    "description": "2 Queens completed by lilTiGGer in last 10s from 00:03:10",
    "type": "Units",
-   "ID": "Units-32",
+   "ID": "Units-31",
    "size": 1,
    "properties": {
     "time": "00:03:10",
@@ -2912,7 +2942,7 @@
    "name": "3 Drones",
    "description": "3 Drones completed by lilTiGGer in last 10s from 00:03:20",
    "type": "Units",
-   "ID": "Units-35",
+   "ID": "Units-33",
    "size": 0.75,
    "properties": {
     "time": "00:03:20",
@@ -2927,7 +2957,7 @@
    "name": "Drone",
    "description": "Drone completed by lilTiGGer in last 10s from 00:03:30",
    "type": "Units",
-   "ID": "Units-38",
+   "ID": "Units-36",
    "size": 0.75,
    "properties": {
     "time": "00:03:30",
@@ -2942,7 +2972,7 @@
    "name": "3 Drones",
    "description": "3 Drones completed by lilTiGGer in last 10s from 00:03:40",
    "type": "Units",
-   "ID": "Units-40",
+   "ID": "Units-38",
    "size": 0.75,
    "properties": {
     "time": "00:03:40",
@@ -2957,14 +2987,14 @@
    "name": "2 Overlords",
    "description": "2 Overlords completed by lilTiGGer in last 10s from 00:03:40",
    "type": "Units",
-   "ID": "Units-41",
+   "ID": "Units-39",
    "size": 0.75,
    "properties": {
     "time": "00:03:40",
     "player": "lilTiGGer",
     "type": "Overlord",
     "count": 2,
-    "total at time": 4,
+    "total at time": 5,
     "supply": 0
    }
   },
@@ -2972,7 +3002,7 @@
    "name": "4 Drones",
    "description": "4 Drones completed by lilTiGGer in last 10s from 00:04:10",
    "type": "Units",
-   "ID": "Units-48",
+   "ID": "Units-44",
    "size": 1,
    "properties": {
     "time": "00:04:10",
@@ -2987,7 +3017,7 @@
    "name": "4 Drones",
    "description": "4 Drones completed by lilTiGGer in last 10s from 00:04:20",
    "type": "Units",
-   "ID": "Units-50",
+   "ID": "Units-46",
    "size": 1,
    "properties": {
     "time": "00:04:20",
@@ -3002,7 +3032,7 @@
    "name": "2 Queens",
    "description": "2 Queens completed by lilTiGGer in last 10s from 00:04:30",
    "type": "Units",
-   "ID": "Units-52",
+   "ID": "Units-48",
    "size": 1,
    "properties": {
     "time": "00:04:30",
@@ -3017,14 +3047,14 @@
    "name": "2 Overlords",
    "description": "2 Overlords completed by lilTiGGer in last 10s from 00:04:40",
    "type": "Units",
-   "ID": "Units-53",
+   "ID": "Units-49",
    "size": 0.75,
    "properties": {
     "time": "00:04:40",
     "player": "lilTiGGer",
     "type": "Overlord",
     "count": 2,
-    "total at time": 6,
+    "total at time": 7,
     "supply": 0
    }
   },
@@ -3032,7 +3062,7 @@
    "name": "2 Drones",
    "description": "2 Drones completed by lilTiGGer in last 10s from 00:04:40",
    "type": "Units",
-   "ID": "Units-54",
+   "ID": "Units-50",
    "size": 0.75,
    "properties": {
     "time": "00:04:40",
@@ -3047,7 +3077,7 @@
    "name": "8 Drones",
    "description": "8 Drones completed by lilTiGGer in last 10s from 00:05:00",
    "type": "Units",
-   "ID": "Units-58",
+   "ID": "Units-54",
    "size": 1,
    "properties": {
     "time": "00:05:00",
@@ -3062,7 +3092,7 @@
    "name": "3 Drones",
    "description": "3 Drones completed by lilTiGGer in last 10s from 00:05:20",
    "type": "Units",
-   "ID": "Units-62",
+   "ID": "Units-58",
    "size": 0.75,
    "properties": {
     "time": "00:05:20",
@@ -3077,7 +3107,7 @@
    "name": "Queen",
    "description": "Queen completed by lilTiGGer in last 10s from 00:05:40",
    "type": "Units",
-   "ID": "Units-67",
+   "ID": "Units-62",
    "size": 0.75,
    "properties": {
     "time": "00:05:40",
@@ -3089,32 +3119,17 @@
    }
   },
   {
-   "name": "Overseer",
-   "description": "Overseer completed by lilTiGGer in last 10s from 00:05:40",
+   "name": "2 Overlords",
+   "description": "2 Overlords completed by lilTiGGer in last 10s from 00:05:40",
    "type": "Units",
-   "ID": "Units-68",
-   "size": 0.75,
-   "properties": {
-    "time": "00:05:40",
-    "player": "lilTiGGer",
-    "type": "Overseer",
-    "count": 1,
-    "total at time": 2,
-    "supply": 0
-   }
-  },
-  {
-   "name": "Overlord",
-   "description": "Overlord completed by lilTiGGer in last 10s from 00:05:40",
-   "type": "Units",
-   "ID": "Units-69",
+   "ID": "Units-63",
    "size": 0.75,
    "properties": {
     "time": "00:05:40",
     "player": "lilTiGGer",
     "type": "Overlord",
-    "count": 1,
-    "total at time": 6,
+    "count": 2,
+    "total at time": 8,
     "supply": 0
    }
   },
@@ -3122,7 +3137,7 @@
    "name": "5 Roachs",
    "description": "5 Roachs completed by lilTiGGer in last 10s from 00:05:50",
    "type": "Units",
-   "ID": "Units-71",
+   "ID": "Units-65",
    "size": 1,
    "properties": {
     "time": "00:05:50",
@@ -3134,77 +3149,47 @@
    }
   },
   {
-   "name": "Overlord",
-   "description": "Overlord completed by lilTiGGer in last 10s from 00:05:50",
+   "name": "2 Overlords",
+   "description": "2 Overlords completed by lilTiGGer in last 10s from 00:05:50",
    "type": "Units",
-   "ID": "Units-72",
+   "ID": "Units-66",
    "size": 0.75,
    "properties": {
     "time": "00:05:50",
     "player": "lilTiGGer",
     "type": "Overlord",
-    "count": 1,
-    "total at time": 7,
+    "count": 2,
+    "total at time": 10,
     "supply": 0
    }
   },
   {
-   "name": "Overseer",
-   "description": "Overseer completed by lilTiGGer in last 10s from 00:05:50",
+   "name": "4 Roachs",
+   "description": "4 Roachs completed by lilTiGGer in last 10s from 00:06:00",
    "type": "Units",
-   "ID": "Units-73",
-   "size": 0.75,
-   "properties": {
-    "time": "00:05:50",
-    "player": "lilTiGGer",
-    "type": "Overseer",
-    "count": 1,
-    "total at time": 3,
-    "supply": 0
-   }
-  },
-  {
-   "name": "3 Roachs",
-   "description": "3 Roachs completed by lilTiGGer in last 10s from 00:06:00",
-   "type": "Units",
-   "ID": "Units-75",
+   "ID": "Units-68",
    "size": 1,
    "properties": {
     "time": "00:06:00",
     "player": "lilTiGGer",
     "type": "Roach",
-    "count": 3,
-    "total at time": 8,
-    "supply": 6
-   }
-  },
-  {
-   "name": "Ravager Cocoon",
-   "description": "Ravager Cocoon completed by lilTiGGer in last 10s from 00:06:00",
-   "type": "Units",
-   "ID": "Units-76",
-   "size": 0.75,
-   "properties": {
-    "time": "00:06:00",
-    "player": "lilTiGGer",
-    "type": "Ravager Cocoon",
-    "count": 1,
-    "total at time": 1,
-    "supply": 3
+    "count": 4,
+    "total at time": 9,
+    "supply": 8
    }
   },
   {
    "name": "Overlord",
    "description": "Overlord completed by lilTiGGer in last 10s from 00:06:10",
    "type": "Units",
-   "ID": "Units-79",
+   "ID": "Units-71",
    "size": 0.75,
    "properties": {
     "time": "00:06:10",
     "player": "lilTiGGer",
     "type": "Overlord",
     "count": 1,
-    "total at time": 8,
+    "total at time": 11,
     "supply": 0
    }
   },
@@ -3212,89 +3197,59 @@
    "name": "5 Roachs",
    "description": "5 Roachs completed by lilTiGGer in last 10s from 00:06:20",
    "type": "Units",
-   "ID": "Units-80",
+   "ID": "Units-72",
    "size": 1,
    "properties": {
     "time": "00:06:20",
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 5,
-    "total at time": 13,
+    "total at time": 14,
     "supply": 10
    }
   },
   {
-   "name": "2 Roachs",
-   "description": "2 Roachs completed by lilTiGGer in last 10s from 00:06:30",
+   "name": "3 Roachs",
+   "description": "3 Roachs completed by lilTiGGer in last 10s from 00:06:30",
    "type": "Units",
-   "ID": "Units-84",
+   "ID": "Units-75",
    "size": 1,
    "properties": {
     "time": "00:06:30",
     "player": "lilTiGGer",
     "type": "Roach",
-    "count": 2,
-    "total at time": 15,
-    "supply": 4
-   }
-  },
-  {
-   "name": "Ravager",
-   "description": "Ravager completed by lilTiGGer in last 10s from 00:06:30",
-   "type": "Units",
-   "ID": "Units-85",
-   "size": 0.75,
-   "properties": {
-    "time": "00:06:30",
-    "player": "lilTiGGer",
-    "type": "Ravager",
-    "count": 1,
-    "total at time": 1,
-    "supply": 3
+    "count": 3,
+    "total at time": 17,
+    "supply": 6
    }
   },
   {
    "name": "5 Roachs",
    "description": "5 Roachs completed by lilTiGGer in last 10s from 00:06:40",
    "type": "Units",
-   "ID": "Units-86",
+   "ID": "Units-76",
    "size": 1,
    "properties": {
     "time": "00:06:40",
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 5,
-    "total at time": 20,
+    "total at time": 22,
     "supply": 10
    }
   },
   {
-   "name": "Overlord",
-   "description": "Overlord completed by lilTiGGer in last 10s from 00:06:50",
+   "name": "3 Overlords",
+   "description": "3 Overlords completed by lilTiGGer in last 10s from 00:06:50",
    "type": "Units",
-   "ID": "Units-88",
+   "ID": "Units-78",
    "size": 0.75,
    "properties": {
     "time": "00:06:50",
     "player": "lilTiGGer",
     "type": "Overlord",
-    "count": 1,
-    "total at time": 7,
-    "supply": 0
-   }
-  },
-  {
-   "name": "2 Overseers",
-   "description": "2 Overseers completed by lilTiGGer in last 10s from 00:06:50",
-   "type": "Units",
-   "ID": "Units-89",
-   "size": 0.75,
-   "properties": {
-    "time": "00:06:50",
-    "player": "lilTiGGer",
-    "type": "Overseer",
-    "count": 2,
-    "total at time": 5,
+    "count": 3,
+    "total at time": 12,
     "supply": 0
    }
   },
@@ -3302,14 +3257,14 @@
    "name": "2 Overlords",
    "description": "2 Overlords completed by lilTiGGer in last 10s from 00:07:00",
    "type": "Units",
-   "ID": "Units-92",
+   "ID": "Units-81",
    "size": 0.75,
    "properties": {
     "time": "00:07:00",
     "player": "lilTiGGer",
     "type": "Overlord",
     "count": 2,
-    "total at time": 9,
+    "total at time": 14,
     "supply": 0
    }
   },
@@ -3317,7 +3272,7 @@
    "name": "Drone",
    "description": "Drone completed by lilTiGGer in last 10s from 00:07:00",
    "type": "Units",
-   "ID": "Units-93",
+   "ID": "Units-82",
    "size": 0.75,
    "properties": {
     "time": "00:07:00",
@@ -3332,14 +3287,14 @@
    "name": "5 Roachs",
    "description": "5 Roachs completed by lilTiGGer in last 10s from 00:07:20",
    "type": "Units",
-   "ID": "Units-96",
+   "ID": "Units-85",
    "size": 1,
    "properties": {
     "time": "00:07:20",
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 5,
-    "total at time": 25,
+    "total at time": 27,
     "supply": 10
    }
   },
@@ -3347,7 +3302,7 @@
    "name": "6 Drones",
    "description": "6 Drones completed by lilTiGGer in last 10s from 00:07:20",
    "type": "Units",
-   "ID": "Units-97",
+   "ID": "Units-86",
    "size": 1,
    "properties": {
     "time": "00:07:20",
@@ -3362,7 +3317,7 @@
    "name": "9 Drones",
    "description": "9 Drones completed by lilTiGGer in last 10s from 00:07:30",
    "type": "Units",
-   "ID": "Units-99",
+   "ID": "Units-88",
    "size": 1,
    "properties": {
     "time": "00:07:30",
@@ -3377,7 +3332,7 @@
    "name": "4 Drones",
    "description": "4 Drones completed by lilTiGGer in last 10s from 00:07:50",
    "type": "Units",
-   "ID": "Units-102",
+   "ID": "Units-91",
    "size": 1,
    "properties": {
     "time": "00:07:50",
@@ -3389,32 +3344,17 @@
    }
   },
   {
-   "name": "Overseer",
-   "description": "Overseer completed by lilTiGGer in last 10s from 00:08:00",
+   "name": "3 Overlords",
+   "description": "3 Overlords completed by lilTiGGer in last 10s from 00:08:00",
    "type": "Units",
-   "ID": "Units-104",
-   "size": 0.75,
-   "properties": {
-    "time": "00:08:00",
-    "player": "lilTiGGer",
-    "type": "Overseer",
-    "count": 1,
-    "total at time": 6,
-    "supply": 0
-   }
-  },
-  {
-   "name": "2 Overlords",
-   "description": "2 Overlords completed by lilTiGGer in last 10s from 00:08:00",
-   "type": "Units",
-   "ID": "Units-105",
+   "ID": "Units-93",
    "size": 0.75,
    "properties": {
     "time": "00:08:00",
     "player": "lilTiGGer",
     "type": "Overlord",
-    "count": 2,
-    "total at time": 11,
+    "count": 3,
+    "total at time": 17,
     "supply": 0
    }
   },
@@ -3422,7 +3362,7 @@
    "name": "6 Drones",
    "description": "6 Drones completed by lilTiGGer in last 10s from 00:08:00",
    "type": "Units",
-   "ID": "Units-106",
+   "ID": "Units-94",
    "size": 1,
    "properties": {
     "time": "00:08:00",
@@ -3437,7 +3377,7 @@
    "name": "6 Hydralisks",
    "description": "6 Hydralisks completed by lilTiGGer in last 10s from 00:08:30",
    "type": "Units",
-   "ID": "Units-109",
+   "ID": "Units-97",
    "size": 1.4,
    "properties": {
     "time": "00:08:30",
@@ -3452,7 +3392,7 @@
    "name": "5 Hydralisks",
    "description": "5 Hydralisks completed by lilTiGGer in last 10s from 00:08:40",
    "type": "Units",
-   "ID": "Units-112",
+   "ID": "Units-100",
    "size": 1,
    "properties": {
     "time": "00:08:40",
@@ -3467,7 +3407,7 @@
    "name": "3 Drones",
    "description": "3 Drones completed by lilTiGGer in last 10s from 00:08:50",
    "type": "Units",
-   "ID": "Units-113",
+   "ID": "Units-101",
    "size": 0.75,
    "properties": {
     "time": "00:08:50",
@@ -3482,7 +3422,7 @@
    "name": "5 Drones",
    "description": "5 Drones completed by lilTiGGer in last 10s from 00:09:00",
    "type": "Units",
-   "ID": "Units-115",
+   "ID": "Units-103",
    "size": 1,
    "properties": {
     "time": "00:09:00",
@@ -3497,7 +3437,7 @@
    "name": "Drone",
    "description": "Drone completed by lilTiGGer in last 10s from 00:09:10",
    "type": "Units",
-   "ID": "Units-118",
+   "ID": "Units-106",
    "size": 0.75,
    "properties": {
     "time": "00:09:10",
@@ -3512,7 +3452,7 @@
    "name": "2 Drones",
    "description": "2 Drones completed by lilTiGGer in last 10s from 00:09:20",
    "type": "Units",
-   "ID": "Units-119",
+   "ID": "Units-107",
    "size": 0.75,
    "properties": {
     "time": "00:09:20",
@@ -3527,7 +3467,7 @@
    "name": "3 Hydralisks",
    "description": "3 Hydralisks completed by lilTiGGer in last 10s from 00:09:20",
    "type": "Units",
-   "ID": "Units-120",
+   "ID": "Units-108",
    "size": 1,
    "properties": {
     "time": "00:09:20",
@@ -3539,17 +3479,17 @@
    }
   },
   {
-   "name": "3 Overseers",
-   "description": "3 Overseers completed by lilTiGGer in last 10s from 00:09:30",
+   "name": "3 Overlords",
+   "description": "3 Overlords completed by lilTiGGer in last 10s from 00:09:30",
    "type": "Units",
-   "ID": "Units-122",
+   "ID": "Units-110",
    "size": 0.75,
    "properties": {
     "time": "00:09:30",
     "player": "lilTiGGer",
-    "type": "Overseer",
+    "type": "Overlord",
     "count": 3,
-    "total at time": 9,
+    "total at time": 17,
     "supply": 0
    }
   },
@@ -3557,7 +3497,7 @@
    "name": "7 Hydralisks",
    "description": "7 Hydralisks completed by lilTiGGer in last 10s from 00:09:50",
    "type": "Units",
-   "ID": "Units-124",
+   "ID": "Units-112",
    "size": 1.4,
    "properties": {
     "time": "00:09:50",
@@ -3572,7 +3512,7 @@
    "name": "5 Drones",
    "description": "5 Drones completed by lilTiGGer in last 10s from 00:10:00",
    "type": "Units",
-   "ID": "Units-126",
+   "ID": "Units-114",
    "size": 1,
    "properties": {
     "time": "00:10:00",
@@ -3587,14 +3527,14 @@
    "name": "Overlord",
    "description": "Overlord completed by lilTiGGer in last 10s from 00:10:00",
    "type": "Units",
-   "ID": "Units-127",
+   "ID": "Units-115",
    "size": 0.75,
    "properties": {
     "time": "00:10:00",
     "player": "lilTiGGer",
     "type": "Overlord",
     "count": 1,
-    "total at time": 12,
+    "total at time": 17,
     "supply": 0
    }
   },
@@ -3602,7 +3542,7 @@
    "name": "5 Hydralisks",
    "description": "5 Hydralisks completed by lilTiGGer in last 10s from 00:10:10",
    "type": "Units",
-   "ID": "Units-129",
+   "ID": "Units-116",
    "size": 1,
    "properties": {
     "time": "00:10:10",
@@ -3614,17 +3554,17 @@
    }
   },
   {
-   "name": "Overseer",
-   "description": "Overseer completed by lilTiGGer in last 10s from 00:10:20",
+   "name": "2 Overlords",
+   "description": "2 Overlords completed by lilTiGGer in last 10s from 00:10:20",
    "type": "Units",
-   "ID": "Units-133",
+   "ID": "Units-119",
    "size": 0.75,
    "properties": {
     "time": "00:10:20",
     "player": "lilTiGGer",
-    "type": "Overseer",
-    "count": 1,
-    "total at time": 7,
+    "type": "Overlord",
+    "count": 2,
+    "total at time": 19,
     "supply": 0
    }
   },
@@ -3632,7 +3572,7 @@
    "name": "5 Drones",
    "description": "5 Drones completed by lilTiGGer in last 10s from 00:10:20",
    "type": "Units",
-   "ID": "Units-134",
+   "ID": "Units-120",
    "size": 1,
    "properties": {
     "time": "00:10:20",
@@ -3644,25 +3584,10 @@
    }
   },
   {
-   "name": "Overlord",
-   "description": "Overlord completed by lilTiGGer in last 10s from 00:10:20",
-   "type": "Units",
-   "ID": "Units-135",
-   "size": 0.75,
-   "properties": {
-    "time": "00:10:20",
-    "player": "lilTiGGer",
-    "type": "Overlord",
-    "count": 1,
-    "total at time": 13,
-    "supply": 0
-   }
-  },
-  {
    "name": "Drone",
    "description": "Drone completed by lilTiGGer in last 10s from 00:10:50",
    "type": "Units",
-   "ID": "Units-138",
+   "ID": "Units-123",
    "size": 0.75,
    "properties": {
     "time": "00:10:50",
@@ -3677,7 +3602,7 @@
    "name": "9 Hydralisks",
    "description": "9 Hydralisks completed by lilTiGGer in last 10s from 00:11:00",
    "type": "Units",
-   "ID": "Units-139",
+   "ID": "Units-124",
    "size": 1.4,
    "properties": {
     "time": "00:11:00",
@@ -3692,7 +3617,7 @@
    "name": "7 Drones",
    "description": "7 Drones completed by lilTiGGer in last 10s from 00:11:00",
    "type": "Units",
-   "ID": "Units-140",
+   "ID": "Units-125",
    "size": 1,
    "properties": {
     "time": "00:11:00",
@@ -3704,15 +3629,15 @@
    }
   },
   {
-   "name": "16 lings",
-   "description": "16 lings completed by lilTiGGer in last 10s from 00:11:10",
+   "name": "16 Zerglings",
+   "description": "16 Zerglings completed by lilTiGGer in last 10s from 00:11:10",
    "type": "Units",
-   "ID": "Units-143",
+   "ID": "Units-128",
    "size": 1,
    "properties": {
     "time": "00:11:10",
     "player": "lilTiGGer",
-    "type": "ling",
+    "type": "Zergling",
     "count": 16,
     "total at time": 16,
     "supply": 8
@@ -3722,7 +3647,7 @@
    "name": "Queen",
    "description": "Queen completed by lilTiGGer in last 10s from 00:11:20",
    "type": "Units",
-   "ID": "Units-147",
+   "ID": "Units-132",
    "size": 0.75,
    "properties": {
     "time": "00:11:20",
@@ -3734,100 +3659,55 @@
    }
   },
   {
-   "name": "21 lings",
-   "description": "21 lings completed by lilTiGGer in last 10s from 00:11:30",
+   "name": "22 Zerglings",
+   "description": "22 Zerglings completed by lilTiGGer in last 10s from 00:11:30",
    "type": "Units",
-   "ID": "Units-149",
+   "ID": "Units-134",
    "size": 1.4,
    "properties": {
     "time": "00:11:30",
     "player": "lilTiGGer",
-    "type": "ling",
-    "count": 21,
-    "total at time": 37,
-    "supply": 10.5
+    "type": "Zergling",
+    "count": 22,
+    "total at time": 38,
+    "supply": 11
    }
   },
   {
-   "name": "Baneling",
-   "description": "Baneling completed by lilTiGGer in last 10s from 00:11:30",
+   "name": "32 Zerglings",
+   "description": "32 Zerglings completed by lilTiGGer in last 10s from 00:11:50",
    "type": "Units",
-   "ID": "Units-150",
-   "size": 0.75,
-   "properties": {
-    "time": "00:11:30",
-    "player": "lilTiGGer",
-    "type": "Baneling",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0.5
-   }
-  },
-  {
-   "name": "30 lings",
-   "description": "30 lings completed by lilTiGGer in last 10s from 00:11:50",
-   "type": "Units",
-   "ID": "Units-154",
+   "ID": "Units-137",
    "size": 1.4,
    "properties": {
     "time": "00:11:50",
     "player": "lilTiGGer",
-    "type": "ling",
-    "count": 30,
-    "total at time": 67,
-    "supply": 15
+    "type": "Zergling",
+    "count": 32,
+    "total at time": 70,
+    "supply": 16
    }
   },
   {
-   "name": "2 Banelings",
-   "description": "2 Banelings completed by lilTiGGer in last 10s from 00:11:50",
+   "name": "40 Zerglings",
+   "description": "40 Zerglings completed by lilTiGGer in last 10s from 00:12:20",
    "type": "Units",
-   "ID": "Units-155",
-   "size": 0.75,
-   "properties": {
-    "time": "00:11:50",
-    "player": "lilTiGGer",
-    "type": "Baneling",
-    "count": 2,
-    "total at time": 3,
-    "supply": 1
-   }
-  },
-  {
-   "name": "38 lings",
-   "description": "38 lings completed by lilTiGGer in last 10s from 00:12:20",
-   "type": "Units",
-   "ID": "Units-159",
+   "ID": "Units-141",
    "size": 1.4,
    "properties": {
     "time": "00:12:20",
     "player": "lilTiGGer",
-    "type": "ling",
-    "count": 38,
-    "total at time": 105,
-    "supply": 19
-   }
-  },
-  {
-   "name": "2 Banelings",
-   "description": "2 Banelings completed by lilTiGGer in last 10s from 00:12:20",
-   "type": "Units",
-   "ID": "Units-160",
-   "size": 0.75,
-   "properties": {
-    "time": "00:12:20",
-    "player": "lilTiGGer",
-    "type": "Baneling",
-    "count": 2,
-    "total at time": 5,
-    "supply": 1
+    "type": "Zergling",
+    "count": 40,
+    "total at time": 110,
+    "supply": 20
    }
   },
   {
    "name": "5 Hydralisks",
    "description": "5 Hydralisks completed by lilTiGGer in last 10s from 00:12:30",
    "type": "Units",
-   "ID": "Units-161",
+   "ID": "Units-142",
    "size": 1,
    "properties": {
     "time": "00:12:30",
@@ -3842,7 +3722,7 @@
    "name": "2 Drones",
    "description": "2 Drones completed by lilTiGGer in last 10s from 00:12:40",
    "type": "Units",
-   "ID": "Units-163",
+   "ID": "Units-144",
    "size": 0.75,
    "properties": {
     "time": "00:12:40",
@@ -3857,7 +3737,7 @@
    "name": "14 Overlords",
    "description": "14 Overlords completed by lilTiGGer in last 10s from 00:13:40",
    "type": "Units",
-   "ID": "Units-168",
+   "ID": "Units-149",
    "size": 0.75,
    "properties": {
     "time": "00:13:40",
@@ -3872,7 +3752,7 @@
    "name": "4 Overlords",
    "description": "4 Overlords completed by lilTiGGer in last 10s from 00:13:50",
    "type": "Units",
-   "ID": "Units-170",
+   "ID": "Units-151",
    "size": 0.75,
    "properties": {
     "time": "00:13:50",
@@ -3887,7 +3767,7 @@
    "name": "3 Overlords",
    "description": "3 Overlords completed by lilTiGGer in last 10s from 00:14:00",
    "type": "Units",
-   "ID": "Units-172",
+   "ID": "Units-153",
    "size": 0.75,
    "properties": {
     "time": "00:14:00",
@@ -3899,25 +3779,10 @@
    }
   },
   {
-   "name": "Extractor Rich",
-   "description": "Extractor Rich completed by lilTiGGer in last 10s from 00:14:20",
-   "type": "Units",
-   "ID": "Units-173",
-   "size": 0.75,
-   "properties": {
-    "time": "00:14:20",
-    "player": "lilTiGGer",
-    "type": "Extractor Rich",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0
-   }
-  },
-  {
    "name": "Queen",
    "description": "Queen completed by lilTiGGer in last 10s from 00:14:20",
    "type": "Units",
-   "ID": "Units-174",
+   "ID": "Units-154",
    "size": 0.75,
    "properties": {
     "time": "00:14:20",
@@ -3932,7 +3797,7 @@
    "name": "8 Mutalisks",
    "description": "8 Mutalisks completed by lilTiGGer in last 10s from 00:14:30",
    "type": "Units",
-   "ID": "Units-177",
+   "ID": "Units-157",
    "size": 1.4,
    "properties": {
     "time": "00:14:30",
@@ -3947,7 +3812,7 @@
    "name": "16 Mutalisks",
    "description": "16 Mutalisks completed by lilTiGGer in last 10s from 00:14:40",
    "type": "Units",
-   "ID": "Units-179",
+   "ID": "Units-159",
    "size": 1.7,
    "properties": {
     "time": "00:14:40",
@@ -3962,7 +3827,7 @@
    "name": "3 Drones",
    "description": "3 Drones completed by lilTiGGer in last 10s from 00:14:40",
    "type": "Units",
-   "ID": "Units-180",
+   "ID": "Units-160",
    "size": 0.75,
    "properties": {
     "time": "00:14:40",
@@ -3974,25 +3839,25 @@
    }
   },
   {
-   "name": "Ravager",
-   "description": "Ravager completed by lilTiGGer in last 10s from 00:14:50",
+   "name": "Roach",
+   "description": "Roach completed by lilTiGGer in last 10s from 00:14:50",
    "type": "Units",
-   "ID": "Units-182",
+   "ID": "Units-162",
    "size": 0.75,
    "properties": {
     "time": "00:14:50",
     "player": "lilTiGGer",
-    "type": "Ravager",
+    "type": "Roach",
     "count": 1,
-    "total at time": 1,
-    "supply": 3
+    "total at time": 0,
+    "supply": 2
    }
   },
   {
    "name": "9 Roachs",
    "description": "9 Roachs completed by lilTiGGer in last 10s from 00:15:00",
    "type": "Units",
-   "ID": "Units-183",
+   "ID": "Units-163",
    "size": 1.4,
    "properties": {
     "time": "00:15:00",
@@ -4007,7 +3872,7 @@
    "name": "9 Roachs",
    "description": "9 Roachs completed by lilTiGGer in last 10s from 00:15:20",
    "type": "Units",
-   "ID": "Units-184",
+   "ID": "Units-164",
    "size": 1.4,
    "properties": {
     "time": "00:15:20",
@@ -4022,7 +3887,7 @@
    "name": "2 Roachs",
    "description": "2 Roachs completed by lilTiGGer in last 10s from 00:16:20",
    "type": "Units",
-   "ID": "Units-189",
+   "ID": "Units-169",
    "size": 1,
    "properties": {
     "time": "00:16:20",
@@ -4037,7 +3902,7 @@
    "name": "4 Ultralisks",
    "description": "4 Ultralisks completed by lilTiGGer in last 10s from 00:16:20",
    "type": "Units",
-   "ID": "Units-190",
+   "ID": "Units-170",
    "size": 1.7,
    "properties": {
     "time": "00:16:20",
@@ -4274,25 +4139,10 @@
    }
   },
   {
-   "name": "Shield Battery",
-   "description": "Shield Battery completed by blacksquall in last 10s from 00:03:00",
-   "type": "Units",
-   "ID": "Units-30",
-   "size": 0.75,
-   "properties": {
-    "time": "00:03:00",
-    "player": "blacksquall",
-    "type": "Shield Battery",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0
-   }
-  },
-  {
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:03:10",
    "type": "Units",
-   "ID": "Units-33",
+   "ID": "Units-32",
    "size": 0.75,
    "properties": {
     "time": "00:03:10",
@@ -4304,25 +4154,10 @@
    }
   },
   {
-   "name": "Adept Phase Shift",
-   "description": "Adept Phase Shift completed by blacksquall in last 10s from 00:03:10",
-   "type": "Units",
-   "ID": "Units-34",
-   "size": 0.75,
-   "properties": {
-    "time": "00:03:10",
-    "player": "blacksquall",
-    "type": "Adept Phase Shift",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0
-   }
-  },
-  {
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:03:20",
    "type": "Units",
-   "ID": "Units-36",
+   "ID": "Units-34",
    "size": 0.75,
    "properties": {
     "time": "00:03:20",
@@ -4337,7 +4172,7 @@
    "name": "Adept",
    "description": "Adept completed by blacksquall in last 10s from 00:03:20",
    "type": "Units",
-   "ID": "Units-37",
+   "ID": "Units-35",
    "size": 0.75,
    "properties": {
     "time": "00:03:20",
@@ -4352,7 +4187,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:03:30",
    "type": "Units",
-   "ID": "Units-39",
+   "ID": "Units-37",
    "size": 0.75,
    "properties": {
     "time": "00:03:30",
@@ -4364,25 +4199,10 @@
    }
   },
   {
-   "name": "Adept Phase Shift",
-   "description": "Adept Phase Shift completed by blacksquall in last 10s from 00:03:40",
-   "type": "Units",
-   "ID": "Units-42",
-   "size": 0.75,
-   "properties": {
-    "time": "00:03:40",
-    "player": "blacksquall",
-    "type": "Adept Phase Shift",
-    "count": 1,
-    "total at time": 2,
-    "supply": 0
-   }
-  },
-  {
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:03:40",
    "type": "Units",
-   "ID": "Units-43",
+   "ID": "Units-40",
    "size": 0.75,
    "properties": {
     "time": "00:03:40",
@@ -4397,7 +4217,7 @@
    "name": "Adept",
    "description": "Adept completed by blacksquall in last 10s from 00:03:40",
    "type": "Units",
-   "ID": "Units-44",
+   "ID": "Units-41",
    "size": 0.75,
    "properties": {
     "time": "00:03:40",
@@ -4409,25 +4229,10 @@
    }
   },
   {
-   "name": "Adept Phase Shift",
-   "description": "Adept Phase Shift completed by blacksquall in last 10s from 00:03:50",
-   "type": "Units",
-   "ID": "Units-45",
-   "size": 0.75,
-   "properties": {
-    "time": "00:03:50",
-    "player": "blacksquall",
-    "type": "Adept Phase Shift",
-    "count": 1,
-    "total at time": 3,
-    "supply": 0
-   }
-  },
-  {
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:03:50",
    "type": "Units",
-   "ID": "Units-46",
+   "ID": "Units-42",
    "size": 0.75,
    "properties": {
     "time": "00:03:50",
@@ -4442,7 +4247,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:04:00",
    "type": "Units",
-   "ID": "Units-47",
+   "ID": "Units-43",
    "size": 0.75,
    "properties": {
     "time": "00:04:00",
@@ -4457,7 +4262,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:04:10",
    "type": "Units",
-   "ID": "Units-49",
+   "ID": "Units-45",
    "size": 0.75,
    "properties": {
     "time": "00:04:10",
@@ -4472,7 +4277,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:04:20",
    "type": "Units",
-   "ID": "Units-51",
+   "ID": "Units-47",
    "size": 0.75,
    "properties": {
     "time": "00:04:20",
@@ -4487,7 +4292,7 @@
    "name": "Stalker",
    "description": "Stalker completed by blacksquall in last 10s from 00:04:40",
    "type": "Units",
-   "ID": "Units-55",
+   "ID": "Units-51",
    "size": 0.75,
    "properties": {
     "time": "00:04:40",
@@ -4502,7 +4307,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:04:40",
    "type": "Units",
-   "ID": "Units-56",
+   "ID": "Units-52",
    "size": 0.75,
    "properties": {
     "time": "00:04:40",
@@ -4517,7 +4322,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:04:50",
    "type": "Units",
-   "ID": "Units-57",
+   "ID": "Units-53",
    "size": 0.75,
    "properties": {
     "time": "00:04:50",
@@ -4532,7 +4337,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:05:00",
    "type": "Units",
-   "ID": "Units-59",
+   "ID": "Units-55",
    "size": 0.75,
    "properties": {
     "time": "00:05:00",
@@ -4547,7 +4352,7 @@
    "name": "Stalker",
    "description": "Stalker completed by blacksquall in last 10s from 00:05:00",
    "type": "Units",
-   "ID": "Units-60",
+   "ID": "Units-56",
    "size": 0.75,
    "properties": {
     "time": "00:05:00",
@@ -4562,7 +4367,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:05:10",
    "type": "Units",
-   "ID": "Units-61",
+   "ID": "Units-57",
    "size": 0.75,
    "properties": {
     "time": "00:05:10",
@@ -4577,7 +4382,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:05:20",
    "type": "Units",
-   "ID": "Units-63",
+   "ID": "Units-59",
    "size": 0.75,
    "properties": {
     "time": "00:05:20",
@@ -4592,7 +4397,7 @@
    "name": "Void Ray",
    "description": "Void Ray completed by blacksquall in last 10s from 00:05:30",
    "type": "Units",
-   "ID": "Units-64",
+   "ID": "Units-60",
    "size": 1,
    "properties": {
     "time": "00:05:30",
@@ -4604,25 +4409,10 @@
    }
   },
   {
-   "name": "2 Adept Phase Shifts",
-   "description": "2 Adept Phase Shifts completed by blacksquall in last 10s from 00:05:30",
-   "type": "Units",
-   "ID": "Units-65",
-   "size": 0.75,
-   "properties": {
-    "time": "00:05:30",
-    "player": "blacksquall",
-    "type": "Adept Phase Shift",
-    "count": 2,
-    "total at time": 5,
-    "supply": 0
-   }
-  },
-  {
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:05:30",
    "type": "Units",
-   "ID": "Units-66",
+   "ID": "Units-61",
    "size": 0.75,
    "properties": {
     "time": "00:05:30",
@@ -4637,7 +4427,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:05:40",
    "type": "Units",
-   "ID": "Units-70",
+   "ID": "Units-64",
    "size": 0.75,
    "properties": {
     "time": "00:05:40",
@@ -4652,7 +4442,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:05:50",
    "type": "Units",
-   "ID": "Units-74",
+   "ID": "Units-67",
    "size": 0.75,
    "properties": {
     "time": "00:05:50",
@@ -4667,7 +4457,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:06:00",
    "type": "Units",
-   "ID": "Units-77",
+   "ID": "Units-69",
    "size": 0.75,
    "properties": {
     "time": "00:06:00",
@@ -4682,7 +4472,7 @@
    "name": "Void Ray",
    "description": "Void Ray completed by blacksquall in last 10s from 00:06:00",
    "type": "Units",
-   "ID": "Units-78",
+   "ID": "Units-70",
    "size": 1,
    "properties": {
     "time": "00:06:00",
@@ -4697,7 +4487,7 @@
    "name": "2 Adepts",
    "description": "2 Adepts completed by blacksquall in last 10s from 00:06:20",
    "type": "Units",
-   "ID": "Units-81",
+   "ID": "Units-73",
    "size": 1,
    "properties": {
     "time": "00:06:20",
@@ -4712,7 +4502,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:06:20",
    "type": "Units",
-   "ID": "Units-82",
+   "ID": "Units-74",
    "size": 0.75,
    "properties": {
     "time": "00:06:20",
@@ -4724,25 +4514,10 @@
    }
   },
   {
-   "name": "Shield Battery",
-   "description": "Shield Battery completed by blacksquall in last 10s from 00:06:20",
-   "type": "Units",
-   "ID": "Units-83",
-   "size": 0.75,
-   "properties": {
-    "time": "00:06:20",
-    "player": "blacksquall",
-    "type": "Shield Battery",
-    "count": 1,
-    "total at time": 2,
-    "supply": 0
-   }
-  },
-  {
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:06:40",
    "type": "Units",
-   "ID": "Units-87",
+   "ID": "Units-77",
    "size": 0.75,
    "properties": {
     "time": "00:06:40",
@@ -4757,7 +4532,7 @@
    "name": "Oracle",
    "description": "Oracle completed by blacksquall in last 10s from 00:06:50",
    "type": "Units",
-   "ID": "Units-90",
+   "ID": "Units-79",
    "size": 0.75,
    "properties": {
     "time": "00:06:50",
@@ -4772,7 +4547,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:06:50",
    "type": "Units",
-   "ID": "Units-91",
+   "ID": "Units-80",
    "size": 0.75,
    "properties": {
     "time": "00:06:50",
@@ -4787,7 +4562,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:07:00",
    "type": "Units",
-   "ID": "Units-94",
+   "ID": "Units-83",
    "size": 0.75,
    "properties": {
     "time": "00:07:00",
@@ -4802,7 +4577,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:07:10",
    "type": "Units",
-   "ID": "Units-95",
+   "ID": "Units-84",
    "size": 0.75,
    "properties": {
     "time": "00:07:10",
@@ -4817,7 +4592,7 @@
    "name": "3 Probes",
    "description": "3 Probes completed by blacksquall in last 10s from 00:07:20",
    "type": "Units",
-   "ID": "Units-98",
+   "ID": "Units-87",
    "size": 0.75,
    "properties": {
     "time": "00:07:20",
@@ -4832,7 +4607,7 @@
    "name": "3 Probes",
    "description": "3 Probes completed by blacksquall in last 10s from 00:07:30",
    "type": "Units",
-   "ID": "Units-100",
+   "ID": "Units-89",
    "size": 0.75,
    "properties": {
     "time": "00:07:30",
@@ -4847,7 +4622,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:07:40",
    "type": "Units",
-   "ID": "Units-101",
+   "ID": "Units-90",
    "size": 0.75,
    "properties": {
     "time": "00:07:40",
@@ -4862,7 +4637,7 @@
    "name": "2 Stalkers",
    "description": "2 Stalkers completed by blacksquall in last 10s from 00:07:50",
    "type": "Units",
-   "ID": "Units-103",
+   "ID": "Units-92",
    "size": 1,
    "properties": {
     "time": "00:07:50",
@@ -4877,7 +4652,7 @@
    "name": "2 Immortals",
    "description": "2 Immortals completed by blacksquall in last 10s from 00:08:00",
    "type": "Units",
-   "ID": "Units-107",
+   "ID": "Units-95",
    "size": 1,
    "properties": {
     "time": "00:08:00",
@@ -4892,7 +4667,7 @@
    "name": "2 Stalkers",
    "description": "2 Stalkers completed by blacksquall in last 10s from 00:08:20",
    "type": "Units",
-   "ID": "Units-108",
+   "ID": "Units-96",
    "size": 1,
    "properties": {
     "time": "00:08:20",
@@ -4907,7 +4682,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:08:30",
    "type": "Units",
-   "ID": "Units-110",
+   "ID": "Units-98",
    "size": 0.75,
    "properties": {
     "time": "00:08:30",
@@ -4922,7 +4697,7 @@
    "name": "Void Ray",
    "description": "Void Ray completed by blacksquall in last 10s from 00:08:30",
    "type": "Units",
-   "ID": "Units-111",
+   "ID": "Units-99",
    "size": 1,
    "properties": {
     "time": "00:08:30",
@@ -4937,7 +4712,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:08:50",
    "type": "Units",
-   "ID": "Units-114",
+   "ID": "Units-102",
    "size": 0.75,
    "properties": {
     "time": "00:08:50",
@@ -4952,7 +4727,7 @@
    "name": "2 Immortals",
    "description": "2 Immortals completed by blacksquall in last 10s from 00:09:00",
    "type": "Units",
-   "ID": "Units-116",
+   "ID": "Units-104",
    "size": 1,
    "properties": {
     "time": "00:09:00",
@@ -4967,7 +4742,7 @@
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:09:00",
    "type": "Units",
-   "ID": "Units-117",
+   "ID": "Units-105",
    "size": 0.75,
    "properties": {
     "time": "00:09:00",
@@ -4982,7 +4757,7 @@
    "name": "Observer",
    "description": "Observer completed by blacksquall in last 10s from 00:09:20",
    "type": "Units",
-   "ID": "Units-121",
+   "ID": "Units-109",
    "size": 0.75,
    "properties": {
     "time": "00:09:20",
@@ -4997,7 +4772,7 @@
    "name": "Disruptor",
    "description": "Disruptor completed by blacksquall in last 10s from 00:09:40",
    "type": "Units",
-   "ID": "Units-123",
+   "ID": "Units-111",
    "size": 0.75,
    "properties": {
     "time": "00:09:40",
@@ -5012,7 +4787,7 @@
    "name": "Disruptor",
    "description": "Disruptor completed by blacksquall in last 10s from 00:09:50",
    "type": "Units",
-   "ID": "Units-125",
+   "ID": "Units-113",
    "size": 0.75,
    "properties": {
     "time": "00:09:50",
@@ -5024,40 +4799,10 @@
    }
   },
   {
-   "name": "Disruptor Phased",
-   "description": "Disruptor Phased completed by blacksquall in last 10s from 00:10:00",
-   "type": "Units",
-   "ID": "Units-128",
-   "size": 0.75,
-   "properties": {
-    "time": "00:10:00",
-    "player": "blacksquall",
-    "type": "Disruptor Phased",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0
-   }
-  },
-  {
-   "name": "Disruptor Phased",
-   "description": "Disruptor Phased completed by blacksquall in last 10s from 00:10:10",
-   "type": "Units",
-   "ID": "Units-130",
-   "size": 0.75,
-   "properties": {
-    "time": "00:10:10",
-    "player": "blacksquall",
-    "type": "Disruptor Phased",
-    "count": 1,
-    "total at time": 2,
-    "supply": 0
-   }
-  },
-  {
    "name": "2 Probes",
    "description": "2 Probes completed by blacksquall in last 10s from 00:10:10",
    "type": "Units",
-   "ID": "Units-131",
+   "ID": "Units-117",
    "size": 0.75,
    "properties": {
     "time": "00:10:10",
@@ -5072,7 +4817,7 @@
    "name": "Stalker",
    "description": "Stalker completed by blacksquall in last 10s from 00:10:10",
    "type": "Units",
-   "ID": "Units-132",
+   "ID": "Units-118",
    "size": 0.75,
    "properties": {
     "time": "00:10:10",
@@ -5087,7 +4832,7 @@
    "name": "Stalker",
    "description": "Stalker completed by blacksquall in last 10s from 00:10:20",
    "type": "Units",
-   "ID": "Units-136",
+   "ID": "Units-121",
    "size": 0.75,
    "properties": {
     "time": "00:10:20",
@@ -5102,7 +4847,7 @@
    "name": "2 Stalkers",
    "description": "2 Stalkers completed by blacksquall in last 10s from 00:10:40",
    "type": "Units",
-   "ID": "Units-137",
+   "ID": "Units-122",
    "size": 1,
    "properties": {
     "time": "00:10:40",
@@ -5117,7 +4862,7 @@
    "name": "4 Probes",
    "description": "4 Probes completed by blacksquall in last 10s from 00:11:00",
    "type": "Units",
-   "ID": "Units-141",
+   "ID": "Units-126",
    "size": 1,
    "properties": {
     "time": "00:11:00",
@@ -5132,7 +4877,7 @@
    "name": "Stalker",
    "description": "Stalker completed by blacksquall in last 10s from 00:11:00",
    "type": "Units",
-   "ID": "Units-142",
+   "ID": "Units-127",
    "size": 0.75,
    "properties": {
     "time": "00:11:00",
@@ -5147,7 +4892,7 @@
    "name": "4 High Templars",
    "description": "4 High Templars completed by blacksquall in last 10s from 00:11:10",
    "type": "Units",
-   "ID": "Units-144",
+   "ID": "Units-129",
    "size": 1,
    "properties": {
     "time": "00:11:10",
@@ -5162,7 +4907,7 @@
    "name": "2 Immortals",
    "description": "2 Immortals completed by blacksquall in last 10s from 00:11:10",
    "type": "Units",
-   "ID": "Units-145",
+   "ID": "Units-130",
    "size": 1,
    "properties": {
     "time": "00:11:10",
@@ -5177,7 +4922,7 @@
    "name": "3 Probes",
    "description": "3 Probes completed by blacksquall in last 10s from 00:11:10",
    "type": "Units",
-   "ID": "Units-146",
+   "ID": "Units-131",
    "size": 0.75,
    "properties": {
     "time": "00:11:10",
@@ -5192,7 +4937,7 @@
    "name": "2 Zealots",
    "description": "2 Zealots completed by blacksquall in last 10s from 00:11:20",
    "type": "Units",
-   "ID": "Units-148",
+   "ID": "Units-133",
    "size": 1,
    "properties": {
     "time": "00:11:20",
@@ -5204,40 +4949,25 @@
    }
   },
   {
-   "name": "Observer",
-   "description": "Observer completed by blacksquall in last 10s from 00:11:40",
+   "name": "2 Observers",
+   "description": "2 Observers completed by blacksquall in last 10s from 00:11:40",
    "type": "Units",
-   "ID": "Units-151",
+   "ID": "Units-135",
    "size": 0.75,
    "properties": {
     "time": "00:11:40",
     "player": "blacksquall",
     "type": "Observer",
-    "count": 1,
-    "total at time": 2,
-    "supply": 1
-   }
-  },
-  {
-   "name": "Observer Siege Mode",
-   "description": "Observer Siege Mode completed by blacksquall in last 10s from 00:11:40",
-   "type": "Units",
-   "ID": "Units-152",
-   "size": 0.75,
-   "properties": {
-    "time": "00:11:40",
-    "player": "blacksquall",
-    "type": "Observer Siege Mode",
-    "count": 1,
-    "total at time": 1,
-    "supply": 0
+    "count": 2,
+    "total at time": 3,
+    "supply": 2
    }
   },
   {
    "name": "7 Zealots",
    "description": "7 Zealots completed by blacksquall in last 10s from 00:11:40",
    "type": "Units",
-   "ID": "Units-153",
+   "ID": "Units-136",
    "size": 1.4,
    "properties": {
     "time": "00:11:40",
@@ -5252,7 +4982,7 @@
    "name": "Oracle",
    "description": "Oracle completed by blacksquall in last 10s from 00:11:50",
    "type": "Units",
-   "ID": "Units-156",
+   "ID": "Units-138",
    "size": 0.75,
    "properties": {
     "time": "00:11:50",
@@ -5267,7 +4997,7 @@
    "name": "6 Stalkers",
    "description": "6 Stalkers completed by blacksquall in last 10s from 00:12:10",
    "type": "Units",
-   "ID": "Units-157",
+   "ID": "Units-139",
    "size": 1.4,
    "properties": {
     "time": "00:12:10",
@@ -5282,7 +5012,7 @@
    "name": "2 Disruptors",
    "description": "2 Disruptors completed by blacksquall in last 10s from 00:12:10",
    "type": "Units",
-   "ID": "Units-158",
+   "ID": "Units-140",
    "size": 1,
    "properties": {
     "time": "00:12:10",
@@ -5297,25 +5027,10 @@
    "name": "Observer",
    "description": "Observer completed by blacksquall in last 10s from 00:12:30",
    "type": "Units",
-   "ID": "Units-162",
+   "ID": "Units-143",
    "size": 0.75,
    "properties": {
     "time": "00:12:30",
-    "player": "blacksquall",
-    "type": "Observer",
-    "count": 1,
-    "total at time": 2,
-    "supply": 1
-   }
-  },
-  {
-   "name": "Observer",
-   "description": "Observer completed by blacksquall in last 10s from 00:12:40",
-   "type": "Units",
-   "ID": "Units-164",
-   "size": 0.75,
-   "properties": {
-    "time": "00:12:40",
     "player": "blacksquall",
     "type": "Observer",
     "count": 1,
@@ -5324,10 +5039,25 @@
    }
   },
   {
+   "name": "Observer",
+   "description": "Observer completed by blacksquall in last 10s from 00:12:40",
+   "type": "Units",
+   "ID": "Units-145",
+   "size": 0.75,
+   "properties": {
+    "time": "00:12:40",
+    "player": "blacksquall",
+    "type": "Observer",
+    "count": 1,
+    "total at time": 4,
+    "supply": 1
+   }
+  },
+  {
    "name": "6 Zealots",
    "description": "6 Zealots completed by blacksquall in last 10s from 00:12:40",
    "type": "Units",
-   "ID": "Units-165",
+   "ID": "Units-146",
    "size": 1.4,
    "properties": {
     "time": "00:12:40",
@@ -5342,14 +5072,14 @@
    "name": "2 Observers",
    "description": "2 Observers completed by blacksquall in last 10s from 00:13:00",
    "type": "Units",
-   "ID": "Units-166",
+   "ID": "Units-147",
    "size": 0.75,
    "properties": {
     "time": "00:13:00",
     "player": "blacksquall",
     "type": "Observer",
     "count": 2,
-    "total at time": 5,
+    "total at time": 6,
     "supply": 2
    }
   },
@@ -5357,7 +5087,7 @@
    "name": "2 Stalkers",
    "description": "2 Stalkers completed by blacksquall in last 10s from 00:13:20",
    "type": "Units",
-   "ID": "Units-167",
+   "ID": "Units-148",
    "size": 1,
    "properties": {
     "time": "00:13:20",
@@ -5372,7 +5102,7 @@
    "name": "Observer",
    "description": "Observer completed by blacksquall in last 10s from 00:13:40",
    "type": "Units",
-   "ID": "Units-169",
+   "ID": "Units-150",
    "size": 0.75,
    "properties": {
     "time": "00:13:40",
@@ -5387,7 +5117,7 @@
    "name": "Observer",
    "description": "Observer completed by blacksquall in last 10s from 00:13:50",
    "type": "Units",
-   "ID": "Units-171",
+   "ID": "Units-152",
    "size": 0.75,
    "properties": {
     "time": "00:13:50",
@@ -5402,7 +5132,7 @@
    "name": "Warp Prism",
    "description": "Warp Prism completed by blacksquall in last 10s from 00:14:20",
    "type": "Units",
-   "ID": "Units-175",
+   "ID": "Units-155",
    "size": 0.75,
    "properties": {
     "time": "00:14:20",
@@ -5417,7 +5147,7 @@
    "name": "11 High Templars",
    "description": "11 High Templars completed by blacksquall in last 10s from 00:14:20",
    "type": "Units",
-   "ID": "Units-176",
+   "ID": "Units-156",
    "size": 1.7,
    "properties": {
     "time": "00:14:20",
@@ -5432,7 +5162,7 @@
    "name": "5 Archons",
    "description": "5 Archons completed by blacksquall in last 10s from 00:14:30",
    "type": "Units",
-   "ID": "Units-178",
+   "ID": "Units-158",
    "size": 1.4,
    "properties": {
     "time": "00:14:30",
@@ -5447,7 +5177,7 @@
    "name": "3 Zealots",
    "description": "3 Zealots completed by blacksquall in last 10s from 00:14:40",
    "type": "Units",
-   "ID": "Units-181",
+   "ID": "Units-161",
    "size": 1,
    "properties": {
     "time": "00:14:40",
@@ -5462,7 +5192,7 @@
    "name": "3 Probes",
    "description": "3 Probes completed by blacksquall in last 10s from 00:15:50",
    "type": "Units",
-   "ID": "Units-185",
+   "ID": "Units-165",
    "size": 0.75,
    "properties": {
     "time": "00:15:50",
@@ -5477,7 +5207,7 @@
    "name": "8 Stalkers",
    "description": "8 Stalkers completed by blacksquall in last 10s from 00:15:50",
    "type": "Units",
-   "ID": "Units-186",
+   "ID": "Units-166",
    "size": 1.4,
    "properties": {
     "time": "00:15:50",
@@ -5492,7 +5222,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:16:00",
    "type": "Units",
-   "ID": "Units-187",
+   "ID": "Units-167",
    "size": 0.75,
    "properties": {
     "time": "00:16:00",
@@ -5507,7 +5237,7 @@
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:16:10",
    "type": "Units",
-   "ID": "Units-188",
+   "ID": "Units-168",
    "size": 0.75,
    "properties": {
     "time": "00:16:10",
@@ -5519,25 +5249,10 @@
    }
   },
   {
-   "name": "Disruptor Phased",
-   "description": "Disruptor Phased completed by blacksquall in last 10s from 00:16:20",
-   "type": "Units",
-   "ID": "Units-191",
-   "size": 0.75,
-   "properties": {
-    "time": "00:16:20",
-    "player": "blacksquall",
-    "type": "Disruptor Phased",
-    "count": 1,
-    "total at time": 3,
-    "supply": 0
-   }
-  },
-  {
    "name": "Probe",
    "description": "Probe completed by blacksquall in last 10s from 00:16:20",
    "type": "Units",
-   "ID": "Units-192",
+   "ID": "Units-171",
    "size": 0.75,
    "properties": {
     "time": "00:16:20",
@@ -5545,6 +5260,21 @@
     "type": "Probe",
     "count": 1,
     "total at time": 46,
+    "supply": 1
+   }
+  },
+  {
+   "name": "Probe",
+   "description": "Probe completed by blacksquall in last 10s from 00:16:40",
+   "type": "Units",
+   "ID": "Units-172",
+   "size": 0.75,
+   "properties": {
+    "time": "00:16:40",
+    "player": "blacksquall",
+    "type": "Probe",
+    "count": 1,
+    "total at time": 47,
     "supply": 1
    }
   },
@@ -6251,6 +5981,9 @@
     "time": "00:02:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6267,6 +6000,9 @@
     "time": "00:03:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6283,6 +6019,9 @@
     "time": "00:03:12",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6299,6 +6038,9 @@
     "time": "00:04:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6315,6 +6057,9 @@
     "time": "00:05:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6331,6 +6076,9 @@
     "time": "00:05:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6347,6 +6095,9 @@
     "time": "00:05:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6363,6 +6114,9 @@
     "time": "00:05:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6379,6 +6133,9 @@
     "time": "00:05:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6395,6 +6152,9 @@
     "time": "00:05:39",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6411,6 +6171,9 @@
     "time": "00:06:08",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6427,6 +6190,9 @@
     "time": "00:06:18",
     "player": "lilTiGGer",
     "type": "QueenTransfusion",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Queen"
    }
   },
@@ -6443,6 +6209,9 @@
     "time": "00:06:36",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6459,6 +6228,9 @@
     "time": "00:07:03",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6475,6 +6247,9 @@
     "time": "00:07:08",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6491,6 +6266,9 @@
     "time": "00:07:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6507,6 +6285,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6523,6 +6304,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6539,6 +6323,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6555,6 +6342,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6571,6 +6361,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6587,6 +6380,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6603,6 +6399,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6619,6 +6418,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6635,6 +6437,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6651,6 +6456,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6667,6 +6475,9 @@
     "time": "00:08:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6683,6 +6494,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6699,6 +6513,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6715,6 +6532,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6731,6 +6551,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6747,6 +6570,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6763,6 +6589,9 @@
     "time": "00:08:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -6779,6 +6608,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6795,6 +6627,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6811,6 +6646,9 @@
     "time": "00:08:34",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6827,6 +6665,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6843,6 +6684,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6859,6 +6703,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6875,6 +6722,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6891,6 +6741,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6907,6 +6760,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6923,6 +6779,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6939,6 +6798,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6955,6 +6817,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6971,6 +6836,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -6987,6 +6855,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7003,6 +6874,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7019,6 +6893,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7035,6 +6912,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7051,6 +6931,9 @@
     "time": "00:08:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7067,6 +6950,9 @@
     "time": "00:08:47",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7083,6 +6969,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7099,6 +6988,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7115,6 +7007,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7131,6 +7026,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7147,6 +7045,9 @@
     "time": "00:09:00",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7163,6 +7064,9 @@
     "time": "00:09:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7179,6 +7083,9 @@
     "time": "00:09:32",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7195,6 +7102,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7211,6 +7121,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7227,6 +7140,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7243,6 +7159,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7259,6 +7178,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7275,6 +7197,9 @@
     "time": "00:10:22",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7291,6 +7216,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7307,6 +7235,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7323,6 +7254,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7339,6 +7273,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7355,6 +7292,9 @@
     "time": "00:10:24",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7371,6 +7311,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7387,6 +7330,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7403,6 +7349,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7419,6 +7368,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7435,6 +7387,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7451,6 +7406,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7467,6 +7425,9 @@
     "time": "00:10:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7483,6 +7444,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7499,6 +7463,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7515,6 +7482,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7531,6 +7501,9 @@
     "time": "00:10:26",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7547,6 +7520,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7563,6 +7539,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7579,6 +7558,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7595,6 +7577,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7611,6 +7596,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7627,6 +7615,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7643,6 +7634,9 @@
     "time": "00:10:38",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7659,6 +7653,9 @@
     "time": "00:10:58",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7675,6 +7672,9 @@
     "time": "00:11:02",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7691,6 +7691,9 @@
     "time": "00:11:25",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -7707,6 +7710,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7723,6 +7729,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7739,6 +7748,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7755,6 +7767,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7771,6 +7786,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7787,6 +7805,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7803,6 +7824,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7819,6 +7843,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7835,6 +7862,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7851,6 +7881,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7867,6 +7900,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7883,6 +7919,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7899,6 +7938,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7915,6 +7957,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7931,6 +7976,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7947,6 +7995,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7963,6 +8014,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7979,6 +8033,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -7995,6 +8052,9 @@
     "time": "00:13:04",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8011,6 +8071,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8027,6 +8090,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8043,6 +8109,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8059,6 +8128,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8075,6 +8147,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8091,6 +8166,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8107,6 +8185,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8123,6 +8204,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8139,6 +8223,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8155,6 +8242,9 @@
     "time": "00:13:05",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -8171,6 +8261,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8187,6 +8280,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8203,6 +8299,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8219,6 +8318,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8235,6 +8337,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8251,6 +8356,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8267,6 +8375,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8283,6 +8394,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8299,6 +8413,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8315,6 +8432,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8331,6 +8451,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8347,6 +8470,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8363,6 +8489,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8379,6 +8508,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8395,6 +8527,9 @@
     "time": "00:13:09",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8411,6 +8546,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8427,6 +8565,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8443,6 +8584,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8459,6 +8603,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8475,6 +8622,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8491,6 +8641,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8507,6 +8660,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8523,6 +8679,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8539,6 +8698,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8555,6 +8717,9 @@
     "time": "00:13:10",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8571,6 +8736,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8587,6 +8755,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8603,6 +8774,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8619,6 +8793,9 @@
     "time": "00:13:30",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8635,6 +8812,9 @@
     "time": "00:13:51",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8651,6 +8831,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8667,6 +8850,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8683,6 +8869,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8699,6 +8888,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8715,6 +8907,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8731,6 +8926,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8747,6 +8945,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8763,6 +8964,9 @@
     "time": "00:14:23",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8779,6 +8983,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8795,6 +9002,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8811,6 +9021,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8827,6 +9040,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8843,6 +9059,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8859,6 +9078,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8875,6 +9097,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8891,6 +9116,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8907,6 +9135,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8923,6 +9154,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8939,6 +9173,9 @@
     "time": "00:14:27",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8955,6 +9192,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8971,6 +9211,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -8987,6 +9230,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9003,6 +9249,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9019,6 +9268,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9035,6 +9287,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9051,6 +9306,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9067,6 +9325,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9083,6 +9344,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9099,6 +9363,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9115,6 +9382,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9131,6 +9401,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9147,6 +9420,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9163,6 +9439,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9179,6 +9458,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9195,6 +9477,9 @@
     "time": "00:14:28",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9211,6 +9496,9 @@
     "time": "00:14:43",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9227,6 +9515,9 @@
     "time": "00:15:14",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9243,6 +9534,9 @@
     "time": "00:15:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9259,6 +9553,9 @@
     "time": "00:15:31",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9275,6 +9572,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": true,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9291,6 +9591,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9307,6 +9610,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9323,6 +9629,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9339,6 +9648,9 @@
     "time": "00:15:35",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hatchery"
    }
   },
@@ -9355,6 +9667,9 @@
     "time": "00:16:16",
     "player": "lilTiGGer",
     "type": "SpawnLarva",
+    "combat": false,
+    "queued": false,
+    "minimap": false,
     "target": "Hive"
    }
   },
@@ -9371,6 +9686,9 @@
     "time": "00:00:23",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Nexus"
    }
   },
@@ -9387,6 +9705,9 @@
     "time": "00:01:40",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "WarpGate"
    }
   },
@@ -9403,6 +9724,9 @@
     "time": "00:02:07",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "WarpGate"
    }
   },
@@ -9419,6 +9743,9 @@
     "time": "00:04:42",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Nexus"
    }
   },
@@ -9435,6 +9762,9 @@
     "time": "00:05:00",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9451,6 +9781,9 @@
     "time": "00:05:25",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9467,6 +9800,9 @@
     "time": "00:05:44",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "CyberneticsCore"
    }
   },
@@ -9483,6 +9819,9 @@
     "time": "00:07:23",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9499,6 +9838,9 @@
     "time": "00:07:42",
     "player": "blacksquall",
     "type": "BatteryOvercharge",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "ShieldBattery"
    }
   },
@@ -9515,6 +9857,9 @@
     "time": "00:08:01",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Stargate"
    }
   },
@@ -9531,6 +9876,9 @@
     "time": "00:08:31",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9547,6 +9895,9 @@
     "time": "00:10:20",
     "player": "blacksquall",
     "type": "BatteryOvercharge",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "ShieldBattery"
    }
   },
@@ -9563,6 +9914,9 @@
     "time": "00:10:41",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9579,6 +9933,9 @@
     "time": "00:10:42",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9595,6 +9952,9 @@
     "time": "00:10:45",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9611,6 +9971,9 @@
     "time": "00:11:34",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9627,6 +9990,9 @@
     "time": "00:11:47",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "RoboticsFacility"
    }
   },
@@ -9643,6 +10009,9 @@
     "time": "00:14:28",
     "player": "blacksquall",
     "type": "ChronoBoostEnergyCost",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Forge"
    }
   },
@@ -9659,6 +10028,9 @@
     "time": "00:15:29",
     "player": "blacksquall",
     "type": "Feedback",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Overseer"
    }
   },
@@ -9675,6 +10047,9 @@
     "time": "00:15:29",
     "player": "blacksquall",
     "type": "Feedback",
+    "combat": true,
+    "queued": false,
+    "minimap": false,
     "target": "Overseer"
    }
   },
@@ -9693,8 +10068,8 @@
    }
   },
   {
-   "name": "57s Supply Block",
-   "description": "Supply block started at 00:00:00 and ended at 00:00:57 for a duration of 57s",
+   "name": "16s Supply Block",
+   "description": "Supply block started at 00:00:41 and ended at 00:00:57 for a duration of 16s",
    "type": "Supply Block",
    "ID": "Supply Block-0",
    "size": [
@@ -9702,15 +10077,15 @@
     1
    ],
    "properties": {
-    "time": "00:00:00",
+    "time": "00:00:41",
     "player": "lilTiGGer",
-    "duration": 57,
+    "duration": 16,
     "end time": "00:00:57"
    }
   },
   {
-   "name": "46s Supply Block",
-   "description": "Supply block started at 00:01:45 and ended at 00:02:31 for a duration of 46s",
+   "name": "25s Supply Block",
+   "description": "Supply block started at 00:13:18 and ended at 00:13:43 for a duration of 25s",
    "type": "Supply Block",
    "ID": "Supply Block-1",
    "size": [
@@ -9718,15 +10093,15 @@
     1
    ],
    "properties": {
-    "time": "00:01:45",
+    "time": "00:13:18",
     "player": "lilTiGGer",
-    "duration": 46,
-    "end time": "00:02:31"
+    "duration": 25,
+    "end time": "00:13:43"
    }
   },
   {
-   "name": "28s Supply Block",
-   "description": "Supply block started at 00:06:30 and ended at 00:06:58 for a duration of 28s",
+   "name": "6s Supply Block",
+   "description": "Supply block started at 00:00:32 and ended at 00:00:38 for a duration of 6s",
    "type": "Supply Block",
    "ID": "Supply Block-2",
    "size": [
@@ -9734,15 +10109,15 @@
     1
    ],
    "properties": {
-    "time": "00:06:30",
-    "player": "lilTiGGer",
-    "duration": 28,
-    "end time": "00:06:58"
+    "time": "00:00:32",
+    "player": "blacksquall",
+    "duration": 6,
+    "end time": "00:00:38"
    }
   },
   {
-   "name": "40s Supply Block",
-   "description": "Supply block started at 00:07:16 and ended at 00:07:56 for a duration of 40s",
+   "name": "2s Supply Block",
+   "description": "Supply block started at 00:14:43 and ended at 00:14:45 for a duration of 2s",
    "type": "Supply Block",
    "ID": "Supply Block-3",
    "size": [
@@ -9750,15 +10125,15 @@
     1
    ],
    "properties": {
-    "time": "00:07:16",
-    "player": "lilTiGGer",
-    "duration": 40,
-    "end time": "00:07:56"
+    "time": "00:14:43",
+    "player": "blacksquall",
+    "duration": 2,
+    "end time": "00:14:45"
    }
   },
   {
-   "name": "11s Supply Block",
-   "description": "Supply block started at 00:07:58 and ended at 00:08:09 for a duration of 11s",
+   "name": "49s Supply Block",
+   "description": "Supply block started at 00:14:47 and ended at 00:15:36 for a duration of 49s",
    "type": "Supply Block",
    "ID": "Supply Block-4",
    "size": [
@@ -9766,106 +10141,10 @@
     1
    ],
    "properties": {
-    "time": "00:07:58",
-    "player": "lilTiGGer",
-    "duration": 11,
-    "end time": "00:08:09"
-   }
-  },
-  {
-   "name": "84s Supply Block",
-   "description": "Supply block started at 00:08:41 and ended at 00:10:05 for a duration of 84s",
-   "type": "Supply Block",
-   "ID": "Supply Block-5",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:08:41",
-    "player": "lilTiGGer",
-    "duration": 84,
-    "end time": "00:10:05"
-   }
-  },
-  {
-   "name": "19s Supply Block",
-   "description": "Supply block started at 00:12:31 and ended at 00:12:50 for a duration of 19s",
-   "type": "Supply Block",
-   "ID": "Supply Block-6",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:31",
-    "player": "lilTiGGer",
-    "duration": 19,
-    "end time": "00:12:50"
-   }
-  },
-  {
-   "name": "11s Supply Block",
-   "description": "Supply block started at 00:13:32 and ended at 00:13:43 for a duration of 11s",
-   "type": "Supply Block",
-   "ID": "Supply Block-7",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:13:32",
-    "player": "lilTiGGer",
-    "duration": 11,
-    "end time": "00:13:43"
-   }
-  },
-  {
-   "name": "7s Supply Block",
-   "description": "Supply block started at 00:14:01 and ended at 00:14:08 for a duration of 7s",
-   "type": "Supply Block",
-   "ID": "Supply Block-8",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:14:01",
+    "time": "00:14:47",
     "player": "blacksquall",
-    "duration": 7,
-    "end time": "00:14:08"
-   }
-  },
-  {
-   "name": "66s Supply Block",
-   "description": "Supply block started at 00:14:35 and ended at 00:15:41 for a duration of 66s",
-   "type": "Supply Block",
-   "ID": "Supply Block-9",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:14:35",
-    "player": "blacksquall",
-    "duration": 66,
-    "end time": "00:15:41"
-   }
-  },
-  {
-   "name": "22s Supply Block",
-   "description": "Supply block started at 00:15:50 and ended at 00:16:12 for a duration of 22s",
-   "type": "Supply Block",
-   "ID": "Supply Block-10",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:15:50",
-    "player": "blacksquall",
-    "duration": 22,
-    "end time": "00:16:12"
+    "duration": 49,
+    "end time": "00:15:36"
    }
   },
   {
@@ -10390,13 +10669,13 @@
    "name": "Overlord scouted 3rd base",
    "description": "At 01.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-2",
+   "ID": "Scouting-0",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "01:42:00",
+    "time": "00:01:42",
     "player": "lilTiGGer"
    }
   },
@@ -10404,13 +10683,13 @@
    "name": "Overlord scouted Main base",
    "description": "At 01.43 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-3",
+   "ID": "Scouting-1",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "01:43:00",
+    "time": "00:01:43",
     "player": "lilTiGGer"
    }
   },
@@ -10418,13 +10697,13 @@
    "name": "Zergling scouted Natural",
    "description": "At 02.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-4",
+   "ID": "Scouting-2",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "02:59:00",
+    "time": "00:02:59",
     "player": "lilTiGGer"
    }
   },
@@ -10432,13 +10711,13 @@
    "name": "Zergling scouted 3rd base",
    "description": "At 04.46 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-5",
+   "ID": "Scouting-3",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "04:46:00",
+    "time": "00:04:46",
     "player": "lilTiGGer"
    }
   },
@@ -10446,13 +10725,13 @@
    "name": "Zergling scouted 5th base",
    "description": "At 04.49 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-6",
+   "ID": "Scouting-4",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "04:49:00",
+    "time": "00:04:49",
     "player": "lilTiGGer"
    }
   },
@@ -10460,55 +10739,27 @@
    "name": "Overseer scouted 3rd base",
    "description": "At 09.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-10",
+   "ID": "Scouting-8",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "09:59:00",
+    "time": "00:09:59",
     "player": "lilTiGGer"
-   }
-  },
-  {
-   "name": "Probe scouted 4th base",
-   "description": "At 00.41 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-0",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:41:00",
-    "player": "blacksquall"
-   }
-  },
-  {
-   "name": "Probe scouted 4th base",
-   "description": "At 01.11 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-1",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "01:11:00",
-    "player": "blacksquall"
    }
   },
   {
    "name": "Zealot scouted Natural",
    "description": "At 03.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-7",
+   "ID": "Scouting-5",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "03:42:00",
+    "time": "00:03:42",
     "player": "blacksquall"
    }
   },
@@ -10516,13 +10767,13 @@
    "name": "Adept scouted Natural",
    "description": "At 03.48 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-8",
+   "ID": "Scouting-6",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "03:48:00",
+    "time": "00:03:48",
     "player": "blacksquall"
    }
   },
@@ -10530,13 +10781,13 @@
    "name": "AdeptPhaseShift scouted Natural",
    "description": "At 03.52 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-9",
+   "ID": "Scouting-7",
    "size": [
     2.65,
     1
    ],
    "properties": {
-    "time": "03:52:00",
+    "time": "00:03:52",
     "player": "blacksquall"
    }
   }
@@ -12570,6 +12821,14 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
+   "node1": "Units-10",
+   "node2": "Units-24",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
    "node1": "Units-22",
    "node2": "Units-25",
    "description": "same units"
@@ -12611,7 +12870,7 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-27",
-   "node2": "Units-31",
+   "node2": "Units-30",
    "description": "same units"
   },
   {
@@ -12619,7 +12878,7 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-20",
-   "node2": "Units-32",
+   "node2": "Units-31",
    "description": "same units"
   },
   {
@@ -12627,6 +12886,14 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-28",
+   "node2": "Units-32",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-30",
    "node2": "Units-33",
    "description": "same units"
   },
@@ -12634,7 +12901,15 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-31",
+   "node1": "Units-32",
+   "node2": "Units-34",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-29",
    "node2": "Units-35",
    "description": "same units"
   },
@@ -12650,7 +12925,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-29",
+   "node1": "Units-34",
    "node2": "Units-37",
    "description": "same units"
   },
@@ -12658,7 +12933,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-35",
+   "node1": "Units-36",
    "node2": "Units-38",
    "description": "same units"
   },
@@ -12666,7 +12941,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-36",
+   "node1": "Units-24",
    "node2": "Units-39",
    "description": "same units"
   },
@@ -12674,7 +12949,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-38",
+   "node1": "Units-37",
    "node2": "Units-40",
    "description": "same units"
   },
@@ -12682,7 +12957,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-10",
+   "node1": "Units-35",
    "node2": "Units-41",
    "description": "same units"
   },
@@ -12690,7 +12965,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-34",
+   "node1": "Units-40",
    "node2": "Units-42",
    "description": "same units"
   },
@@ -12698,7 +12973,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-39",
+   "node1": "Units-42",
    "node2": "Units-43",
    "description": "same units"
   },
@@ -12706,7 +12981,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-37",
+   "node1": "Units-38",
    "node2": "Units-44",
    "description": "same units"
   },
@@ -12714,40 +12989,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-42",
-   "node2": "Units-45",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
    "node1": "Units-43",
-   "node2": "Units-46",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-46",
-   "node2": "Units-47",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-40",
-   "node2": "Units-48",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-47",
-   "node2": "Units-49",
+   "node2": "Units-45",
    "description": "same units"
   },
   {
@@ -12762,7 +13005,39 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-48",
+   "node1": "Units-44",
+   "node2": "Units-46",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-45",
+   "node2": "Units-47",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-31",
+   "node2": "Units-48",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-39",
+   "node2": "Units-49",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-46",
    "node2": "Units-50",
    "description": "same units"
   },
@@ -12770,15 +13045,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-49",
-   "node2": "Units-51",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-32",
+   "node1": "Units-47",
    "node2": "Units-52",
    "description": "same units"
   },
@@ -12786,7 +13053,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-41",
+   "node1": "Units-52",
    "node2": "Units-53",
    "description": "same units"
   },
@@ -12802,15 +13069,31 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-51",
-   "node2": "Units-56",
+   "node1": "Units-53",
+   "node2": "Units-55",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-56",
+   "node1": "Units-51",
+   "node2": "Units-56",
+   "description": "same units"
+  },
+  {
+   "name1": "vs",
+   "name2": "",
+   "direction": 2,
+   "node1": "Stats-10",
+   "node2": "Stats-9",
+   "description": "Comparison of players stats from the same time."
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-55",
    "node2": "Units-57",
    "description": "same units"
   },
@@ -12834,22 +13117,6 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-55",
-   "node2": "Units-60",
-   "description": "same units"
-  },
-  {
-   "name1": "vs",
-   "name2": "",
-   "direction": 2,
-   "node1": "Stats-10",
-   "node2": "Stats-9",
-   "description": "Comparison of players stats from the same time."
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
    "node1": "Units-59",
    "node2": "Units-61",
    "description": "same units"
@@ -12858,7 +13125,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-58",
+   "node1": "Units-48",
    "node2": "Units-62",
    "description": "same units"
   },
@@ -12866,7 +13133,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-61",
+   "node1": "Units-49",
    "node2": "Units-63",
    "description": "same units"
   },
@@ -12874,8 +13141,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-45",
-   "node2": "Units-65",
+   "node1": "Units-61",
+   "node2": "Units-64",
    "description": "same units"
   },
   {
@@ -12890,7 +13157,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-52",
+   "node1": "Units-64",
    "node2": "Units-67",
    "description": "same units"
   },
@@ -12898,7 +13165,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-24",
+   "node1": "Units-65",
    "node2": "Units-68",
    "description": "same units"
   },
@@ -12906,7 +13173,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-53",
+   "node1": "Units-67",
    "node2": "Units-69",
    "description": "same units"
   },
@@ -12914,7 +13181,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-66",
+   "node1": "Units-60",
    "node2": "Units-70",
    "description": "same units"
   },
@@ -12922,56 +13189,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-69",
-   "node2": "Units-72",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-68",
-   "node2": "Units-73",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-70",
-   "node2": "Units-74",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-71",
-   "node2": "Units-75",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-74",
-   "node2": "Units-77",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-64",
-   "node2": "Units-78",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-72",
-   "node2": "Units-79",
+   "node1": "Units-66",
+   "node2": "Units-71",
    "description": "same units"
   },
   {
@@ -12986,16 +13205,56 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-75",
-   "node2": "Units-80",
+   "node1": "Units-68",
+   "node2": "Units-72",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-44",
-   "node2": "Units-81",
+   "node1": "Units-41",
+   "node2": "Units-73",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-69",
+   "node2": "Units-74",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-72",
+   "node2": "Units-75",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-75",
+   "node2": "Units-76",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-74",
+   "node2": "Units-77",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-71",
+   "node2": "Units-78",
    "description": "same units"
   },
   {
@@ -13003,6 +13262,22 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-77",
+   "node2": "Units-80",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-78",
+   "node2": "Units-81",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-58",
    "node2": "Units-82",
    "description": "same units"
   },
@@ -13010,7 +13285,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-30",
+   "node1": "Units-80",
    "node2": "Units-83",
    "description": "same units"
   },
@@ -13018,7 +13293,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-80",
+   "node1": "Units-83",
    "node2": "Units-84",
    "description": "same units"
   },
@@ -13026,8 +13301,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-84",
-   "node2": "Units-86",
+   "node1": "Units-76",
+   "node2": "Units-85",
    "description": "same units"
   },
   {
@@ -13035,14 +13310,30 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-82",
-   "node2": "Units-87",
+   "node2": "Units-86",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-79",
+   "node1": "Units-84",
+   "node2": "Units-87",
+   "description": "same units"
+  },
+  {
+   "name1": "vs",
+   "name2": "",
+   "direction": 2,
+   "node1": "Stats-14",
+   "node2": "Stats-13",
+   "description": "Comparison of players stats from the same time."
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-86",
    "node2": "Units-88",
    "description": "same units"
   },
@@ -13050,7 +13341,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-73",
+   "node1": "Units-87",
    "node2": "Units-89",
    "description": "same units"
   },
@@ -13058,8 +13349,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-87",
-   "node2": "Units-91",
+   "node1": "Units-89",
+   "node2": "Units-90",
    "description": "same units"
   },
   {
@@ -13067,6 +13358,14 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-88",
+   "node2": "Units-91",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-56",
    "node2": "Units-92",
    "description": "same units"
   },
@@ -13074,7 +13373,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-62",
+   "node1": "Units-81",
    "node2": "Units-93",
    "description": "same units"
   },
@@ -13090,112 +13389,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-94",
-   "node2": "Units-95",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-86",
-   "node2": "Units-96",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-93",
-   "node2": "Units-97",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-95",
-   "node2": "Units-98",
-   "description": "same units"
-  },
-  {
-   "name1": "vs",
-   "name2": "",
-   "direction": 2,
-   "node1": "Stats-14",
-   "node2": "Stats-13",
-   "description": "Comparison of players stats from the same time."
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-97",
-   "node2": "Units-99",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-98",
-   "node2": "Units-100",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-100",
-   "node2": "Units-101",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-99",
-   "node2": "Units-102",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-60",
-   "node2": "Units-103",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-89",
-   "node2": "Units-104",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
    "node1": "Units-92",
-   "node2": "Units-105",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-102",
-   "node2": "Units-106",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-103",
-   "node2": "Units-108",
+   "node2": "Units-96",
    "description": "same units"
   },
   {
@@ -13210,24 +13405,72 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
+   "node1": "Units-90",
+   "node2": "Units-98",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-70",
+   "node2": "Units-99",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-97",
+   "node2": "Units-100",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-94",
+   "node2": "Units-101",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-98",
+   "node2": "Units-102",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
    "node1": "Units-101",
-   "node2": "Units-110",
+   "node2": "Units-103",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-78",
-   "node2": "Units-111",
+   "node1": "Units-95",
+   "node2": "Units-104",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-109",
-   "node2": "Units-112",
+   "node1": "Units-102",
+   "node2": "Units-105",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-103",
+   "node2": "Units-106",
    "description": "same units"
   },
   {
@@ -13235,71 +13478,23 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-106",
-   "node2": "Units-113",
+   "node2": "Units-107",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-110",
-   "node2": "Units-114",
+   "node1": "Units-100",
+   "node2": "Units-108",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-113",
-   "node2": "Units-115",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-107",
-   "node2": "Units-116",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-114",
-   "node2": "Units-117",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-115",
-   "node2": "Units-118",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-118",
-   "node2": "Units-119",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-112",
-   "node2": "Units-120",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-104",
-   "node2": "Units-122",
+   "node1": "Units-93",
+   "node2": "Units-110",
    "description": "same units"
   },
   {
@@ -13314,7 +13509,111 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
+   "node1": "Units-108",
+   "node2": "Units-112",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-111",
+   "node2": "Units-113",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-107",
+   "node2": "Units-114",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-110",
+   "node2": "Units-115",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-112",
+   "node2": "Units-116",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-105",
+   "node2": "Units-117",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-96",
+   "node2": "Units-118",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-115",
+   "node2": "Units-119",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-114",
+   "node2": "Units-120",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-118",
+   "node2": "Units-121",
+   "description": "same units"
+  },
+  {
+   "name1": "vs",
+   "name2": "",
+   "direction": 2,
+   "node1": "Stats-20",
+   "node2": "Stats-19",
+   "description": "Comparison of players stats from the same time."
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-121",
+   "node2": "Units-122",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
    "node1": "Units-120",
+   "node2": "Units-123",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-116",
    "node2": "Units-124",
    "description": "same units"
   },
@@ -13330,7 +13629,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-119",
+   "node1": "Units-117",
    "node2": "Units-126",
    "description": "same units"
   },
@@ -13338,7 +13637,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-105",
+   "node1": "Units-122",
    "node2": "Units-127",
    "description": "same units"
   },
@@ -13346,15 +13645,15 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-124",
-   "node2": "Units-129",
+   "node1": "Units-15",
+   "node2": "Units-128",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-128",
+   "node1": "Units-104",
    "node2": "Units-130",
    "description": "same units"
   },
@@ -13362,7 +13661,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-117",
+   "node1": "Units-126",
    "node2": "Units-131",
    "description": "same units"
   },
@@ -13370,7 +13669,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-108",
+   "node1": "Units-62",
    "node2": "Units-132",
    "description": "same units"
   },
@@ -13378,7 +13677,7 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-122",
+   "node1": "Units-21",
    "node2": "Units-133",
    "description": "same units"
   },
@@ -13386,128 +13685,8 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-126",
+   "node1": "Units-128",
    "node2": "Units-134",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-127",
-   "node2": "Units-135",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-132",
-   "node2": "Units-136",
-   "description": "same units"
-  },
-  {
-   "name1": "vs",
-   "name2": "",
-   "direction": 2,
-   "node1": "Stats-20",
-   "node2": "Stats-19",
-   "description": "Comparison of players stats from the same time."
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-136",
-   "node2": "Units-137",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-134",
-   "node2": "Units-138",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-129",
-   "node2": "Units-139",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-138",
-   "node2": "Units-140",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-131",
-   "node2": "Units-141",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-137",
-   "node2": "Units-142",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-15",
-   "node2": "Units-143",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-116",
-   "node2": "Units-145",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-141",
-   "node2": "Units-146",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-67",
-   "node2": "Units-147",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-21",
-   "node2": "Units-148",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-143",
-   "node2": "Units-149",
    "description": "same units"
   },
   {
@@ -13522,88 +13701,72 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-121",
-   "node2": "Units-151",
+   "node1": "Units-109",
+   "node2": "Units-135",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-148",
-   "node2": "Units-153",
+   "node1": "Units-133",
+   "node2": "Units-136",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-149",
-   "node2": "Units-154",
+   "node1": "Units-134",
+   "node2": "Units-137",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-150",
-   "node2": "Units-155",
+   "node1": "Units-79",
+   "node2": "Units-138",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-90",
-   "node2": "Units-156",
+   "node1": "Units-127",
+   "node2": "Units-139",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-142",
-   "node2": "Units-157",
+   "node1": "Units-113",
+   "node2": "Units-140",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-125",
-   "node2": "Units-158",
+   "node1": "Units-137",
+   "node2": "Units-141",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-154",
-   "node2": "Units-159",
+   "node1": "Units-124",
+   "node2": "Units-142",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-155",
-   "node2": "Units-160",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-139",
-   "node2": "Units-161",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-151",
-   "node2": "Units-162",
+   "node1": "Units-135",
+   "node2": "Units-143",
    "description": "same units"
   },
   {
@@ -13618,72 +13781,72 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-140",
-   "node2": "Units-163",
+   "node1": "Units-125",
+   "node2": "Units-144",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-162",
-   "node2": "Units-164",
+   "node1": "Units-143",
+   "node2": "Units-145",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-153",
-   "node2": "Units-165",
+   "node1": "Units-136",
+   "node2": "Units-146",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-164",
-   "node2": "Units-166",
+   "node1": "Units-145",
+   "node2": "Units-147",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-157",
-   "node2": "Units-167",
+   "node1": "Units-139",
+   "node2": "Units-148",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-135",
-   "node2": "Units-168",
+   "node1": "Units-119",
+   "node2": "Units-149",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-166",
-   "node2": "Units-169",
+   "node1": "Units-147",
+   "node2": "Units-150",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-168",
-   "node2": "Units-170",
+   "node1": "Units-149",
+   "node2": "Units-151",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-169",
-   "node2": "Units-171",
+   "node1": "Units-150",
+   "node2": "Units-152",
    "description": "same units"
   },
   {
@@ -13698,16 +13861,32 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-170",
-   "node2": "Units-172",
+   "node1": "Units-151",
+   "node2": "Units-153",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-147",
-   "node2": "Units-174",
+   "node1": "Units-132",
+   "node2": "Units-154",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-129",
+   "node2": "Units-156",
+   "description": "same units"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Units-157",
+   "node2": "Units-159",
    "description": "same units"
   },
   {
@@ -13715,31 +13894,15 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-144",
-   "node2": "Units-176",
+   "node2": "Units-160",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-177",
-   "node2": "Units-179",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-163",
-   "node2": "Units-180",
-   "description": "same units"
-  },
-  {
-   "name1": "previous",
-   "name2": "next",
-   "direction": 1,
-   "node1": "Units-165",
-   "node2": "Units-181",
+   "node1": "Units-146",
+   "node2": "Units-161",
    "description": "same units"
   },
   {
@@ -13747,7 +13910,7 @@
    "name2": "next",
    "direction": 1,
    "node1": "Units-85",
-   "node2": "Units-182",
+   "node2": "Units-162",
    "description": "same units"
   },
   {
@@ -13762,32 +13925,32 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-96",
-   "node2": "Units-183",
+   "node1": "Units-162",
+   "node2": "Units-163",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-183",
-   "node2": "Units-184",
+   "node1": "Units-163",
+   "node2": "Units-164",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-146",
-   "node2": "Units-185",
+   "node1": "Units-131",
+   "node2": "Units-165",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-167",
-   "node2": "Units-186",
+   "node1": "Units-148",
+   "node2": "Units-166",
    "description": "same units"
   },
   {
@@ -13802,40 +13965,40 @@
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-185",
-   "node2": "Units-187",
+   "node1": "Units-165",
+   "node2": "Units-167",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-187",
-   "node2": "Units-188",
+   "node1": "Units-167",
+   "node2": "Units-168",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-184",
-   "node2": "Units-189",
+   "node1": "Units-164",
+   "node2": "Units-169",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-130",
-   "node2": "Units-191",
+   "node1": "Units-168",
+   "node2": "Units-171",
    "description": "same units"
   },
   {
    "name1": "previous",
    "name2": "next",
    "direction": 1,
-   "node1": "Units-188",
-   "node2": "Units-192",
+   "node1": "Units-171",
+   "node2": "Units-172",
    "description": "same units"
   }
  ]

@@ -1,3 +1,4 @@
+from sc2mindshare.reader.compat import clean_name
 from datetime import datetime
 from sc2mindshare.analysis.exports.node import Node, X_LD
 from sc2mindshare.analysis.utils import MsUtils
@@ -8,8 +9,8 @@ class ScoutNode(Node):
     #TODO which player scouted who
     #TODO links to buildings that have been scouted
     
-    def __init__(self, unit, time, scoutedBase, scoutedBuildings, seq):
-        super().__init__(seq)
+    def __init__(self, unit, time, scoutedBase, scoutedBuildings, seq, *, fixes):
+        super().__init__(seq, fixes=fixes)
 
         self.player = unit.player
         self.unit = unit
@@ -38,7 +39,7 @@ class ScoutNode(Node):
                                self.scoutedBase, sep)
         
     def getNodePlayer(self):
-        return MsUtils.replaceStrings(self.player)
+        return clean_name(self.player, False, self.fixes)
     
     def getNodeTime(self):
         return self.time.replace(".",":").strip()

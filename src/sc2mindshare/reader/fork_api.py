@@ -2,7 +2,7 @@
 
 Stefan's layer (now ``sc2mindshare.analysis``) was written against a fork that edited sc2reader's
 event, unit and player classes in place: extra properties (``second`` as ``frame / 22.4``,
-``time``, ``playerName``, ``player``/``pid`` on tracker events, ``nameC`` ...), extra methods
+``time``, ``playerName``, ``player``/``pid`` on tracker events ...), extra methods
 (``registerUpdateEvent``, ``isCombat``, ``countableUnitDeath`` ...), rewritten ``__str__`` methods
 (CR-011c makes that text explicit: ``compat.object_text``; no ``__str__`` is overridden here), and
 two control-group classes of its own.
@@ -75,9 +75,6 @@ class _EventMixin:
 
     def isPlayer(self, pids: Any) -> bool:
         return False
-
-    def replaceStrings(self, input: Any, split: bool = False) -> str:
-        return compat.clean_name(input, split)
 
 
 class _GameEventMixin(_EventMixin):
@@ -262,17 +259,10 @@ class _UnitMixin:
         died_at = self.died_at  # type: ignore[attr-defined]
         return None if died_at is None else died_at / LOOPS_PER_SECOND
 
-    @property
-    def nameC(self) -> str:
-        return compat.clean_name(self.name, True)  # type: ignore[attr-defined]
-
-    def replaceStrings(self, input: Any, split: bool = False) -> str:
-        return compat.clean_name(input, split)
-
 
 class _PlayerMixin:
-    def replaceStrings(self, input: Any, split: bool = False) -> str:
-        return compat.clean_name(input, split)
+    """The fork's ``nameC`` and ``replaceStrings`` members are gone (CR-023, P2): the layer cleans names with
+    ``compat.clean_name`` / ``compat.object_text`` and its fix set, so no fix-less cleaning is left on the objects."""
 
 
 class _ParticipantMixin(_PlayerMixin):
