@@ -74,6 +74,12 @@ MODES_MISSING_FROM_THE_DATAPACK = {
 }
 
 
+#: CR-023 P10b (D18a): structures sc2reader's datapack marks neither buildings nor army (OMIT_UNITS meant them as
+#: "Shield battery" / "Extractor Rich", which never match), and the unitsInfo.csv row each builds as. Here, not in
+#: ``analysis``, since CR-068 (P10c): ``fork_api``'s death rules read it too.
+P10B_STRUCTURES = {"ShieldBattery": "Shield Battery", "ExtractorRich": "Extractor"}
+
+
 def _datapack_names() -> set[str]:
     from sc2reader.data import unit_lookup  # type: ignore[import-untyped]
 

@@ -187,15 +187,22 @@ class _UnitDiedEventMixin(_TrackerEventMixin):
     def isWorker(self) -> bool:
         return bool(self.unit.is_worker)  # type: ignore[attr-defined]
 
-    def countableUnitDeath(self) -> bool:
+    def countableUnitDeath(self, fixes: frozenset[str] = frozenset()) -> bool:
+        """The fork's rule with no ``fixes``. CR-068 P10c (in ``fixes``): the two structures sc2reader's datapack
+        marks neither buildings nor army (``compat.P10B_STRUCTURES``) count too, as a building would."""
         u: Any = self.unit  # type: ignore[attr-defined]
         return bool(
-            (u.is_army or u.is_building or u.name in ["LurkerBurrowed", "Drone", "Probe", "SCV"])
+            (u.is_army or u.is_building or u.name in ["LurkerBurrowed", "Drone", "Probe", "SCV"] or _p10c(u, fixes))
             and not u.name.startswith(("Broodling", "RichMineral", "Mineral", "Force Field"))
         )
 
-    def buildingDeath(self) -> bool:
-        return bool(self.unit.is_building)  # type: ignore[attr-defined]
+    def buildingDeath(self, fixes: frozenset[str] = frozenset()) -> bool:
+        """The fork's rule with no ``fixes``; under CR-068 P10c the two structures are buildings too."""
+        return bool(self.unit.is_building or _p10c(self.unit, fixes))  # type: ignore[attr-defined]
+
+
+def _p10c(unit: Any, fixes: frozenset[str]) -> bool:
+    return "P10c" in fixes and unit.name in compat.P10B_STRUCTURES
 
 
 class _UnitInitEventMixin(_TrackerEventMixin):
