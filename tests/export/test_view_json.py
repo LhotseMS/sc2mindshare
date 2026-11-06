@@ -101,8 +101,11 @@ VIEW_NET_DELTA = [
     {"select": {"type": "Battle"}, "fields": ["name"], "count": 30},
     # P13: a Battle's end time is hh:mm:ss (the Harrasment and Scouting times are in their own net test)
     {"select": {"type": "Battle"}, "fields": ["properties.end time"], "count": 30},
-    # B12: detail lists only properties that exist
+    # B12: detail lists only properties that exist; G2 adds the Game entry to it
     {"select": {"ID": "detail"}, "fields": [""], "count": 1},
+    # G2 (CR-067): the Game node's seven properties and their data types
+    {"select": {"type": "Game"}, "fields": ["properties"], "count": 1},
+    {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1},
     # B3: every Ability emits combat, queued and minimap
     {"select": {"type": "Ability"}, "fields": ["properties.combat", "properties.queued", "properties.minimap"], "count": 215},
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
@@ -140,7 +143,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
     assert VIEW_LEDGER == (
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
-        "P10b-view", "S7-view", "P10c-view",
+        "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view",
     )  # fmt: skip
 
 
@@ -291,7 +294,7 @@ def test_document_key_order_and_config_parts(document):
 def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_description(document):
     """A9 (P3d) as amended by D3c (P3e): the bug-faithful document keeps the legacy wrap; the current one
     shows 00:00:00 with the same property keys as every other Building, and the real start in the
-    description. dataTypes is the workbook's, unchanged."""
+    description. dataTypes keeps the workbook's entries unchanged (CR-067's G2 adds the Game types after them)."""
     faithful = {n["ID"]: n for n in document["faithful"]["nodes"]}
     current = {n["ID"]: n for n in document["current"]["nodes"]}
     # N1: lilTiGGer's main base was a Hatchery then (the bug-faithful document names its final type, Hive)
@@ -302,7 +305,9 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
         assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
         assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind_now}
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
-    assert document["faithful"]["dataTypes"] == document["current"]["dataTypes"] == load_config()["dataTypes"]
+    workbook = load_config()["dataTypes"]
+    assert document["faithful"]["dataTypes"] == workbook
+    assert {name: document["current"]["dataTypes"][name] for name in workbook} == workbook
 
 
 def _key_lists_per_type(doc):
@@ -460,9 +465,11 @@ def test_b3_the_graph_carries_its_export_fixes():
     from sc2mindshare.analysis.fixes import EXPORT_FIXES, LAYER_FIXES
     from sc2mindshare.analysis.run import AnalysisResult
 
-    assert EXPORT_FIXES == ("B3", "P13", "B12")
+    assert EXPORT_FIXES == ("B3", "P13", "B12", "G2")
     assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
-    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset({"B3", "P13", "B12"})
+    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset(
+        {"B3", "P13", "B12", "G2"}
+    )
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
 
@@ -495,3 +502,77 @@ def test_b12_detail_lists_only_properties_that_exist():
     for n in doc["nodes"]:
         carried.setdefault(n["type"], set()).update(n.get("properties", {}))
     assert not [(d["nodeType"], p) for d in doc["detail"] for p in d["properties"] if p not in carried.get(d["nodeType"], set())]
+
+
+# --- G2 (CR-067): the Game node's seven properties --------------------------------------------------------------
+
+#: The seven Game properties in D24a's order, with their data types (CR-067's table) and Alcyone's values (AC-1).
+GAME_PROPERTIES = (
+    ("date played (UTC)", "string", "2024-07-24 07:55:57"),
+    ("time zone", "typelist", "UTC-5"),
+    ("length", "time[h:m:s]", "00:16:38"),
+    ("game type", "typelist", "1v1"),
+    ("ladder", "bool", True),
+    ("category", "typelist", "Ladder"),
+    ("speed", "typelist", "Faster"),
+)
+
+
+def _game(doc):
+    return next(n for n in doc["nodes"] if n["type"] == "Game")
+
+
+def test_g2_the_game_node_carries_the_seven_properties_in_order(document):
+    """AC-1: exactly these properties, in this order, with Alcyone's values; the workbook view keeps none."""
+    properties = _game(document["current"])["properties"]
+    assert list(properties.items()) == [(name, value) for name, _type, value in GAME_PROPERTIES]
+    assert _game(document["faithful"])["properties"] == {}
+
+
+def test_g2_each_game_property_is_declared_with_its_data_type(document):
+    """AC-4: the seven data types follow the workbook's entries, none of which changes; the bug-faithful list is the
+    workbook's."""
+    workbook = load_config()["dataTypes"]
+    data_types = document["current"]["dataTypes"]
+    assert list(data_types.items()) == list(workbook.items()) + [(name, kind) for name, kind, _value in GAME_PROPERTIES]
+    assert document["faithful"]["dataTypes"] == workbook
+
+
+def test_g2_the_details_list_has_a_game_entry_with_date_and_length(document):
+    """AC-5: a Game entry naming date played (UTC) and length, both carried by the Game node, after the other types'
+    entries, which are B12's list unchanged."""
+    from sc2mindshare.export.mindshare_json import detail_for
+
+    detail = document["current"]["detail"]
+    assert detail[:-1] == detail_for(load_config()["detail"], frozenset({"B12"}))
+    assert detail[-1] == {"nodeType": "Game", "properties": ["date played (UTC)", "length"]}
+    assert set(detail[-1]["properties"]) <= set(_game(document["current"])["properties"])
+    assert not [d for d in document["faithful"]["detail"] if d["nodeType"] == "Game"]
+
+
+def test_g2_the_game_properties_follow_the_graphs_export_fixes():
+    """The view emits them only with the export fix G2 (the bug-faithful graph has none), from the domain's values."""
+    from sc2mindshare.domain.models import FIELDS
+
+    values = dict(
+        zip(FIELDS["Game"], ("Faster", "True", "1v1", "Ladder", "01:05:09", "2024-07-24 07:55:57", "UTC-5"), strict=True)
+    )
+    node = Node("Game", "Game-1", "Ladder Alcyone LE", "d", (), tuple(values.items()), None)
+    assert view.node_view(node)["properties"] == {}
+    fixed = view.node_view(node, frozenset({"G2"}))["properties"]
+    assert fixed == {
+        "date played (UTC)": "2024-07-24 07:55:57",
+        "time zone": "UTC-5",
+        "length": "01:05:09",
+        "game type": "1v1",
+        "ladder": True,
+        "category": "Ladder",
+        "speed": "Faster",
+    }
+    unladdered = dict(values, ladder="False")
+    node = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(unladdered.items()), None)
+    assert view.node_view(node, frozenset({"G2"}))["properties"]["ladder"] is False
+    # Rex's N1 on 6780905: a value that is neither "True" nor "False" fails, instead of reading as false
+    odd = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(dict(values, ladder="true").items()), None)
+    with pytest.raises(KeyError):
+        view.node_view(odd, frozenset({"G2"}))

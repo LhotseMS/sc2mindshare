@@ -37,13 +37,19 @@ class GameNode(SimpleNode):
         else:
             self.timeZone = "UTC".format(replay.time_zone)
 
-        self.datePlayed = replay.date
-        # TODO change format 
-        self.duration = datetime.strptime(str(replay.length), "%M.%S").strftime("%H:%M:%S")
+        if "G1" in self.fixes:  # CR-067 G1: the date in its own format (str() of an aware date adds "+00:00"), the length with its hours
+            self.datePlayed = replay.date.strftime("%Y-%m-%d %H:%M:%S")
+            seconds = int(replay.length.total_seconds())
+            self.duration = f"{seconds // 3600:02d}:{seconds // 60 % 60:02d}:{seconds % 60:02d}"
+        else:
+            self.datePlayed = replay.date
+            # TODO change format
+            self.duration = datetime.strptime(str(replay.length), "%M.%S").strftime("%H:%M:%S")
 
         self.speed = replay.speed
         self.ladder = replay.is_ladder
         self.type = replay.type
+        self.gameType = replay.type  # CR-067 G1: kept apart, since self.type becomes the node's own type below
         self.category = replay.category
 
         self.addImage("{}{}".format(ImageUploader.RESOURCE_URL, heatMapID))
@@ -69,7 +75,7 @@ class GameNode(SimpleNode):
     def getProperties(self, sep):
         return "{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(self.speed, sep,
                                self.ladder, sep,
-                               self.type, sep,
+                               self.gameType if "G1" in self.fixes else self.type, sep,  # CR-067 G1: "1v1", not "Game"
                                self.category, sep,
                                self.duration, sep,
                                self.datePlayed, sep,

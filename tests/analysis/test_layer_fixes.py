@@ -38,7 +38,9 @@ def need(path):
 
 
 def test_the_layer_fixes_in_ledger_order():
-    assert LAYER_FIXES == ("P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c")
+    assert LAYER_FIXES == (
+        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1",
+    )  # fmt: skip
 
 
 # --- the switch itself (Morgan's G6 on acd13bc) -------------------------------------------------------------
@@ -1195,3 +1197,99 @@ def test_p10c_off_the_battles_are_todays(p10c_battles):
     assert all(
         "Shield Battery" not in d for run in ("without", "lone-without", "extend-without") for b in runs[run] for d in b["lost"]
     )
+
+
+# --- G1 (CR-067): the Game node's game type, length and date are its own ------------------------------------------
+
+
+def _game_replay(**overrides):
+    """A stand-in replay for the Game node: Alcyone's values unless overridden."""
+    import datetime
+
+    from sc2reader.utils import Length
+
+    players = [SimpleNamespace(result="Loss", name="lilTiGGer"), SimpleNamespace(result="Win", name="blacksquall")]
+    values = {
+        "map_name": "Alcyone LE",
+        "players": players,
+        "time_zone": -5.0,
+        "date": datetime.datetime(2024, 7, 24, 7, 55, 57, tzinfo=datetime.UTC).replace(tzinfo=None),  # naive, as flavoured
+        "length": Length(seconds=998),
+        "speed": "Faster",
+        "is_ladder": True,
+        "type": "1v1",
+        "category": "Ladder",
+    }
+    return SimpleNamespace(**(values | overrides))
+
+
+def _game_values(game):
+    """The seven values the Game node writes, by the domain's field names (FIELDS["Game"])."""
+    from sc2mindshare.domain.models import FIELDS
+
+    return dict(zip(FIELDS["Game"], game.getProperties(";").split(";")[:-1], strict=True))
+
+
+def test_g1_the_game_type_is_the_replays_and_the_node_stays_a_game():
+    from sc2mindshare.analysis.exports.gameNode import GameNode
+
+    faithful = GameNode(_game_replay(), "", fixes=frozenset())
+    fixed = GameNode(_game_replay(), "", fixes=frozenset({"P9", "G1"}))
+    assert _game_values(faithful)["type"] == "Game"  # the bug: the node's own type overwrote the game type
+    assert _game_values(fixed)["type"] == "1v1"
+    assert faithful.getNodeType() == fixed.getNodeType() == "Game"  # the node is a Game node either way
+
+
+@pytest.mark.parametrize(
+    ("seconds", "text"),
+    [(998, "00:16:38"), (3909, "01:05:09"), (660, "00:11:00"), (0, "00:00:00"), (3599, "00:59:59"), (3600, "01:00:00")],
+)
+def test_g1_the_length_keeps_its_hours(seconds, text):
+    """AC-3: a game of 1 h 5 min 9 s reads 01:05:09 (the legacy strptime('%M.%S') fails from an hour on)."""
+    from sc2reader.utils import Length
+
+    from sc2mindshare.analysis.exports.gameNode import GameNode
+
+    game = GameNode(_game_replay(length=Length(seconds=seconds)), "", fixes=frozenset({"G1"}))
+    assert _game_values(game)["duration"] == text
+    if seconds < 3600:  # the bug-faithful text, where the legacy code works at all
+        assert _game_values(GameNode(_game_replay(length=Length(seconds=seconds)), "", fixes=frozenset()))["duration"] == text
+
+
+def test_g1_the_date_is_written_with_its_own_format_never_str():
+    """AC-2: the replay's UTC date as YYYY-MM-DD HH:MM:SS, also when the datetime is time-zone-aware (CR-064 would
+    otherwise add "+00:00" through str())."""
+    import datetime
+
+    from sc2mindshare.analysis.exports.gameNode import GameNode
+
+    aware = datetime.datetime(2024, 7, 24, 7, 55, 57, tzinfo=datetime.UTC)
+    for date in (aware.replace(tzinfo=None), aware):
+        game = GameNode(_game_replay(date=date), "", fixes=frozenset({"P9", "G1"}))
+        assert _game_values(game)["date"] == "2024-07-24 07:55:57"
+        assert game.getNodeDescription().startswith("Played on 2024-07-24 07:55:57 UTC for 00:16:38.")
+    assert _game_values(GameNode(_game_replay(date=aware), "", fixes=frozenset()))["date"] == "2024-07-24 07:55:57+00:00"
+
+
+@pytest.mark.parametrize(
+    ("replay", "values"),
+    [
+        (
+            "Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay",
+            {"date": "2024-07-24 07:55:57", "timezone": "UTC-5", "duration": "00:16:38", "type": "1v1", "ladder": "True",
+             "category": "Ladder", "speed": "Faster"},
+        ),
+        (
+            "200k dmg spine crawler ZvP.SC2Replay",
+            {"date": "2021-02-12 13:44:00", "timezone": "UTC+1", "duration": "00:11:00"},
+        ),
+    ],
+)  # fmt: skip
+def test_g1_the_game_values_on_the_replays(replay, values):
+    """AC-1 and AC-2 at the domain: the replay's own UTC date with no offset applied, the recorder's offset beside it."""
+    path = MS_SC / replay
+    need(path)
+    with contextlib.redirect_stdout(io.StringIO()):
+        graph = to_graph(analyse(load_replay(path), MS_SC))
+    game = next(n for n in graph.nodes if n.kind == "Game")
+    assert {name: game.value(name) for name in values} == values

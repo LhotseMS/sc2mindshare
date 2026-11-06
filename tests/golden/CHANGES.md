@@ -572,3 +572,42 @@ Since P10b both are structures (Building nodes), but their deaths are still not 
 - P10c correction (Stefan's D34a): a destroyed Rich Extractor is valued exactly as a normal Extractor of the same race, as sc2reader's datapack values it (a Zerg Extractor: 75 minerals, 25 plus the Drone's 50), not at unitsInfo.csv's 25 as the entry above says. The Shield Battery stays at its table row, 100. No golden changes: no Rich Extractor dies on the three replays (and no Extractor; checked again on the regenerated goldens).
 
 - P10c correction to the note above: normal Extractors do die on the replays (Alcyone: two of lilTiGGer's at 16:07 and 16:08; spine: one at 1:24; spores: two with no killer), but their valuation path is the one D34a reuses and does not change; it is Rich Extractors that never die there. Still no golden changes (the regen checks below).
+
+
+### G1: the Game node's game type and length are its own (CR-067; no golden changes)
+
+The layer's Game node (`analysis/exports/gameNode.py`) sets `self.type = replay.type` and then `self.type = "Game"` (the node's own type), so the value it writes for the game type is always "Game"; and it writes the length with `datetime.strptime(str(replay.length), "%M.%S")`, which fails for a game of an hour or more (`%M` stops at 59) and has no hours. Fix (CR-067, D27a): the game type is the replay's (`replay.type`, "1v1"), kept apart from the node's type; the length is hh:mm:ss of the replay's length, hours included ("01:05:09"); and the date played is written with an explicit `YYYY-MM-DD HH:MM:SS` format of the replay's UTC date, never `str()` (CR-064's time-zone-aware dates would add "+00:00"). Applied inside the layer as ledger id `G1`. Predicted: no golden changes. The workbook view emits no Game values, and Alcyone's description already reads "for 00:16:38" with the same date text; without G1 (the bug-faithful run) the CSV oracle keeps "Game" and the legacy length text. G2 below shows the values.
+
+
+### G2: the Game node's seven properties are in the Mindshare file (CR-067; D20a, D24a, D27a)
+
+The workbook view writes no Game properties, so the Mindshare file carries none of the values the layer computes for the game (CR-023 P9's record: "the document emits no Game properties"). Fix (Stefan's D20a, D24a; story CR-067): with the export fix `G2` the Game node carries seven properties, in this order: `date played (UTC)` (the replay's UTC date, "2024-07-24 07:55:57"), `time zone` (the recorder's offset, P9's "UTC-5"), `length` ("00:16:38", G1), `game type` ("1v1", G1), `ladder` (true, a boolean), `category` ("Ladder") and `speed` ("Faster"); `dataTypes` gains one entry for each (string, typelist, time[h:m:s], typelist, bool, typelist, typelist), after the workbook's, none of which changes; and `detail` gains a Game entry with `date played (UTC)` and `length`, after the others. An export fix, switched on with the graph fixes, so the bug-faithful document (G-VIEW-1, G-SNAP-1) is unchanged. The schema (`schema/mindshare-graph.schema.json`) types the seven Game properties and requires them (TD-16: further properties stay allowed). No size, position, link or other node changes (the Game node's size is fixed). Predicted from the property table in CR-067 and Alcyone's replay (date, time zone -5, length, "1v1", ladder, "Ladder", "Faster"). On `200k dmg spine crawler ZvP`: date played (UTC) 2021-02-12 13:44:00, time zone UTC+1, length 00:11:00 (spine has no current goldens).
+
+```json
+{"entry": "G2-view", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "c5307174cc66f2d3e37cf6c17af9739e06028a13043f6e32053e02ea42fac6f7", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2-snap-compressed", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "07e79ad24cfc5abc3ac8b8d5f9e0040525831190227ccbf9790b92ea96e47ed6", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2-snap-linear", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "0aae07586c81b3b9c1f0bc2c9190ab3bab39ccfc9d4b6ba2ea4ccfc4e85a6cfd", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+
+### G2r: G2 again, on CR-068's goldens (CR-067 landing)
+
+CR-068 lands before CR-067, so the merge of cr-068 into cr-067 kept CR-068's goldens, which lack G2; the three G2 entries above have the pre-CR-068 bases and can no longer apply. G2r restates them unchanged on CR-068's goldens: the same seven Game properties, `dataTypes` and `detail` changes, and nothing else (P10c touches only Battle nodes, G2 only the Game node and the two config records, so the two do not meet). The regeneration follows in its own commit.
+
+```json
+{"entry": "G2r-view", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "3a5e2762a7d6a697d3063cc8198b2e0f247cad0504d240785759021d14e0e302", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2r-snap-compressed", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "3d617740bff9eca46bb2c82d4b4a6ee47f790583221bd896a810003b1512f8e5", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "G2r-snap-linear", "task": "CR-067", "defect": "G2 the Game node's properties are not in the Mindshare file (D20a, D24a); restated on CR-068's goldens", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "74c1513a590c5223352e4c1e98c4e2839c65c00dee9745b45544bdb4cbd3b0a2", "changes": [{"select": {"type": "Game"}, "fields": ["properties.date played (UTC)", "properties.time zone", "properties.length", "properties.game type", "properties.ladder", "properties.category", "properties.speed"], "count": 1}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}, {"select": {"ID": "detail"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```

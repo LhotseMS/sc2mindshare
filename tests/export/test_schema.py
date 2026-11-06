@@ -190,6 +190,11 @@ def test_new_node_types_are_allowed(doc):
         ("Building-3", lambda n: n["position"].pop("z"), "missing required property 'z'"),
         ("Building-3", lambda n: n.pop("description"), "missing required property 'description'"),
         ("Supply Block-0", lambda n: n.update(size=2.5), "is not of type array"),
+        # G2 (CR-067): the Game node's seven properties are required and typed
+        ("Game-1", lambda n: n["properties"].update(ladder="true"), "is not of type boolean"),
+        ("Game-1", lambda n: n["properties"].pop("length"), "missing required property 'length'"),
+        ("Game-1", lambda n: n["properties"].update({"date played (UTC)": 2024}), "is not of type string"),
+        ("Game-1", lambda n: n["properties"].pop("game type"), "missing required property 'game type'"),
     ],
 )
 def test_existing_properties_stay_required_and_typed(doc, node_id, change, message):
