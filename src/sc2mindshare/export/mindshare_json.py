@@ -15,7 +15,7 @@ from typing import Any
 
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.models import Graph
-from sc2mindshare.export.view import GAME_PROPERTIES, link_view, node_view
+from sc2mindshare.export.view import GAME_PROPERTIES, STEP_PROPERTIES, link_view, node_view
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutResult
 
@@ -119,13 +119,16 @@ GAME_DETAIL = ("date played (UTC)", "length")
 
 
 def data_types_for(data_types: dict[str, str], export_fixes: frozenset[str]) -> dict[str, str]:
-    """The workbook's ``dataTypes``; with the export fix ``G2`` (CR-067) the Game properties' types follow, after the
-    workbook's entries, none of which changes (their names are new: ``view.GAME_PROPERTIES``)."""
-    if "G2" not in export_fixes:
-        return data_types
-    added = {name: data_type for name, _field, data_type in GAME_PROPERTIES}
+    """The workbook's ``dataTypes``; with the export fix ``G2`` (CR-067) the Game properties' types follow, and with
+    ``BO1`` (CR-034) the step properties' types, after the workbook's entries, none of which changes (their names are
+    new: ``view.GAME_PROPERTIES``, ``view.STEP_PROPERTIES``)."""
+    added: dict[str, str] = {}
+    if "G2" in export_fixes:
+        added |= {name: data_type for name, _field, data_type in GAME_PROPERTIES}
+    if "BO1" in export_fixes:
+        added |= dict(STEP_PROPERTIES)
     if clash := sorted(set(added) & set(data_types)):
-        raise ValueError(f"G2: the Game properties {clash} are already declared in dataTypes")
+        raise ValueError(f"the added properties {clash} are already declared in dataTypes")
     return data_types | added
 
 

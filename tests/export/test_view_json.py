@@ -113,6 +113,14 @@ VIEW_NET_DELTA = [
     {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1},
     # P10c: blacksquall's Shield Batteries count in Battle-12 and Battle-27 (their descriptions are among P2's 12)
     {"select": {"type": "Battle"}, "fields": ["properties.dead", "properties.p2 dead"], "count": 2},
+    # BO1 (CR-034): the build order in each Player's description, the step properties on every Upgrade (Building and
+    # Units are set aside: their net effect is in their own tests) and their data types (with G2's, above)
+    {"select": {"type": "Player"}, "fields": ["description"], "count": 2},
+    {
+        "select": {"type": "Upgrade"},
+        "fields": ["properties.step #", "properties.at supply", "properties.started at", "properties.steps"],
+        "count": 8,
+    },
 ]
 
 
@@ -143,7 +151,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
     assert VIEW_LEDGER == (
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
-        "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view",
+        "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
     )  # fmt: skip
 
 
@@ -260,9 +268,17 @@ def test_units_net_of_the_ledger():
 def test_buildings_net_of_the_ledger():
     """P10b adds Building nodes for blacksquall's 2 Shield Batteries and lilTiGGer's Extractor Rich (Building-12, -33
     and -101), renumbering the later ones; without them the Buildings pair with G-VIEW-1's in order, player by
-    player, and the 23 the other entries changed (P3d/P3e, P11, N1) are the only ones whose fields differ."""
+    player, and the 23 the other entries changed (P3d/P3e, P11, N1) are the only ones whose fields differ. BO1
+    (CR-034) adds the 17 building-morph nodes after them (Building-114 to -130) and the four step properties on
+    every Building, which this net check sets aside (their values are tests/analysis/test_build_steps.py's)."""
     old = [n for n in _doc("G-VIEW-1.json")["nodes"] if n["type"] == "Building"]
     new = [n for n in _doc("G-VIEW-current.json")["nodes"] if n["type"] == "Building"]
+    morphs = [n for n in new if int(n["ID"].split("-")[1]) > 113]
+    assert [n["ID"] for n in morphs] == [f"Building-{i}" for i in range(114, 131)]
+    assert sorted({n["properties"]["type"] for n in morphs}) == ["Greater Spire", "Hive", "Lair", "Warp Gate"]
+    steps = ("step #", "at supply", "started at", "steps")
+    assert all(list(n["properties"])[-4:] == list(steps) for n in new)
+    new = [{**n, "properties": {k: v for k, v in n["properties"].items() if k not in steps}} for n in new if n not in morphs]
     added = {
         n["ID"]: (n["name"], n["properties"]["player"])
         for n in new
@@ -303,7 +319,15 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
         ("Building-2", "blacksquall", "Nexus", "Nexus"),
     ):
         assert faithful[node_id]["properties"] == {"time": "23:58:49", "player": player, "type": kind}
-        assert current[node_id]["properties"] == {"time": "00:00:00", "player": player, "type": kind_now}
+        assert current[node_id]["properties"] == {
+            "time": "00:00:00",
+            "player": player,
+            "type": kind_now,
+            "step #": 0,  # BO1 (CR-034): the main bases hold no step
+            "at supply": 0,
+            "started at": "00:00:00",
+            "steps": "",
+        }
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
     workbook = load_config()["dataTypes"]
     assert document["faithful"]["dataTypes"] == workbook
@@ -464,11 +488,13 @@ def test_ability_flags_are_never_emitted_b3_and_scouting_time_b9():
 def test_b3_the_graph_carries_its_export_fixes():
     from sc2mindshare.analysis.fixes import EXPORT_FIXES, LAYER_FIXES
     from sc2mindshare.analysis.run import AnalysisResult
+    from sc2mindshare.domain.exposed import Exposed, GameContext, TimeTables
 
-    assert EXPORT_FIXES == ("B3", "P13", "B12", "G2")
+    assert EXPORT_FIXES == ("B3", "P13", "B12", "G2", "BO1")
     assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
-    assert to_graph(AnalysisResult((), (), None, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset(
-        {"B3", "P13", "B12", "G2"}
+    empty = Exposed(GameContext(0, "", 0, "1v1", 1, False, ()), (), (), (), (), (), (), TimeTables((), (), "", ""))
+    assert to_graph(AnalysisResult((), (), None, empty, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset(
+        {"B3", "P13", "B12", "G2", "BO1"}
     )
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
@@ -531,10 +557,12 @@ def test_g2_the_game_node_carries_the_seven_properties_in_order(document):
 
 def test_g2_each_game_property_is_declared_with_its_data_type(document):
     """AC-4: the seven data types follow the workbook's entries, none of which changes; the bug-faithful list is the
-    workbook's."""
+    workbook's. CR-034's four step properties (BO1) follow them."""
     workbook = load_config()["dataTypes"]
     data_types = document["current"]["dataTypes"]
-    assert list(data_types.items()) == list(workbook.items()) + [(name, kind) for name, kind, _value in GAME_PROPERTIES]
+    steps = [("step #", "int"), ("at supply", "int"), ("started at", "time[h:m:s]"), ("steps", "string")]
+    game = [(name, kind) for name, kind, _value in GAME_PROPERTIES]
+    assert list(data_types.items()) == list(workbook.items()) + game + steps
     assert document["faithful"]["dataTypes"] == workbook
 
 

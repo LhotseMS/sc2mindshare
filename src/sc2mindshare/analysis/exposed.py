@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -49,6 +50,77 @@ UNIT_ALIASES = {
     "Ventral Sacs Overlord": "OverlordTransport",
     "Stasis Ward": "OracleStasisTrap",
 }
+#: CR-034 (D63a): upgradesInfo.csv rows named neither by the upgrade id the replay writes nor by its letters: the
+#: id (or its part before ``LevelN``) and the row's name (before `` Level N``).
+#: Rows the game no longer has, or whose replay id is not known here, have no alias (Hurricane Engines, Rapid Fire
+#: Launchers, Nitro Packs, Enhanced Munitions, Mag-Field Launchers, Recalibrated Explosives, Moebius Reactor,
+#: Transformation Servos, Structure Armor, Graviton Catapult, Flying Locusts): an id that reaches none is logged (D60a).
+UPGRADE_ALIASES = {
+    # Zerg
+    "overlordspeed": "Pneumatized Carapace",
+    "overlordtransport": "Ventral Sacs",
+    "zerglingattackspeed": "Adrenal Glands",
+    "CentrificalHooks": "Centrifugal Hooks",  # the game's own spelling
+    "LurkerRange": "Seismic Spines",
+    "DiggingClaws": "Adaptive Talons",
+    "InfestorEnergyUpgrade": "Pathogen Glands",
+    "MicrobialShroud": "Evolve Microbial Shroud",
+    "ZergMeleeWeapons": "Melee Attacks",
+    "ZergMissileWeapons": "Missile Attacks",
+    "ZergFlyerWeapons": "Flyer Attacks",
+    "ZergGroundArmors": "Ground Carapace",
+    "ZergFlyerArmors": "Flyer Carapace",
+    # Protoss
+    "AdeptPiercingAttack": "Resonating Glaives",
+    "DarkTemplarBlinkUpgrade": "Shadow Stride",
+    "ObserverGraviticBooster": "Gravitic Boosters",
+    "PhoenixRangeUpgrade": "Anion Pulse-Crystals",
+    "VoidRaySpeedUpgrade": "Flux Vanes",
+    "TempestGroundAttackUpgrade": "Tectonic Destabilizers",
+    # Terran
+    "ShieldWall": "Combat Shield",
+    "PunisherGrenades": "Concussive Shells",
+    "BansheeCloak": "Cloaking Field",
+    "BansheeSpeed": "Hyperflight Rotors",
+    "DrillClaws": "Drilling Claws",
+    "TerranBuildingArmor": "Neosteel Armor",
+    "HighCapacityBarrels": "Infernal Pre-Igniter",
+    "MedivacIncreaseSpeedBoost": "Rapid Reignition System",
+    "MedivacCaduceusReactor": "Caduceus Reactor",
+    "RavenCorvidReactor": "Corvid Reactor",
+    "BattlecruiserEnableSpecializations": "Weapon Refit",
+    "BattlecruiserBehemothReactor": "Behemoth Reactor",
+    "CycloneLockOnDamageUpgrade": "Mag-Field Accelerator",
+}
+
+
+def _squash(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def research_row(upgrade: str, research_times: Iterable[tuple[str, str]]) -> tuple[str, str] | None:
+    """The upgradesInfo.csv row (its name, its time text) of the upgrade id ``upgrade`` (CR-034, D63a), or None.
+
+    The rows are partly ids (``WarpGateResearch``) and partly display names (``Glial Reconstitution``); the
+    replay's ids may start with ``Evolve`` and write ``Armors`` where the sheet has ``Armor``. So: the id itself,
+    then the id squashed to letters and digits against the squashed row names, without ``Evolve``, with
+    ``Armor``, and through ``UPGRADE_ALIASES``."""
+    rows = dict(research_times)
+    if upgrade in rows:
+        return upgrade, rows[upgrade]
+    squashed = {_squash(name): name for name in rows}
+    level = re.search(r"Level\d+$", upgrade)
+    base = upgrade[: level.start()] if level else upgrade
+    candidates = [upgrade, upgrade.removeprefix("Evolve"), upgrade.replace("Armors", "Armor")]
+    if base in UPGRADE_ALIASES:
+        candidates.append(UPGRADE_ALIASES[base] + (level.group() if level else ""))
+    for candidate in candidates:
+        name = squashed.get(_squash(candidate))
+        if name is not None:
+            return name, rows[name]
+    return None
+
+
 #: The sheet's rows for the layer's base names, which are not unit types.
 _BASE_ROW = re.compile(r"(Main base|Natural|\d+(st|nd|rd|th) base)")
 

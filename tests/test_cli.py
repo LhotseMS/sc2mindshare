@@ -191,9 +191,11 @@ def test_with_analysis_adds_the_analysis_object_and_nothing_else(tmp_path, confi
     assert analysis["game"]["base_build"] == 92440 and len(analysis["units"]) == 1232
 
 
-def test_the_exposed_values_are_computed_only_when_asked_for(tmp_path, config, monkeypatch):
-    """Morgan's G6 N1 on c312162: a failure in expose() (or in reading its tables) never breaks the
-    default build; with --with-analysis it fails the build like any analysis failure."""
+def test_the_exposed_values_feed_every_build_and_a_failure_in_them_fails_it(tmp_path, config, monkeypatch):
+    """CR-034 (D47a): the build steps are on by default and are made from the exposed values, so every build
+    computes them (before CR-034 only --with-analysis did: Morgan's G6 N1 on c312162). A failure in expose() (or
+    in reading its tables) fails the build like any analysis failure, with or without --with-analysis, and
+    leaves no output."""
     need(ALCYONE)
     from sc2mindshare.analysis import run as analysis_run
 
@@ -201,15 +203,12 @@ def test_the_exposed_values_are_computed_only_when_asked_for(tmp_path, config, m
         raise RuntimeError("expose broke")
 
     monkeypatch.setattr(analysis_run, "expose", broken)
-    plain = tmp_path / "plain" / "graph.json"
-    plain.parent.mkdir()
-    code, _, stderr = run("build", ALCYONE, "--out", plain, "--config-root", config)
-    assert (code, stderr) == (0, "")
-    assert plain.read_text(encoding="utf-8") == (GOLDEN / "G-SNAP-current-compressed.json").read_text(encoding="utf-8")
-    asked = tmp_path / "asked" / "graph.json"
-    asked.parent.mkdir()
-    code, _, stderr = run("build", ALCYONE, "--out", asked, "--config-root", config, "--with-analysis")
-    assert code == 1 and "RuntimeError: expose broke" in stderr
+    for label, extra in (("plain", ()), ("asked", ("--with-analysis",))):
+        out = tmp_path / label / "graph.json"
+        out.parent.mkdir()
+        code, _, stderr = run("build", ALCYONE, "--out", out, "--config-root", config, *extra)
+        assert code == 1 and "RuntimeError: expose broke" in stderr
+        assert not out.exists()
 
 
 # --- CR-069: the clock record and --clock-server ------------------------------------------------------------------------
@@ -234,7 +233,7 @@ def test_ac11_without_a_record_the_build_succeeds_without_clocks_and_says_so(tmp
     code, _, stderr = run("build", ALCYONE, "--out", out, "--config-root", config)
     assert code == 0
     warnings = _clock_warnings(stderr)
-    assert len(warnings) == 70 and all("sc2mindshare upload-clocks" in w for w in warnings)
+    assert len(warnings) == 71 and all("sc2mindshare upload-clocks" in w for w in warnings)  # 70 before CR-034
     assert "no clock record" in stderr
     doc = json.loads(out.read_text(encoding="utf-8"))
     assert [n for n in doc["nodes"] if n["type"] == "image"] == []
@@ -245,7 +244,7 @@ def test_ac8_an_unreadable_record_leaves_the_build_without_clocks_and_the_file_a
     record = config / "ClockImageRecord.csv"
     record.write_text("not,a,record\n", encoding="utf-8")
     code, _, stderr = run("build", ALCYONE, "--out", tmp_path / "graph.json", "--config-root", config)
-    assert code == 0 and "cannot read the clock record" in stderr and len(_clock_warnings(stderr)) == 70
+    assert code == 0 and "cannot read the clock record" in stderr and len(_clock_warnings(stderr)) == 71  # 70 before CR-034
     assert record.read_text(encoding="utf-8") == "not,a,record\n"
 
 
@@ -257,7 +256,7 @@ def test_ac5_the_clock_server_picks_its_own_rows(tmp_path, config):
     other = tmp_path / "other" / "graph.json"
     other.parent.mkdir()
     code, _, stderr = run("build", ALCYONE, "--out", other, "--config-root", config, "--clock-server", "http://localhost:3043")
-    assert code == 0 and len(_clock_warnings(stderr)) == 70
+    assert code == 0 and len(_clock_warnings(stderr)) == 71  # 70 before CR-034
 
 
 def test_the_clock_server_must_be_local(tmp_path, config):
