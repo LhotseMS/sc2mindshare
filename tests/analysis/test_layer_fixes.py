@@ -1366,6 +1366,8 @@ def uncounted_overlord_deaths():
     def uncounted(self, fixes=frozenset()):
         return False if type_at(self.unit, self.frame) == "Overlord" else original(self, fixes)
 
+    others = {}  # every node but the supply blocks, and every link, per patched run (Morgan's finding 4 on F1)
+
     def series(fixes, patched):
         if patched:
             _UnitDiedEventMixin.countableUnitDeath = uncounted
@@ -1374,10 +1376,17 @@ def uncounted_overlord_deaths():
                 result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
         finally:
             _UnitDiedEventMixin.countableUnitDeath = original
+        if patched:
+            graph = to_graph(result, mixed=fixes != LAYER_FIXES)
+            others["F1" if "F1" in fixes else "without F1"] = (
+                [n for n in graph.nodes if n.kind != "Supply Block"],
+                list(graph.links),
+            )
         return [(p.player, p.time, p.supply, p.limit) for p in result.exposed.supply]
 
     without_f1 = tuple(f for f in LAYER_FIXES if f != "F1")
-    return {"as it is": series(LAYER_FIXES, False), "F1": series(LAYER_FIXES, True), "without F1": series(without_f1, True)}
+    out = {"as it is": series(LAYER_FIXES, False), "F1": series(LAYER_FIXES, True), "without F1": series(without_f1, True)}
+    return out | {"others": others}
 
 
 def _drops_of_8(series):
@@ -1394,3 +1403,12 @@ def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncoun
     s = uncounted_overlord_deaths
     assert s["F1"] == s["as it is"]
     assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8
+
+
+def test_f1_an_uncounted_provider_death_changes_only_the_supply(uncounted_overlord_deaths):
+    """Morgan's finding 4 on F1: with the 8 Overlord deaths uncounted, F1 changes the supply series and the supply
+    blocks only: the battles, the Units nodes (counts and totals) and every other node and link are the same."""
+    others = uncounted_overlord_deaths["others"]
+    nodes, links = others["F1"]
+    assert (nodes, links) == others["without F1"]
+    assert [n for n in nodes if n.kind == "Battle"] and [n for n in nodes if n.kind == "Units"]
