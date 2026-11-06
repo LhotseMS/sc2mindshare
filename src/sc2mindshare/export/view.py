@@ -109,10 +109,10 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
     }
     props: dict[str, Any] = {}
     if node.kind not in ("Game", "Player"):
-        if v["time"] != "":
-            props["time"] = hhmmss(v["time"])
-        if v["player"] != "":
-            props["player"] = v["player"]
+        # CR-063 (D4a, in both documents): always written, a blank as "" (the workbook left a blank out), so every
+        # node of a type has the same properties; Mindshare accepts the blank (AC-3). A time is never blank.
+        props["time"] = hhmmss(v["time"])
+        props["player"] = v["player"]
     if node.images:
         view["images"] = list(node.images)
     view["size"] = [2.65, 1]
@@ -133,8 +133,7 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
         props["type"] = v["type"]
         if "B3" in export_fixes:  # CR-023 B3: the flags the workbook never emitted, as booleans
             props |= {flag: v[flag] == "True" for flag in ("combat", "queued", "minimap")}
-        if v["target"] != "":
-            props["target"] = v["target"]
+        props["target"] = v["target"]  # CR-063: always, last; a blank as ""
         view["size"] = [1.6, 0.88]
     elif kind in ("Building", "Initiated"):
         props["type"] = v["type"]

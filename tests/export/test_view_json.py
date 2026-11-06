@@ -604,3 +604,93 @@ def test_g2_the_game_properties_follow_the_graphs_export_fixes():
     odd = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(dict(values, ladder="true").items()), None)
     with pytest.raises(KeyError):
         view.node_view(odd, frozenset({"G2"}))
+
+
+# --- CR-063: every node of a type carries the same properties (a blank player or target is "") -------------
+
+
+def _named(kind, node_id, values):
+    """A node with its own ID, built from the legacy text through the adapter; its start is its time."""
+    h, m, s = (int(p) for p in dict(values)["time"].split(":"))
+    typed, begins = typed_values(node_id, kind, values, h * 3600 + m * 60 + s)
+    return Node(kind, node_id, "n", "d", (), typed, begins)
+
+
+def _ability(node_id, target, time="00:03:00"):
+    return _named(
+        "Ability",
+        node_id,
+        [
+            ("time", time),
+            ("player", "p"),
+            ("type", "SpawnLarva"),
+            ("combat", "False"),
+            ("queued", "False"),
+            ("minimap", "False"),
+            ("target", target),
+        ],
+    )
+
+
+def _building(node_id, player):
+    return _named("Building", node_id, [("time", "00:01:00"), ("player", player), ("type", "Spawning Pool")])
+
+
+@pytest.mark.parametrize(
+    ("fixes", "keys"),
+    [
+        (frozenset(), ("time", "player", "type", "target")),
+        (frozenset({"B3"}), ("time", "player", "type", "combat", "queued", "minimap", "target")),
+    ],
+)
+def test_s1_an_ability_without_a_target_carries_a_blank_target_last(fixes, keys):
+    """CR-063 AC-1 (D4a: in the workbook-faithful document, no export fix, and in the current one, B3)."""
+    targeted = view.node_view(_ability("Ability-4", "Hatchery"), fixes)["properties"]
+    blank = view.node_view(_ability("Ability-12", ""), fixes)["properties"]
+    assert tuple(targeted) == keys and tuple(blank) == keys
+    assert targeted["target"] == "Hatchery" and blank["target"] == ""
+    # a target of an unknown unit type reads "None" (today's behaviour, kept): written as that text
+    assert view.node_view(_ability("Ability-13", "None"), fixes)["properties"]["target"] == "None"
+
+
+def test_s3_a_node_without_a_player_carries_a_blank_player_second():
+    """CR-063 AC-2 (D3a: the player only; a node cannot exist without a time)."""
+    for fixes in (frozenset(), frozenset({"B3"})):
+        named = view.node_view(_building("Building-1", "p"), fixes)["properties"]
+        blank = view.node_view(_building("Building-12", ""), fixes)["properties"]
+        assert list(named.items()) == [("time", "00:01:00"), ("player", "p"), ("type", "Spawning Pool")]
+        assert list(blank.items()) == [("time", "00:01:00"), ("player", ""), ("type", "Spawning Pool")]
+    battle = view.node_view(
+        _named(
+            "Battle",
+            "Battle-1",
+            [
+                ("time", "00:02:02"),
+                ("player", "Common"),
+                ("dead", "1"),
+                ("p1 dead", "1"),
+                ("p2 dead", "0"),
+                ("supply dead", "0.5"),
+                ("end time", "00:02:02"),
+            ],
+        )
+    )
+    assert battle["properties"]["player"] == "Common"
+    player = Node(
+        "Player", "Player-1", "p", "d", (), (("name", "p"), ("race", "Zerg"), ("region", "eu"), ("subregion", "1")), None
+    )
+    assert view.node_view(player)["properties"] == {}  # Game and Player nodes carry no time and no player
+    # the invariant AC-2 relies on: a node without a time cannot be built
+    with pytest.raises(ValueError, match="Building-12: 'time' must be a GameTime"):
+        Node("Building", "Building-12", "n", "d", (), (("time", ""), ("player", ""), ("type", "Hatchery")), None)
+
+
+@pytest.mark.parametrize("fixes", [frozenset(), frozenset({"B3", "P13", "B12", "G2", "BO1"})])
+def test_s2_a_document_with_a_targetless_ability_builds_with_one_property_set(fixes):
+    """CR-063 AC-1 through ``build_document``: the workbook-faithful and the current document."""
+    from sc2mindshare.domain.models import Graph
+
+    graph = Graph((_ability("Ability-4", "Hatchery"), _ability("Ability-12", "", "00:03:10")), (), export_fixes=fixes)
+    nodes = build_document(graph)["nodes"]
+    assert len({tuple(n["properties"]) for n in nodes}) == 1
+    assert [n["properties"]["target"] for n in nodes] == ["Hatchery", ""]
