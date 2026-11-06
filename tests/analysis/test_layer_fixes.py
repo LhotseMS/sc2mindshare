@@ -1863,3 +1863,124 @@ def test_cr070_ac10_the_bug_faithful_mode_never_stops_for_this(tmp_path, cr070_i
         assert len(graph.nodes) < len(intact.nodes)
     else:
         assert graph == intact
+
+
+# --- CR-072 (Stefan's D2a): a battle records the killer of every big unit it loses -------------------------------
+
+CR072_REPLAYS = {"alcyone": ALCYONE, "spine": SPINE}
+CR072_MODES = {"fixed": LAYER_FIXES, "faithful": ()}
+
+
+@pytest.fixture(scope="module")
+def cr072_runs():
+    """Alcyone and spine analysed with every fix and bug-faithful, each made once, when first asked for: the
+    battles (``BattleNode`` objects of the result) and the run log (the layer's prints)."""
+    from sc2mindshare.analysis.exports.battleNode import BattleNode
+
+    cache = {}
+
+    def get(replay, mode):
+        if (replay, mode) not in cache:
+            path = CR072_REPLAYS[replay]
+            need(path)
+            log = io.StringIO()
+            with contextlib.redirect_stdout(log):
+                result = analyse(load_replay(path), MS_SC, fixes=CR072_MODES[mode])
+            battles = [n for n in result.nodes if isinstance(n, BattleNode)]
+            cache[replay, mode] = (battles, log.getvalue())
+        return cache[replay, mode]
+
+    return get
+
+
+def _cr072_killer_record(battle):
+    """The battle's record of who killed what: every killing unit in ``killersByPlayer``, as a multiset of
+    identities."""
+    from collections import Counter
+
+    return Counter(id(killer) for killers in battle.killersByPlayer.values() for killer in killers)
+
+
+def _cr072_dead(battle):
+    return [e for player in (battle.player1, battle.player2) for e in battle.deadUnitsByPlayer[player]]
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+def test_cr072_ac1_the_oracles_killer_is_recorded(cr072_runs, mode):
+    """AC-1: on Alcyone the Oracle (3 supply) dies at 11:05 in the battle starting at 11:05 (665 s); in both modes
+    that battle records the Oracle's killer, once, and counts one big unit lost for its owner, blacksquall."""
+    from collections import Counter
+
+    battles, _log = cr072_runs("alcyone", mode)
+    (battle,) = [b for b in battles if b.startSec == 665]
+    (oracle,) = _cr072_dead(battle)
+    assert (oracle.unit.name, oracle.unit.owner.name, oracle.unit.killing_unit.name) == ("Oracle", "blacksquall", "Queen")
+    assert _cr072_killer_record(battle) == Counter({id(oracle.unit.killing_unit): 1})
+    assert {p.name: n for p, n in battle.bigUnitsLost.items()} == {"blacksquall": 1, "lilTiGGer": 0}
+
+
+CR072_BIG_DEATHS = {  # (death second, type, killer type, the battle's start in seconds), AC-2
+    "alcyone": [
+        (489, "RavagerCocoon", "VoidRay", 486),
+        (503, "Ravager", "VoidRay", 503),
+        (615, "Disruptor", "Hydralisk", 605),
+        (618, "Immortal", "Roach", 605),
+        (665, "Oracle", "Queen", 665),
+        (924, "VoidRay", "Mutalisk", 917),
+    ],
+    "spine": [(410, "Immortal", "Roach", 381), (432, "Immortal", "Roach", 381)],
+}
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac2_every_battle_records_one_killer_for_each_of_its_dead(cr072_runs, replay, mode):
+    """AC-2: in every battle the record of who killed what holds exactly one entry for each of the battle's dead,
+    its killer (a multiset of unit identities), so it has as many entries as the battle has dead; and each big-unit
+    death's killer is in its battle's record."""
+    from collections import Counter
+
+    battles, _log = cr072_runs(replay, mode)
+    assert len(battles) == {"alcyone": 30, "spine": 16}[replay]
+    for battle in battles:
+        dead = _cr072_dead(battle)
+        assert _cr072_killer_record(battle) == Counter(id(e.unit.killing_unit) for e in dead), battle.startSec
+        assert sum(_cr072_killer_record(battle).values()) == battle.p1dc + battle.p2dc == len(dead)
+    big = sorted(
+        (e.second, e.unit.name, e.unit.killing_unit.name, b.startSec, id(e.unit.killing_unit) in _cr072_killer_record(b))
+        for b in battles
+        for e in _cr072_dead(b)
+        if b.deathCost(e)[2] >= b.BIG_UNIT_SUPPLY_THRESHOLD
+    )
+    assert big == [(*death, True) for death in CR072_BIG_DEATHS[replay]]
+
+
+CR072_BIG_UNITS_LOST = {  # battle start (s) -> {player name: big units lost}; every other battle and player 0
+    "alcyone": {486: {"lilTiGGer": 1}, 503: {"lilTiGGer": 1}, 605: {"blacksquall": 2}, 665: {"blacksquall": 1}, 917: {"blacksquall": 1}},
+    "spine": {381: {"serega": 2}},
+}  # fmt: skip
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac2_every_battle_counts_its_big_units_lost_as_numbers(cr072_runs, replay, mode):
+    """AC-2: every battle counts its big units lost (3 supply or more) as a number for each of its two players:
+    the listed values, and 0 everywhere else."""
+    battles, _log = cr072_runs(replay, mode)
+    for battle in battles:
+        players = (battle.player1, battle.player2)
+        assert set(battle.bigUnitsLost) == set(players), battle.startSec
+        assert all(type(n) is int for n in battle.bigUnitsLost.values()), (battle.startSec, battle.bigUnitsLost)
+        want = CR072_BIG_UNITS_LOST[replay].get(battle.startSec, {})
+        assert {p.name: battle.bigUnitsLost[p] for p in players} == {p.name: want.get(p.name, 0) for p in players}
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac3_the_run_log_reports_no_false_missing_killer(cr072_runs, replay, mode):
+    """AC-3: no run-log line holds "ERR NO KILLING UNIT" (the catch-all's text; the other print in the same loop says
+    only "NO KILLING UNIT"), and the log is 6 lines shorter on Alcyone (86 -> 80) and 2 on spine (4 -> 2)."""
+    _battles, log = cr072_runs(replay, mode)
+    lines = log.splitlines()
+    assert [line for line in lines if "ERR NO KILLING UNIT" in line] == []
+    assert len(lines) == {"alcyone": 80, "spine": 2}[replay]
