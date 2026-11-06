@@ -3871,7 +3871,7 @@
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 1,
-    "total at time": 0,
+    "total at time": 1,
     "supply": 2
    }
   },
@@ -3916,7 +3916,7 @@
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 2,
-    "total at time": 0,
+    "total at time": 2,
     "supply": 4
    }
   },
@@ -4666,7 +4666,7 @@
     "player": "blacksquall",
     "type": "Stalker",
     "count": 2,
-    "total at time": 1,
+    "total at time": 3,
     "supply": 4
    }
   },

@@ -39,7 +39,7 @@ def need(path):
 
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
-        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1",
+        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
     )  # fmt: skip
 
 
@@ -1412,3 +1412,179 @@ def test_f1_an_uncounted_provider_death_changes_only_the_supply(uncounted_overlo
     nodes, links = others["F1"]
     assert (nodes, links) == others["without F1"]
     assert [n for n in nodes if n.kind == "Battle"] and [n for n in nodes if n.kind == "Units"]
+
+
+# --- F2 (Morgan's G6 F2 on N1; Kevin's J7): a type change waits until the unit's interval is written ----------------
+
+
+def test_f2_the_first_unit_of_a_type_that_changes_type_before_its_interval_is_written_moves_its_count(monkeypatch):
+    """The first Widow Mine burrows within its 10 s interval: once the interval is written, it counts as a burrowed
+    Widow Mine, and the Units node of the interval (1 Widow Mine) says 1 at the time."""
+    from sc2mindshare.reader.compat import unit_text_at
+
+    written = []
+
+    class Node:  # a stand-in for UnitsNode: named by the type at the event (N1), counting its events
+        def __init__(self, events, time, seq, fixes):
+            self.name = unit_text_at(events[0].unit, events[0].frame, fixes).strip()
+            self.count = len(events)
+            written.append(self)
+
+        def setCurrenCount(self, total):
+            self.total = total
+
+    monkeypatch.setattr(detectors, "UnitsNode", Node)
+    p = "p"
+    mine = SimpleNamespace(
+        id=7, owner=p, name="WidowMineBurrowed",
+        type_history={100: SimpleNamespace(name="WidowMine"), 300: SimpleNamespace(name="WidowMineBurrowed")},
+    )  # fmt: skip
+    for fixes, counts in (
+        ({"N1", "P2", "F2"}, {"Widow Mine": 0, "Widow Mine Burrowed": 1}),
+        ({"N1", "P2"}, {"Widow Mine": 1}),  # without F2 the move is skipped: the mine stays a Widow Mine
+    ):
+        written.clear()
+        detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+        vars(detector).update(
+            ctx=SimpleNamespace(fixes=frozenset(fixes)),
+            unitTypeCount={p: {}},
+            currentIntervalEvents={p: {"WidowMine": [SimpleNamespace(unit=mine, frame=100, player=p)]}},
+            waitingMoves=[],
+            unitsByPlayerAndType={p: []},
+            lastUnitsByType={p: {}},
+            initDictByPlayer=lambda n: {p: {}},
+            addLink=lambda a, b: None,
+        )
+        burrow = SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed")
+        detector.moveUnitTypeCount(burrow)
+        detector.flushUnitInterval("01:00", 0)
+        assert [(n.name, n.count, n.total) for n in written] == [("Widow Mine", 1, 1)], fixes
+        assert detector.unitTypeCount[p] == counts, fixes
+        assert detector.waitingMoves == []
+
+
+def test_f2_a_unit_already_written_moves_at_once():
+    p = "p"
+    tank = SimpleNamespace(
+        id=8, owner=p, name="SiegeTankSieged",
+        type_history={100: SimpleNamespace(name="SiegeTank"), 900: SimpleNamespace(name="SiegeTankSieged")},
+    )  # fmt: skip
+    other = SimpleNamespace(id=9, owner=p, name="SiegeTank", type_history={800: SimpleNamespace(name="SiegeTank")})
+    for waiting in ({}, {"SiegeTank": [SimpleNamespace(unit=other, frame=800, player=p)]}):  # Morgan's P2 on F2
+        detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+        vars(detector).update(
+            ctx=SimpleNamespace(fixes=frozenset({"N1", "P2", "F2"})),
+            unitTypeCount={p: {"Siege Tank": 2}},
+            currentIntervalEvents={p: waiting},  # another tank of the same owner and type waits: not this one
+            waitingMoves=[],
+        )
+        detector.moveUnitTypeCount(SimpleNamespace(unit=tank, frame=900, unit_type_name="SiegeTankSieged"))
+        assert detector.unitTypeCount[p] == {"Siege Tank": 1, "Sieged Tank": 1}, waiting
+        assert detector.waitingMoves == []
+        assert detector.isWaiting(other) is bool(waiting) and not detector.isWaiting(tank)
+
+
+def test_f2_on_alcyone_the_roach_that_became_a_ravager_in_its_interval_counts_at_its_node(n1_graphs):
+    """Alcyone's Units-162: lilTiGGer's one Roach of 14:50, which became a Ravager Cocoon before the interval was
+    written; it said 0 Roaches at the time before F2."""
+    node = n1_graphs["fixed"]["Units-162"]
+    assert (node.name, node.value("count"), node.value("total at time")) == ("Roach", "1", "1")
+
+
+def _waiting_detector(p, counts, waiting_unit, waiting_type, fixes=("N1", "P2", "F2")):
+    """A SimpleDetector with ``waiting_unit`` finished in the unwritten interval, and Units nodes recorded."""
+    from sc2mindshare.reader.compat import unit_text_at
+
+    class Node:  # a stand-in for UnitsNode: named by the type at the event (N1), counting its events
+        def __init__(self, events, time, seq, fixes):
+            self.name = unit_text_at(events[0].unit, events[0].frame, fixes).strip()
+            self.count = len(events)
+            detector.written.append(self)
+
+        def setCurrenCount(self, total):
+            self.total = total
+
+    detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+    vars(detector).update(
+        ctx=SimpleNamespace(fixes=frozenset(fixes)),
+        unitTypeCount={p: dict(counts)},
+        currentIntervalEvents={p: {waiting_type: [SimpleNamespace(unit=waiting_unit, frame=100, player=p)]}},
+        waitingMoves=[],
+        unitsByPlayerAndType={p: []},
+        lastUnitsByType={p: {}},
+        initDictByPlayer=lambda n: {p: {}},
+        addLink=lambda a, b: None,
+        written=[],
+        Node=Node,
+    )
+    return detector
+
+
+# Morgan's P1 on F2, Stefan's D1a (ledger entry F2b): a waiting unit's death waits in the same queue as its changes.
+
+
+@pytest.mark.parametrize(
+    ("counts", "after"),
+    [
+        ({"Roach": 1, "Ravager Cocoon": 1}, {"Roach": 1, "Ravager Cocoon": 1}),  # old and new type both counted
+        ({"Roach": 1}, {"Roach": 1, "Ravager Cocoon": 0}),  # old counted, new not (Morgan's probe)
+        ({}, {"Roach": 0, "Ravager Cocoon": 0}),  # the first Roach
+    ],
+)
+def test_f2_a_waiting_unit_that_changes_type_and_dies_before_the_flush_is_not_counted_alive(monkeypatch, counts, after):
+    """Morgan's P1 on F2: the Roach finishes, becomes a Ravager Cocoon and dies, all before its interval is
+    written; its death waits in the same queue, in event order, so it leaves the count of its type at death."""
+    p = "p"
+    roach = SimpleNamespace(
+        id=7, owner=p, name="RavagerCocoon",
+        type_history={100: SimpleNamespace(name="Roach"), 300: SimpleNamespace(name="RavagerCocoon")},
+    )  # fmt: skip
+    detector = _waiting_detector(p, counts, roach, "Roach")
+    monkeypatch.setattr(detectors, "UnitsNode", detector.Node)
+    detector.moveUnitTypeCount(SimpleNamespace(unit=roach, frame=300, unit_type_name="RavagerCocoon"))
+    detector.releaseUnitCount(SimpleNamespace(unit=roach, frame=350, player=p))
+    detector.flushUnitInterval("01:00", 0)
+    assert [(n.name, n.count, n.total) for n in detector.written] == [("Roach", 1, counts.get("Roach", 0) + 1)]
+    assert detector.unitTypeCount[p] == after and detector.waitingMoves == []
+
+
+def test_f2_a_written_unit_dies_at_once_and_without_f2_the_death_is_todays(monkeypatch):
+    p = "p"
+    roach = SimpleNamespace(id=7, owner=p, name="Roach", type_history={100: SimpleNamespace(name="Roach")})
+    other = SimpleNamespace(id=8, owner=p, name="Roach", type_history={50: SimpleNamespace(name="Roach")})
+    detector = _waiting_detector(p, {"Roach": 2}, roach, "Roach")
+    detector.releaseUnitCount(SimpleNamespace(unit=other, frame=350, player=p))  # written: leaves at once
+    assert detector.unitTypeCount[p] == {"Roach": 1} and detector.waitingMoves == []
+    faithful = _waiting_detector(p, {}, roach, "Roach", fixes=("N1", "P2"))
+    faithful.releaseUnitCount(SimpleNamespace(unit=roach, frame=350, player=p))  # the fork: no count yet, nothing
+    assert faithful.unitTypeCount[p] == {}
+
+
+def test_f2_a_widow_mine_that_burrows_and_unburrows_in_its_interval_ends_unburrowed(monkeypatch):
+    """Morgan's P3 on F2: the waiting changes are applied in their order."""
+    p = "p"
+    mine = SimpleNamespace(
+        id=7, owner=p, name="WidowMine",
+        type_history={
+            100: SimpleNamespace(name="WidowMine"),
+            300: SimpleNamespace(name="WidowMineBurrowed"),
+            500: SimpleNamespace(name="WidowMine"),
+        },
+    )  # fmt: skip
+    detector = _waiting_detector(p, {}, mine, "WidowMine")
+    monkeypatch.setattr(detectors, "UnitsNode", detector.Node)
+    detector.moveUnitTypeCount(SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed"))
+    detector.moveUnitTypeCount(SimpleNamespace(unit=mine, frame=500, unit_type_name="WidowMine"))
+    detector.flushUnitInterval("01:00", 0)
+    assert [(n.name, n.count, n.total) for n in detector.written] == [("Widow Mine", 1, 1)]
+    assert detector.unitTypeCount[p] == {"Widow Mine": 1, "Widow Mine Burrowed": 0}
+
+
+def test_f2b_on_alcyone_units_born_and_killed_in_their_interval_count_at_their_node(n1_graphs):
+    """The F2b entry (CHANGES.md, Stefan's D1a): the units of a node that die before its interval is written are
+    still counted at the node's time."""
+    nodes = n1_graphs["fixed"]
+    assert [tuple(nodes[i].value(k) for k in ("type", "count", "total at time")) for i in ("Units-169", "Units-92")] == [
+        ("Roach", "2", "2"),
+        ("Stalker", "2", "3"),
+    ]

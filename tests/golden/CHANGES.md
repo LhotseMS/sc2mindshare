@@ -636,3 +636,37 @@ S1 lowers the limit when a provider dies, by its type at the death (`trackers.PR
 ### F1b: an uncounted provider death changes only the supply (CR-023, T22; Morgan's finding 4 on F1; test only, no golden changes)
 
 F1 lets a death the fork does not count still lower the supply limit (`SimpleDetector.providerDied`). Morgan's finding 4 on F1 asked for proof that such a death changes nothing else: it must not reach the battles, the Units nodes' counts and totals, or any other node or link. No product code changes: the F1 fixture (`uncounted_overlord_deaths`, Alcyone with its Overlord deaths made uncounted) also keeps each patched run's graph without its Supply Block nodes, and a new test pins that those nodes and every link are the same with and without F1. Predicted: no golden changes (only a test changes). No entry block.
+
+
+### F2: a type change waits until the unit's interval is written (CR-023, T22; Morgan's G6 F2 on N1; Kevin's J7)
+
+N1 moves a unit from its old type's count to its new type's at the type change (`SimpleDetector.moveUnitTypeCount`), but a unit enters its type's count only when its 10 s interval is written (`flushUnitInterval`). A unit that changes type while it still waits in that interval was moved too early: when its old type had no count yet (the first Widow Mine burrowing, the first Siege Tank sieging) the move was skipped and the unit stayed on its old type; when its old type had a count, the Units node written afterwards left the unit out of its `total at time`. Fix (Kevin's J7, option a, under Stefan's standing instruction): the move of a unit still waiting in the unwritten interval is applied once that interval is written, in the order the changes came; a unit already written moves at once, as before. Applied inside the layer as ledger id `F2`. Predicted before the change (`.scratch/rex/cr-023-f1-f2-v1/probe_f2.py`, and an uncommitted trial of the fix): on Alcyone one unit changes type while waiting, lilTiGGer's Roach of 14:50 (`Units-162`, one Roach), which becomes a Ravager Cocoon before its interval is written; its `total at time` goes from 0 to 1, in the three current goldens, and nothing else changes. On `200k dmg spine crawler ZvP` no unit changes type while waiting; `1000 spores ZvP` stops at L1 before the detector. The related death rule (the first unit of a type that dies while waiting in its interval is never subtracted) is not part of F2.
+
+```json
+{"entry": "F2-view", "task": "CR-023", "defect": "F2 a type change applied before the unit's interval is written (Units-162: one Roach, total at time 0)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "923ea1221356c892f3b660cc67944f9099ded0b5ca6d5247eacc10c88c493e10", "changes": [{"select": {"ID": "Units-162"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2-snap-compressed", "task": "CR-023", "defect": "F2 a type change applied before the unit's interval is written (Units-162: one Roach, total at time 0)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "fbb9a508e1b65e8afddbef42c9607bac57c8bcb44a1ec884a90c624f27b563dd", "changes": [{"select": {"ID": "Units-162"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2-snap-linear", "task": "CR-023", "defect": "F2 a type change applied before the unit's interval is written (Units-162: one Roach, total at time 0)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "6b21c279242b9a555afa3771458c46422796aa6fec90de38e14261466dcb9799", "changes": [{"select": {"ID": "Units-162"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+
+### F2b: F2 also defers a waiting unit's death (CR-023, T22; Morgan's G0 P1 on F2; Stefan's D1a; closes F5 for waiting units)
+
+Addendum to F2: the rule now also defers a waiting unit's death (D1a, closing F5 for waiting units). A countable death of a unit still waiting in the unwritten 10 s interval (`SimpleDetector.releaseUnitCount`, the loop's own death-count code moved into a method) goes into the same queue as its type changes, in event order, and leaves the count of its type at death once the interval is written; before, it was applied at once, so a unit that changed type and died before the flush stayed counted alive, and a unit born and killed inside its interval was taken off before it was ever counted (or not at all, as the first of its type). A death of a unit already written applies at once, as before. Predicted before the change by the parked trial (`.scratch/rex/cr-023-f1-f2-v1/f2-round2-p1-death-queue.patch`, run against the goldens at 203c0c6): on Alcyone two Units nodes change `total at time`, in the three current goldens, and nothing else: `Units-169` (lilTiGGer's 2 Roaches at 16:20) 0 -> 2 and `Units-92` (blacksquall's 2 Stalkers at 07:50) 1 -> 3. Spine and spores as in F2.
+
+```json
+{"entry": "F2b-view", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "407244a0db5c31fe79abd70814f4c4af1c310e617612c9881a129df8b7b82a5f", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2b-snap-compressed", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "e438b43b0bfad6a940fd64fbfb4421113278cec3181c01dccbc12d0d21dac913", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2b-snap-linear", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "b34eb02ae1de2de6fa1c1641e75cb6395b7d70c3ef4ccbb686ba0fee0f7dad3a", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
