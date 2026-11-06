@@ -706,30 +706,38 @@ def _v(kind, node_id, keys, **extra):
     [
         (  # (a) a property one node lacks
             [_v("Building", "Building-1", ["time", "player"]), _v("Building", "Building-12", ["time"])],
-            "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
-            "('Building-12' lacks property 'player'); Mindshare refuses such a file",
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' lacks property 'player'); Mindshare refuses such a file"
+            ),
         ),
         (  # (b) the same names in another order
             [_v("Building", "Building-1", ["time", "player"]), _v("Building", "Building-12", ["player", "time"])],
-            "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
-            "(property 'time' is at position 1 in 'Building-1' but at position 2 in 'Building-12'); "
-            "Mindshare refuses such a file",
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "(property 'time' is at position 1 in 'Building-1' but at position 2 in 'Building-12'); "
+                "Mindshare refuses such a file"
+            ),
         ),
         (  # (c) an extra property
             [
                 _v("Building", "Building-1", ["time", "player", "type"]),
                 _v("Building", "Building-12", ["time", "player", "type", "colour"]),
             ],
-            "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
-            "('Building-12' has property 'colour', which 'Building-1' lacks); Mindshare refuses such a file",
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' has property 'colour', which 'Building-1' lacks); Mindshare refuses such a file"
+            ),
         ),
         (  # (d) a type name with a space, named whole
             [
                 _v("Supply Block", "Supply Block-1", ["time", "player", "duration", "end time"]),
                 _v("Supply Block", "Supply Block-3", ["time", "player", "end time"]),
             ],
-            "node type 'Supply Block': node 'Supply Block-3' has different properties than node 'Supply Block-1' "
-            "('Supply Block-3' lacks property 'duration'); Mindshare refuses such a file",
+            (
+                "node type 'Supply Block': node 'Supply Block-3' has different properties than node 'Supply Block-1' "
+                "('Supply Block-3' lacks property 'duration'); Mindshare refuses such a file"
+            ),
         ),
         (  # (e) the mixed type after uniform ones
             [
@@ -739,8 +747,10 @@ def _v(kind, node_id, keys, **extra):
                 _v("Battle", "Battle-1", ["time", "player"]),
                 _v("Building", "Building-12", ["time", "type"]),
             ],
-            "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
-            "('Building-12' lacks property 'player'); Mindshare refuses such a file",
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' lacks property 'player'); Mindshare refuses such a file"
+            ),
         ),
     ],
 )
