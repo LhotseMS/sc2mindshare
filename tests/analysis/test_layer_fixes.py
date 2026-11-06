@@ -11,8 +11,8 @@ import pytest
 
 from sc2mindshare.analysis.build_steps import build_order
 from sc2mindshare.analysis.detectors import detectors
-from sc2mindshare.analysis.exports.node import X_LD
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
+from sc2mindshare.analysis.exports.node import X_LD
 from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse, legacy_csv
 from sc2mindshare.analysis.to_domain import to_graph
