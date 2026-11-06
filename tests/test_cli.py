@@ -129,6 +129,32 @@ def test_a_failing_analysis_exits_1_with_the_traceback_in_the_log(tmp_path, monk
     assert sorted(p.name for p in tmp_path.iterdir()) == ["graph.log"]  # no partial outputs
 
 
+def test_a_mixed_node_type_stops_the_build_with_no_mindshare_file(tmp_path, config, monkeypatch):
+    """CR-063 AC-5 (S7): the export's guard stops a document Mindshare would refuse; the console wording
+    "the analysis failed: ValueError: ..." is kept (D5a at Step 5)."""
+    need(ALCYONE)
+    from sc2mindshare.export import mindshare_json, view
+
+    def dropping(node, export_fixes=frozenset()):
+        out = view.node_view(node, export_fixes)
+        if node.id == "Ability-12":
+            del out["properties"]["target"]
+        return out
+
+    monkeypatch.setattr(mindshare_json, "node_view", dropping)
+    folder = tmp_path / "out"
+    folder.mkdir()
+    out = folder / "graph.json"
+    code, stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config)
+    assert code == 1 and stdout == ""
+    assert stderr == (
+        "sc2mindshare: the analysis failed: ValueError: node type 'Ability': node 'Ability-12' has different "
+        "properties than node 'Ability-4' ('Ability-12' lacks property 'target'); Mindshare refuses such a file "
+        f"(traceback in {folder / 'graph.log'})\n"
+    )
+    assert sorted(p.name for p in folder.iterdir()) == ["graph.log"]  # no graph.json, intervals.json, Intervals.csv
+
+
 def test_the_readme_documents_the_help_text():
     """'--help documented in the README' (T15): the README's usage block is the command's own help."""
     env = dict(os.environ, COLUMNS="100")

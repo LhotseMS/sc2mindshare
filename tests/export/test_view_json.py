@@ -604,3 +604,200 @@ def test_g2_the_game_properties_follow_the_graphs_export_fixes():
     odd = Node("Game", "Game-1", "Custom Alcyone LE", "d", (), tuple(dict(values, ladder="true").items()), None)
     with pytest.raises(KeyError):
         view.node_view(odd, frozenset({"G2"}))
+
+
+# --- CR-063: every node of a type carries the same properties (a blank player or target is "") -------------
+
+
+def _named(kind, node_id, values):
+    """A node with its own ID, built from the legacy text through the adapter; its start is its time."""
+    h, m, s = (int(p) for p in dict(values)["time"].split(":"))
+    typed, begins = typed_values(node_id, kind, values, h * 3600 + m * 60 + s)
+    return Node(kind, node_id, "n", "d", (), typed, begins)
+
+
+def _ability(node_id, target, time="00:03:00"):
+    return _named(
+        "Ability",
+        node_id,
+        [
+            ("time", time),
+            ("player", "p"),
+            ("type", "SpawnLarva"),
+            ("combat", "False"),
+            ("queued", "False"),
+            ("minimap", "False"),
+            ("target", target),
+        ],
+    )
+
+
+def _building(node_id, player):
+    return _named("Building", node_id, [("time", "00:01:00"), ("player", player), ("type", "Spawning Pool")])
+
+
+@pytest.mark.parametrize(
+    ("fixes", "keys"),
+    [
+        (frozenset(), ("time", "player", "type", "target")),
+        (frozenset({"B3"}), ("time", "player", "type", "combat", "queued", "minimap", "target")),
+    ],
+)
+def test_s1_an_ability_without_a_target_carries_a_blank_target_last(fixes, keys):
+    """CR-063 AC-1 (D4a: in the workbook-faithful document, no export fix, and in the current one, B3)."""
+    targeted = view.node_view(_ability("Ability-4", "Hatchery"), fixes)["properties"]
+    blank = view.node_view(_ability("Ability-12", ""), fixes)["properties"]
+    assert tuple(targeted) == keys and tuple(blank) == keys
+    assert targeted["target"] == "Hatchery" and blank["target"] == ""
+    # a target of an unknown unit type reads "None" (today's behaviour, kept): written as that text
+    assert view.node_view(_ability("Ability-13", "None"), fixes)["properties"]["target"] == "None"
+
+
+def test_s3_a_node_without_a_player_carries_a_blank_player_second():
+    """CR-063 AC-2 (D3a: the player only; a node cannot exist without a time)."""
+    for fixes in (frozenset(), frozenset({"B3"})):
+        named = view.node_view(_building("Building-1", "p"), fixes)["properties"]
+        blank = view.node_view(_building("Building-12", ""), fixes)["properties"]
+        assert list(named.items()) == [("time", "00:01:00"), ("player", "p"), ("type", "Spawning Pool")]
+        assert list(blank.items()) == [("time", "00:01:00"), ("player", ""), ("type", "Spawning Pool")]
+    battle = view.node_view(
+        _named(
+            "Battle",
+            "Battle-1",
+            [
+                ("time", "00:02:02"),
+                ("player", "Common"),
+                ("dead", "1"),
+                ("p1 dead", "1"),
+                ("p2 dead", "0"),
+                ("supply dead", "0.5"),
+                ("end time", "00:02:02"),
+            ],
+        )
+    )
+    assert battle["properties"]["player"] == "Common"
+    player = Node(
+        "Player", "Player-1", "p", "d", (), (("name", "p"), ("race", "Zerg"), ("region", "eu"), ("subregion", "1")), None
+    )
+    assert view.node_view(player)["properties"] == {}  # Game and Player nodes carry no time and no player
+    # the invariant AC-2 relies on: a node without a time cannot be built
+    with pytest.raises(ValueError, match="Building-12: 'time' must be a GameTime"):
+        Node("Building", "Building-12", "n", "d", (), (("time", ""), ("player", ""), ("type", "Hatchery")), None)
+
+
+@pytest.mark.parametrize("fixes", [frozenset(), frozenset({"B3", "P13", "B12", "G2", "BO1"})])
+def test_s2_a_document_with_a_targetless_ability_builds_with_one_property_set(fixes):
+    """CR-063 AC-1 through ``build_document``: the workbook-faithful and the current document."""
+    from sc2mindshare.domain.models import Graph
+
+    graph = Graph((_ability("Ability-4", "Hatchery"), _ability("Ability-12", "", "00:03:10")), (), export_fixes=fixes)
+    nodes = build_document(graph)["nodes"]
+    assert len({tuple(n["properties"]) for n in nodes}) == 1
+    assert [n["properties"]["target"] for n in nodes] == ["Hatchery", ""]
+
+
+def _v(kind, node_id, keys, **extra):
+    """A node view with the given property names (values do not matter to the guard)."""
+    return {"type": kind, "ID": node_id, **extra, "properties": dict.fromkeys(keys, "")}
+
+
+@pytest.mark.parametrize(
+    ("nodes", "message"),
+    [
+        (  # (a) a property one node lacks
+            [_v("Building", "Building-1", ["time", "player"]), _v("Building", "Building-12", ["time"])],
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' lacks property 'player'); Mindshare refuses such a file"
+            ),
+        ),
+        (  # (b) the same names in another order
+            [_v("Building", "Building-1", ["time", "player"]), _v("Building", "Building-12", ["player", "time"])],
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "(property 'time' is at position 1 in 'Building-1' but at position 2 in 'Building-12'); "
+                "Mindshare refuses such a file"
+            ),
+        ),
+        (  # (c) an extra property
+            [
+                _v("Building", "Building-1", ["time", "player", "type"]),
+                _v("Building", "Building-12", ["time", "player", "type", "colour"]),
+            ],
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' has property 'colour', which 'Building-1' lacks); Mindshare refuses such a file"
+            ),
+        ),
+        (  # (d) a type name with a space, named whole
+            [
+                _v("Supply Block", "Supply Block-1", ["time", "player", "duration", "end time"]),
+                _v("Supply Block", "Supply Block-3", ["time", "player", "end time"]),
+            ],
+            (
+                "node type 'Supply Block': node 'Supply Block-3' has different properties than node 'Supply Block-1' "
+                "('Supply Block-3' lacks property 'duration'); Mindshare refuses such a file"
+            ),
+        ),
+        (  # (e) the mixed type after uniform ones
+            [
+                _v("Ability", "Ability-4", ["time", "player", "type", "target"]),
+                _v("Ability", "Ability-12", ["time", "player", "type", "target"]),
+                _v("Building", "Building-1", ["time", "player", "type"]),
+                _v("Battle", "Battle-1", ["time", "player"]),
+                _v("Building", "Building-12", ["time", "type"]),
+            ],
+            (
+                "node type 'Building': node 'Building-12' has different properties than node 'Building-1' "
+                "('Building-12' lacks property 'player'); Mindshare refuses such a file"
+            ),
+        ),
+    ],
+)
+def test_s6_the_guard_names_the_type_both_nodes_and_the_property(nodes, message):
+    """CR-063 AC-5: a type whose nodes carry different property names, or the same in another order."""
+    from sc2mindshare.export.mindshare_json import check_same_properties
+
+    with pytest.raises(ValueError) as raised:
+        check_same_properties(nodes)
+    assert str(raised.value) == message
+
+
+@pytest.mark.parametrize(
+    "nodes",
+    [
+        [],
+        [_v("Building", "Building-1", ["time", "player", "type"])],
+        [_v("Building", "Building-1", ["time", "player"]), _v("Building", "Building-12", ["time", "player"])],
+        # images on one Battle only: properties are compared, not images (D5a)
+        [_v("Battle", "Battle-1", ["time", "player"], images=["u"]), _v("Battle", "Battle-2", ["time", "player"])],
+        # the clock picture nodes all carry no property
+        [_v("image", "clock-0-10-1", []), _v("image", "clock-0-10-2", [])],
+    ],
+)
+def test_s6_the_guard_passes_uniform_types(nodes):
+    from sc2mindshare.export.mindshare_json import check_same_properties
+
+    check_same_properties(nodes)  # raises nothing
+
+
+def test_s7_build_document_stops_on_a_mixed_type(monkeypatch):
+    """CR-063 AC-5 through ``build_document``: after the fill the real view cannot be mixed, so it is made to
+    drop Ability-12's target."""
+    from sc2mindshare.domain.models import Graph
+    from sc2mindshare.export import mindshare_json
+
+    def dropping(node, export_fixes=frozenset()):
+        out = view.node_view(node, export_fixes)
+        if node.id == "Ability-12":
+            del out["properties"]["target"]
+        return out
+
+    monkeypatch.setattr(mindshare_json, "node_view", dropping)
+    graph = Graph((_ability("Ability-4", "Hatchery"), _ability("Ability-12", "Hive", "00:03:10")), ())
+    with pytest.raises(ValueError) as raised:
+        build_document(graph)
+    assert str(raised.value) == (
+        "node type 'Ability': node 'Ability-12' has different properties than node 'Ability-4' "
+        "('Ability-12' lacks property 'target'); Mindshare refuses such a file"
+    )
