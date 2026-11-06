@@ -142,7 +142,6 @@ class Battle(PlayerHandler):
         self.losses[self.player1] = SummaryOfDeath(0,0,0)
         self.losses[self.player2] = SummaryOfDeath(0,0,0)
 
-        self.bigUnitsLost = self.initDictByPlayer()
         
         for secOfDying in self.secondsOD:
             for e in secOfDying.events:       
