@@ -648,3 +648,20 @@ N1 moves a unit from its old type's count to its new type's at the type change (
 ```json
 {"entry": "F2-snap-linear", "task": "CR-023", "defect": "F2 a type change applied before the unit's interval is written (Units-162: one Roach, total at time 0)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "6b21c279242b9a555afa3771458c46422796aa6fec90de38e14261466dcb9799", "changes": [{"select": {"ID": "Units-162"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### F2b: F2 also defers a waiting unit's death (CR-023, T22; Morgan's G0 P1 on F2; Stefan's D1a; closes F5 for waiting units)
+
+Addendum to F2: the rule now also defers a waiting unit's death (D1a, closing F5 for waiting units). A countable death of a unit still waiting in the unwritten 10 s interval (`SimpleDetector.releaseUnitCount`, the loop's own death-count code moved into a method) goes into the same queue as its type changes, in event order, and leaves the count of its type at death once the interval is written; before, it was applied at once, so a unit that changed type and died before the flush stayed counted alive, and a unit born and killed inside its interval was taken off before it was ever counted (or not at all, as the first of its type). A death of a unit already written applies at once, as before. Predicted before the change by the parked trial (`.scratch/rex/cr-023-f1-f2-v1/f2-round2-p1-death-queue.patch`, run against the goldens at 203c0c6): on Alcyone two Units nodes change `total at time`, in the three current goldens, and nothing else: `Units-169` (lilTiGGer's 2 Roaches at 16:20) 0 -> 2 and `Units-92` (blacksquall's 2 Stalkers at 07:50) 1 -> 3. Spine and spores as in F2.
+
+```json
+{"entry": "F2b-view", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "407244a0db5c31fe79abd70814f4c4af1c310e617612c9881a129df8b7b82a5f", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2b-snap-compressed", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "e438b43b0bfad6a940fd64fbfb4421113278cec3181c01dccbc12d0d21dac913", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "F2b-snap-linear", "task": "CR-023", "defect": "F2b a waiting unit's death applied before its interval is written (Units-169: two Roaches, total at time 0)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "b34eb02ae1de2de6fa1c1641e75cb6395b7d70c3ef4ccbb686ba0fee0f7dad3a", "changes": [{"select": {"ID": "Units-169"}, "fields": ["properties.total at time"], "count": 1}, {"select": {"ID": "Units-92"}, "fields": ["properties.total at time"], "count": 1}], "added": [], "removed": []}
+```
