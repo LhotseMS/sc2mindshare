@@ -1519,14 +1519,9 @@ def _waiting_detector(p, counts, waiting_unit, waiting_type, fixes=("N1", "P2", 
     return detector
 
 
-# Morgan's P1 on F2 is PARKED (Rex 2026-11-06): queueing every countable death of a waiting unit (SimpleDetector.
-# releaseUnitCount, .scratch/rex/cr-023-f1-f2-v1/f2-round2-p1-death-queue.patch) changes Alcyone's goldens
-# (Units-169 "total at time" 0 -> 2, Units-92 1 -> 3: units born and killed inside their interval), so the ledger
-# entry has to come first; the question is with Kevin. Strict xfails until the row resumes.
-_F2_P1_PARKED = "CR-023 F2 round 2 P1 parked: a waiting unit's death is applied before its interval is written"
+# Morgan's P1 on F2, Stefan's D1a (ledger entry F2b): a waiting unit's death waits in the same queue as its changes.
 
 
-@pytest.mark.xfail(strict=True, reason=_F2_P1_PARKED)
 @pytest.mark.parametrize(
     ("counts", "after"),
     [
@@ -1552,7 +1547,6 @@ def test_f2_a_waiting_unit_that_changes_type_and_dies_before_the_flush_is_not_co
     assert detector.unitTypeCount[p] == after and detector.waitingMoves == []
 
 
-@pytest.mark.xfail(strict=True, reason=_F2_P1_PARKED)
 def test_f2_a_written_unit_dies_at_once_and_without_f2_the_death_is_todays(monkeypatch):
     p = "p"
     roach = SimpleNamespace(id=7, owner=p, name="Roach", type_history={100: SimpleNamespace(name="Roach")})
@@ -1583,3 +1577,13 @@ def test_f2_a_widow_mine_that_burrows_and_unburrows_in_its_interval_ends_unburro
     detector.flushUnitInterval("01:00", 0)
     assert [(n.name, n.count, n.total) for n in detector.written] == [("Widow Mine", 1, 1)]
     assert detector.unitTypeCount[p] == {"Widow Mine": 1, "Widow Mine Burrowed": 0}
+
+
+def test_f2b_on_alcyone_units_born_and_killed_in_their_interval_count_at_their_node(n1_graphs):
+    """The F2b entry (CHANGES.md, Stefan's D1a): the units of a node that die before its interval is written are
+    still counted at the node's time."""
+    nodes = n1_graphs["fixed"]
+    assert [tuple(nodes[i].value(k) for k in ("type", "count", "total at time")) for i in ("Units-169", "Units-92")] == [
+        ("Roach", "2", "2"),
+        ("Stalker", "2", "3"),
+    ]

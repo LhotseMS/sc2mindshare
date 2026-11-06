@@ -263,7 +263,7 @@ class SimpleDetector(EventsDetector):
 
         # TODO add message event as for messages in lobby?
         self.placements = self.initDictByPlayer()  # CR-023 S7: Zerg structures whose Drone has not died yet
-        self.waitingMoves = []  # CR-023 F2: type changes of units still waiting in the unwritten interval
+        self.waitingMoves = []  # CR-023 F2: type changes and deaths of units still waiting in the unwritten interval
         for e in [v for v in self.replay.events if 
                   (isinstance(v, UpgradeCompleteEvent) or 
                    isinstance(v, PlayerStatsEvent) or 
@@ -350,9 +350,7 @@ class SimpleDetector(EventsDetector):
                     self.moveUnitSupply(e)
 
             elif isinstance(e, UnitDiedEvent) and e.countableUnitDeath():
-                nameC = clean_name(e.unit.name, True, self.ctx.fixes)  # the fork's nameC, with the fixes (P2)
-                if e.player != None and nameC in self.unitTypeCount[e.player]:
-                    self.unitTypeCount[e.player][nameC] -= 1     
+                self.releaseUnitCount(e)
                 
                 #print("unit died: " + object_text(e.unit))
                 if not self.providerDied(e) and not ("S7" in self.ctx.fixes and self.settlePlacement(e)):
@@ -442,10 +440,10 @@ class SimpleDetector(EventsDetector):
                 self.lastUnitsByType[player][nodeUnitType] = node
 
         self.currentIntervalEvents = self.initDictByPlayer(2)
-        if "F2" in self.ctx.fixes:  # CR-023 F2: the type changes that waited for this interval, in their order
+        if "F2" in self.ctx.fixes:  # CR-023 F2: the type changes and deaths that waited for this interval, in order
             moves, self.waitingMoves = self.waitingMoves, []
-            for move in moves:
-                self.moveUnitTypeCount(move)
+            for apply, event in moves:
+                apply(event)
         return unitsCounter
 
     def moveUnitTypeCount(self, e):
@@ -456,7 +454,7 @@ class SimpleDetector(EventsDetector):
         if e.unit is None or e.unit.owner not in self.unitTypeCount:
             return
         if "F2" in self.ctx.fixes and self.isWaiting(e.unit):
-            self.waitingMoves.append(e)
+            self.waitingMoves.append((self.moveUnitTypeCount, e))
             return
         counts = self.unitTypeCount[e.unit.owner]
         old = clean_name(type_at(e.unit, e.frame - 1), True, self.ctx.fixes)
@@ -464,6 +462,17 @@ class SimpleDetector(EventsDetector):
         if old in counts and old != new:
             counts[old] -= 1
             counts[new] = counts.get(new, 0) + 1
+
+    def releaseUnitCount(self, e):
+        """At a countable death the unit leaves the count of its type then, when that type is counted (the loop's
+        own code, moved here for CR-023 F2). F2: a unit still waiting in the unwritten interval enters its count
+        only when the interval is written, so its death waits until then, after its type changes."""
+        if "F2" in self.ctx.fixes and e.unit is not None and self.isWaiting(e.unit):
+            self.waitingMoves.append((self.releaseUnitCount, e))
+            return
+        nameC = clean_name(e.unit.name, True, self.ctx.fixes)  # the fork's nameC, with the fixes (P2)
+        if e.player != None and nameC in self.unitTypeCount[e.player]:
+            self.unitTypeCount[e.player][nameC] -= 1
 
     def isWaiting(self, unit):
         """CR-023 F2: the unit finished in the interval not written yet (``currentIntervalEvents``)."""
