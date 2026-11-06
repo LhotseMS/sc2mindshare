@@ -101,9 +101,10 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: row, a Rich Extractor as a normal Extractor of its race (D34a);
 #: G1 (CR-067), the Game node's game type is the replay's, its length keeps its hours and its date has its own format;
 #: F1 (CR-023), a lifted town hall and an Overlord in its cocoon still provide supply, and every death of a finished
-#: provider lowers the limit, also one the fork does not count (only the supply changes).
+#: provider lowers the limit, also one the fork does not count (only the supply changes); F2 (CR-023), the type change
+#: of a unit still waiting in the unwritten 10 s interval moves its count once the interval is written.
 LAYER_FIXES: tuple[str, ...] = (
-    "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1",
+    "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
 )  # fmt: skip
 
 

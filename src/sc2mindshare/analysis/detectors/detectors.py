@@ -263,6 +263,7 @@ class SimpleDetector(EventsDetector):
 
         # TODO add message event as for messages in lobby?
         self.placements = self.initDictByPlayer()  # CR-023 S7: Zerg structures whose Drone has not died yet
+        self.waitingMoves = []  # CR-023 F2: type changes of units still waiting in the unwritten interval
         for e in [v for v in self.replay.events if 
                   (isinstance(v, UpgradeCompleteEvent) or 
                    isinstance(v, PlayerStatsEvent) or 
@@ -441,12 +442,21 @@ class SimpleDetector(EventsDetector):
                 self.lastUnitsByType[player][nodeUnitType] = node
 
         self.currentIntervalEvents = self.initDictByPlayer(2)
+        if "F2" in self.ctx.fixes:  # CR-023 F2: the type changes that waited for this interval, in their order
+            moves, self.waitingMoves = self.waitingMoves, []
+            for move in moves:
+                self.moveUnitTypeCount(move)
         return unitsCounter
 
     def moveUnitTypeCount(self, e):
         """CR-023 N1: at a type change, the unit leaves its old type's count for its new type's, when its old
-        type is counted (the per-type ``total at time`` follows the type at the time)."""
+        type is counted (the per-type ``total at time`` follows the type at the time). F2: a unit still waiting
+        in the unwritten interval enters its old type's count only when the interval is written, so its move
+        waits until then (``flushUnitInterval``)."""
         if e.unit is None or e.unit.owner not in self.unitTypeCount:
+            return
+        if "F2" in self.ctx.fixes and self.isWaiting(e.unit):
+            self.waitingMoves.append(e)
             return
         counts = self.unitTypeCount[e.unit.owner]
         old = clean_name(type_at(e.unit, e.frame - 1), True, self.ctx.fixes)
@@ -454,6 +464,11 @@ class SimpleDetector(EventsDetector):
         if old in counts and old != new:
             counts[old] -= 1
             counts[new] = counts.get(new, 0) + 1
+
+    def isWaiting(self, unit):
+        """CR-023 F2: the unit finished in the interval not written yet (``currentIntervalEvents``)."""
+        waiting = self.currentIntervalEvents.get(unit.owner, {})
+        return any(event.unit.id == unit.id for events in waiting.values() for event in events)
 
     #: CR-023 S7: Zerg structures no Drone makes
     NOT_FROM_A_DRONE = ("CreepTumor", "NydusCanal")

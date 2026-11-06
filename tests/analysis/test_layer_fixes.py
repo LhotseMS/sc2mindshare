@@ -39,7 +39,7 @@ def need(path):
 
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
-        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1",
+        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
     )  # fmt: skip
 
 
@@ -1395,15 +1395,9 @@ def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncoun
     assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8
 
 
-# --- F2 (Morgan's G6 F2 on N1): a unit that changes type before its interval is written -- PARKED (WIP) ----------
-# Parked by Rex 2026-11-06: the fix that makes these pass (defer the move until the unit's interval is written)
-# changes a reference golden (Alcyone Units-162, a Roach at 14:50: "total at time" 0 -> 1), which the row's brief
-# said would not happen; the open question is with Kevin. Both tests are strict xfails until the row resumes.
-
-_F2_PARKED = "CR-023 F2 parked: the move is applied before the unit's interval is written (open question with Kevin)"
+# --- F2 (Morgan's G6 F2 on N1; Kevin's J7): a type change waits until the unit's interval is written ----------------
 
 
-@pytest.mark.xfail(strict=True, reason=_F2_PARKED)
 def test_f2_the_first_unit_of_a_type_that_changes_type_before_its_interval_is_written_moves_its_count(monkeypatch):
     """The first Widow Mine burrows within its 10 s interval: once the interval is written, it counts as a burrowed
     Widow Mine, and the Units node of the interval (1 Widow Mine) says 1 at the time."""
@@ -1426,25 +1420,49 @@ def test_f2_the_first_unit_of_a_type_that_changes_type_before_its_interval_is_wr
         id=7, owner=p, name="WidowMineBurrowed",
         type_history={100: SimpleNamespace(name="WidowMine"), 300: SimpleNamespace(name="WidowMineBurrowed")},
     )  # fmt: skip
-    detector = SimpleNamespace(
-        ctx=SimpleNamespace(fixes=frozenset({"N1", "P2"})),
-        unitTypeCount={p: {}},
-        currentIntervalEvents={p: {"WidowMine": [SimpleNamespace(unit=mine, frame=100, player=p)]}},
-        unitsByPlayerAndType={p: []},
-        lastUnitsByType={p: {}},
-        initDictByPlayer=lambda n: {p: {}},
-        addLink=lambda a, b: None,
+    for fixes, counts in (
+        ({"N1", "P2", "F2"}, {"Widow Mine": 0, "Widow Mine Burrowed": 1}),
+        ({"N1", "P2"}, {"Widow Mine": 1}),  # without F2 the move is skipped: the mine stays a Widow Mine
+    ):
+        written.clear()
+        detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+        vars(detector).update(
+            ctx=SimpleNamespace(fixes=frozenset(fixes)),
+            unitTypeCount={p: {}},
+            currentIntervalEvents={p: {"WidowMine": [SimpleNamespace(unit=mine, frame=100, player=p)]}},
+            waitingMoves=[],
+            unitsByPlayerAndType={p: []},
+            lastUnitsByType={p: {}},
+            initDictByPlayer=lambda n: {p: {}},
+            addLink=lambda a, b: None,
+        )
+        burrow = SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed")
+        detector.moveUnitTypeCount(burrow)
+        detector.flushUnitInterval("01:00", 0)
+        assert [(n.name, n.count, n.total) for n in written] == [("Widow Mine", 1, 1)], fixes
+        assert detector.unitTypeCount[p] == counts, fixes
+        assert detector.waitingMoves == []
+
+
+def test_f2_a_unit_already_written_moves_at_once():
+    p = "p"
+    tank = SimpleNamespace(
+        id=8, owner=p, name="SiegeTankSieged",
+        type_history={100: SimpleNamespace(name="SiegeTank"), 900: SimpleNamespace(name="SiegeTankSieged")},
+    )  # fmt: skip
+    detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+    vars(detector).update(
+        ctx=SimpleNamespace(fixes=frozenset({"N1", "P2", "F2"})),
+        unitTypeCount={p: {"Siege Tank": 2}},
+        currentIntervalEvents={p: {}},
+        waitingMoves=[],
     )
-    burrow = SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed")
-    detectors.SimpleDetector.moveUnitTypeCount(detector, burrow)
-    detectors.SimpleDetector.flushUnitInterval(detector, "01:00", 0)
-    assert [(n.name, n.count, n.total) for n in written] == [("Widow Mine", 1, 1)]
-    assert detector.unitTypeCount[p] == {"Widow Mine": 0, "Widow Mine Burrowed": 1}
+    detector.moveUnitTypeCount(SimpleNamespace(unit=tank, frame=900, unit_type_name="SiegeTankSieged"))
+    assert detector.unitTypeCount[p] == {"Siege Tank": 1, "Sieged Tank": 1} and detector.waitingMoves == []
 
 
-@pytest.mark.xfail(strict=True, reason=_F2_PARKED)
 def test_f2_on_alcyone_the_roach_that_became_a_ravager_in_its_interval_counts_at_its_node(n1_graphs):
     """Alcyone's Units-162: lilTiGGer's one Roach of 14:50, which became a Ravager Cocoon before the interval was
-    written; the node says 0 Roaches at the time today."""
+    written; it said 0 Roaches at the time before F2."""
     node = n1_graphs["fixed"]["Units-162"]
     assert (node.name, node.value("count"), node.value("total at time")) == ("Roach", "1", "1")
