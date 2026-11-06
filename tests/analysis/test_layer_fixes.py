@@ -950,9 +950,20 @@ def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
 # --- P10c (CR-068; D21a, D26a, D32a): a destroyed Shield Battery or Rich Extractor counts in battles ---------------
 
 BATTLE_SITES_WITHOUT_THE_FIXES = {
-    # (file under analysis/, function): (calls of countableUnitDeath / buildingDeath that pass no fixes, why)
-    ("detectors/detectors.py", "findSimpleNodes"): (1, "the supply series and blocks (CR-068 out of scope)"),
-    ("detectors/detectors.py", "processSelectionsAndCommands"): (1, "the actions' heatmap locations (CR-068 out of scope)"),
+    # (file under src/sc2mindshare/, function): (calls of countableUnitDeath / buildingDeath / isCounted that pass
+    # no fixes, why)
+    ("analysis/detectors/detectors.py", "findSimpleNodes"): (1, "the supply series and blocks (CR-068 out of scope)"),
+    ("analysis/detectors/detectors.py", "processSelectionsAndCommands"): (
+        1,
+        "the actions' heatmap locations (CR-068 out of scope)",
+    ),
+    ("reader/fork_api.py", "isCounted"): (
+        1,
+        (
+            "the fork's isCounted helper: no caller under src/ at 02d1019 (CR-071); "
+            "new code asks countableUnitDeath with the fixes instead"
+        ),
+    ),
 }
 
 
@@ -1017,11 +1028,13 @@ def test_p10c_a_battle_values_the_two_structures_from_the_unit_table(name, fixes
 
 def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
     """Morgan's design on CR-068: the battle call sites pass ``ctx.fixes``; any other caller of the death rules is
-    on the reviewed list, so a new one cannot silently skip P10c (as the P2 guard above does for the names)."""
+    on the reviewed list, so a new one cannot silently skip P10c (as the P2 guard above does for the names).
+    CR-071: the scan covers all of src/sc2mindshare/ (not legacy/ or tests/), so a new caller anywhere in the new
+    code is caught, not only in analysis/."""
     import ast
     from collections import Counter
 
-    root = CHECKOUT / "src" / "sc2mindshare" / "analysis"
+    root = CHECKOUT / "src" / "sc2mindshare"
     found = Counter()
     passing = Counter()
     for path in sorted(root.rglob("*.py")):
@@ -1038,11 +1051,11 @@ def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
                     found[key] += 1
     assert dict(found) == {k: n for k, (n, _why) in BATTLE_SITES_WITHOUT_THE_FIXES.items()}
     assert dict(passing) == {
-        ("battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
-        ("battle.py", "getCountableDeaths"): 1,
-        ("battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
-        ("detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
-        ("detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
+        ("analysis/battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
+        ("analysis/battle.py", "getCountableDeaths"): 1,
+        ("analysis/battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
+        ("analysis/detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
+        ("analysis/detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
     }
 
 
