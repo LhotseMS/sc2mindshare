@@ -40,7 +40,7 @@ def need(path):
 
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
-        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1",
+        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
     )  # fmt: skip
 
 
@@ -691,6 +691,7 @@ def _finished(name_now, history, fixes):
         ("DisruptorPhased", [(3990, "DisruptorPhased")], True, False),  # the Purification Nova
         ("AdeptPhaseShift", [(3990, "AdeptPhaseShift")], True, False),  # the Adept's shade
         ("RavagerCocoon", [(3990, "Roach"), (6000, "RavagerCocoon")], True, True),  # a Roach when it hatched
+        ("RavagerCocoon", [(3990, "RavagerCocoon")], True, False),  # a cocoon at the event (Vera's V1)
         ("SiegeTankSieged", [(3990, "SiegeTank"), (5000, "SiegeTankSieged")], False, True),  # a tank, sieged later
         ("Zealot", [(3990, "Zealot")], True, True),
     ],
@@ -954,9 +955,20 @@ def test_s7_on_spine_piliskners_cancelled_extractor_gives_its_drone_back():
 # --- P10c (CR-068; D21a, D26a, D32a): a destroyed Shield Battery or Rich Extractor counts in battles ---------------
 
 BATTLE_SITES_WITHOUT_THE_FIXES = {
-    # (file under analysis/, function): (calls of countableUnitDeath / buildingDeath that pass no fixes, why)
-    ("detectors/detectors.py", "findSimpleNodes"): (1, "the supply series and blocks (CR-068 out of scope)"),
-    ("detectors/detectors.py", "processSelectionsAndCommands"): (1, "the actions' heatmap locations (CR-068 out of scope)"),
+    # (file under src/sc2mindshare/, function): (calls of countableUnitDeath / buildingDeath / isCounted that pass
+    # no fixes, why)
+    ("analysis/detectors/detectors.py", "findSimpleNodes"): (1, "the supply series and blocks (CR-068 out of scope)"),
+    ("analysis/detectors/detectors.py", "processSelectionsAndCommands"): (
+        1,
+        "the actions' heatmap locations (CR-068 out of scope)",
+    ),
+    ("reader/fork_api.py", "isCounted"): (
+        1,
+        (
+            "the fork's isCounted helper: no caller under src/ at 02d1019 (CR-071); "
+            "new code asks countableUnitDeath with the fixes instead"
+        ),
+    ),
 }
 
 
@@ -1021,11 +1033,13 @@ def test_p10c_a_battle_values_the_two_structures_from_the_unit_table(name, fixes
 
 def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
     """Morgan's design on CR-068: the battle call sites pass ``ctx.fixes``; any other caller of the death rules is
-    on the reviewed list, so a new one cannot silently skip P10c (as the P2 guard above does for the names)."""
+    on the reviewed list, so a new one cannot silently skip P10c (as the P2 guard above does for the names).
+    CR-071: the scan covers all of src/sc2mindshare/ (not legacy/ or tests/), so a new caller anywhere in the new
+    code is caught, not only in analysis/."""
     import ast
     from collections import Counter
 
-    root = CHECKOUT / "src" / "sc2mindshare" / "analysis"
+    root = CHECKOUT / "src" / "sc2mindshare"
     found = Counter()
     passing = Counter()
     for path in sorted(root.rglob("*.py")):
@@ -1042,68 +1056,81 @@ def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
                     found[key] += 1
     assert dict(found) == {k: n for k, (n, _why) in BATTLE_SITES_WITHOUT_THE_FIXES.items()}
     assert dict(passing) == {
-        ("battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
-        ("battle.py", "getCountableDeaths"): 1,
-        ("battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
-        ("detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
-        ("detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
+        ("analysis/battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
+        ("analysis/battle.py", "getCountableDeaths"): 1,
+        ("analysis/battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
+        ("analysis/detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
+        ("analysis/detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
     }
+
+
+def _analysed_alcyone(fixes=LAYER_FIXES, second=None, as_type=None, support=MS_SC, edit_replay=None, log=None):
+    """Alcyone analysed with ``fixes`` (CR-068's harness, lifted out of ``p10c_battles`` for CR-070). Each run may
+    move blacksquall's 7:48 Shield Battery death to another second and give the battery another type for the whole
+    game (a Photon Cannon, an Extractor or a Rich Extractor, the datapack's own type); ``support`` is the support
+    root the tables are read from, ``edit_replay`` changes the loaded replay last, and the layer's prints go to
+    ``log`` (a fresh buffer when None)."""
+    import bisect
+    import math
+
+    replay = load_replay(ALCYONE)
+    death = next(
+        e
+        for e in replay.tracker_events
+        if type(e).__name__ == "UnitDiedEvent"
+        and e.unit is not None
+        and e.unit.name == "ShieldBattery"
+        and e.unit.killing_unit is not None
+    )
+    assert (death.frame, death.unit.owner.name, death.unit.killing_unit.name) == (10502, "blacksquall", "Roach")
+    if as_type is not None:
+        kind = next(t for t in replay.datapack.units.values() if t.name == as_type)
+        death.unit._type_class = kind
+        death.unit.type_history = {frame: kind for frame in death.unit.type_history}
+    if second is not None:
+        frame = math.ceil(second * 22.4)
+        assert int(frame / 22.4) == second
+        for events in (replay.events, replay.tracker_events):
+            events.remove(death)
+        death.frame = death.unit.died_at = frame
+        for events in (replay.events, replay.tracker_events):
+            bisect.insort(events, death, key=lambda e: e.frame)
+    if edit_replay is not None:
+        edit_replay(replay)
+    with contextlib.redirect_stdout(io.StringIO() if log is None else log):
+        return analyse(replay, support, fixes=fixes)
+
+
+def _alcyone_battles(fixes=LAYER_FIXES, second=None, as_type=None, support=MS_SC, edit_replay=None, log=None):
+    """Alcyone's battles (``_analysed_alcyone``), as (start, end, dead, supply, minerals, gas, LOST, KILLS, name)
+    by battle."""
+    from sc2mindshare.analysis.exports.battleNode import BattleNode
+
+    result = _analysed_alcyone(fixes, second, as_type, support, edit_replay, log)
+    out = []
+    for b in (n for n in result.nodes if isinstance(n, BattleNode)):
+        ps = (b.player1, b.player2)
+        out.append(
+            {
+                "start": b.startSec,
+                "end": b.endSec,
+                "dead": (b.p1dc, b.p2dc),
+                "supply": tuple(b.supplyLost[p] for p in ps),
+                "minerals": tuple(b.minLost[p] for p in ps),
+                "gas": tuple(b.gasLost[p] for p in ps),
+                "lost": tuple(dict(b.deadBuildingsTypes[p]) for p in ps),
+                "kills": tuple(dict(b.killersTypes[p]) for p in ps),
+                "name": b.getNodeName(),
+            }
+        )
+    return out
 
 
 @pytest.fixture(scope="module")
 def p10c_battles():
-    """Alcyone's battles per run, as (start, end, dead, supply, minerals, gas, LOST, KILLS, name) by battle.
-    Each run may move blacksquall's 7:48 Shield Battery death to another second and give the battery another
-    type for the whole game (a Photon Cannon, an Extractor or a Rich Extractor, the datapack's own type)."""
+    """Alcyone's battles per run (``_alcyone_battles``), with the 7:48 battery moved or retyped."""
     need(ALCYONE)
-    import bisect
-    import math
-
-    from sc2mindshare.analysis.exports.battleNode import BattleNode
-
-    def run(fixes=LAYER_FIXES, second=None, as_type=None):
-        replay = load_replay(ALCYONE)
-        death = next(
-            e
-            for e in replay.tracker_events
-            if type(e).__name__ == "UnitDiedEvent"
-            and e.unit is not None
-            and e.unit.name == "ShieldBattery"
-            and e.unit.killing_unit is not None
-        )
-        assert (death.frame, death.unit.owner.name, death.unit.killing_unit.name) == (10502, "blacksquall", "Roach")
-        if as_type is not None:
-            kind = next(t for t in replay.datapack.units.values() if t.name == as_type)
-            death.unit._type_class = kind
-            death.unit.type_history = {frame: kind for frame in death.unit.type_history}
-        if second is not None:
-            frame = math.ceil(second * 22.4)
-            assert int(frame / 22.4) == second
-            for events in (replay.events, replay.tracker_events):
-                events.remove(death)
-            death.frame = death.unit.died_at = frame
-            for events in (replay.events, replay.tracker_events):
-                bisect.insort(events, death, key=lambda e: e.frame)
-        with contextlib.redirect_stdout(io.StringIO()):
-            result = analyse(replay, MS_SC, fixes=fixes)
-        out = []
-        for b in (n for n in result.nodes if isinstance(n, BattleNode)):
-            ps = (b.player1, b.player2)
-            out.append(
-                {
-                    "start": b.startSec,
-                    "end": b.endSec,
-                    "dead": (b.p1dc, b.p2dc),
-                    "supply": tuple(b.supplyLost[p] for p in ps),
-                    "minerals": tuple(b.minLost[p] for p in ps),
-                    "gas": tuple(b.gasLost[p] for p in ps),
-                    "lost": tuple(dict(b.deadBuildingsTypes[p]) for p in ps),
-                    "kills": tuple(dict(b.killersTypes[p]) for p in ps),
-                    "name": b.getNodeName(),
-                }
-            )
-        return out
-
+    run = _alcyone_battles
     without = tuple(f for f in LAYER_FIXES if f != "P10c")
     runs = {"fixed": run(), "without": run(without), "cannon": run(as_type="PhotonCannon")}
     # a gap between two battles after 7:48 wide enough for a lone death 6 s after the first (more than the 4 s
@@ -1298,3 +1325,667 @@ def test_g1_the_game_values_on_the_replays(replay, values):
         graph = to_graph(analyse(load_replay(path), MS_SC))
     game = next(n for n in graph.nodes if n.kind == "Game")
     assert {name: game.value(name) for name in values} == values
+
+
+# --- F1 (Morgan's G6 F1 on S1): a lifted town hall and an Overlord in its cocoon still provide supply --------------
+
+
+def _died(name_now, history, frame, unit_id):
+    from sc2mindshare.reader.fork_api import UnitDiedEvent
+
+    died = UnitDiedEvent.__new__(UnitDiedEvent)
+    vars(died).update(unit=SimpleNamespace(name=name_now, type_history=history), frame=frame, unit_id=unit_id)
+    return died
+
+
+@pytest.mark.parametrize(
+    ("finished", "mode", "value"),
+    [
+        ("CommandCenter", "CommandCenterFlying", 15),
+        ("OrbitalCommand", "OrbitalCommandFlying", 15),
+        ("Overlord", "OverseerCocoon", 8),  # the type history's name for an Overlord morphing into an Overseer
+        ("Overlord", "TransportOverlordCocoon", 8),
+    ],
+)
+def test_f1_a_provider_that_dies_in_a_mode_lowers_the_limit_by_what_it_provided(finished, mode, value):
+    history = {0: SimpleNamespace(name=finished), 5000: SimpleNamespace(name=mode)}
+    for fixes, lowered in ((("S1", "F1"), True), (("S1",), False)):
+        tracker = _tracker(fixes)
+        assert tracker.providerOf(_event(mode, history, 100, unit_id=1)) == finished  # finished: its limit was added
+        assert tracker.providerOf(_died(mode, history, 6000, unit_id=1)) == (mode if lowered else None), fixes
+        if lowered:
+            assert tracker.providedBy(mode) == tracker.providedBy(finished) == value
+        assert tracker.providerOf(_died(mode, history, 6000, unit_id=2)) is None  # never finished: never added
+
+
+def test_f1_the_modes_are_those_four_and_no_planetary_fortress_lifts():
+    from sc2reader.data import unit_lookup
+
+    from sc2mindshare.analysis.detectors.trackers import PROVIDERS_IN_A_MODE
+
+    assert PROVIDERS_IN_A_MODE == {
+        "CommandCenterFlying": 15, "OrbitalCommandFlying": 15, "OverseerCocoon": 8, "TransportOverlordCocoon": 8,
+    }  # fmt: skip
+    assert not [n for n in unit_lookup["Terran"] if n.startswith("planetaryfortress") and n != "planetaryfortress"]
+
+
+def test_f1_a_provider_death_lowers_the_limit_through_the_detector():
+    from sc2mindshare.analysis.detectors.trackers import SupplyStatus
+
+    for fixes, limit in ((("S1", "F1"), 7), (("S1",), 15)):
+        st = _tracker(fixes)
+        st.supplyHistory["p1"].append(SupplyStatus("05:00", 10, 15, 1))
+        detector = SimpleNamespace(st=st)
+        history = {0: SimpleNamespace(name="Overlord"), 5000: SimpleNamespace(name="TransportOverlordCocoon")}
+        st.providerOf(_event("Overlord", history, 100, unit_id=1))
+        death = _died("TransportOverlordCocoon", history, 6000, unit_id=1)
+        vars(death).update(time="05:10", player="p1")  # the flavoured class reads the unit's owner
+        assert detectors.SimpleDetector.providerDied(detector, death) is (limit == 7)
+        assert st.supplyHistory["p1"][-1].limit == limit, fixes
+
+
+@pytest.fixture(scope="module")
+def uncounted_overlord_deaths():
+    """Alcyone with every Overlord death made one the fork does not count (as the datapack makes a
+    TransportOverlordCocoon's or an OverlordTransport's): the supply series with and without F1, and as it is."""
+    need(ALCYONE)
+    from sc2mindshare.reader.compat import type_at
+    from sc2mindshare.reader.fork_api import _UnitDiedEventMixin
+
+    original = _UnitDiedEventMixin.countableUnitDeath
+
+    def uncounted(self, fixes=frozenset()):
+        return False if type_at(self.unit, self.frame) == "Overlord" else original(self, fixes)
+
+    others = {}  # every node but the supply blocks, and every link, per patched run (Morgan's finding 4 on F1)
+
+    def series(fixes, patched):
+        if patched:
+            _UnitDiedEventMixin.countableUnitDeath = uncounted
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
+        finally:
+            _UnitDiedEventMixin.countableUnitDeath = original
+        if patched:
+            graph = to_graph(result, mixed=fixes != LAYER_FIXES)
+            others["F1" if "F1" in fixes else "without F1"] = (
+                [n for n in graph.nodes if n.kind != "Supply Block"],
+                list(graph.links),
+            )
+        return [(p.player, p.time, p.supply, p.limit) for p in result.exposed.supply]
+
+    without_f1 = tuple(f for f in LAYER_FIXES if f != "F1")
+    out = {"as it is": series(LAYER_FIXES, False), "F1": series(LAYER_FIXES, True), "without F1": series(without_f1, True)}
+    return out | {"others": others}
+
+
+def _drops_of_8(series):
+    last, drops = {}, 0
+    for player, _time, _supply, limit in series:
+        drops += player in last and last[player] - limit == 8
+        last[player] = limit
+    return drops
+
+
+def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncounted_overlord_deaths):
+    """The fork counts every Overlord death on Alcyone; made uncounted, with F1 the supply series is the same as
+    counted, and without F1 the limit does not go down at the 8 Overlord deaths."""
+    s = uncounted_overlord_deaths
+    assert s["F1"] == s["as it is"]
+    assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8
+
+
+def test_f1_an_uncounted_provider_death_changes_only_the_supply(uncounted_overlord_deaths):
+    """Morgan's finding 4 on F1: with the 8 Overlord deaths uncounted, F1 changes the supply series and the supply
+    blocks only: the battles, the Units nodes (counts and totals) and every other node and link are the same."""
+    others = uncounted_overlord_deaths["others"]
+    nodes, links = others["F1"]
+    assert (nodes, links) == others["without F1"]
+    assert [n for n in nodes if n.kind == "Battle"] and [n for n in nodes if n.kind == "Units"]
+
+
+# --- F2 (Morgan's G6 F2 on N1; Kevin's J7): a type change waits until the unit's interval is written ----------------
+
+
+def test_f2_the_first_unit_of_a_type_that_changes_type_before_its_interval_is_written_moves_its_count(monkeypatch):
+    """The first Widow Mine burrows within its 10 s interval: once the interval is written, it counts as a burrowed
+    Widow Mine, and the Units node of the interval (1 Widow Mine) says 1 at the time."""
+    from sc2mindshare.reader.compat import unit_text_at
+
+    written = []
+
+    class Node:  # a stand-in for UnitsNode: named by the type at the event (N1), counting its events
+        def __init__(self, events, time, seq, fixes):
+            self.name = unit_text_at(events[0].unit, events[0].frame, fixes).strip()
+            self.count = len(events)
+            written.append(self)
+
+        def setCurrenCount(self, total):
+            self.total = total
+
+    monkeypatch.setattr(detectors, "UnitsNode", Node)
+    p = "p"
+    mine = SimpleNamespace(
+        id=7, owner=p, name="WidowMineBurrowed",
+        type_history={100: SimpleNamespace(name="WidowMine"), 300: SimpleNamespace(name="WidowMineBurrowed")},
+    )  # fmt: skip
+    for fixes, counts in (
+        ({"N1", "P2", "F2"}, {"Widow Mine": 0, "Widow Mine Burrowed": 1}),
+        ({"N1", "P2"}, {"Widow Mine": 1}),  # without F2 the move is skipped: the mine stays a Widow Mine
+    ):
+        written.clear()
+        detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+        vars(detector).update(
+            ctx=SimpleNamespace(fixes=frozenset(fixes)),
+            unitTypeCount={p: {}},
+            currentIntervalEvents={p: {"WidowMine": [SimpleNamespace(unit=mine, frame=100, player=p)]}},
+            waitingMoves=[],
+            unitsByPlayerAndType={p: []},
+            lastUnitsByType={p: {}},
+            initDictByPlayer=lambda n: {p: {}},
+            addLink=lambda a, b: None,
+        )
+        burrow = SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed")
+        detector.moveUnitTypeCount(burrow)
+        detector.flushUnitInterval("01:00", 0)
+        assert [(n.name, n.count, n.total) for n in written] == [("Widow Mine", 1, 1)], fixes
+        assert detector.unitTypeCount[p] == counts, fixes
+        assert detector.waitingMoves == []
+
+
+def test_f2_a_unit_already_written_moves_at_once():
+    p = "p"
+    tank = SimpleNamespace(
+        id=8, owner=p, name="SiegeTankSieged",
+        type_history={100: SimpleNamespace(name="SiegeTank"), 900: SimpleNamespace(name="SiegeTankSieged")},
+    )  # fmt: skip
+    other = SimpleNamespace(id=9, owner=p, name="SiegeTank", type_history={800: SimpleNamespace(name="SiegeTank")})
+    for waiting in ({}, {"SiegeTank": [SimpleNamespace(unit=other, frame=800, player=p)]}):  # Morgan's P2 on F2
+        detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+        vars(detector).update(
+            ctx=SimpleNamespace(fixes=frozenset({"N1", "P2", "F2"})),
+            unitTypeCount={p: {"Siege Tank": 2}},
+            currentIntervalEvents={p: waiting},  # another tank of the same owner and type waits: not this one
+            waitingMoves=[],
+        )
+        detector.moveUnitTypeCount(SimpleNamespace(unit=tank, frame=900, unit_type_name="SiegeTankSieged"))
+        assert detector.unitTypeCount[p] == {"Siege Tank": 1, "Sieged Tank": 1}, waiting
+        assert detector.waitingMoves == []
+        assert detector.isWaiting(other) is bool(waiting) and not detector.isWaiting(tank)
+
+
+def test_f2_on_alcyone_the_roach_that_became_a_ravager_in_its_interval_counts_at_its_node(n1_graphs):
+    """Alcyone's Units-162: lilTiGGer's one Roach of 14:50, which became a Ravager Cocoon before the interval was
+    written; it said 0 Roaches at the time before F2."""
+    node = n1_graphs["fixed"]["Units-162"]
+    assert (node.name, node.value("count"), node.value("total at time")) == ("Roach", "1", "1")
+
+
+def _waiting_detector(p, counts, waiting_unit, waiting_type, fixes=("N1", "P2", "F2")):
+    """A SimpleDetector with ``waiting_unit`` finished in the unwritten interval, and Units nodes recorded."""
+    from sc2mindshare.reader.compat import unit_text_at
+
+    class Node:  # a stand-in for UnitsNode: named by the type at the event (N1), counting its events
+        def __init__(self, events, time, seq, fixes):
+            self.name = unit_text_at(events[0].unit, events[0].frame, fixes).strip()
+            self.count = len(events)
+            detector.written.append(self)
+
+        def setCurrenCount(self, total):
+            self.total = total
+
+    detector = detectors.SimpleDetector.__new__(detectors.SimpleDetector)
+    vars(detector).update(
+        ctx=SimpleNamespace(fixes=frozenset(fixes)),
+        unitTypeCount={p: dict(counts)},
+        currentIntervalEvents={p: {waiting_type: [SimpleNamespace(unit=waiting_unit, frame=100, player=p)]}},
+        waitingMoves=[],
+        unitsByPlayerAndType={p: []},
+        lastUnitsByType={p: {}},
+        initDictByPlayer=lambda n: {p: {}},
+        addLink=lambda a, b: None,
+        written=[],
+        Node=Node,
+    )
+    return detector
+
+
+# Morgan's P1 on F2, Stefan's D1a (ledger entry F2b): a waiting unit's death waits in the same queue as its changes.
+
+
+@pytest.mark.parametrize(
+    ("counts", "after"),
+    [
+        ({"Roach": 1, "Ravager Cocoon": 1}, {"Roach": 1, "Ravager Cocoon": 1}),  # old and new type both counted
+        ({"Roach": 1}, {"Roach": 1, "Ravager Cocoon": 0}),  # old counted, new not (Morgan's probe)
+        ({}, {"Roach": 0, "Ravager Cocoon": 0}),  # the first Roach
+    ],
+)
+def test_f2_a_waiting_unit_that_changes_type_and_dies_before_the_flush_is_not_counted_alive(monkeypatch, counts, after):
+    """Morgan's P1 on F2: the Roach finishes, becomes a Ravager Cocoon and dies, all before its interval is
+    written; its death waits in the same queue, in event order, so it leaves the count of its type at death."""
+    p = "p"
+    roach = SimpleNamespace(
+        id=7, owner=p, name="RavagerCocoon",
+        type_history={100: SimpleNamespace(name="Roach"), 300: SimpleNamespace(name="RavagerCocoon")},
+    )  # fmt: skip
+    detector = _waiting_detector(p, counts, roach, "Roach")
+    monkeypatch.setattr(detectors, "UnitsNode", detector.Node)
+    detector.moveUnitTypeCount(SimpleNamespace(unit=roach, frame=300, unit_type_name="RavagerCocoon"))
+    detector.releaseUnitCount(SimpleNamespace(unit=roach, frame=350, player=p))
+    detector.flushUnitInterval("01:00", 0)
+    assert [(n.name, n.count, n.total) for n in detector.written] == [("Roach", 1, counts.get("Roach", 0) + 1)]
+    assert detector.unitTypeCount[p] == after and detector.waitingMoves == []
+
+
+def test_f2_a_written_unit_dies_at_once_and_without_f2_the_death_is_todays(monkeypatch):
+    p = "p"
+    roach = SimpleNamespace(id=7, owner=p, name="Roach", type_history={100: SimpleNamespace(name="Roach")})
+    other = SimpleNamespace(id=8, owner=p, name="Roach", type_history={50: SimpleNamespace(name="Roach")})
+    detector = _waiting_detector(p, {"Roach": 2}, roach, "Roach")
+    detector.releaseUnitCount(SimpleNamespace(unit=other, frame=350, player=p))  # written: leaves at once
+    assert detector.unitTypeCount[p] == {"Roach": 1} and detector.waitingMoves == []
+    faithful = _waiting_detector(p, {}, roach, "Roach", fixes=("N1", "P2"))
+    faithful.releaseUnitCount(SimpleNamespace(unit=roach, frame=350, player=p))  # the fork: no count yet, nothing
+    assert faithful.unitTypeCount[p] == {}
+
+
+def test_f2_a_widow_mine_that_burrows_and_unburrows_in_its_interval_ends_unburrowed(monkeypatch):
+    """Morgan's P3 on F2: the waiting changes are applied in their order."""
+    p = "p"
+    mine = SimpleNamespace(
+        id=7, owner=p, name="WidowMine",
+        type_history={
+            100: SimpleNamespace(name="WidowMine"),
+            300: SimpleNamespace(name="WidowMineBurrowed"),
+            500: SimpleNamespace(name="WidowMine"),
+        },
+    )  # fmt: skip
+    detector = _waiting_detector(p, {}, mine, "WidowMine")
+    monkeypatch.setattr(detectors, "UnitsNode", detector.Node)
+    detector.moveUnitTypeCount(SimpleNamespace(unit=mine, frame=300, unit_type_name="WidowMineBurrowed"))
+    detector.moveUnitTypeCount(SimpleNamespace(unit=mine, frame=500, unit_type_name="WidowMine"))
+    detector.flushUnitInterval("01:00", 0)
+    assert [(n.name, n.count, n.total) for n in detector.written] == [("Widow Mine", 1, 1)]
+    assert detector.unitTypeCount[p] == {"Widow Mine": 1, "Widow Mine Burrowed": 0}
+
+
+def test_f2b_on_alcyone_units_born_and_killed_in_their_interval_count_at_their_node(n1_graphs):
+    """The F2b entry (CHANGES.md, Stefan's D1a): the units of a node that die before its interval is written are
+    still counted at the node's time."""
+    nodes = n1_graphs["fixed"]
+    assert [tuple(nodes[i].value(k) for k in ("type", "count", "total at time")) for i in ("Units-169", "Units-92")] == [
+        ("Roach", "2", "2"),
+        ("Stalker", "2", "3"),
+    ]
+
+
+# --- CR-070 (Stefan's D1a): a battle death whose cost cannot be found stops the run ---------------------------------
+# Every failure goes through a whole battle (``_analysed_alcyone``: Alcyone analysed with a broken support table or
+# unit data), never ``Battle.deathCost`` alone: the defect was the order inside ``Battle.__init__`` (the death
+# counted, then its cost looked up inside the catch-all handler), which a deathCost-only test cannot see.
+
+SPINE = MS_SC / "200k dmg spine crawler ZvP.SC2Replay"
+_DEATH_7_48 = "ShieldBattery 72613891 (blacksquall) that died at 07:48 in Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
+NO_ROW = f'cannot find the cost of {_DEATH_7_48}: unitsInfo.csv has no "Shield Battery" row'
+NO_EXTRACTOR = (
+    "cannot find the cost of ExtractorRich 72613891 (blacksquall) that died at 07:48 in "
+    "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay: the replay's unit data has no Extractor"
+)
+
+
+def _bad_cell(minerals, gas):
+    return (
+        f'cannot find the cost of {_DEATH_7_48}: the "Shield Battery" row of unitsInfo.csv has Minerals {minerals!r} '
+        f"and Gas {gas!r}; each must be a whole number or empty"
+    )
+
+
+def _support(tmp_path, battery):
+    """A support root with copies of the support tables in which the Shield Battery row is ``battery(row)`` (the
+    row's text without its line end), or removed when that is None; every other byte as in the real table."""
+    import shutil
+
+    need(MS_SC / "unitsInfo.csv")
+    root = tmp_path / "support"
+    root.mkdir()
+    for name in ("upgradesInfo.csv", "ImageTracking.csv"):
+        shutil.copyfile(MS_SC / name, root / name)
+    with (MS_SC / "unitsInfo.csv").open(encoding="utf-8", newline="") as f:
+        lines = f.read().splitlines(keepends=True)
+    i = next(i for i, line in enumerate(lines) if line.startswith("Shield Battery,"))
+    row = lines[i].rstrip("\r\n")
+    new = battery(row)
+    lines[i : i + 1] = [] if new is None else [new + lines[i][len(row) :]]
+    with (root / "unitsInfo.csv").open("w", encoding="utf-8", newline="") as f:
+        f.write("".join(lines))
+    return root
+
+
+def _cells(minerals=None, gas=None):
+    """The Shield Battery row with its Minerals and/or Gas cell replaced."""
+
+    def edit(row):
+        cells = row.split(",")
+        cells[1] = cells[1] if minerals is None else minerals
+        cells[2] = cells[2] if gas is None else gas
+        return ",".join(cells)
+
+    return edit
+
+
+def _without_extractor(replay):
+    """The replay's unit data without its Extractor. sc2reader shares one datapack object per game build across
+    the process, so the replay gets a copy of its own: the shared one, and every later test, are left as they are."""
+    import copy
+
+    datapack = copy.copy(replay.datapack)
+    datapack.units = {key: kind for key, kind in replay.datapack.units.items() if kind.name != "Extractor"}
+    replay.datapack = datapack
+
+
+def _without_battery_killers(replay):
+    """Both of blacksquall's Shield Battery deaths with no killing unit, so no battle is formed from them."""
+    for e in replay.tracker_events:
+        if type(e).__name__ == "UnitDiedEvent" and e.unit is not None and e.unit.name == "ShieldBattery":
+            e.unit.killing_unit = None
+
+
+def _graph(result):
+    return to_graph(
+        result, () if not result.fixes else None, mixed=bool(result.fixes) and result.fixes != frozenset(LAYER_FIXES)
+    )
+
+
+@pytest.fixture(scope="module")
+def cr070_intact():
+    """The intact-data runs the CR-070 tests compare with, each made once, when first asked for."""
+    need(ALCYONE)
+    without = tuple(f for f in LAYER_FIXES if f != "P10c")
+    makers = {
+        "fixed": lambda: _analysed_alcyone(),
+        "no battery killers": lambda: _analysed_alcyone(edit_replay=_without_battery_killers),
+        "faithful": lambda: _analysed_alcyone(()),
+        "faithful rich": lambda: _analysed_alcyone((), as_type="ExtractorRich"),
+        "without P10c": lambda: _analysed_alcyone(without),
+        "without P10c rich": lambda: _analysed_alcyone(without, as_type="ExtractorRich"),
+    }
+    cache = {}
+
+    def get(label):
+        if label not in cache:
+            cache[label] = makers[label]()
+        return cache[label]
+
+    return get
+
+
+def _stops(message, **run):
+    """The run stops with exactly ``message`` (a ValueError leaving ``analyse``: no result, so no battle at all),
+    and the catch-all handler never printed its line for the death (the error is not reduced to a log line)."""
+    log = io.StringIO()
+    with pytest.raises(ValueError) as stop:
+        _analysed_alcyone(log=log, **run)
+    assert type(stop.value) is ValueError and str(stop.value) == message
+    swallowed = [line for line in log.getvalue().splitlines() if "ERR NO KILLING UNIT" in line]
+    assert not [line for line in swallowed if "ShieldBattery" in line or "ExtractorRich" in line]
+    return stop.value
+
+
+@pytest.mark.parametrize(
+    "battery",
+    [
+        lambda row: None,
+        lambda row: "ShieldBattery" + row[len("Shield Battery") :],
+        lambda row: "Shield battery" + row[len("Shield Battery") :],
+    ],
+    ids=["row removed", "named ShieldBattery", "named Shield battery"],
+)
+def test_cr070_ac1_a_missing_cost_row_stops_the_export_naming_the_replay_the_death_time_and_the_structure(tmp_path, battery):
+    """AC-1: no "Shield Battery" row (a name differing only in case or spacing is no match): the export stops at
+    blacksquall's 7:48 battery death (Battle-12 runs 7:36-7:57; the death's own time is named)."""
+    need(ALCYONE)
+    _stops(NO_ROW, support=_support(tmp_path, battery))
+
+
+@pytest.mark.parametrize(
+    ("minerals", "gas", "named"),
+    [("100.0", None, ("100.0", "0")), ("n/a", None, ("n/a", "0")), ("   ", None, ("   ", "0")), (None, "n/a", ("100", "n/a"))],
+    ids=["minerals 100.0", "minerals n/a", "minerals spaces", "gas n/a"],
+)
+def test_cr070_ac2_a_cost_that_is_not_a_whole_number_stops_the_export(tmp_path, minerals, gas, named):
+    """AC-2: a Minerals or Gas cell that is not a whole number ("100.0", "n/a", only spaces) stops as in AC-1."""
+    need(ALCYONE)
+    _stops(_bad_cell(*named), support=_support(tmp_path, _cells(minerals, gas)))
+
+
+def test_cr070_ac2_an_empty_cost_cell_still_reads_0(tmp_path, p10c_battles):
+    """AC-2's boundary: an empty Minerals cell completes, and both batteries count at 0 minerals (100 less in
+    Battle-12 and Battle-27 than with the table's 100); nothing else in any battle changes."""
+    runs, _ = p10c_battles
+    empty = _alcyone_battles(support=_support(tmp_path, _cells(minerals="")))
+    assert _differences(runs["fixed"], empty) == {11: ["minerals"], 26: ["minerals"]}
+    for i in (11, 26):
+        assert empty[i]["minerals"] == (runs["fixed"][i]["minerals"][0], runs["fixed"][i]["minerals"][1] - 100)
+        assert empty[i]["dead"] == runs["fixed"][i]["dead"] and "Shield Battery" in empty[i]["lost"][1]
+
+
+def test_cr070_ac2_a_row_with_no_cost_cell_reads_0():
+    """AC-2's other boundary: a short row with no Minerals or Gas cell (csv.DictReader gives None) reads 0 like an
+    empty one. On the cost alone: a row that short has no Build Time either, and the Building node of a battery
+    (P10b) needs it before any battle, so no whole export can carry such a row."""
+    from sc2mindshare.analysis.battle import Battle
+
+    battle = SimpleNamespace(
+        ctx=SimpleNamespace(
+            fixes=frozenset({"P10c"}),
+            simple=SimpleNamespace(unitsInfoDict={"Shield Battery": {"Minerals": None, "Gas": None}}),
+            replay=SimpleNamespace(filename="x.SC2Replay"),
+        )
+    )
+    unit = SimpleNamespace(name="ShieldBattery", minerals=0, vespene=0, supply=0)
+    assert Battle.deathCost(battle, SimpleNamespace(unit=unit)) == (0, 0, 0)
+
+
+def test_cr070_ac3_a_replay_without_an_extractor_stops_the_export(tmp_path):
+    """AC-3: the 7:48 battery made a Rich Extractor (CR-068's harness) and the replay's unit data without its
+    Extractor: the export stops naming the Rich Extractor's death and what is missing."""
+    need(ALCYONE)
+    _stops(NO_EXTRACTOR, as_type="ExtractorRich", edit_replay=_without_extractor)
+
+
+@pytest.mark.parametrize("route", ["no row", "bad cell", "no extractor"])
+def test_cr070_ac4_a_death_is_never_counted_without_its_cost_and_its_killer(tmp_path, route):
+    """AC-4: on each route the error leaves the analysis as the clear ValueError (never a bare KeyError, ValueError
+    from int() or StopIteration, and never only a line in the log), so no battle with the death exists."""
+    need(ALCYONE)
+    if route == "no extractor":
+        stop = _stops(NO_EXTRACTOR, as_type="ExtractorRich", edit_replay=_without_extractor)
+        assert stop.__cause__ is None
+    elif route == "bad cell":
+        stop = _stops(_bad_cell("n/a", "0"), support=_support(tmp_path, _cells(minerals="n/a")))
+        assert type(stop.__cause__) is ValueError  # int()'s own error, kept as the cause
+    else:
+        stop = _stops(NO_ROW, support=_support(tmp_path, lambda row: None))
+        assert stop.__cause__ is None
+
+
+def test_cr070_ac6_the_first_death_that_needs_the_missing_row_is_named_every_time(tmp_path):
+    """AC-6: both batteries (7:48 in Battle-12, 14:33 in Battle-27) need the missing row; every run names 7:48."""
+    need(ALCYONE)
+    support = _support(tmp_path, lambda row: None)
+    for _ in range(3):
+        assert "14:33" not in str(_stops(NO_ROW, support=support))
+
+
+@pytest.mark.parametrize("game", ["spine", "alcyone without an extractor", "alcyone batteries in no battle"])
+def test_cr070_ac7_broken_data_no_death_needs_does_not_stop_the_export(tmp_path, cr070_intact, game):
+    """AC-7: the Shield Battery's Minerals "n/a" on spine (its batteries all survive) and on Alcyone with both
+    battery deaths in no battle (no killer); Alcyone's unit data without an Extractor (no Rich Extractor dies):
+    each default export completes and equals the same game's with intact data."""
+    if game == "spine":
+        need(SPINE)
+        with contextlib.redirect_stdout(io.StringIO()):
+            intact = analyse(load_replay(SPINE), MS_SC)
+            broken = analyse(load_replay(SPINE), _support(tmp_path, _cells(minerals="n/a")))
+    elif game == "alcyone without an extractor":
+        intact, broken = cr070_intact("fixed"), _analysed_alcyone(edit_replay=_without_extractor)
+    else:
+        intact = cr070_intact("no battery killers")
+        broken = _analysed_alcyone(support=_support(tmp_path, _cells(minerals="n/a")), edit_replay=_without_battery_killers)
+    assert to_graph(broken) == to_graph(intact)
+
+
+def test_cr070_ac8_a_stopped_export_leaves_nothing_behind(tmp_path, cr070_intact):
+    """AC-8: after the AC-1 stop, the intact table and a freshly loaded Alcyone in the same process give exactly
+    a clean run's output (the clean run made before the stop)."""
+    clean = to_graph(cr070_intact("fixed"))
+    _stops(NO_ROW, support=_support(tmp_path, lambda row: None))
+    assert to_graph(_analysed_alcyone()) == clean
+
+
+@pytest.mark.parametrize("mode", ["bug-faithful", "every fix but P10c"])
+@pytest.mark.parametrize("broken", ["no row", "no extractor"])
+def test_cr070_ac10_the_bug_faithful_mode_never_stops_for_this(tmp_path, cr070_intact, mode, broken):
+    """AC-10: with the AC-1 table or the AC-3 unit data, the bug-faithful run and the run with every fix but P10c
+    complete. The bug-faithful output equals today's on intact data (also as the legacy CSV oracle), and so does the
+    run without P10c, except that with no row its battery Building nodes are missing (P10b reads the same row
+    for them and its KeyError is swallowed, detectors.py; the known bug beside CR-070, out of scope): there its
+    battles are compared."""
+    fixes = () if mode == "bug-faithful" else tuple(f for f in LAYER_FIXES if f != "P10c")
+    label = ("faithful" if mode == "bug-faithful" else "without P10c") + (" rich" if broken == "no extractor" else "")
+    if broken == "no row":
+        result = _analysed_alcyone(fixes, support=_support(tmp_path, lambda row: None))
+    else:
+        result = _analysed_alcyone(fixes, as_type="ExtractorRich", edit_replay=_without_extractor)
+    graph, intact = _graph(result), _graph(cr070_intact(label))
+    if mode == "bug-faithful":
+        assert graph == intact
+        assert legacy_csv(result) == legacy_csv(cr070_intact(label))
+    elif broken == "no row":
+        assert [n for n in graph.nodes if n.kind == "Battle"] == [n for n in intact.nodes if n.kind == "Battle"]
+        assert len(graph.nodes) < len(intact.nodes)
+    else:
+        assert graph == intact
+
+
+# --- CR-072 (Stefan's D2a): a battle records the killer of every big unit it loses -------------------------------
+
+CR072_REPLAYS = {"alcyone": ALCYONE, "spine": SPINE}
+CR072_MODES = {"fixed": LAYER_FIXES, "faithful": ()}
+
+
+@pytest.fixture(scope="module")
+def cr072_runs():
+    """Alcyone and spine analysed with every fix and bug-faithful, each made once, when first asked for: the
+    battles (``BattleNode`` objects of the result) and the run log (the layer's prints)."""
+    from sc2mindshare.analysis.exports.battleNode import BattleNode
+
+    cache = {}
+
+    def get(replay, mode):
+        if (replay, mode) not in cache:
+            path = CR072_REPLAYS[replay]
+            need(path)
+            log = io.StringIO()
+            with contextlib.redirect_stdout(log):
+                result = analyse(load_replay(path), MS_SC, fixes=CR072_MODES[mode])
+            battles = [n for n in result.nodes if isinstance(n, BattleNode)]
+            cache[replay, mode] = (battles, log.getvalue())
+        return cache[replay, mode]
+
+    return get
+
+
+def _cr072_killer_record(battle):
+    """The battle's record of who killed what: every killing unit in ``killersByPlayer``, as a multiset of
+    identities."""
+    from collections import Counter
+
+    return Counter(id(killer) for killers in battle.killersByPlayer.values() for killer in killers)
+
+
+def _cr072_dead(battle):
+    return [e for player in (battle.player1, battle.player2) for e in battle.deadUnitsByPlayer[player]]
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+def test_cr072_ac1_the_oracles_killer_is_recorded(cr072_runs, mode):
+    """AC-1: on Alcyone the Oracle (3 supply) dies at 11:05 in the battle starting at 11:05 (665 s); in both modes
+    that battle records the Oracle's killer, once, and counts one big unit lost for its owner, blacksquall."""
+    from collections import Counter
+
+    battles, _log = cr072_runs("alcyone", mode)
+    (battle,) = [b for b in battles if b.startSec == 665]
+    (oracle,) = _cr072_dead(battle)
+    assert (oracle.unit.name, oracle.unit.owner.name, oracle.unit.killing_unit.name) == ("Oracle", "blacksquall", "Queen")
+    assert _cr072_killer_record(battle) == Counter({id(oracle.unit.killing_unit): 1})
+    assert {p.name: n for p, n in battle.bigUnitsLost.items()} == {"blacksquall": 1, "lilTiGGer": 0}
+
+
+CR072_BIG_DEATHS = {  # (death second, type, killer type, the battle's start in seconds), AC-2
+    "alcyone": [
+        (489, "RavagerCocoon", "VoidRay", 486),
+        (503, "Ravager", "VoidRay", 503),
+        (615, "Disruptor", "Hydralisk", 605),
+        (618, "Immortal", "Roach", 605),
+        (665, "Oracle", "Queen", 665),
+        (924, "VoidRay", "Mutalisk", 917),
+    ],
+    "spine": [(410, "Immortal", "Roach", 381), (432, "Immortal", "Roach", 381)],
+}
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac2_every_battle_records_one_killer_for_each_of_its_dead(cr072_runs, replay, mode):
+    """AC-2: in every battle the record of who killed what holds exactly one entry for each of the battle's dead,
+    its killer (a multiset of unit identities), so it has as many entries as the battle has dead; and each big-unit
+    death's killer is in its battle's record."""
+    from collections import Counter
+
+    battles, _log = cr072_runs(replay, mode)
+    assert len(battles) == {"alcyone": 30, "spine": 16}[replay]
+    for battle in battles:
+        dead = _cr072_dead(battle)
+        assert _cr072_killer_record(battle) == Counter(id(e.unit.killing_unit) for e in dead), battle.startSec
+        assert sum(_cr072_killer_record(battle).values()) == battle.p1dc + battle.p2dc == len(dead)
+    big = sorted(
+        (e.second, e.unit.name, e.unit.killing_unit.name, b.startSec, id(e.unit.killing_unit) in _cr072_killer_record(b))
+        for b in battles
+        for e in _cr072_dead(b)
+        if b.deathCost(e)[2] >= b.BIG_UNIT_SUPPLY_THRESHOLD
+    )
+    assert big == [(*death, True) for death in CR072_BIG_DEATHS[replay]]
+
+
+CR072_BIG_UNITS_LOST = {  # battle start (s) -> {player name: big units lost}; every other battle and player 0
+    "alcyone": {486: {"lilTiGGer": 1}, 503: {"lilTiGGer": 1}, 605: {"blacksquall": 2}, 665: {"blacksquall": 1}, 917: {"blacksquall": 1}},
+    "spine": {381: {"serega": 2}},
+}  # fmt: skip
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac2_every_battle_counts_its_big_units_lost_as_numbers(cr072_runs, replay, mode):
+    """AC-2: every battle counts its big units lost (3 supply or more) as a number for each of its two players:
+    the listed values, and 0 everywhere else."""
+    battles, _log = cr072_runs(replay, mode)
+    for battle in battles:
+        players = (battle.player1, battle.player2)
+        assert set(battle.bigUnitsLost) == set(players), battle.startSec
+        assert all(type(n) is int for n in battle.bigUnitsLost.values()), (battle.startSec, battle.bigUnitsLost)
+        want = CR072_BIG_UNITS_LOST[replay].get(battle.startSec, {})
+        assert {p.name: battle.bigUnitsLost[p] for p in players} == {p.name: want.get(p.name, 0) for p in players}
+
+
+@pytest.mark.parametrize("mode", list(CR072_MODES))
+@pytest.mark.parametrize("replay", list(CR072_REPLAYS))
+def test_cr072_ac3_the_run_log_reports_no_false_missing_killer(cr072_runs, replay, mode):
+    """AC-3: no run-log line holds "ERR NO KILLING UNIT" (the catch-all's text; the other print in the same loop says
+    only "NO KILLING UNIT"), and the log is 6 lines shorter on Alcyone (86 -> 80) and 2 on spine (4 -> 2)."""
+    _battles, log = cr072_runs(replay, mode)
+    lines = log.splitlines()
+    assert [line for line in lines if "ERR NO KILLING UNIT" in line] == []
+    assert len(lines) == {"alcyone": 80, "spine": 2}[replay]

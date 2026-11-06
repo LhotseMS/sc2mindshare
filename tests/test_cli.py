@@ -271,3 +271,30 @@ def test_the_clock_server_must_be_local(tmp_path, config):
         "http://example.com:3042",
     )
     assert code == 2 and "local Mindshare only" in stderr
+
+
+def test_cr070_ac5_a_cost_that_cannot_be_found_exits_1_and_writes_nothing(tmp_path, config):
+    """CR-070 AC-5 (Stefan's D1a): with no Shield Battery row in the config root's unitsInfo.csv, the build stops at
+    the 7:48 battery death in Battle-12: exit 1, the error on stderr with the traceback in the log, and no Mindshare
+    file, intervals.json or Intervals.csv, neither in a fresh folder nor over an earlier build's (left as they were)."""
+    need(ALCYONE)
+    fresh, earlier = tmp_path / "fresh" / "graph.json", tmp_path / "earlier" / "graph.json"
+    assert run("build", ALCYONE, "--out", earlier, "--config-root", config)[0] == 0
+    outputs = [earlier.parent / name for name in ("graph.json", "intervals.json", "Intervals.csv")]
+    before = [(p.read_bytes(), p.stat().st_mtime_ns) for p in outputs]
+    table = config / "unitsInfo.csv"
+    lines = table.read_text(encoding="utf-8").splitlines(keepends=True)
+    table.write_text("".join(line for line in lines if not line.startswith("Shield Battery,")), encoding="utf-8")
+    message = (
+        "cannot find the cost of ShieldBattery 72613891 (blacksquall) that died at 07:48 in "
+        'Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay: unitsInfo.csv has no "Shield Battery" row'
+    )
+    for out in (fresh, earlier):
+        code, stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config)
+        assert (code, stdout) == (1, "")
+        log = out.parent / "graph.log"
+        assert stderr == f"sc2mindshare: the analysis failed: ValueError: {message} (traceback in {log})\n"
+        text = log.read_text(encoding="utf-8")
+        assert "Traceback" in text and f"ValueError: {message}" in text
+    assert sorted(p.name for p in fresh.parent.iterdir()) == ["graph.log"]
+    assert [(p.read_bytes(), p.stat().st_mtime_ns) for p in outputs] == before

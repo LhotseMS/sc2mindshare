@@ -159,11 +159,7 @@
   "game type": "typelist",
   "ladder": "bool",
   "category": "typelist",
-  "speed": "typelist",
-  "step #": "int",
-  "at supply": "int",
-  "started at": "time[h:m:s]",
-  "steps": "string"
+  "speed": "typelist"
  },
  "nodes": [
   {
@@ -195,7 +191,7 @@
   },
   {
    "name": "lilTiGGer",
-   "description": "Red Zerg build 938 units and killed 358 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:18 Spawning Pool\n2. 12 0:21 Drone\n3. 12 0:26 Drone\n4. 13 0:29 Drone\n5. 14 0:39 Overlord\n6. 14 1:06 Zergling ×6\n7. 19 1:20 Hatchery\n8. 19 1:24 Zergling ×2\n9. 17 1:28 Zergling ×2\n10. 17 1:32 Queen\n11. 20 1:40 Drone\n12. 21 1:51 Drone\n13. 20 2:25 Drone ×2\n14. 20 2:27 Overlord\n15. 22 2:31 Queen\n16. 22 2:32 Queen\n17. 22 2:35 Drone\n18. 26 2:46 Drone ×2\n19. 28 2:54 Drone ×2\n20. 29 3:05 Extractor\n21. 29 3:08 Drone ×3\n22. 31 3:17 Overlord\n23. 31 3:19 Overlord\n24. 31 3:21 Drone\n25. 31 3:23 Drone\n26. 31 3:24 Hatchery\n27. 32 3:30 Drone ×2\n28. 34 3:51 Queen ×2\n29. 38 3:56 Drone ×4\n30. 41 4:05 Drone ×4\n31. 45 4:17 Overlord\n32. 45 4:25 Overlord\n33. 45 4:27 Drone ×2\n34. 47 4:38 Extractor\n35. 46 4:47 Roach Warren\n36. 46 4:51 Drone ×8\n37. 53 4:54 Extractor\n38. 52 5:01 Queen\n39. 52 5:06 Lair\n40. 54 5:10 Drone ×2\n41. 54 5:11 Spore Crawler\n42. 54 5:12 Spore Crawler\n43. 54 5:12 Drone\n44. 55 5:20 Overlord ×2\n45. 55 5:27 Roach ×5\n46. 65 5:34 Overlord\n47. 65 5:35 Overlord\n48. 65 5:42 Roach ×4\n49. 73 5:55 Overlord\n50. 73 5:56 Roach ×5",
+   "description": "Red Zerg build 938 units and killed 358 units.",
    "type": "Player",
    "ID": "Player-1",
    "size": [
@@ -211,7 +207,7 @@
   },
   {
    "name": "blacksquall",
-   "description": "Blue Protoss build 294 units and killed 143 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:12 Probe · chrono possible\n3. 14 0:20 Probe · chrono possible\n4. 14 0:20 Pylon\n5. 15 0:38 Probe · chrono possible\n6. 15 0:41 Gateway\n7. 16 0:50 Probe\n8. 16 0:52 Assimilator\n9. 17 1:02 Probe\n10. 18 1:14 Probe\n11. 19 1:26 Probe\n12. 19 1:30 Zealot · chrono possible\n13. 20 1:34 Nexus\n14. 20 1:37 Cybernetics Core\n15. 22 1:47 Pylon\n16. 22 1:58 Zealot · chrono possible\n17. 22 2:04 Gateway\n18. 24 2:20 Probe\n19. 22 2:28 Adept\n20. 24 2:31 Shield Battery\n21. 24 2:32 Probe\n22. 25 2:44 Probe\n23. 26 2:52 Probe\n24. 26 2:52 Adept\n25. 26 2:56 Probe\n26. 30 3:04 Probe\n27. 31 3:07 Assimilator\n28. 31 3:08 Probe\n29. 31 3:11 Adept\n30. 34 3:16 Probe\n31. 35 3:20 Probe\n32. 36 3:28 Probe\n33. 36 3:33 Probe\n34. 38 3:40 Probe\n35. 39 3:45 Probe\n36. 40 3:52 Probe\n37. 41 3:57 Probe\n38. 42 4:04 Probe\n39. 42 4:09 Probe\n40. 44 4:10 Stargate\n41. 44 4:12 Stalker\n42. 44 4:13 Pylon\n43. 46 4:17 Pylon\n44. 46 4:17 Assimilator\n45. 46 4:19 Assimilator\n46. 46 4:31 Probe ×2 · chrono possible\n47. 46 4:31 Stalker\n48. 50 4:39 Probe ×2 · chrono possible\n49. 52 4:46 Void Ray · chrono possible\n50. 52 4:47 Pylon\n51. 52 4:47 Probe ×2 · chrono possible\n52. 52 4:50 Pylon\n53. 54 4:57 Probe ×2 · chrono possible\n54. 60 5:09 Probe ×2\n55. 60 5:11 Pylon\n56. 62 5:15 Pylon\n57. 62 5:21 Void Ray · chrono possible\n58. 62 5:21 Pylon\n59. 62 5:21 Probe ×2\n60. 62 5:25 Pylon\n61. 64 5:31 Pylon\n62. 64 5:33 Probe ×2\n63. 64 5:34 Warp Gate Research · chrono possible\n64. 70 5:40 Nexus\n65. 70 5:45 Adept ×2\n66. 70 5:46 Probe\n67. 70 5:47 Probe\n68. 76 5:55 Shield Battery",
+   "description": "Blue Protoss build 294 units and killed 143 units.",
    "type": "Player",
    "ID": "Player-2",
    "size": [
@@ -472,7 +468,7 @@
     "end time": "00:07:57"
    },
    "position": {
-    "x": 95,
+    "x": 92.5,
     "y": 0,
     "z": 0.01
    }
@@ -493,7 +489,7 @@
     "end time": "00:08:18"
    },
    "position": {
-    "x": 102.5,
+    "x": 100,
     "y": 0,
     "z": 0.01
    }
@@ -514,7 +510,7 @@
     "end time": "00:08:28"
    },
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": 0,
     "z": 0.01
    }
@@ -535,7 +531,7 @@
     "end time": "00:08:34"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": 0,
     "z": 0.01
    }
@@ -556,7 +552,7 @@
     "end time": "00:09:58"
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 2.6594,
     "z": 0.01
    }
@@ -577,7 +573,7 @@
     "end time": "00:10:28"
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 0,
     "z": 0.01
    }
@@ -598,7 +594,7 @@
     "end time": "00:10:35"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": 0,
     "z": 0.01
    }
@@ -619,7 +615,7 @@
     "end time": "00:11:05"
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": 0,
     "z": 0.01
    }
@@ -640,7 +636,7 @@
     "end time": "00:12:15"
    },
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": 0,
     "z": 0.01
    }
@@ -661,7 +657,7 @@
     "end time": "00:12:23"
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": 0,
     "z": 0.01
    }
@@ -682,7 +678,7 @@
     "end time": "00:13:18"
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 0,
     "z": 0.01
    }
@@ -703,7 +699,7 @@
     "end time": "00:13:32"
    },
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": 0,
     "z": 0.01
    }
@@ -724,7 +720,7 @@
     "end time": "00:13:47"
    },
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": 0,
     "z": 0.01
    }
@@ -745,7 +741,7 @@
     "end time": "00:13:54"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": 3.735,
     "z": 0.01
    }
@@ -766,7 +762,7 @@
     "end time": "00:14:26"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": 0,
     "z": 0.01
    }
@@ -787,7 +783,7 @@
     "end time": "00:15:05"
    },
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": 0,
     "z": 0.01
    }
@@ -808,7 +804,7 @@
     "end time": "00:15:11"
    },
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": 3.355,
     "z": 0.01
    }
@@ -829,7 +825,7 @@
     "end time": "00:15:30"
    },
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": 0,
     "z": 0.01
    }
@@ -850,7 +846,7 @@
     "end time": "00:15:42"
    },
    "position": {
-    "x": 205,
+    "x": 202.5,
     "y": 0,
     "z": 0.01
    }
@@ -1113,14 +1109,10 @@
    ],
    "properties": {
     "time": "00:11:16",
-    "player": "lilTiGGer",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "lilTiGGer"
    },
    "position": {
-    "x": 147.5,
+    "x": 145,
     "y": -8,
     "z": 0.01
    }
@@ -1136,14 +1128,10 @@
    ],
    "properties": {
     "time": "00:12:28",
-    "player": "lilTiGGer",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "lilTiGGer"
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": -10.1,
     "z": 0.01
    }
@@ -1159,11 +1147,7 @@
    ],
    "properties": {
     "time": "00:05:34",
-    "player": "blacksquall",
-    "step #": 63,
-    "at supply": 64,
-    "started at": "00:05:34",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
     "x": 65,
@@ -1182,14 +1166,10 @@
    ],
    "properties": {
     "time": "00:07:21",
-    "player": "blacksquall",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": 8,
     "z": 0.01
    }
@@ -1205,14 +1185,10 @@
    ],
    "properties": {
     "time": "00:08:32",
-    "player": "blacksquall",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": 8,
     "z": 0.01
    }
@@ -1228,15 +1204,11 @@
    ],
    "properties": {
     "time": "00:10:35",
-    "player": "blacksquall",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
-    "x": 137.5,
-    "y": 11.15,
+    "x": 135,
+    "y": 9.05,
     "z": 0.01
    }
   },
@@ -1251,14 +1223,10 @@
    ],
    "properties": {
     "time": "00:11:37",
-    "player": "blacksquall",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 11.15,
     "z": 0.01
    }
@@ -1274,14 +1242,10 @@
    ],
    "properties": {
     "time": "00:10:32",
-    "player": "blacksquall",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "player": "blacksquall"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": 8,
     "z": 0.01
    }
@@ -1298,11 +1262,7 @@
    "properties": {
     "time": "00:00:00",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
     "x": 0,
@@ -1322,11 +1282,7 @@
    "properties": {
     "time": "00:00:19",
     "player": "lilTiGGer",
-    "type": "Spawning Pool",
-    "step #": 1,
-    "at supply": 12,
-    "started at": "00:00:18",
-    "steps": ""
+    "type": "Spawning Pool"
    },
    "position": {
     "x": 2.5,
@@ -1346,11 +1302,7 @@
    "properties": {
     "time": "00:01:20",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 7,
-    "at supply": 19,
-    "started at": "00:01:20",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
     "x": 15,
@@ -1370,11 +1322,7 @@
    "properties": {
     "time": "00:03:06",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 20,
-    "at supply": 29,
-    "started at": "00:03:05",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
     "x": 35,
@@ -1394,11 +1342,7 @@
    "properties": {
     "time": "00:03:24",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 26,
-    "at supply": 31,
-    "started at": "00:03:24",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
     "x": 40,
@@ -1418,11 +1362,7 @@
    "properties": {
     "time": "00:04:39",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 34,
-    "at supply": 47,
-    "started at": "00:04:38",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
     "x": 50,
@@ -1442,11 +1382,7 @@
    "properties": {
     "time": "00:04:55",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 37,
-    "at supply": 53,
-    "started at": "00:04:54",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
     "x": 55,
@@ -1466,11 +1402,7 @@
    "properties": {
     "time": "00:04:47",
     "player": "lilTiGGer",
-    "type": "Roach Warren",
-    "step #": 35,
-    "at supply": 46,
-    "started at": "00:04:47",
-    "steps": ""
+    "type": "Roach Warren"
    },
    "position": {
     "x": 52.5,
@@ -1490,11 +1422,7 @@
    "properties": {
     "time": "00:05:12",
     "player": "lilTiGGer",
-    "type": "Spore Crawler",
-    "step #": 41,
-    "at supply": 54,
-    "started at": "00:05:11",
-    "steps": ""
+    "type": "Spore Crawler"
    },
    "position": {
     "x": 60,
@@ -1514,11 +1442,7 @@
    "properties": {
     "time": "00:05:13",
     "player": "lilTiGGer",
-    "type": "Spore Crawler",
-    "step #": 42,
-    "at supply": 54,
-    "started at": "00:05:12",
-    "steps": ""
+    "type": "Spore Crawler"
    },
    "position": {
     "x": 60,
@@ -1538,11 +1462,7 @@
    "properties": {
     "time": "00:06:07",
     "player": "lilTiGGer",
-    "type": "Spore Crawler",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Spore Crawler"
    },
    "position": {
     "x": 72.5,
@@ -1562,11 +1482,7 @@
    "properties": {
     "time": "00:06:45",
     "player": "lilTiGGer",
-    "type": "Hydralisk Den",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hydralisk Den"
    },
    "position": {
     "x": 82.5,
@@ -1586,14 +1502,10 @@
    "properties": {
     "time": "00:07:22",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": -8,
     "z": 0.01
    }
@@ -1610,14 +1522,10 @@
    "properties": {
     "time": "00:08:38",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -8,
     "z": 0.01
    }
@@ -1634,14 +1542,10 @@
    "properties": {
     "time": "00:08:46",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": -8,
     "z": 0.01
    }
@@ -1658,14 +1562,10 @@
    "properties": {
     "time": "00:08:53",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -8,
     "z": 0.01
    }
@@ -1682,14 +1582,10 @@
    "properties": {
     "time": "00:08:55",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -9.05,
     "z": 0.01
    }
@@ -1706,14 +1602,10 @@
    "properties": {
     "time": "00:09:34",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": -8,
     "z": 0.01
    }
@@ -1730,14 +1622,10 @@
    "properties": {
     "time": "00:09:35",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": -9.05,
     "z": 0.01
    }
@@ -1754,14 +1642,10 @@
    "properties": {
     "time": "00:10:31",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -8,
     "z": 0.01
    }
@@ -1778,14 +1662,10 @@
    "properties": {
     "time": "00:10:33",
     "player": "lilTiGGer",
-    "type": "Extractor",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -11.15,
     "z": 0.01
    }
@@ -1802,14 +1682,10 @@
    "properties": {
     "time": "00:10:31",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Evolution Chamber"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -9.05,
     "z": 0.01
    }
@@ -1826,14 +1702,10 @@
    "properties": {
     "time": "00:10:32",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Evolution Chamber"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -10.1,
     "z": 0.01
    }
@@ -1850,14 +1722,10 @@
    "properties": {
     "time": "00:10:27",
     "player": "lilTiGGer",
-    "type": "Spire",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Spire"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -8,
     "z": 0.01
    }
@@ -1874,14 +1742,10 @@
    "properties": {
     "time": "00:10:51",
     "player": "lilTiGGer",
-    "type": "Spire",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Spire"
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": -8,
     "z": 0.01
    }
@@ -1898,14 +1762,10 @@
    "properties": {
     "time": "00:12:23",
     "player": "lilTiGGer",
-    "type": "Evolution Chamber",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Evolution Chamber"
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": -9.05,
     "z": 0.01
    }
@@ -1922,14 +1782,10 @@
    "properties": {
     "time": "00:11:39",
     "player": "lilTiGGer",
-    "type": "Hatchery",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Hatchery"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": -8,
     "z": 0.01
    }
@@ -1946,14 +1802,10 @@
    "properties": {
     "time": "00:12:22",
     "player": "lilTiGGer",
-    "type": "Infestation Pit",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Infestation Pit"
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": -8,
     "z": 0.01
    }
@@ -1970,14 +1822,10 @@
    "properties": {
     "time": "00:13:20",
     "player": "lilTiGGer",
-    "type": "Baneling Nest",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Baneling Nest"
    },
    "position": {
-    "x": 170,
+    "x": 167.5,
     "y": -8,
     "z": 0.01
    }
@@ -1994,14 +1842,10 @@
    "properties": {
     "time": "00:13:54",
     "player": "lilTiGGer",
-    "type": "Extractor Rich",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Extractor Rich"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": -8,
     "z": 0.01
    }
@@ -2018,14 +1862,10 @@
    "properties": {
     "time": "00:14:50",
     "player": "lilTiGGer",
-    "type": "Ultralisk Cavern",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Ultralisk Cavern"
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": -8,
     "z": 0.01
    }
@@ -2042,11 +1882,7 @@
    "properties": {
     "time": "00:00:00",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
     "x": 0,
@@ -2066,11 +1902,7 @@
    "properties": {
     "time": "00:00:20",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 4,
-    "at supply": 14,
-    "started at": "00:00:20",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 2.5,
@@ -2090,11 +1922,7 @@
    "properties": {
     "time": "00:00:52",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 8,
-    "at supply": 16,
-    "started at": "00:00:52",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
     "x": 10,
@@ -2114,11 +1942,7 @@
    "properties": {
     "time": "00:00:41",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 6,
-    "at supply": 15,
-    "started at": "00:00:41",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
     "x": 7.5,
@@ -2138,11 +1962,7 @@
    "properties": {
     "time": "00:01:47",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 15,
-    "at supply": 22,
-    "started at": "00:01:47",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 20,
@@ -2162,11 +1982,7 @@
    "properties": {
     "time": "00:01:36",
     "player": "blacksquall",
-    "type": "Cybernetics Core",
-    "step #": 14,
-    "at supply": 20,
-    "started at": "00:01:37",
-    "steps": ""
+    "type": "Cybernetics Core"
    },
    "position": {
     "x": 17.5,
@@ -2186,11 +2002,7 @@
    "properties": {
     "time": "00:01:34",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 13,
-    "at supply": 20,
-    "started at": "00:01:34",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
     "x": 17.5,
@@ -2210,11 +2022,7 @@
    "properties": {
     "time": "00:02:04",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 17,
-    "at supply": 22,
-    "started at": "00:02:04",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
     "x": 22.5,
@@ -2234,11 +2042,7 @@
    "properties": {
     "time": "00:02:31",
     "player": "blacksquall",
-    "type": "Shield Battery",
-    "step #": 20,
-    "at supply": 24,
-    "started at": "00:02:31",
-    "steps": ""
+    "type": "Shield Battery"
    },
    "position": {
     "x": 27.5,
@@ -2258,11 +2062,7 @@
    "properties": {
     "time": "00:03:08",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 27,
-    "at supply": 31,
-    "started at": "00:03:07",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
     "x": 35,
@@ -2282,11 +2082,7 @@
    "properties": {
     "time": "00:04:13",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 42,
-    "at supply": 44,
-    "started at": "00:04:13",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 47.5,
@@ -2306,11 +2102,7 @@
    "properties": {
     "time": "00:04:17",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 43,
-    "at supply": 46,
-    "started at": "00:04:17",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 47.5,
@@ -2330,11 +2122,7 @@
    "properties": {
     "time": "00:04:18",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 44,
-    "at supply": 46,
-    "started at": "00:04:17",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
     "x": 47.5,
@@ -2354,11 +2142,7 @@
    "properties": {
     "time": "00:04:20",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 45,
-    "at supply": 46,
-    "started at": "00:04:19",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
     "x": 47.5,
@@ -2378,11 +2162,7 @@
    "properties": {
     "time": "00:04:10",
     "player": "blacksquall",
-    "type": "Stargate",
-    "step #": 40,
-    "at supply": 44,
-    "started at": "00:04:10",
-    "steps": ""
+    "type": "Stargate"
    },
    "position": {
     "x": 45,
@@ -2402,11 +2182,7 @@
    "properties": {
     "time": "00:04:47",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 50,
-    "at supply": 52,
-    "started at": "00:04:47",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 52.5,
@@ -2426,11 +2202,7 @@
    "properties": {
     "time": "00:04:49",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 52,
-    "at supply": 52,
-    "started at": "00:04:50",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 52.5,
@@ -2450,11 +2222,7 @@
    "properties": {
     "time": "00:05:11",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 55,
-    "at supply": 60,
-    "started at": "00:05:11",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 60,
@@ -2474,11 +2242,7 @@
    "properties": {
     "time": "00:05:15",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 56,
-    "at supply": 62,
-    "started at": "00:05:15",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 60,
@@ -2498,11 +2262,7 @@
    "properties": {
     "time": "00:05:21",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 58,
-    "at supply": 62,
-    "started at": "00:05:21",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 62.5,
@@ -2522,11 +2282,7 @@
    "properties": {
     "time": "00:05:25",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 60,
-    "at supply": 62,
-    "started at": "00:05:25",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 62.5,
@@ -2546,11 +2302,7 @@
    "properties": {
     "time": "00:05:31",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 61,
-    "at supply": 64,
-    "started at": "00:05:31",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 65,
@@ -2570,11 +2322,7 @@
    "properties": {
     "time": "00:05:55",
     "player": "blacksquall",
-    "type": "Shield Battery",
-    "step #": 68,
-    "at supply": 76,
-    "started at": "00:05:55",
-    "steps": ""
+    "type": "Shield Battery"
    },
    "position": {
     "x": 70,
@@ -2594,11 +2342,7 @@
    "properties": {
     "time": "00:05:40",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 64,
-    "at supply": 70,
-    "started at": "00:05:40",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
     "x": 65,
@@ -2618,11 +2362,7 @@
    "properties": {
     "time": "00:06:45",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 82.5,
@@ -2642,11 +2382,7 @@
    "properties": {
     "time": "00:06:48",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 82.5,
@@ -2666,11 +2402,7 @@
    "properties": {
     "time": "00:06:22",
     "player": "blacksquall",
-    "type": "Robotics Facility",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Robotics Facility"
    },
    "position": {
     "x": 77.5,
@@ -2690,11 +2422,7 @@
    "properties": {
     "time": "00:06:23",
     "player": "blacksquall",
-    "type": "Robotics Facility",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Robotics Facility"
    },
    "position": {
     "x": 77.5,
@@ -2714,11 +2442,7 @@
    "properties": {
     "time": "00:06:51",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
     "x": 85,
@@ -2738,11 +2462,7 @@
    "properties": {
     "time": "00:06:40",
     "player": "blacksquall",
-    "type": "Forge",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Forge"
    },
    "position": {
     "x": 80,
@@ -2762,11 +2482,7 @@
    "properties": {
     "time": "00:06:37",
     "player": "blacksquall",
-    "type": "Twilight Council",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Twilight Council"
    },
    "position": {
     "x": 80,
@@ -2786,11 +2502,7 @@
    "properties": {
     "time": "00:06:42",
     "player": "blacksquall",
-    "type": "Forge",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Forge"
    },
    "position": {
     "x": 82.5,
@@ -2810,14 +2522,10 @@
    "properties": {
     "time": "00:07:35",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 95,
+    "x": 92.5,
     "y": 8,
     "z": 0.01
    }
@@ -2834,14 +2542,10 @@
    "properties": {
     "time": "00:07:29",
     "player": "blacksquall",
-    "type": "Templar Archive",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Templar Archive"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": 10.1,
     "z": 0.01
    }
@@ -2858,14 +2562,10 @@
    "properties": {
     "time": "00:07:27",
     "player": "blacksquall",
-    "type": "Robotics Bay",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Robotics Bay"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": 9.05,
     "z": 0.01
    }
@@ -2882,14 +2582,10 @@
    "properties": {
     "time": "00:08:03",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 102.5,
+    "x": 100,
     "y": 8,
     "z": 0.01
    }
@@ -2906,14 +2602,10 @@
    "properties": {
     "time": "00:07:58",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": 8,
     "z": 0.01
    }
@@ -2930,14 +2622,10 @@
    "properties": {
     "time": "00:08:53",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 8,
     "z": 0.01
    }
@@ -2954,14 +2642,10 @@
    "properties": {
     "time": "00:08:56",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 9.05,
     "z": 0.01
    }
@@ -2978,14 +2662,10 @@
    "properties": {
     "time": "00:09:00",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 10.1,
     "z": 0.01
    }
@@ -3002,14 +2682,10 @@
    "properties": {
     "time": "00:09:06",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 115,
+    "x": 112.5,
     "y": 8,
     "z": 0.01
    }
@@ -3026,14 +2702,10 @@
    "properties": {
     "time": "00:09:37",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": 9.05,
     "z": 0.01
    }
@@ -3050,14 +2722,10 @@
    "properties": {
     "time": "00:09:41",
     "player": "blacksquall",
-    "type": "Assimilator",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Assimilator"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 8,
     "z": 0.01
    }
@@ -3074,14 +2742,10 @@
    "properties": {
     "time": "00:09:33",
     "player": "blacksquall",
-    "type": "Cybernetics Core",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Cybernetics Core"
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": 8,
     "z": 0.01
    }
@@ -3098,14 +2762,10 @@
    "properties": {
     "time": "00:09:43",
     "player": "blacksquall",
-    "type": "Photon Cannon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Photon Cannon"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3122,14 +2782,10 @@
    "properties": {
     "time": "00:09:45",
     "player": "blacksquall",
-    "type": "Photon Cannon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Photon Cannon"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 10.1,
     "z": 0.01
    }
@@ -3146,14 +2802,10 @@
    "properties": {
     "time": "00:09:56",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 10.1,
     "z": 0.01
    }
@@ -3170,14 +2822,10 @@
    "properties": {
     "time": "00:09:46",
     "player": "blacksquall",
-    "type": "Photon Cannon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Photon Cannon"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 11.15,
     "z": 0.01
    }
@@ -3194,14 +2842,10 @@
    "properties": {
     "time": "00:10:01",
     "player": "blacksquall",
-    "type": "Photon Cannon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Photon Cannon"
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 8,
     "z": 0.01
    }
@@ -3218,14 +2862,10 @@
    "properties": {
     "time": "00:10:02",
     "player": "blacksquall",
-    "type": "Photon Cannon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Photon Cannon"
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3242,14 +2882,10 @@
    "properties": {
     "time": "00:09:47",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 12.2,
     "z": 0.01
    }
@@ -3266,14 +2902,10 @@
    "properties": {
     "time": "00:09:48",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 13.25,
     "z": 0.01
    }
@@ -3290,14 +2922,10 @@
    "properties": {
     "time": "00:09:51",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 8,
     "z": 0.01
    }
@@ -3314,14 +2942,10 @@
    "properties": {
     "time": "00:09:27",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
-    "x": 120,
+    "x": 117.5,
     "y": 8,
     "z": 0.01
    }
@@ -3338,14 +2962,10 @@
    "properties": {
     "time": "00:09:55",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 9.05,
     "z": 0.01
    }
@@ -3362,14 +2982,10 @@
    "properties": {
     "time": "00:09:58",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 11.15,
     "z": 0.01
    }
@@ -3386,14 +3002,10 @@
    "properties": {
     "time": "00:11:46",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 10.1,
     "z": 0.01
    }
@@ -3410,14 +3022,10 @@
    "properties": {
     "time": "00:11:48",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 11.15,
     "z": 0.01
    }
@@ -3434,14 +3042,10 @@
    "properties": {
     "time": "00:11:50",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 12.2,
     "z": 0.01
    }
@@ -3458,14 +3062,10 @@
    "properties": {
     "time": "00:11:31",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 8,
     "z": 0.01
    }
@@ -3482,14 +3082,10 @@
    "properties": {
     "time": "00:11:33",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 9.05,
     "z": 0.01
    }
@@ -3506,14 +3102,10 @@
    "properties": {
     "time": "00:11:35",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 10.1,
     "z": 0.01
    }
@@ -3530,14 +3122,10 @@
    "properties": {
     "time": "00:11:37",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 12.2,
     "z": 0.01
    }
@@ -3554,14 +3142,10 @@
    "properties": {
     "time": "00:11:39",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 13.25,
     "z": 0.01
    }
@@ -3578,14 +3162,10 @@
    "properties": {
     "time": "00:11:41",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 8,
     "z": 0.01
    }
@@ -3602,14 +3182,10 @@
    "properties": {
     "time": "00:11:43",
     "player": "blacksquall",
-    "type": "Gateway",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Gateway"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3626,14 +3202,10 @@
    "properties": {
     "time": "00:12:13",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": 8,
     "z": 0.01
    }
@@ -3650,14 +3222,10 @@
    "properties": {
     "time": "00:12:43",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 9.05,
     "z": 0.01
    }
@@ -3674,14 +3242,10 @@
    "properties": {
     "time": "00:13:10",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": 9.05,
     "z": 0.01
    }
@@ -3698,14 +3262,10 @@
    "properties": {
     "time": "00:13:53",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": 8,
     "z": 0.01
    }
@@ -3722,14 +3282,10 @@
    "properties": {
     "time": "00:13:01",
     "player": "blacksquall",
-    "type": "Nexus",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Nexus"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": 8,
     "z": 0.01
    }
@@ -3746,14 +3302,10 @@
    "properties": {
     "time": "00:13:58",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3770,14 +3322,10 @@
    "properties": {
     "time": "00:14:39",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": 8,
     "z": 0.01
    }
@@ -3794,14 +3342,10 @@
    "properties": {
     "time": "00:14:50",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3818,14 +3362,10 @@
    "properties": {
     "time": "00:14:55",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 192.5,
+    "x": 190,
     "y": 8,
     "z": 0.01
    }
@@ -3842,14 +3382,10 @@
    "properties": {
     "time": "00:14:45",
     "player": "blacksquall",
-    "type": "Cybernetics Core",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Cybernetics Core"
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": 8,
     "z": 0.01
    }
@@ -3866,14 +3402,10 @@
    "properties": {
     "time": "00:15:18",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": 8,
     "z": 0.01
    }
@@ -3890,14 +3422,10 @@
    "properties": {
     "time": "00:15:21",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 8,
     "z": 0.01
    }
@@ -3914,14 +3442,10 @@
    "properties": {
     "time": "00:15:22",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 9.05,
     "z": 0.01
    }
@@ -3938,14 +3462,10 @@
    "properties": {
     "time": "00:15:23",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 10.1,
     "z": 0.01
    }
@@ -3962,14 +3482,10 @@
    "properties": {
     "time": "00:15:28",
     "player": "blacksquall",
-    "type": "Pylon",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Pylon"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 11.15,
     "z": 0.01
    }
@@ -3986,423 +3502,11 @@
    "properties": {
     "time": "00:15:06",
     "player": "blacksquall",
-    "type": "Stargate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 195,
-    "y": 8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Lair",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-114",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:05:06",
-    "player": "lilTiGGer",
-    "type": "Lair",
-    "step #": 39,
-    "at supply": 52,
-    "started at": "00:05:06",
-    "steps": ""
-   },
-   "position": {
-    "x": 57.5,
-    "y": -8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-115",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:07:14",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 90,
-    "y": 8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-116",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:07:14",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 90,
-    "y": 9.05,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-117",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:33",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 137.5,
-    "y": 9.05,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-118",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:34",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 137.5,
-    "y": 10.1,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-119",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:37",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 137.5,
-    "y": 12.2,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-120",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:41",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 140,
-    "y": 8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-121",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:10:45",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 140,
-    "y": 9.05,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-122",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:17",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 157.5,
-    "y": 9.05,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-123",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:19",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 157.5,
-    "y": 10.1,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-124",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:22",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 160,
-    "y": 8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-125",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:23",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 160,
-    "y": 9.05,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-126",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:25",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 160,
-    "y": 10.1,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-127",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:28",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 160,
-    "y": 11.15,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Warp Gate",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-128",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:12:30",
-    "player": "blacksquall",
-    "type": "Warp Gate",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 160,
-    "y": 12.2,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Hive",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-129",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:13:03",
-    "player": "lilTiGGer",
-    "type": "Hive",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
-   },
-   "position": {
-    "x": 167.5,
-    "y": -8,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Greater Spire",
-   "description": "",
-   "type": "Building",
-   "ID": "Building-130",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:14:51",
-    "player": "lilTiGGer",
-    "type": "Greater Spire",
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "type": "Stargate"
    },
    "position": {
     "x": 192.5,
-    "y": -8,
+    "y": 8,
     "z": 0.01
    }
   },
@@ -4421,7 +3525,7 @@
     "type": "Nexus"
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 8,
     "z": 0.01
    }
@@ -4441,7 +3545,7 @@
     "type": "Nexus"
    },
    "position": {
-    "x": 177.5,
+    "x": 175,
     "y": 8,
     "z": 0.01
    }
@@ -4461,7 +3565,7 @@
     "type": "Nexus"
    },
    "position": {
-    "x": 207.5,
+    "x": 205,
     "y": 8,
     "z": 0.01
    }
@@ -4478,11 +3582,7 @@
     "type": "Drone",
     "count": 12,
     "total at time": 12,
-    "supply": 12,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 12
    },
    "position": {
     "x": 0,
@@ -4502,11 +3602,7 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 1,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 0,
@@ -4526,11 +3622,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 13,
-    "supply": 1,
-    "step #": 2,
-    "at supply": 12,
-    "started at": "00:00:21",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 5,
@@ -4550,11 +3642,7 @@
     "type": "Drone",
     "count": 2,
     "total at time": 15,
-    "supply": 2,
-    "step #": 3,
-    "at supply": 12,
-    "started at": "00:00:26",
-    "steps": "3. 12 0:26 Drone / 4. 13 0:29 Drone"
+    "supply": 2
    },
    "position": {
     "x": 7.5,
@@ -4574,11 +3662,7 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 2,
-    "supply": 0,
-    "step #": 5,
-    "at supply": 14,
-    "started at": "00:00:39",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 10,
@@ -4598,11 +3682,7 @@
     "type": "Zergling",
     "count": 6,
     "total at time": 6,
-    "supply": 3,
-    "step #": 6,
-    "at supply": 14,
-    "started at": "00:01:06",
-    "steps": ""
+    "supply": 3
    },
    "position": {
     "x": 15,
@@ -4622,11 +3702,7 @@
     "type": "Zergling",
     "count": 4,
     "total at time": 10,
-    "supply": 2,
-    "step #": 8,
-    "at supply": 19,
-    "started at": "00:01:24",
-    "steps": "8. 19 1:24 Zergling ×2 / 9. 17 1:28 Zergling ×2"
+    "supply": 2
    },
    "position": {
     "x": 17.5,
@@ -4646,11 +3722,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 15,
-    "supply": 1,
-    "step #": 11,
-    "at supply": 20,
-    "started at": "00:01:40",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 20,
@@ -4670,11 +3742,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 16,
-    "supply": 1,
-    "step #": 12,
-    "at supply": 21,
-    "started at": "00:01:51",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 22.5,
@@ -4694,11 +3762,7 @@
     "type": "Queen",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 10,
-    "at supply": 17,
-    "started at": "00:01:32",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 22.5,
@@ -4718,11 +3782,7 @@
     "type": "Drone",
     "count": 2,
     "total at time": 17,
-    "supply": 2,
-    "step #": 13,
-    "at supply": 20,
-    "started at": "00:02:25",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 27.5,
@@ -4742,11 +3802,7 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 3,
-    "supply": 0,
-    "step #": 14,
-    "at supply": 20,
-    "started at": "00:02:27",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 27.5,
@@ -4766,11 +3822,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 18,
-    "supply": 1,
-    "step #": 17,
-    "at supply": 22,
-    "started at": "00:02:35",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 30,
@@ -4790,11 +3842,7 @@
     "type": "Drone",
     "count": 2,
     "total at time": 20,
-    "supply": 2,
-    "step #": 18,
-    "at supply": 26,
-    "started at": "00:02:46",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 32.5,
@@ -4814,11 +3862,7 @@
     "type": "Drone",
     "count": 2,
     "total at time": 22,
-    "supply": 2,
-    "step #": 19,
-    "at supply": 28,
-    "started at": "00:02:54",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 35,
@@ -4838,11 +3882,7 @@
     "type": "Queen",
     "count": 2,
     "total at time": 3,
-    "supply": 4,
-    "step #": 15,
-    "at supply": 22,
-    "started at": "00:02:31",
-    "steps": "15. 22 2:31 Queen / 16. 22 2:32 Queen"
+    "supply": 4
    },
    "position": {
     "x": 35,
@@ -4862,11 +3902,7 @@
     "type": "Drone",
     "count": 3,
     "total at time": 24,
-    "supply": 3,
-    "step #": 21,
-    "at supply": 29,
-    "started at": "00:03:08",
-    "steps": ""
+    "supply": 3
    },
    "position": {
     "x": 37.5,
@@ -4886,11 +3922,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 25,
-    "supply": 1,
-    "step #": 24,
-    "at supply": 31,
-    "started at": "00:03:21",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 40,
@@ -4910,11 +3942,7 @@
     "type": "Drone",
     "count": 3,
     "total at time": 28,
-    "supply": 3,
-    "step #": 25,
-    "at supply": 31,
-    "started at": "00:03:23",
-    "steps": "25. 31 3:23 Drone / 27. 32 3:30 Drone ×2"
+    "supply": 3
    },
    "position": {
     "x": 42.5,
@@ -4934,11 +3962,7 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 5,
-    "supply": 0,
-    "step #": 22,
-    "at supply": 31,
-    "started at": "00:03:17",
-    "steps": "22. 31 3:17 Overlord / 23. 31 3:19 Overlord"
+    "supply": 0
    },
    "position": {
     "x": 42.5,
@@ -4958,11 +3982,7 @@
     "type": "Drone",
     "count": 4,
     "total at time": 31,
-    "supply": 4,
-    "step #": 29,
-    "at supply": 38,
-    "started at": "00:03:56",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 45,
@@ -4982,11 +4002,7 @@
     "type": "Drone",
     "count": 4,
     "total at time": 35,
-    "supply": 4,
-    "step #": 30,
-    "at supply": 41,
-    "started at": "00:04:05",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 47.5,
@@ -5006,11 +4022,7 @@
     "type": "Queen",
     "count": 2,
     "total at time": 5,
-    "supply": 4,
-    "step #": 28,
-    "at supply": 34,
-    "started at": "00:03:51",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 50,
@@ -5030,11 +4042,7 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 7,
-    "supply": 0,
-    "step #": 31,
-    "at supply": 45,
-    "started at": "00:04:17",
-    "steps": "31. 45 4:17 Overlord / 32. 45 4:25 Overlord"
+    "supply": 0
    },
    "position": {
     "x": 50,
@@ -5054,11 +4062,7 @@
     "type": "Drone",
     "count": 2,
     "total at time": 36,
-    "supply": 2,
-    "step #": 33,
-    "at supply": 45,
-    "started at": "00:04:27",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 50,
@@ -5078,11 +4082,7 @@
     "type": "Drone",
     "count": 8,
     "total at time": 43,
-    "supply": 8,
-    "step #": 36,
-    "at supply": 46,
-    "started at": "00:04:51",
-    "steps": ""
+    "supply": 8
    },
    "position": {
     "x": 55,
@@ -5102,11 +4102,7 @@
     "type": "Drone",
     "count": 3,
     "total at time": 44,
-    "supply": 3,
-    "step #": 40,
-    "at supply": 54,
-    "started at": "00:05:10",
-    "steps": "40. 54 5:10 Drone ×2 / 43. 54 5:12 Drone"
+    "supply": 3
    },
    "position": {
     "x": 60,
@@ -5126,11 +4122,7 @@
     "type": "Queen",
     "count": 1,
     "total at time": 6,
-    "supply": 2,
-    "step #": 38,
-    "at supply": 52,
-    "started at": "00:05:01",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 65,
@@ -5150,11 +4142,7 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 8,
-    "supply": 0,
-    "step #": 44,
-    "at supply": 55,
-    "started at": "00:05:20",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 65,
@@ -5174,11 +4162,7 @@
     "type": "Roach",
     "count": 5,
     "total at time": 5,
-    "supply": 10,
-    "step #": 45,
-    "at supply": 55,
-    "started at": "00:05:27",
-    "steps": ""
+    "supply": 10
    },
    "position": {
     "x": 67.5,
@@ -5198,11 +4182,7 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 10,
-    "supply": 0,
-    "step #": 46,
-    "at supply": 65,
-    "started at": "00:05:34",
-    "steps": "46. 65 5:34 Overlord / 47. 65 5:35 Overlord"
+    "supply": 0
    },
    "position": {
     "x": 67.5,
@@ -5222,11 +4202,7 @@
     "type": "Roach",
     "count": 4,
     "total at time": 9,
-    "supply": 8,
-    "step #": 48,
-    "at supply": 65,
-    "started at": "00:05:42",
-    "steps": ""
+    "supply": 8
    },
    "position": {
     "x": 70,
@@ -5246,11 +4222,7 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 11,
-    "supply": 0,
-    "step #": 49,
-    "at supply": 73,
-    "started at": "00:05:55",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 72.5,
@@ -5270,11 +4242,7 @@
     "type": "Roach",
     "count": 5,
     "total at time": 14,
-    "supply": 10,
-    "step #": 50,
-    "at supply": 73,
-    "started at": "00:05:56",
-    "steps": ""
+    "supply": 10
    },
    "position": {
     "x": 75,
@@ -5294,11 +4262,7 @@
     "type": "Roach",
     "count": 3,
     "total at time": 17,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
     "x": 77.5,
@@ -5318,11 +4282,7 @@
     "type": "Roach",
     "count": 5,
     "total at time": 22,
-    "supply": 10,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 10
    },
    "position": {
     "x": 80,
@@ -5342,11 +4302,7 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 12,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 82.5,
@@ -5366,11 +4322,7 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 14,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
     "x": 85,
@@ -5390,11 +4342,7 @@
     "type": "Drone",
     "count": 1,
     "total at time": 42,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 85,
@@ -5414,11 +4362,7 @@
     "type": "Roach",
     "count": 5,
     "total at time": 27,
-    "supply": 10,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 10
    },
    "position": {
     "x": 90,
@@ -5438,11 +4382,7 @@
     "type": "Drone",
     "count": 6,
     "total at time": 47,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
     "x": 90,
@@ -5462,15 +4402,11 @@
     "type": "Drone",
     "count": 9,
     "total at time": 56,
-    "supply": 9,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 9
    },
    "position": {
-    "x": 92.5,
-    "y": -13.8,
+    "x": 90,
+    "y": -17.8,
     "z": 0.01
    }
   },
@@ -5486,14 +4422,10 @@
     "type": "Drone",
     "count": 4,
     "total at time": 59,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 97.5,
+    "x": 95,
     "y": -13.8,
     "z": 0.01
    }
@@ -5510,14 +4442,10 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 17,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -5534,14 +4462,10 @@
     "type": "Drone",
     "count": 6,
     "total at time": 65,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": -15.3,
     "z": 0.01
    }
@@ -5558,14 +4482,10 @@
     "type": "Hydralisk",
     "count": 6,
     "total at time": 6,
-    "supply": 12,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 12
    },
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": -14.2,
     "z": 0.01
    }
@@ -5582,14 +4502,10 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 11,
-    "supply": 10,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 10
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -13.8,
     "z": 0.01
    }
@@ -5606,14 +4522,10 @@
     "type": "Drone",
     "count": 3,
     "total at time": 68,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -5630,14 +4542,10 @@
     "type": "Drone",
     "count": 5,
     "total at time": 71,
-    "supply": 5,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 5
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -13.8,
     "z": 0.01
    }
@@ -5654,14 +4562,10 @@
     "type": "Drone",
     "count": 1,
     "total at time": 72,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 115,
+    "x": 112.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -5678,14 +4582,10 @@
     "type": "Drone",
     "count": 2,
     "total at time": 74,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": -13.55,
     "z": 0.01
    }
@@ -5702,14 +4602,10 @@
     "type": "Hydralisk",
     "count": 3,
     "total at time": 14,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": -15.3,
     "z": 0.01
    }
@@ -5726,14 +4622,10 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 17,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 120,
+    "x": 117.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -5750,14 +4642,10 @@
     "type": "Hydralisk",
     "count": 7,
     "total at time": 21,
-    "supply": 14,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 14
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": -14.2,
     "z": 0.01
    }
@@ -5774,14 +4662,10 @@
     "type": "Drone",
     "count": 5,
     "total at time": 77,
-    "supply": 5,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 5
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": -13.8,
     "z": 0.01
    }
@@ -5798,14 +4682,10 @@
     "type": "Overlord",
     "count": 1,
     "total at time": 17,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": -15.55,
     "z": 0.01
    }
@@ -5822,14 +4702,10 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 17,
-    "supply": 10,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 10
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": -13.8,
     "z": 0.01
    }
@@ -5846,14 +4722,10 @@
     "type": "Overlord",
     "count": 2,
     "total at time": 19,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": -13.55,
     "z": 0.01
    }
@@ -5870,14 +4742,10 @@
     "type": "Drone",
     "count": 5,
     "total at time": 82,
-    "supply": 5,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 5
    },
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": -15.3,
     "z": 0.01
    }
@@ -5894,14 +4762,10 @@
     "type": "Drone",
     "count": 1,
     "total at time": 79,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -5918,14 +4782,10 @@
     "type": "Hydralisk",
     "count": 9,
     "total at time": 18,
-    "supply": 18,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 18
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": -14.2,
     "z": 0.01
    }
@@ -5942,14 +4802,10 @@
     "type": "Drone",
     "count": 7,
     "total at time": 84,
-    "supply": 7,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 7
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": -16.6,
     "z": 0.01
    }
@@ -5966,14 +4822,10 @@
     "type": "Zergling",
     "count": 16,
     "total at time": 16,
-    "supply": 8,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 8
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": -13.8,
     "z": 0.01
    }
@@ -5990,14 +4842,10 @@
     "type": "Queen",
     "count": 1,
     "total at time": 7,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 147.5,
+    "x": 145,
     "y": -13.55,
     "z": 0.01
    }
@@ -6014,14 +4862,10 @@
     "type": "Zergling",
     "count": 22,
     "total at time": 38,
-    "supply": 11,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 11
    },
    "position": {
-    "x": 150,
+    "x": 147.5,
     "y": -14.2,
     "z": 0.01
    }
@@ -6038,14 +4882,10 @@
     "type": "Zergling",
     "count": 32,
     "total at time": 70,
-    "supply": 16,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 16
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": -14.2,
     "z": 0.01
    }
@@ -6062,14 +4902,10 @@
     "type": "Zergling",
     "count": 40,
     "total at time": 110,
-    "supply": 20,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 20
    },
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": -14.2,
     "z": 0.01
    }
@@ -6086,14 +4922,10 @@
     "type": "Hydralisk",
     "count": 5,
     "total at time": 23,
-    "supply": 10,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 10
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": -13.8,
     "z": 0.01
    }
@@ -6110,14 +4942,10 @@
     "type": "Drone",
     "count": 2,
     "total at time": 81,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": -13.55,
     "z": 0.01
    }
@@ -6134,14 +4962,10 @@
     "type": "Overlord",
     "count": 14,
     "total at time": 23,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -6158,14 +4982,10 @@
     "type": "Overlord",
     "count": 4,
     "total at time": 27,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 177.5,
+    "x": 175,
     "y": -13.55,
     "z": 0.01
    }
@@ -6182,14 +5002,10 @@
     "type": "Overlord",
     "count": 3,
     "total at time": 30,
-    "supply": 0,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 0
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -6206,14 +5022,10 @@
     "type": "Queen",
     "count": 1,
     "total at time": 8,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -6230,14 +5042,10 @@
     "type": "Mutalisk",
     "count": 8,
     "total at time": 8,
-    "supply": 16,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 16
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -15.7,
     "z": 0.01
    }
@@ -6254,14 +5062,10 @@
     "type": "Mutalisk",
     "count": 16,
     "total at time": 24,
-    "supply": 32,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 32
    },
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": -14.5,
     "z": 0.01
    }
@@ -6278,14 +5082,10 @@
     "type": "Drone",
     "count": 3,
     "total at time": 82,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": -16.95,
     "z": 0.01
    }
@@ -6301,15 +5101,11 @@
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 1,
-    "total at time": 0,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "total at time": 1,
+    "supply": 2
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": -13.55,
     "z": 0.01
    }
@@ -6326,14 +5122,10 @@
     "type": "Roach",
     "count": 9,
     "total at time": 9,
-    "supply": 18,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 18
    },
    "position": {
-    "x": 192.5,
+    "x": 190,
     "y": -14.2,
     "z": 0.01
    }
@@ -6350,14 +5142,10 @@
     "type": "Roach",
     "count": 9,
     "total at time": 17,
-    "supply": 18,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 18
    },
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": -14.2,
     "z": 0.01
    }
@@ -6373,15 +5161,11 @@
     "player": "lilTiGGer",
     "type": "Roach",
     "count": 2,
-    "total at time": 0,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "total at time": 2,
+    "supply": 4
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": -13.8,
     "z": 0.01
    }
@@ -6398,14 +5182,10 @@
     "type": "Ultralisk",
     "count": 4,
     "total at time": 4,
-    "supply": 24,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 24
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": -16.5,
     "z": 0.01
    }
@@ -6422,11 +5202,7 @@
     "type": "Probe",
     "count": 12,
     "total at time": 12,
-    "supply": 12,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 12
    },
    "position": {
     "x": 0,
@@ -6446,11 +5222,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 13,
-    "supply": 1,
-    "step #": 1,
-    "at supply": 12,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 0,
@@ -6470,11 +5242,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 14,
-    "supply": 1,
-    "step #": 2,
-    "at supply": 13,
-    "started at": "00:00:12",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 2.5,
@@ -6494,11 +5262,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 15,
-    "supply": 1,
-    "step #": 3,
-    "at supply": 14,
-    "started at": "00:00:20",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 5,
@@ -6518,11 +5282,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 16,
-    "supply": 1,
-    "step #": 5,
-    "at supply": 15,
-    "started at": "00:00:38",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 7.5,
@@ -6542,11 +5302,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 17,
-    "supply": 1,
-    "step #": 7,
-    "at supply": 16,
-    "started at": "00:00:50",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 10,
@@ -6566,11 +5322,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 18,
-    "supply": 1,
-    "step #": 9,
-    "at supply": 17,
-    "started at": "00:01:02",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 12.5,
@@ -6590,11 +5342,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 19,
-    "supply": 1,
-    "step #": 10,
-    "at supply": 18,
-    "started at": "00:01:14",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 17.5,
@@ -6614,11 +5362,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 20,
-    "supply": 1,
-    "step #": 11,
-    "at supply": 19,
-    "started at": "00:01:26",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 17.5,
@@ -6638,11 +5382,7 @@
     "type": "Zealot",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 12,
-    "at supply": 19,
-    "started at": "00:01:30",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 22.5,
@@ -6662,11 +5402,7 @@
     "type": "Zealot",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 16,
-    "at supply": 22,
-    "started at": "00:01:58",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 25,
@@ -6686,11 +5422,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 20,
-    "supply": 1,
-    "step #": 18,
-    "at supply": 24,
-    "started at": "00:02:20",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 25,
@@ -6710,11 +5442,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 21,
-    "supply": 1,
-    "step #": 21,
-    "at supply": 24,
-    "started at": "00:02:32",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 27.5,
@@ -6734,11 +5462,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 23,
-    "supply": 2,
-    "step #": 22,
-    "at supply": 25,
-    "started at": "00:02:44",
-    "steps": "22. 25 2:44 Probe / 23. 26 2:52 Probe"
+    "supply": 2
    },
    "position": {
     "x": 32.5,
@@ -6758,11 +5482,7 @@
     "type": "Adept",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 19,
-    "at supply": 22,
-    "started at": "00:02:28",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 32.5,
@@ -6782,11 +5502,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 24,
-    "supply": 1,
-    "step #": 25,
-    "at supply": 26,
-    "started at": "00:02:56",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 35,
@@ -6806,11 +5522,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 26,
-    "supply": 2,
-    "step #": 26,
-    "at supply": 30,
-    "started at": "00:03:04",
-    "steps": "26. 30 3:04 Probe / 28. 31 3:08 Probe"
+    "supply": 2
    },
    "position": {
     "x": 37.5,
@@ -6830,11 +5542,7 @@
     "type": "Adept",
     "count": 1,
     "total at time": 2,
-    "supply": 2,
-    "step #": 24,
-    "at supply": 26,
-    "started at": "00:02:52",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 37.5,
@@ -6854,11 +5562,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 28,
-    "supply": 2,
-    "step #": 30,
-    "at supply": 34,
-    "started at": "00:03:16",
-    "steps": "30. 34 3:16 Probe / 31. 35 3:20 Probe"
+    "supply": 2
    },
    "position": {
     "x": 40,
@@ -6878,11 +5582,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 30,
-    "supply": 2,
-    "step #": 32,
-    "at supply": 36,
-    "started at": "00:03:28",
-    "steps": "32. 36 3:28 Probe / 33. 36 3:33 Probe"
+    "supply": 2
    },
    "position": {
     "x": 42.5,
@@ -6902,11 +5602,7 @@
     "type": "Adept",
     "count": 1,
     "total at time": 3,
-    "supply": 2,
-    "step #": 29,
-    "at supply": 31,
-    "started at": "00:03:11",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 42.5,
@@ -6926,11 +5622,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 31,
-    "supply": 1,
-    "step #": 34,
-    "at supply": 38,
-    "started at": "00:03:40",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 42.5,
@@ -6950,11 +5642,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 33,
-    "supply": 2,
-    "step #": 35,
-    "at supply": 39,
-    "started at": "00:03:45",
-    "steps": "35. 39 3:45 Probe / 36. 40 3:52 Probe"
+    "supply": 2
    },
    "position": {
     "x": 42.5,
@@ -6974,11 +5662,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 34,
-    "supply": 1,
-    "step #": 37,
-    "at supply": 41,
-    "started at": "00:03:57",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 45,
@@ -6998,11 +5682,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 36,
-    "supply": 2,
-    "step #": 38,
-    "at supply": 42,
-    "started at": "00:04:04",
-    "steps": "38. 42 4:04 Probe / 39. 42 4:09 Probe"
+    "supply": 2
    },
    "position": {
     "x": 47.5,
@@ -7022,11 +5702,7 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 41,
-    "at supply": 44,
-    "started at": "00:04:12",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 50,
@@ -7046,11 +5722,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 38,
-    "supply": 2,
-    "step #": 46,
-    "at supply": 46,
-    "started at": "00:04:31",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 50,
@@ -7070,11 +5742,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 40,
-    "supply": 2,
-    "step #": 48,
-    "at supply": 50,
-    "started at": "00:04:39",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 52.5,
@@ -7094,11 +5762,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 42,
-    "supply": 2,
-    "step #": 51,
-    "at supply": 52,
-    "started at": "00:04:47",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 55,
@@ -7118,11 +5782,7 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 2,
-    "supply": 2,
-    "step #": 47,
-    "at supply": 46,
-    "started at": "00:04:31",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 55,
@@ -7142,11 +5802,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 44,
-    "supply": 2,
-    "step #": 53,
-    "at supply": 54,
-    "started at": "00:04:57",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 57.5,
@@ -7166,11 +5822,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 46,
-    "supply": 2,
-    "step #": 54,
-    "at supply": 60,
-    "started at": "00:05:09",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 60,
@@ -7190,11 +5842,7 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 1,
-    "supply": 4,
-    "step #": 49,
-    "at supply": 52,
-    "started at": "00:04:46",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 62.5,
@@ -7214,11 +5862,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 48,
-    "supply": 2,
-    "step #": 59,
-    "at supply": 62,
-    "started at": "00:05:21",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 62.5,
@@ -7238,11 +5882,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 49,
-    "supply": 1,
-    "step #": 62,
-    "at supply": 64,
-    "started at": "00:05:33",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 65,
@@ -7262,11 +5902,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 50,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 67.5,
@@ -7286,11 +5922,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 52,
-    "supply": 2,
-    "step #": 66,
-    "at supply": 70,
-    "started at": "00:05:46",
-    "steps": "66. 70 5:46 Probe / 67. 70 5:47 Probe"
+    "supply": 2
    },
    "position": {
     "x": 70,
@@ -7310,11 +5942,7 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 2,
-    "supply": 4,
-    "step #": 57,
-    "at supply": 62,
-    "started at": "00:05:21",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 70,
@@ -7334,11 +5962,7 @@
     "type": "Adept",
     "count": 2,
     "total at time": 5,
-    "supply": 4,
-    "step #": 65,
-    "at supply": 70,
-    "started at": "00:05:45",
-    "steps": ""
+    "supply": 4
    },
    "position": {
     "x": 75,
@@ -7358,11 +5982,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 54,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 75,
@@ -7382,11 +6002,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 56,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 80,
@@ -7406,11 +6022,7 @@
     "type": "Oracle",
     "count": 1,
     "total at time": 1,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
     "x": 82.5,
@@ -7430,11 +6042,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 57,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 82.5,
@@ -7454,11 +6062,7 @@
     "type": "Probe",
     "count": 2,
     "total at time": 59,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
     "x": 85,
@@ -7478,11 +6082,7 @@
     "type": "Probe",
     "count": 1,
     "total at time": 60,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
     "x": 87.5,
@@ -7502,11 +6102,7 @@
     "type": "Probe",
     "count": 3,
     "total at time": 63,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
     "x": 90,
@@ -7526,15 +6122,11 @@
     "type": "Probe",
     "count": 3,
     "total at time": 66,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 92.5,
-    "y": 13.55,
+    "x": 90,
+    "y": 15.05,
     "z": 0.01
    }
   },
@@ -7550,14 +6142,10 @@
     "type": "Probe",
     "count": 2,
     "total at time": 67,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 95,
+    "x": 92.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -7573,15 +6161,11 @@
     "player": "blacksquall",
     "type": "Stalker",
     "count": 2,
-    "total at time": 1,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "total at time": 3,
+    "supply": 4
    },
    "position": {
-    "x": 97.5,
+    "x": 95,
     "y": 13.8,
     "z": 0.01
    }
@@ -7598,14 +6182,10 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 2,
-    "supply": 8,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 8
    },
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": 13.8,
     "z": 0.01
    }
@@ -7622,14 +6202,10 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 2,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": 13.8,
     "z": 0.01
    }
@@ -7646,14 +6222,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 62,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": 15.55,
     "z": 0.01
    }
@@ -7670,14 +6242,10 @@
     "type": "Void Ray",
     "count": 1,
     "total at time": 3,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": 17.3,
     "z": 0.01
    }
@@ -7694,14 +6262,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 63,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -7718,14 +6282,10 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 4,
-    "supply": 8,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 8
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 13.8,
     "z": 0.01
    }
@@ -7742,14 +6302,10 @@
     "type": "Probe",
     "count": 2,
     "total at time": 65,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 15.55,
     "z": 0.01
    }
@@ -7766,14 +6322,10 @@
     "type": "Observer",
     "count": 1,
     "total at time": 1,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": 13.55,
     "z": 0.01
    }
@@ -7790,14 +6342,10 @@
     "type": "Disruptor",
     "count": 1,
     "total at time": 1,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": 13.55,
     "z": 0.01
    }
@@ -7814,14 +6362,10 @@
     "type": "Disruptor",
     "count": 1,
     "total at time": 2,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 14.6,
     "z": 0.01
    }
@@ -7838,14 +6382,10 @@
     "type": "Probe",
     "count": 2,
     "total at time": 66,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -7862,14 +6402,10 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 3,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 15.05,
     "z": 0.01
    }
@@ -7886,14 +6422,10 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 4,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": 13.55,
     "z": 0.01
    }
@@ -7910,14 +6442,10 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 6,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": 13.8,
     "z": 0.01
    }
@@ -7934,14 +6462,10 @@
     "type": "Probe",
     "count": 4,
     "total at time": 70,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": 13.8,
     "z": 0.01
    }
@@ -7958,14 +6482,10 @@
     "type": "Stalker",
     "count": 1,
     "total at time": 7,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": 15.55,
     "z": 0.01
    }
@@ -7982,14 +6502,10 @@
     "type": "High Templar",
     "count": 4,
     "total at time": 4,
-    "supply": 8,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 8
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": 13.8,
     "z": 0.01
    }
@@ -8006,14 +6522,10 @@
     "type": "Immortal",
     "count": 2,
     "total at time": 5,
-    "supply": 8,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 8
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": 15.8,
     "z": 0.01
    }
@@ -8030,14 +6542,10 @@
     "type": "Probe",
     "count": 3,
     "total at time": 73,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": 17.55,
     "z": 0.01
    }
@@ -8054,14 +6562,10 @@
     "type": "Zealot",
     "count": 2,
     "total at time": 2,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 147.5,
+    "x": 145,
     "y": 13.8,
     "z": 0.01
    }
@@ -8078,14 +6582,10 @@
     "type": "Observer",
     "count": 2,
     "total at time": 3,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 14.6,
     "z": 0.01
    }
@@ -8102,14 +6602,10 @@
     "type": "Zealot",
     "count": 7,
     "total at time": 9,
-    "supply": 14,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 14
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 16.75,
     "z": 0.01
    }
@@ -8126,14 +6622,10 @@
     "type": "Oracle",
     "count": 1,
     "total at time": 1,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8150,14 +6642,10 @@
     "type": "Stalker",
     "count": 6,
     "total at time": 13,
-    "supply": 12,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 12
    },
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": 14.2,
     "z": 0.01
    }
@@ -8174,14 +6662,10 @@
     "type": "Disruptor",
     "count": 2,
     "total at time": 3,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": 16.6,
     "z": 0.01
    }
@@ -8198,14 +6682,10 @@
     "type": "Observer",
     "count": 1,
     "total at time": 3,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8222,14 +6702,10 @@
     "type": "Observer",
     "count": 1,
     "total at time": 4,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 13.55,
     "z": 0.01
    }
@@ -8246,14 +6722,10 @@
     "type": "Zealot",
     "count": 6,
     "total at time": 15,
-    "supply": 12,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 12
    },
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 15.7,
     "z": 0.01
    }
@@ -8270,14 +6742,10 @@
     "type": "Observer",
     "count": 2,
     "total at time": 6,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 165,
+    "x": 162.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8294,14 +6762,10 @@
     "type": "Stalker",
     "count": 2,
     "total at time": 15,
-    "supply": 4,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 4
    },
    "position": {
-    "x": 170,
+    "x": 167.5,
     "y": 13.8,
     "z": 0.01
    }
@@ -8318,14 +6782,10 @@
     "type": "Observer",
     "count": 1,
     "total at time": 6,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8342,14 +6802,10 @@
     "type": "Observer",
     "count": 1,
     "total at time": 7,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 177.5,
+    "x": 175,
     "y": 13.55,
     "z": 0.01
    }
@@ -8366,14 +6822,10 @@
     "type": "Warp Prism",
     "count": 1,
     "total at time": 1,
-    "supply": 2,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 2
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8390,14 +6842,10 @@
     "type": "High Templar",
     "count": 11,
     "total at time": 15,
-    "supply": 22,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 22
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": 16,
     "z": 0.01
    }
@@ -8414,14 +6862,10 @@
     "type": "Archon",
     "count": 5,
     "total at time": 5,
-    "supply": 20,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 20
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": 19.1,
     "z": 0.01
    }
@@ -8438,14 +6882,10 @@
     "type": "Zealot",
     "count": 3,
     "total at time": 17,
-    "supply": 6,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 6
    },
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": 13.8,
     "z": 0.01
    }
@@ -8462,14 +6902,10 @@
     "type": "Probe",
     "count": 3,
     "total at time": 43,
-    "supply": 3,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 3
    },
    "position": {
-    "x": 205,
+    "x": 202.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8486,14 +6922,10 @@
     "type": "Stalker",
     "count": 8,
     "total at time": 20,
-    "supply": 16,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 16
    },
    "position": {
-    "x": 205,
+    "x": 202.5,
     "y": 15.7,
     "z": 0.01
    }
@@ -8510,14 +6942,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 44,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 207.5,
+    "x": 205,
     "y": 13.55,
     "z": 0.01
    }
@@ -8534,14 +6962,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 45,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": 13.55,
     "z": 0.01
    }
@@ -8558,14 +6982,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 46,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": 15.05,
     "z": 0.01
    }
@@ -8582,14 +7002,10 @@
     "type": "Probe",
     "count": 1,
     "total at time": 47,
-    "supply": 1,
-    "step #": 0,
-    "at supply": 0,
-    "started at": "00:00:00",
-    "steps": ""
+    "supply": 1
    },
    "position": {
-    "x": 212.5,
+    "x": 210,
     "y": 13.55,
     "z": 0.01
    }
@@ -8785,7 +7201,7 @@
     "used Gas": 875
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": -5.76,
     "z": 0.01
    }
@@ -8813,7 +7229,7 @@
     "used Gas": 875
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -5.76,
     "z": 0.01
    }
@@ -8841,7 +7257,7 @@
     "used Gas": 1425
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": -5.76,
     "z": 0.01
    }
@@ -8869,7 +7285,7 @@
     "used Gas": 775
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -8897,7 +7313,7 @@
     "used Gas": 1475
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -8925,7 +7341,7 @@
     "used Gas": 2275
    },
    "position": {
-    "x": 165,
+    "x": 162.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -8953,7 +7369,7 @@
     "used Gas": 2100
    },
    "position": {
-    "x": 182.5,
+    "x": 180,
     "y": -5.76,
     "z": 0.01
    }
@@ -8981,7 +7397,7 @@
     "used Gas": 3925
    },
    "position": {
-    "x": 195,
+    "x": 192.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -9009,7 +7425,7 @@
     "used Gas": 3350
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -9205,7 +7621,7 @@
     "used Gas": 1125
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": 5.76,
     "z": 0.01
    }
@@ -9233,7 +7649,7 @@
     "used Gas": 1700
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": 5.76,
     "z": 0.01
    }
@@ -9261,7 +7677,7 @@
     "used Gas": 2125
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": 5.76,
     "z": 0.01
    }
@@ -9289,7 +7705,7 @@
     "used Gas": 2225
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -9317,7 +7733,7 @@
     "used Gas": 3075
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -9345,7 +7761,7 @@
     "used Gas": 3900
    },
    "position": {
-    "x": 165,
+    "x": 162.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -9373,7 +7789,7 @@
     "used Gas": 4300
    },
    "position": {
-    "x": 182.5,
+    "x": 180,
     "y": 5.76,
     "z": 0.01
    }
@@ -9401,7 +7817,7 @@
     "used Gas": 5775
    },
    "position": {
-    "x": 195,
+    "x": 192.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -9429,7 +7845,7 @@
     "used Gas": 5925
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -9813,7 +8229,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": -6.864,
     "z": 0.01
    }
@@ -9837,7 +8253,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9861,7 +8277,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9885,7 +8301,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9909,7 +8325,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9933,7 +8349,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9957,7 +8373,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -9981,7 +8397,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10005,7 +8421,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10029,7 +8445,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10053,7 +8469,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10077,7 +8493,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10101,7 +8517,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10125,7 +8541,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10149,7 +8565,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10173,7 +8589,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10197,7 +8613,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10221,7 +8637,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10245,7 +8661,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10269,7 +8685,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10293,7 +8709,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10317,7 +8733,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10341,7 +8757,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10365,7 +8781,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10389,7 +8805,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10413,7 +8829,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10437,7 +8853,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10461,7 +8877,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10485,7 +8901,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10509,7 +8925,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10533,7 +8949,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10557,7 +8973,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10581,7 +8997,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10605,7 +9021,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10629,7 +9045,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10653,7 +9069,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": -6.864,
     "z": 0.01
    }
@@ -10677,7 +9093,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10701,7 +9117,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -6.864,
     "z": 0.01
    }
@@ -10725,7 +9141,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -6.864,
     "z": 0.01
    }
@@ -10749,7 +9165,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -6.864,
     "z": 0.01
    }
@@ -10773,7 +9189,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -6.864,
     "z": 0.01
    }
@@ -10797,7 +9213,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -6.864,
     "z": 0.01
    }
@@ -10821,7 +9237,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": -6.864,
     "z": 0.01
    }
@@ -10845,7 +9261,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 122.5,
+    "x": 120,
     "y": -6.864,
     "z": 0.01
    }
@@ -10869,7 +9285,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10893,7 +9309,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10917,7 +9333,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10941,7 +9357,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10965,7 +9381,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -10989,7 +9405,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11013,7 +9429,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11037,7 +9453,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11061,7 +9477,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11085,7 +9501,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11109,7 +9525,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11133,7 +9549,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11157,7 +9573,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11181,7 +9597,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11205,7 +9621,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11229,7 +9645,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11253,7 +9669,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11277,7 +9693,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11301,7 +9717,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11325,7 +9741,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11349,7 +9765,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11373,7 +9789,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11397,7 +9813,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11421,7 +9837,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11445,7 +9861,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11469,7 +9885,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11493,7 +9909,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11517,7 +9933,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11541,7 +9957,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -6.864,
     "z": 0.01
    }
@@ -11565,7 +9981,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": -6.864,
     "z": 0.01
    }
@@ -11589,7 +10005,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11613,7 +10029,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 150,
+    "x": 147.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -11637,7 +10053,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11661,7 +10077,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11685,7 +10101,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11709,7 +10125,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11733,7 +10149,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11757,7 +10173,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11781,7 +10197,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11805,7 +10221,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11829,7 +10245,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11853,7 +10269,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11877,7 +10293,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11901,7 +10317,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11925,7 +10341,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11949,7 +10365,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11973,7 +10389,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -11997,7 +10413,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12021,7 +10437,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12045,7 +10461,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12069,7 +10485,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12093,7 +10509,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12117,7 +10533,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12141,7 +10557,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12165,7 +10581,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12189,7 +10605,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12213,7 +10629,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12237,7 +10653,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12261,7 +10677,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12285,7 +10701,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12309,7 +10725,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12333,7 +10749,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12357,7 +10773,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12381,7 +10797,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12405,7 +10821,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12429,7 +10845,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12453,7 +10869,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12477,7 +10893,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12501,7 +10917,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12525,7 +10941,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12549,7 +10965,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12573,7 +10989,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12597,7 +11013,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12621,7 +11037,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12645,7 +11061,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12669,7 +11085,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12693,7 +11109,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12717,7 +11133,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12741,7 +11157,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12765,7 +11181,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12789,7 +11205,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12813,7 +11229,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12837,7 +11253,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12861,7 +11277,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12885,7 +11301,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12909,7 +11325,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -6.864,
     "z": 0.01
    }
@@ -12933,7 +11349,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": -6.864,
     "z": 0.01
    }
@@ -12957,7 +11373,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": -6.864,
     "z": 0.01
    }
@@ -12981,7 +11397,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": -6.864,
     "z": 0.01
    }
@@ -13005,7 +11421,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": -6.864,
     "z": 0.01
    }
@@ -13029,7 +11445,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13053,7 +11469,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13077,7 +11493,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13101,7 +11517,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13125,7 +11541,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13149,7 +11565,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13173,7 +11589,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13197,7 +11613,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13221,7 +11637,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13245,7 +11661,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13269,7 +11685,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13293,7 +11709,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13317,7 +11733,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13341,7 +11757,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13365,7 +11781,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13389,7 +11805,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13413,7 +11829,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13437,7 +11853,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13461,7 +11877,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13485,7 +11901,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13509,7 +11925,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13533,7 +11949,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13557,7 +11973,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13581,7 +11997,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13605,7 +12021,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13629,7 +12045,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13653,7 +12069,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13677,7 +12093,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13701,7 +12117,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13725,7 +12141,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13749,7 +12165,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13773,7 +12189,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13797,7 +12213,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13821,7 +12237,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13845,7 +12261,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13869,7 +12285,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13893,7 +12309,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -13917,7 +12333,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": -6.864,
     "z": 0.01
    }
@@ -13941,7 +12357,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -13965,7 +12381,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -13989,7 +12405,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -14013,7 +12429,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -14037,7 +12453,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -14061,7 +12477,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -14085,7 +12501,7 @@
     "target": "Hatchery"
    },
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -6.864,
     "z": 0.01
    }
@@ -14109,7 +12525,7 @@
     "target": "Hive"
    },
    "position": {
-    "x": 210,
+    "x": 207.5,
     "y": -6.864,
     "z": 0.01
    }
@@ -14301,7 +12717,7 @@
     "target": "Forge"
    },
    "position": {
-    "x": 92.5,
+    "x": 90,
     "y": 6.864,
     "z": 0.01
    }
@@ -14325,7 +12741,7 @@
     "target": "ShieldBattery"
    },
    "position": {
-    "x": 97.5,
+    "x": 95,
     "y": 6.864,
     "z": 0.01
    }
@@ -14349,7 +12765,7 @@
     "target": "Stargate"
    },
    "position": {
-    "x": 102.5,
+    "x": 100,
     "y": 6.864,
     "z": 0.01
    }
@@ -14373,7 +12789,7 @@
     "target": "RoboticsFacility"
    },
    "position": {
-    "x": 107.5,
+    "x": 105,
     "y": 6.864,
     "z": 0.01
    }
@@ -14397,7 +12813,7 @@
     "target": "ShieldBattery"
    },
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": 6.864,
     "z": 0.01
    }
@@ -14421,7 +12837,7 @@
     "target": "RoboticsFacility"
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14445,7 +12861,7 @@
     "target": "RoboticsFacility"
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14469,7 +12885,7 @@
     "target": "Forge"
    },
    "position": {
-    "x": 140,
+    "x": 137.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14493,7 +12909,7 @@
     "target": "Forge"
    },
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 6.864,
     "z": 0.01
    }
@@ -14517,7 +12933,7 @@
     "target": "RoboticsFacility"
    },
    "position": {
-    "x": 155,
+    "x": 152.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14541,7 +12957,7 @@
     "target": "Forge"
    },
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14565,7 +12981,7 @@
     "target": "Overseer"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14589,7 +13005,7 @@
     "target": "Overseer"
    },
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 6.864,
     "z": 0.01
    }
@@ -14608,7 +13024,7 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 212.5,
+    "x": 210,
     "y": -3.84,
     "z": 0.01
    }
@@ -14650,7 +13066,7 @@
     "end time": "00:13:43"
    },
    "position": {
-    "x": 173.75,
+    "x": 171.25,
     "y": -12.16,
     "z": 0.01
    }
@@ -14692,7 +13108,7 @@
     "end time": "00:14:45"
    },
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": 12.16,
     "z": 0.01
    }
@@ -14713,7 +13129,7 @@
     "end time": "00:15:36"
    },
    "position": {
-    "x": 196.25,
+    "x": 193.75,
     "y": 12.16,
     "z": 0.01
    }
@@ -16554,38 +14970,6 @@
   },
   {
    "type": "image",
-   "name": "7-20.png",
-   "ID": "clock-7-20-1",
-   "nodeImage": "4f0d4c94-10c4-579c-ba60-4e673be1390a",
-   "size": [
-    1.1,
-    0.75
-   ],
-   "properties": {},
-   "position": {
-    "x": 90,
-    "y": -5.76,
-    "z": 0.01
-   }
-  },
-  {
-   "type": "image",
-   "name": "7-20.png",
-   "ID": "clock-7-20-2",
-   "nodeImage": "4f0d4c94-10c4-579c-ba60-4e673be1390a",
-   "size": [
-    1.1,
-    0.75
-   ],
-   "properties": {},
-   "position": {
-    "x": 90,
-    "y": 5.76,
-    "z": 0.01
-   }
-  },
-  {
-   "type": "image",
    "name": "7-40.png",
    "ID": "clock-7-40-1",
    "nodeImage": "57afe926-889b-5a28-9c78-56c43bfc7791",
@@ -16595,7 +14979,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 95,
+    "x": 92.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16611,7 +14995,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 95,
+    "x": 92.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16627,7 +15011,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 97.5,
+    "x": 95,
     "y": -5.76,
     "z": 0.01
    }
@@ -16643,7 +15027,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 97.5,
+    "x": 95,
     "y": 5.76,
     "z": 0.01
    }
@@ -16659,7 +15043,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16675,7 +15059,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 100,
+    "x": 97.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16691,7 +15075,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 102.5,
+    "x": 100,
     "y": -5.76,
     "z": 0.01
    }
@@ -16707,7 +15091,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 102.5,
+    "x": 100,
     "y": 5.76,
     "z": 0.01
    }
@@ -16723,7 +15107,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16739,7 +15123,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 105,
+    "x": 102.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16755,7 +15139,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16771,7 +15155,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 110,
+    "x": 107.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16787,7 +15171,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": -5.76,
     "z": 0.01
    }
@@ -16803,7 +15187,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 112.5,
+    "x": 110,
     "y": 5.76,
     "z": 0.01
    }
@@ -16819,7 +15203,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 115,
+    "x": 112.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16835,7 +15219,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 115,
+    "x": 112.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16851,7 +15235,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": -5.76,
     "z": 0.01
    }
@@ -16867,7 +15251,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 117.5,
+    "x": 115,
     "y": 5.76,
     "z": 0.01
    }
@@ -16883,7 +15267,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 120,
+    "x": 117.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16899,7 +15283,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 120,
+    "x": 117.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16915,7 +15299,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16931,7 +15315,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 125,
+    "x": 122.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -16947,7 +15331,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": -5.76,
     "z": 0.01
    }
@@ -16963,7 +15347,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 127.5,
+    "x": 125,
     "y": 5.76,
     "z": 0.01
    }
@@ -16979,7 +15363,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -16995,7 +15379,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 130,
+    "x": 127.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17011,7 +15395,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": -5.76,
     "z": 0.01
    }
@@ -17027,7 +15411,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 132.5,
+    "x": 130,
     "y": 5.76,
     "z": 0.01
    }
@@ -17043,7 +15427,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17059,7 +15443,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 135,
+    "x": 132.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17075,7 +15459,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": -5.76,
     "z": 0.01
    }
@@ -17091,7 +15475,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 137.5,
+    "x": 135,
     "y": 5.76,
     "z": 0.01
    }
@@ -17107,7 +15491,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": -5.76,
     "z": 0.01
    }
@@ -17123,7 +15507,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 142.5,
+    "x": 140,
     "y": 5.76,
     "z": 0.01
    }
@@ -17139,7 +15523,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17155,7 +15539,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 145,
+    "x": 142.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17171,7 +15555,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 147.5,
+    "x": 145,
     "y": -5.76,
     "z": 0.01
    }
@@ -17187,7 +15571,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 147.5,
+    "x": 145,
     "y": 5.76,
     "z": 0.01
    }
@@ -17203,7 +15587,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 150,
+    "x": 147.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17219,7 +15603,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 150,
+    "x": 147.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17235,7 +15619,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": -5.76,
     "z": 0.01
    }
@@ -17251,7 +15635,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 152.5,
+    "x": 150,
     "y": 5.76,
     "z": 0.01
    }
@@ -17267,7 +15651,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": -5.76,
     "z": 0.01
    }
@@ -17283,7 +15667,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 157.5,
+    "x": 155,
     "y": 5.76,
     "z": 0.01
    }
@@ -17299,7 +15683,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17315,7 +15699,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 160,
+    "x": 157.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17331,7 +15715,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": -5.76,
     "z": 0.01
    }
@@ -17347,7 +15731,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 162.5,
+    "x": 160,
     "y": 5.76,
     "z": 0.01
    }
@@ -17363,7 +15747,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": -5.76,
     "z": 0.01
    }
@@ -17379,7 +15763,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 167.5,
+    "x": 165,
     "y": 5.76,
     "z": 0.01
    }
@@ -17395,7 +15779,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 170,
+    "x": 167.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17411,7 +15795,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 170,
+    "x": 167.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17427,7 +15811,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": -5.76,
     "z": 0.01
    }
@@ -17443,7 +15827,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 172.5,
+    "x": 170,
     "y": 5.76,
     "z": 0.01
    }
@@ -17459,7 +15843,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17475,7 +15859,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 175,
+    "x": 172.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17491,7 +15875,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 177.5,
+    "x": 175,
     "y": -5.76,
     "z": 0.01
    }
@@ -17507,7 +15891,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 177.5,
+    "x": 175,
     "y": 5.76,
     "z": 0.01
    }
@@ -17523,7 +15907,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17539,7 +15923,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 180,
+    "x": 177.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17555,7 +15939,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17571,7 +15955,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 185,
+    "x": 182.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17587,7 +15971,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": -5.76,
     "z": 0.01
    }
@@ -17603,7 +15987,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 187.5,
+    "x": 185,
     "y": 5.76,
     "z": 0.01
    }
@@ -17619,7 +16003,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17635,7 +16019,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 190,
+    "x": 187.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17651,7 +16035,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 192.5,
+    "x": 190,
     "y": -5.76,
     "z": 0.01
    }
@@ -17667,7 +16051,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 192.5,
+    "x": 190,
     "y": 5.76,
     "z": 0.01
    }
@@ -17683,7 +16067,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": -5.76,
     "z": 0.01
    }
@@ -17699,7 +16083,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 197.5,
+    "x": 195,
     "y": 5.76,
     "z": 0.01
    }
@@ -17715,7 +16099,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17731,7 +16115,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 200,
+    "x": 197.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17747,7 +16131,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": -5.76,
     "z": 0.01
    }
@@ -17763,7 +16147,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 202.5,
+    "x": 200,
     "y": 5.76,
     "z": 0.01
    }
@@ -17779,7 +16163,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 205,
+    "x": 202.5,
     "y": -5.76,
     "z": 0.01
    }
@@ -17795,7 +16179,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 205,
+    "x": 202.5,
     "y": 5.76,
     "z": 0.01
    }
@@ -17811,7 +16195,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 207.5,
+    "x": 205,
     "y": -5.76,
     "z": 0.01
    }
@@ -17827,7 +16211,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 207.5,
+    "x": 205,
     "y": 5.76,
     "z": 0.01
    }
@@ -17843,7 +16227,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 212.5,
+    "x": 210,
     "y": -5.76,
     "z": 0.01
    }
@@ -17859,7 +16243,7 @@
    ],
    "properties": {},
    "position": {
-    "x": 212.5,
+    "x": 210,
     "y": 5.76,
     "z": 0.01
    }
