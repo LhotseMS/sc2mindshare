@@ -1,6 +1,7 @@
-from sc2mindshare.reader.compat import P10B_STRUCTURES, clean_name, object_text, unit_text_at
+from sc2mindshare.reader.compat import P10B_STRUCTURES, clean_name, object_text, tracker_time, unit_text_at
 # add focus fire, a moves, abilities
 import datetime
+import os
 import sc2mindshare.analysis.detectors.detectors
 
 from sc2mindshare.reader.fork_api import *
@@ -147,9 +148,9 @@ class Battle(PlayerHandler):
             for e in secOfDying.events:       
                 # print(colored(f"{e} : {self.startSec}-{self.endSec}","magenta")) 
 
+                minerals, vespene, supply = self.deathCost(e)  # CR-070: before the death counts, outside the catch-all
                 try:            
                     self.deadUnitsByPlayer[e.unit.owner].append(e)
-                    minerals, vespene, supply = self.deathCost(e)
                     self.supplyLost[e.unit.owner] += supply
                     self.minLost[e.unit.owner] += minerals
                     self.gasLost[e.unit.owner] += vespene
@@ -358,14 +359,33 @@ class Battle(PlayerHandler):
         """Minerals, gas and supply a death costs its owner: sc2reader's values for the unit. CR-068 P10c (sc2reader
         gives the two structures 0, 0, 0): a Rich Extractor exactly as a normal Extractor of its race, the
         datapack's Extractor (D34a: 75 for Zerg, 25 plus the Drone's 50); a Shield Battery from its unitsInfo.csv
-        row (100; the table's Supply cell is empty), supply 0."""
+        row (100; the table's Supply cell is empty), supply 0. CR-070 (D1a): a cost that cannot be found (no Extractor
+        in the datapack, no row, a cost cell that is not a whole number or empty) stops the run (``costNotFound``)."""
         if "P10c" in self.ctx.fixes and e.unit.name == "ExtractorRich":
-            kind = next(t for t in self.ctx.replay.datapack.units.values() if t.name == "Extractor")
+            kind = next((t for t in self.ctx.replay.datapack.units.values() if t.name == "Extractor"), None)
+            if kind is None:
+                raise self.costNotFound(e, "the replay's unit data has no Extractor")
             return kind.minerals, kind.vespene, kind.supply
         if "P10c" in self.ctx.fixes and e.unit.name in P10B_STRUCTURES:
-            row = self.ctx.simple.unitsInfoDict[P10B_STRUCTURES[e.unit.name]]
-            return int(row["Minerals"] or 0), int(row["Gas"] or 0), 0
+            name = P10B_STRUCTURES[e.unit.name]
+            row = self.ctx.simple.unitsInfoDict.get(name)
+            if row is None:
+                raise self.costNotFound(e, f'unitsInfo.csv has no "{name}" row')
+            try:
+                return int(row["Minerals"] or 0), int(row["Gas"] or 0), 0
+            except ValueError as err:
+                why = f'the "{name}" row of unitsInfo.csv has Minerals {row["Minerals"]!r} and Gas {row["Gas"]!r}'
+                raise self.costNotFound(e, f"{why}; each must be a whole number or empty") from err
         return e.unit.minerals, e.unit.vespene, e.unit.supply
+
+    def costNotFound(self, e, why):
+        """CR-070 (D1a): the error that stops the run when a death's cost cannot be found, naming the structure (its
+        type, unit id and owner), the death's own game time and the replay's file name, and what was missing."""
+        unit = e.unit
+        replay = os.path.basename(self.ctx.replay.filename)
+        return ValueError(
+            f"cannot find the cost of {unit.name} {unit.id} ({unit.owner.name}) that died at {tracker_time(e)} in {replay}: {why}"
+        )
                 
     # TODO duplicate with detectors
     def otherPlayer(self, player):

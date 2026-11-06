@@ -98,7 +98,8 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: from the datapack that is not a named mode is flagged (SimpleDetector.supplyFlags) when a counted unit takes it;
 #: P10c (CR-068; D21a, D26a, D32a), a destroyed Shield Battery or Rich Extractor counts in battles like another
 #: structure (a countable and a building death at the battle call sites); a battery is valued from its unitsInfo.csv
-#: row, a Rich Extractor as a normal Extractor of its race (D34a);
+#: row, a Rich Extractor as a normal Extractor of its race (D34a), and a cost that cannot be found stops the run
+#: (CR-070, D1a);
 #: G1 (CR-067), the Game node's game type is the replay's, its length keeps its hours and its date has its own format;
 #: F1 (CR-023), a lifted town hall and an Overlord in its cocoon still provide supply, and every death of a finished
 #: provider lowers the limit, also one the fork does not count (only the supply changes); F2 (CR-023), the type change
