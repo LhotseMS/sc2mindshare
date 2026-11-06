@@ -20,6 +20,12 @@ PROVIDERS_AT_EVENT = {
     "Hatchery": 6, "Lair": 6, "Hive": 6,
 }
 
+#: CR-023 F1: a provider in a mode or a cocoon still provides what its unit did, so its death lowers the limit
+#: (a PlanetaryFortress cannot lift; OverseerCocoon is the type history's name for an Overlord's Overseer cocoon)
+PROVIDERS_IN_A_MODE = {
+    "CommandCenterFlying": 15, "OrbitalCommandFlying": 15, "OverseerCocoon": 8, "TransportOverlordCocoon": 8,
+}
+
 class Tracker: 
 
     def __init__(self, player1, player2, fixes) -> None:
@@ -375,7 +381,7 @@ class SupplyTracker(Tracker):
         """The supply provider the unit of ``e`` is, or None. CR-023 S1: by its type at the event (S4)."""
         if "S1" in self.fixes:
             name = type_at(e.unit, e.frame)
-            if name not in PROVIDERS_AT_EVENT:
+            if name not in self.providersAtEvent():
                 return None
             if isinstance(e, UnitDiedEvent):  # S5: an unfinished provider never raised the limit
                 return name if e.unit_id in self.addedProviders else None
@@ -384,8 +390,12 @@ class SupplyTracker(Tracker):
         name = object_text(e.unit)
         return name if self.isSupplyProvider(name) else None
 
+    def providersAtEvent(self):
+        """S1's table of the providers by their type at the event; with F1 (CR-023) the modes and cocoons too."""
+        return PROVIDERS_AT_EVENT | PROVIDERS_IN_A_MODE if "F1" in self.fixes else PROVIDERS_AT_EVENT
+
     def providedBy(self, supplyProvider):
-        return (PROVIDERS_AT_EVENT if "S1" in self.fixes else self.SUPPLY_PROVIDERS)[supplyProvider]
+        return (self.providersAtEvent() if "S1" in self.fixes else self.SUPPLY_PROVIDERS)[supplyProvider]
 
     def getPreviousSupply(self, player):
 
