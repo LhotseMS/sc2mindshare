@@ -74,6 +74,18 @@ def test_the_spine_replay_validates(spine_document):
     assert CHECK.errors(spine_document) == []
 
 
+def test_every_node_type_of_the_spine_replay_has_one_property_set(spine_document):
+    """CR-063 AC-6 (S8): the current document (placed, with its clock picture nodes) and the workbook-faithful
+    one; building either raises no mixed-type error."""
+    with contextlib.redirect_stdout(io.StringIO()):
+        faithful = build_document(to_graph(analyse(load_replay(SPINE), MS_SC, fixes=()), fixes=()))
+    for doc in (spine_document, faithful):
+        keys = {}
+        for n in doc["nodes"]:
+            keys.setdefault(n["type"], set()).add(tuple(n["properties"]))
+        assert {t: k for t, k in keys.items() if len(k) > 1} == {}
+
+
 # --- CR-021: the opt-in analysis object is closed (Vera's G7 (d)) ------------------------------------------
 
 

@@ -85,6 +85,7 @@ def build_document(
                     "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
                 }
             )
+    check_same_properties(nodes)
     document = {
         "visuals": cfg["visuals"],
         "detail": detail_for(cfg["detail"], graph.export_fixes),
@@ -95,6 +96,32 @@ def build_document(
     if analysis is not None:
         document["analysis"] = analysis_doc(analysis)
     return document
+
+
+def check_same_properties(nodes: list[dict[str, Any]]) -> None:
+    """CR-063 (AC-5): every node of a type must carry the same property names in the same order, or Mindshare
+    refuses the whole import ("node 'Building-4' has different parameters than node 'Building-1' but the same
+    type"). Raises a ValueError naming the type, the type's first node, the first node that differs from it and
+    the first property that differs. Properties only: ``images`` is not compared (D5a)."""
+    first: dict[str, tuple[str, tuple[str, ...]]] = {}
+    for node in nodes:
+        keys = tuple(node["properties"])
+        first_id, first_keys = first.setdefault(node["type"], (node["ID"], keys))
+        if keys != first_keys:
+            raise ValueError(
+                f"node type {node['type']!r}: node {node['ID']!r} has different properties than node {first_id!r} "
+                f"({_first_difference(first_id, first_keys, node['ID'], keys)}); Mindshare refuses such a file"
+            )
+
+
+def _first_difference(id1: str, keys1: tuple[str, ...], id2: str, keys2: tuple[str, ...]) -> str:
+    """The first position where two different property-name tuples differ, said in words."""
+    i = next((i for i, (a, b) in enumerate(zip(keys1, keys2, strict=False)) if a != b), min(len(keys1), len(keys2)))
+    if i < len(keys1) and keys1[i] not in keys2:
+        return f"{id2!r} lacks property {keys1[i]!r}"
+    if i < len(keys2) and keys2[i] not in keys1:
+        return f"{id2!r} has property {keys2[i]!r}, which {id1!r} lacks"
+    return f"property {keys1[i]!r} is at position {i + 1} in {id1!r} but at position {keys2.index(keys1[i]) + 1} in {id2!r}"
 
 
 def detail_for(detail: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
