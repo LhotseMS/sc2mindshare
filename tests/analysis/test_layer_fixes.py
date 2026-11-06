@@ -1,6 +1,7 @@
 """CR-023 (T22): the layer fixes, each switched by its ledger id (analysis.fixes.LAYER_FIXES)."""
 
 import contextlib
+import dataclasses
 import io
 import os
 import pathlib
@@ -8,7 +9,9 @@ from types import SimpleNamespace
 
 import pytest
 
+from sc2mindshare.analysis.build_steps import build_order
 from sc2mindshare.analysis.detectors import detectors
+from sc2mindshare.analysis.exports.node import X_LD
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
 from sc2mindshare.analysis.fixes import FIXES, LAYER_FIXES
 from sc2mindshare.analysis.run import AnalysisResult, analyse, legacy_csv
@@ -1413,6 +1416,8 @@ def uncounted_overlord_deaths():
                 [n for n in graph.nodes if n.kind != "Supply Block"],
                 list(graph.links),
             )
+            if "F1" in fixes:  # the all-on graph carries the build order (CR-034), the mixed one does not
+                others["F1 build order"] = build_order(result.exposed, result.fixes)
         return [(p.player, p.time, p.supply, p.limit) for p in result.exposed.supply]
 
     without_f1 = tuple(f for f in LAYER_FIXES if f != "F1")
@@ -1436,12 +1441,37 @@ def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncoun
     assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8
 
 
+def _without_build_order(nodes, order):
+    """``nodes`` without exactly what CR-034's ``with_build_order`` adds from ``order``: the steps on the nodes
+    (the step #, at supply, started at and steps properties are written from them), the building-morph nodes (the
+    last ``len(order.morphs)`` Building nodes, one per morph, in order) and each player's list at the end of his
+    Player node's description. Each piece must be there to be taken out, so nothing else is ever ignored."""
+    buildings = [i for i, n in enumerate(nodes) if n.kind == "Building"]
+    morph_nodes = buildings[len(buildings) - len(order.morphs) :]
+    assert [nodes[i].source.unit_ids for i in morph_nodes] == [(m.unit_id,) for m in order.morphs]
+    out = []
+    for i, node in enumerate(nodes):
+        if i in morph_nodes:
+            continue
+        node = dataclasses.replace(node, steps=())
+        if node.kind == "Player" and order.of(node.source.pid):
+            listed = X_LD + X_LD + X_LD.join([order.heading(), *(s.line() for s in order.of(node.source.pid))])
+            assert node.description.endswith(listed), node.id
+            node = dataclasses.replace(node, description=node.description.removesuffix(listed))
+        out.append(node)
+    return out
+
+
 def test_f1_an_uncounted_provider_death_changes_only_the_supply(uncounted_overlord_deaths):
     """Morgan's finding 4 on F1: with the 8 Overlord deaths uncounted, F1 changes the supply series and the supply
-    blocks only: the battles, the Units nodes (counts and totals) and every other node and link are the same."""
+    blocks only: the battles, the Units nodes (counts and totals) and every other node and link are the same. The
+    run with F1 is the current graph, so it carries the build order (CR-034); the run without F1 is a mixed one,
+    which has none, so the build order is taken out of the first before the two are compared."""
     others = uncounted_overlord_deaths["others"]
     nodes, links = others["F1"]
-    assert (nodes, links) == others["without F1"]
+    order = others["F1 build order"]
+    assert order.steps and order.morphs and not any(n.steps for n in others["without F1"][0])
+    assert (_without_build_order(nodes, order), links) == others["without F1"]
     assert [n for n in nodes if n.kind == "Battle"] and [n for n in nodes if n.kind == "Units"]
 
 
