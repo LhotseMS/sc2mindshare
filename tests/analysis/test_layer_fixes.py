@@ -1046,60 +1046,73 @@ def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
     }
 
 
-@pytest.fixture(scope="module")
-def p10c_battles():
-    """Alcyone's battles per run, as (start, end, dead, supply, minerals, gas, LOST, KILLS, name) by battle.
-    Each run may move blacksquall's 7:48 Shield Battery death to another second and give the battery another
-    type for the whole game (a Photon Cannon, an Extractor or a Rich Extractor, the datapack's own type)."""
-    need(ALCYONE)
+def _analysed_alcyone(fixes=LAYER_FIXES, second=None, as_type=None, support=MS_SC, edit_replay=None, log=None):
+    """Alcyone analysed with ``fixes`` (CR-068's harness, lifted out of ``p10c_battles`` for CR-070). Each run may
+    move blacksquall's 7:48 Shield Battery death to another second and give the battery another type for the whole
+    game (a Photon Cannon, an Extractor or a Rich Extractor, the datapack's own type); ``support`` is the support
+    root the tables are read from, ``edit_replay`` changes the loaded replay last, and the layer's prints go to
+    ``log`` (a fresh buffer when None)."""
     import bisect
     import math
 
+    replay = load_replay(ALCYONE)
+    death = next(
+        e
+        for e in replay.tracker_events
+        if type(e).__name__ == "UnitDiedEvent"
+        and e.unit is not None
+        and e.unit.name == "ShieldBattery"
+        and e.unit.killing_unit is not None
+    )
+    assert (death.frame, death.unit.owner.name, death.unit.killing_unit.name) == (10502, "blacksquall", "Roach")
+    if as_type is not None:
+        kind = next(t for t in replay.datapack.units.values() if t.name == as_type)
+        death.unit._type_class = kind
+        death.unit.type_history = {frame: kind for frame in death.unit.type_history}
+    if second is not None:
+        frame = math.ceil(second * 22.4)
+        assert int(frame / 22.4) == second
+        for events in (replay.events, replay.tracker_events):
+            events.remove(death)
+        death.frame = death.unit.died_at = frame
+        for events in (replay.events, replay.tracker_events):
+            bisect.insort(events, death, key=lambda e: e.frame)
+    if edit_replay is not None:
+        edit_replay(replay)
+    with contextlib.redirect_stdout(io.StringIO() if log is None else log):
+        return analyse(replay, support, fixes=fixes)
+
+
+def _alcyone_battles(fixes=LAYER_FIXES, second=None, as_type=None, support=MS_SC, edit_replay=None, log=None):
+    """Alcyone's battles (``_analysed_alcyone``), as (start, end, dead, supply, minerals, gas, LOST, KILLS, name)
+    by battle."""
     from sc2mindshare.analysis.exports.battleNode import BattleNode
 
-    def run(fixes=LAYER_FIXES, second=None, as_type=None):
-        replay = load_replay(ALCYONE)
-        death = next(
-            e
-            for e in replay.tracker_events
-            if type(e).__name__ == "UnitDiedEvent"
-            and e.unit is not None
-            and e.unit.name == "ShieldBattery"
-            and e.unit.killing_unit is not None
+    result = _analysed_alcyone(fixes, second, as_type, support, edit_replay, log)
+    out = []
+    for b in (n for n in result.nodes if isinstance(n, BattleNode)):
+        ps = (b.player1, b.player2)
+        out.append(
+            {
+                "start": b.startSec,
+                "end": b.endSec,
+                "dead": (b.p1dc, b.p2dc),
+                "supply": tuple(b.supplyLost[p] for p in ps),
+                "minerals": tuple(b.minLost[p] for p in ps),
+                "gas": tuple(b.gasLost[p] for p in ps),
+                "lost": tuple(dict(b.deadBuildingsTypes[p]) for p in ps),
+                "kills": tuple(dict(b.killersTypes[p]) for p in ps),
+                "name": b.getNodeName(),
+            }
         )
-        assert (death.frame, death.unit.owner.name, death.unit.killing_unit.name) == (10502, "blacksquall", "Roach")
-        if as_type is not None:
-            kind = next(t for t in replay.datapack.units.values() if t.name == as_type)
-            death.unit._type_class = kind
-            death.unit.type_history = {frame: kind for frame in death.unit.type_history}
-        if second is not None:
-            frame = math.ceil(second * 22.4)
-            assert int(frame / 22.4) == second
-            for events in (replay.events, replay.tracker_events):
-                events.remove(death)
-            death.frame = death.unit.died_at = frame
-            for events in (replay.events, replay.tracker_events):
-                bisect.insort(events, death, key=lambda e: e.frame)
-        with contextlib.redirect_stdout(io.StringIO()):
-            result = analyse(replay, MS_SC, fixes=fixes)
-        out = []
-        for b in (n for n in result.nodes if isinstance(n, BattleNode)):
-            ps = (b.player1, b.player2)
-            out.append(
-                {
-                    "start": b.startSec,
-                    "end": b.endSec,
-                    "dead": (b.p1dc, b.p2dc),
-                    "supply": tuple(b.supplyLost[p] for p in ps),
-                    "minerals": tuple(b.minLost[p] for p in ps),
-                    "gas": tuple(b.gasLost[p] for p in ps),
-                    "lost": tuple(dict(b.deadBuildingsTypes[p]) for p in ps),
-                    "kills": tuple(dict(b.killersTypes[p]) for p in ps),
-                    "name": b.getNodeName(),
-                }
-            )
-        return out
+    return out
 
+
+@pytest.fixture(scope="module")
+def p10c_battles():
+    """Alcyone's battles per run (``_alcyone_battles``), with the 7:48 battery moved or retyped."""
+    need(ALCYONE)
+    run = _alcyone_battles
     without = tuple(f for f in LAYER_FIXES if f != "P10c")
     runs = {"fixed": run(), "without": run(without), "cannon": run(as_type="PhotonCannon")}
     # a gap between two battles after 7:48 wide enough for a lone death 6 s after the first (more than the 4 s
@@ -1588,3 +1601,252 @@ def test_f2b_on_alcyone_units_born_and_killed_in_their_interval_count_at_their_n
         ("Roach", "2", "2"),
         ("Stalker", "2", "3"),
     ]
+
+
+# --- CR-070 (Stefan's D1a): a battle death whose cost cannot be found stops the run ---------------------------------
+# Every failure goes through a whole battle (``_analysed_alcyone``: Alcyone analysed with a broken support table or
+# unit data), never ``Battle.deathCost`` alone: the defect was the order inside ``Battle.__init__`` (the death
+# counted, then its cost looked up inside the catch-all handler), which a deathCost-only test cannot see.
+
+SPINE = MS_SC / "200k dmg spine crawler ZvP.SC2Replay"
+_DEATH_7_48 = "ShieldBattery 72613891 (blacksquall) that died at 07:48 in Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
+NO_ROW = f'cannot find the cost of {_DEATH_7_48}: unitsInfo.csv has no "Shield Battery" row'
+NO_EXTRACTOR = (
+    "cannot find the cost of ExtractorRich 72613891 (blacksquall) that died at 07:48 in "
+    "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay: the replay's unit data has no Extractor"
+)
+
+
+def _bad_cell(minerals, gas):
+    return (
+        f'cannot find the cost of {_DEATH_7_48}: the "Shield Battery" row of unitsInfo.csv has Minerals {minerals!r} '
+        f"and Gas {gas!r}; each must be a whole number or empty"
+    )
+
+
+def _support(tmp_path, battery):
+    """A support root with copies of the support tables in which the Shield Battery row is ``battery(row)`` (the
+    row's text without its line end), or removed when that is None; every other byte as in the real table."""
+    import shutil
+
+    need(MS_SC / "unitsInfo.csv")
+    root = tmp_path / "support"
+    root.mkdir()
+    for name in ("upgradesInfo.csv", "ImageTracking.csv"):
+        shutil.copyfile(MS_SC / name, root / name)
+    with (MS_SC / "unitsInfo.csv").open(encoding="utf-8", newline="") as f:
+        lines = f.read().splitlines(keepends=True)
+    i = next(i for i, line in enumerate(lines) if line.startswith("Shield Battery,"))
+    row = lines[i].rstrip("\r\n")
+    new = battery(row)
+    lines[i : i + 1] = [] if new is None else [new + lines[i][len(row) :]]
+    with (root / "unitsInfo.csv").open("w", encoding="utf-8", newline="") as f:
+        f.write("".join(lines))
+    return root
+
+
+def _cells(minerals=None, gas=None):
+    """The Shield Battery row with its Minerals and/or Gas cell replaced."""
+
+    def edit(row):
+        cells = row.split(",")
+        cells[1] = cells[1] if minerals is None else minerals
+        cells[2] = cells[2] if gas is None else gas
+        return ",".join(cells)
+
+    return edit
+
+
+def _without_extractor(replay):
+    """The replay's unit data without its Extractor. sc2reader shares one datapack object per game build across
+    the process, so the replay gets a copy of its own: the shared one, and every later test, are left as they are."""
+    import copy
+
+    datapack = copy.copy(replay.datapack)
+    datapack.units = {key: kind for key, kind in replay.datapack.units.items() if kind.name != "Extractor"}
+    replay.datapack = datapack
+
+
+def _without_battery_killers(replay):
+    """Both of blacksquall's Shield Battery deaths with no killing unit, so no battle is formed from them."""
+    for e in replay.tracker_events:
+        if type(e).__name__ == "UnitDiedEvent" and e.unit is not None and e.unit.name == "ShieldBattery":
+            e.unit.killing_unit = None
+
+
+def _graph(result):
+    return to_graph(
+        result, () if not result.fixes else None, mixed=bool(result.fixes) and result.fixes != frozenset(LAYER_FIXES)
+    )
+
+
+@pytest.fixture(scope="module")
+def cr070_intact():
+    """The intact-data runs the CR-070 tests compare with, each made once, when first asked for."""
+    need(ALCYONE)
+    without = tuple(f for f in LAYER_FIXES if f != "P10c")
+    makers = {
+        "fixed": lambda: _analysed_alcyone(),
+        "no battery killers": lambda: _analysed_alcyone(edit_replay=_without_battery_killers),
+        "faithful": lambda: _analysed_alcyone(()),
+        "faithful rich": lambda: _analysed_alcyone((), as_type="ExtractorRich"),
+        "without P10c": lambda: _analysed_alcyone(without),
+        "without P10c rich": lambda: _analysed_alcyone(without, as_type="ExtractorRich"),
+    }
+    cache = {}
+
+    def get(label):
+        if label not in cache:
+            cache[label] = makers[label]()
+        return cache[label]
+
+    return get
+
+
+def _stops(message, **run):
+    """The run stops with exactly ``message`` (a ValueError leaving ``analyse``: no result, so no battle at all),
+    and the catch-all handler never printed its line for the death (the error is not reduced to a log line)."""
+    log = io.StringIO()
+    with pytest.raises(ValueError) as stop:
+        _analysed_alcyone(log=log, **run)
+    assert type(stop.value) is ValueError and str(stop.value) == message
+    swallowed = [line for line in log.getvalue().splitlines() if "ERR NO KILLING UNIT" in line]
+    assert not [line for line in swallowed if "ShieldBattery" in line or "ExtractorRich" in line]
+    return stop.value
+
+
+@pytest.mark.parametrize(
+    "battery",
+    [
+        lambda row: None,
+        lambda row: "ShieldBattery" + row[len("Shield Battery") :],
+        lambda row: "Shield battery" + row[len("Shield Battery") :],
+    ],
+    ids=["row removed", "named ShieldBattery", "named Shield battery"],
+)
+def test_cr070_ac1_a_missing_cost_row_stops_the_export_naming_the_replay_the_death_time_and_the_structure(tmp_path, battery):
+    """AC-1: no "Shield Battery" row (a name differing only in case or spacing is no match): the export stops at
+    blacksquall's 7:48 battery death (Battle-12 runs 7:36-7:57; the death's own time is named)."""
+    need(ALCYONE)
+    _stops(NO_ROW, support=_support(tmp_path, battery))
+
+
+@pytest.mark.parametrize(
+    ("minerals", "gas", "named"),
+    [("100.0", None, ("100.0", "0")), ("n/a", None, ("n/a", "0")), ("   ", None, ("   ", "0")), (None, "n/a", ("100", "n/a"))],
+    ids=["minerals 100.0", "minerals n/a", "minerals spaces", "gas n/a"],
+)
+def test_cr070_ac2_a_cost_that_is_not_a_whole_number_stops_the_export(tmp_path, minerals, gas, named):
+    """AC-2: a Minerals or Gas cell that is not a whole number ("100.0", "n/a", only spaces) stops as in AC-1."""
+    need(ALCYONE)
+    _stops(_bad_cell(*named), support=_support(tmp_path, _cells(minerals, gas)))
+
+
+def test_cr070_ac2_an_empty_cost_cell_still_reads_0(tmp_path, p10c_battles):
+    """AC-2's boundary: an empty Minerals cell completes, and both batteries count at 0 minerals (100 less in
+    Battle-12 and Battle-27 than with the table's 100); nothing else in any battle changes."""
+    runs, _ = p10c_battles
+    empty = _alcyone_battles(support=_support(tmp_path, _cells(minerals="")))
+    assert _differences(runs["fixed"], empty) == {11: ["minerals"], 26: ["minerals"]}
+    for i in (11, 26):
+        assert empty[i]["minerals"] == (runs["fixed"][i]["minerals"][0], runs["fixed"][i]["minerals"][1] - 100)
+        assert empty[i]["dead"] == runs["fixed"][i]["dead"] and "Shield Battery" in empty[i]["lost"][1]
+
+
+def test_cr070_ac2_a_row_with_no_cost_cell_reads_0():
+    """AC-2's other boundary: a short row with no Minerals or Gas cell (csv.DictReader gives None) reads 0 like an
+    empty one. On the cost alone: a row that short has no Build Time either, and the Building node of a battery
+    (P10b) needs it before any battle, so no whole export can carry such a row."""
+    from sc2mindshare.analysis.battle import Battle
+
+    battle = SimpleNamespace(
+        ctx=SimpleNamespace(
+            fixes=frozenset({"P10c"}),
+            simple=SimpleNamespace(unitsInfoDict={"Shield Battery": {"Minerals": None, "Gas": None}}),
+            replay=SimpleNamespace(filename="x.SC2Replay"),
+        )
+    )
+    unit = SimpleNamespace(name="ShieldBattery", minerals=0, vespene=0, supply=0)
+    assert Battle.deathCost(battle, SimpleNamespace(unit=unit)) == (0, 0, 0)
+
+
+def test_cr070_ac3_a_replay_without_an_extractor_stops_the_export(tmp_path):
+    """AC-3: the 7:48 battery made a Rich Extractor (CR-068's harness) and the replay's unit data without its
+    Extractor: the export stops naming the Rich Extractor's death and what is missing."""
+    need(ALCYONE)
+    _stops(NO_EXTRACTOR, as_type="ExtractorRich", edit_replay=_without_extractor)
+
+
+@pytest.mark.parametrize("route", ["no row", "bad cell", "no extractor"])
+def test_cr070_ac4_a_death_is_never_counted_without_its_cost_and_its_killer(tmp_path, route):
+    """AC-4: on each route the error leaves the analysis as the clear ValueError (never a bare KeyError, ValueError
+    from int() or StopIteration, and never only a line in the log), so no battle with the death exists."""
+    need(ALCYONE)
+    if route == "no extractor":
+        stop = _stops(NO_EXTRACTOR, as_type="ExtractorRich", edit_replay=_without_extractor)
+        assert stop.__cause__ is None
+    elif route == "bad cell":
+        stop = _stops(_bad_cell("n/a", "0"), support=_support(tmp_path, _cells(minerals="n/a")))
+        assert type(stop.__cause__) is ValueError  # int()'s own error, kept as the cause
+    else:
+        stop = _stops(NO_ROW, support=_support(tmp_path, lambda row: None))
+        assert stop.__cause__ is None
+
+
+def test_cr070_ac6_the_first_death_that_needs_the_missing_row_is_named_every_time(tmp_path):
+    """AC-6: both batteries (7:48 in Battle-12, 14:33 in Battle-27) need the missing row; every run names 7:48."""
+    need(ALCYONE)
+    support = _support(tmp_path, lambda row: None)
+    for _ in range(3):
+        assert "14:33" not in str(_stops(NO_ROW, support=support))
+
+
+@pytest.mark.parametrize("game", ["spine", "alcyone without an extractor", "alcyone batteries in no battle"])
+def test_cr070_ac7_broken_data_no_death_needs_does_not_stop_the_export(tmp_path, cr070_intact, game):
+    """AC-7: the Shield Battery's Minerals "n/a" on spine (its batteries all survive) and on Alcyone with both
+    battery deaths in no battle (no killer); Alcyone's unit data without an Extractor (no Rich Extractor dies):
+    each default export completes and equals the same game's with intact data."""
+    if game == "spine":
+        need(SPINE)
+        with contextlib.redirect_stdout(io.StringIO()):
+            intact = analyse(load_replay(SPINE), MS_SC)
+            broken = analyse(load_replay(SPINE), _support(tmp_path, _cells(minerals="n/a")))
+    elif game == "alcyone without an extractor":
+        intact, broken = cr070_intact("fixed"), _analysed_alcyone(edit_replay=_without_extractor)
+    else:
+        intact = cr070_intact("no battery killers")
+        broken = _analysed_alcyone(support=_support(tmp_path, _cells(minerals="n/a")), edit_replay=_without_battery_killers)
+    assert to_graph(broken) == to_graph(intact)
+
+
+def test_cr070_ac8_a_stopped_export_leaves_nothing_behind(tmp_path, cr070_intact):
+    """AC-8: after the AC-1 stop, the intact table and a freshly loaded Alcyone in the same process give exactly
+    a clean run's output (the clean run made before the stop)."""
+    clean = to_graph(cr070_intact("fixed"))
+    _stops(NO_ROW, support=_support(tmp_path, lambda row: None))
+    assert to_graph(_analysed_alcyone()) == clean
+
+
+@pytest.mark.parametrize("mode", ["bug-faithful", "every fix but P10c"])
+@pytest.mark.parametrize("broken", ["no row", "no extractor"])
+def test_cr070_ac10_the_bug_faithful_mode_never_stops_for_this(tmp_path, cr070_intact, mode, broken):
+    """AC-10: with the AC-1 table or the AC-3 unit data, the bug-faithful run and the run with every fix but P10c
+    complete. The bug-faithful output equals today's on intact data (also as the legacy CSV oracle), and so does the
+    run without P10c, except that with no row its battery Building nodes are missing (P10b reads the same row
+    for them and its KeyError is swallowed, detectors.py; the known bug beside CR-070, out of scope): there its
+    battles are compared."""
+    fixes = () if mode == "bug-faithful" else tuple(f for f in LAYER_FIXES if f != "P10c")
+    label = ("faithful" if mode == "bug-faithful" else "without P10c") + (" rich" if broken == "no extractor" else "")
+    if broken == "no row":
+        result = _analysed_alcyone(fixes, support=_support(tmp_path, lambda row: None))
+    else:
+        result = _analysed_alcyone(fixes, as_type="ExtractorRich", edit_replay=_without_extractor)
+    graph, intact = _graph(result), _graph(cr070_intact(label))
+    if mode == "bug-faithful":
+        assert graph == intact
+        assert legacy_csv(result) == legacy_csv(cr070_intact(label))
+    elif broken == "no row":
+        assert [n for n in graph.nodes if n.kind == "Battle"] == [n for n in intact.nodes if n.kind == "Battle"]
+        assert len(graph.nodes) < len(intact.nodes)
+    else:
+        assert graph == intact
