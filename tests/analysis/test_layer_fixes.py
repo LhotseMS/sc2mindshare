@@ -686,6 +686,7 @@ def _finished(name_now, history, fixes):
         ("DisruptorPhased", [(3990, "DisruptorPhased")], True, False),  # the Purification Nova
         ("AdeptPhaseShift", [(3990, "AdeptPhaseShift")], True, False),  # the Adept's shade
         ("RavagerCocoon", [(3990, "Roach"), (6000, "RavagerCocoon")], True, True),  # a Roach when it hatched
+        ("RavagerCocoon", [(3990, "RavagerCocoon")], True, False),  # a cocoon at the event (Vera's V1)
         ("SiegeTankSieged", [(3990, "SiegeTank"), (5000, "SiegeTankSieged")], False, True),  # a tank, sieged later
         ("Zealot", [(3990, "Zealot")], True, True),
     ],
