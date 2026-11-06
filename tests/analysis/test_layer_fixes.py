@@ -39,7 +39,7 @@ def need(path):
 
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
-        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1",
+        "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1",
     )  # fmt: skip
 
 
@@ -1293,3 +1293,103 @@ def test_g1_the_game_values_on_the_replays(replay, values):
         graph = to_graph(analyse(load_replay(path), MS_SC))
     game = next(n for n in graph.nodes if n.kind == "Game")
     assert {name: game.value(name) for name in values} == values
+
+
+# --- F1 (Morgan's G6 F1 on S1): a lifted town hall and an Overlord in its cocoon still provide supply --------------
+
+
+def _died(name_now, history, frame, unit_id):
+    from sc2mindshare.reader.fork_api import UnitDiedEvent
+
+    died = UnitDiedEvent.__new__(UnitDiedEvent)
+    vars(died).update(unit=SimpleNamespace(name=name_now, type_history=history), frame=frame, unit_id=unit_id)
+    return died
+
+
+@pytest.mark.parametrize(
+    ("finished", "mode", "value"),
+    [
+        ("CommandCenter", "CommandCenterFlying", 15),
+        ("OrbitalCommand", "OrbitalCommandFlying", 15),
+        ("Overlord", "OverseerCocoon", 8),  # the type history's name for an Overlord morphing into an Overseer
+        ("Overlord", "TransportOverlordCocoon", 8),
+    ],
+)
+def test_f1_a_provider_that_dies_in_a_mode_lowers_the_limit_by_what_it_provided(finished, mode, value):
+    history = {0: SimpleNamespace(name=finished), 5000: SimpleNamespace(name=mode)}
+    for fixes, lowered in ((("S1", "F1"), True), (("S1",), False)):
+        tracker = _tracker(fixes)
+        assert tracker.providerOf(_event(mode, history, 100, unit_id=1)) == finished  # finished: its limit was added
+        assert tracker.providerOf(_died(mode, history, 6000, unit_id=1)) == (mode if lowered else None), fixes
+        if lowered:
+            assert tracker.providedBy(mode) == tracker.providedBy(finished) == value
+        assert tracker.providerOf(_died(mode, history, 6000, unit_id=2)) is None  # never finished: never added
+
+
+def test_f1_the_modes_are_those_four_and_no_planetary_fortress_lifts():
+    from sc2reader.data import unit_lookup
+
+    from sc2mindshare.analysis.detectors.trackers import PROVIDERS_IN_A_MODE
+
+    assert PROVIDERS_IN_A_MODE == {
+        "CommandCenterFlying": 15, "OrbitalCommandFlying": 15, "OverseerCocoon": 8, "TransportOverlordCocoon": 8,
+    }  # fmt: skip
+    assert not [n for n in unit_lookup["Terran"] if n.startswith("planetaryfortress") and n != "planetaryfortress"]
+
+
+def test_f1_a_provider_death_lowers_the_limit_through_the_detector():
+    from sc2mindshare.analysis.detectors.trackers import SupplyStatus
+
+    for fixes, limit in ((("S1", "F1"), 7), (("S1",), 15)):
+        st = _tracker(fixes)
+        st.supplyHistory["p1"].append(SupplyStatus("05:00", 10, 15, 1))
+        detector = SimpleNamespace(st=st)
+        history = {0: SimpleNamespace(name="Overlord"), 5000: SimpleNamespace(name="TransportOverlordCocoon")}
+        st.providerOf(_event("Overlord", history, 100, unit_id=1))
+        death = _died("TransportOverlordCocoon", history, 6000, unit_id=1)
+        vars(death).update(time="05:10", player="p1")  # the flavoured class reads the unit's owner
+        assert detectors.SimpleDetector.providerDied(detector, death) is (limit == 7)
+        assert st.supplyHistory["p1"][-1].limit == limit, fixes
+
+
+@pytest.fixture(scope="module")
+def uncounted_overlord_deaths():
+    """Alcyone with every Overlord death made one the fork does not count (as the datapack makes a
+    TransportOverlordCocoon's or an OverlordTransport's): the supply series with and without F1, and as it is."""
+    need(ALCYONE)
+    from sc2mindshare.reader.compat import type_at
+    from sc2mindshare.reader.fork_api import _UnitDiedEventMixin
+
+    original = _UnitDiedEventMixin.countableUnitDeath
+
+    def uncounted(self, fixes=frozenset()):
+        return False if type_at(self.unit, self.frame) == "Overlord" else original(self, fixes)
+
+    def series(fixes, patched):
+        if patched:
+            _UnitDiedEventMixin.countableUnitDeath = uncounted
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                result = analyse(load_replay(ALCYONE), MS_SC, fixes=fixes, with_exposed=True)
+        finally:
+            _UnitDiedEventMixin.countableUnitDeath = original
+        return [(p.player, p.time, p.supply, p.limit) for p in result.exposed.supply]
+
+    without_f1 = tuple(f for f in LAYER_FIXES if f != "F1")
+    return {"as it is": series(LAYER_FIXES, False), "F1": series(LAYER_FIXES, True), "without F1": series(without_f1, True)}
+
+
+def _drops_of_8(series):
+    last, drops = {}, 0
+    for player, _time, _supply, limit in series:
+        drops += player in last and last[player] - limit == 8
+        last[player] = limit
+    return drops
+
+
+def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncounted_overlord_deaths):
+    """The fork counts every Overlord death on Alcyone; made uncounted, with F1 the supply series is the same as
+    counted, and without F1 the limit does not go down at the 8 Overlord deaths."""
+    s = uncounted_overlord_deaths
+    assert s["F1"] == s["as it is"]
+    assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8

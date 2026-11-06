@@ -354,11 +354,13 @@ class SimpleDetector(EventsDetector):
                     self.unitTypeCount[e.player][nameC] -= 1     
                 
                 #print("unit died: " + object_text(e.unit))
-                provider = self.st.providerOf(e)
-                if provider:
-                    self.st.decreaseLimit(e.player, e.time, provider, e.frame)
-                elif not ("S7" in self.ctx.fixes and self.settlePlacement(e)):
+                if not self.providerDied(e) and not ("S7" in self.ctx.fixes and self.settlePlacement(e)):
                     self.releaseUnitSupply(e)
+
+            # CR-023 F1: a provider's death the fork does not count (TransportOverlordCocoon, OverlordTransport)
+            # still lowers the limit; only the supply changes
+            elif isinstance(e, UnitDiedEvent) and "F1" in self.ctx.fixes:
+                self.providerDied(e)
 
             elif ((isinstance(e, UnitBornEvent) or 
                   isinstance(e, UnitDoneEvent)) and
@@ -402,6 +404,14 @@ class SimpleDetector(EventsDetector):
         self.supplyBlocks = self.st.getSupplyBlocks()
 
     # TODO seems like no units are being found
+
+    def providerDied(self, e):
+        """When the unit of the death ``e`` is a supply provider (``SupplyTracker.providerOf``), the limit goes down
+        by what it provided; returns whether it was one (the loop's own code, moved here for CR-023 F1)."""
+        provider = self.st.providerOf(e)
+        if provider:
+            self.st.decreaseLimit(e.player, e.time, provider, e.frame)
+        return bool(provider)
 
     def flushUnitInterval(self, currentInterval, unitsCounter):
         """Write the units collected for ``currentInterval`` as Units nodes (the loop's own code, moved
