@@ -38,7 +38,7 @@ class LayoutItem:
 @dataclass(frozen=True)
 class ClockNode:
     file_name: str  # "0-50.png"
-    media_id: str
+    media_id: str  # the clock's picture ID on the chosen server (CR-069: from the clock record)
     side: int  # 1 (A, -y) or 2 (B, +y)
     x: float
     y: float
@@ -49,6 +49,8 @@ class LayoutResult:
     positions: dict[str, tuple[float, float]] = field(default_factory=dict)
     sizes: dict[str, Size] = field(default_factory=dict)
     extra_nodes: list[ClockNode] = field(default_factory=list)
+    #: CR-069: the clocks the sweep wants, one per window, in window order, whether the map has them or not
+    clock_names: list[str] = field(default_factory=list)
     rows: list[tuple[int, int, float]] = field(default_factory=list)  # (row, window, x)
     warnings: list[str] = field(default_factory=list)
 
@@ -330,9 +332,10 @@ def layout(
             continue
         end = p.window_s * (w + 1)
         name = f"{end // 60}-{end % 60:02d}.png"
+        result.clock_names.append(name)
         media = (clock_map or {}).get(name)
-        if media is None:
-            result.warnings.append(f"no clock image for {name} (G6)")
+        if media is None:  # CR-069: one warning per missing clock, naming the command that uploads it
+            result.warnings.append(f"no clock image for {name}: run sc2mindshare upload-clocks (G6)")
             continue
         result.extra_nodes.append(ClockNode(name, media, 1, x(w), -p.lane_clock))
         result.extra_nodes.append(ClockNode(name, media, 2, x(w), p.lane_clock))

@@ -80,8 +80,7 @@ def _view_current() -> str:
 
 def _snapshot(mode: Timeline) -> Callable[[], str]:
     def make() -> str:
-        with (root() / "MS SC" / "TimeImageTracking.csv").open(encoding="utf-8") as f:
-            clock_map = {r["imageName"]: r["imageID"] for r in csv.DictReader(f)}
+        clock_map = golden.fixture_clock_map()  # CR-069: the committed fixture record (localhost:3042)
         graph = _graph()
         return to_json(build_document(graph, layout(items(graph), Profile(timeline=mode), clock_map)))
 

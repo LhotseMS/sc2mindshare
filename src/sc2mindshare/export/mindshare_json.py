@@ -3,7 +3,7 @@
 Key order as the workbook's ``importDict``: ``visuals``, ``detail``, ``dataTypes``, ``nodes``,
 ``links``. The config parts come from the package data extracted from Stefan's workbook (CR-005).
 With a layout result (CR-014), nodes carry the layout's size and position, and the clock
-image nodes are appended.
+image nodes are appended, in the local Mindshare's form (CR-069: ``nodeImage`` = the picture ID).
 """
 
 from __future__ import annotations
@@ -75,10 +75,11 @@ def build_document(
     if placed is not None:
         for clock in placed.extra_nodes:
             nodes.append(
-                {
+                {  # CR-069: the local Mindshare's picture node: the picture by its ID, named by its file
                     "type": "image",
-                    "name": prof.clock_host + clock.media_id,
-                    "ID": clock.media_id + str(clock.side),
+                    "name": clock.file_name,
+                    "ID": f"clock-{clock.file_name.removesuffix('.png')}-{clock.side}",
+                    "nodeImage": clock.media_id,
                     "size": [_num(v) for v in prof.clock_size],
                     "properties": {},
                     "position": {"x": _num(clock.x), "y": _num(clock.y), "z": 0.01},
