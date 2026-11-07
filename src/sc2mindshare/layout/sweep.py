@@ -260,19 +260,19 @@ def layout(
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
 
     # ghosts (spec §13.3): after the real items of their row, ordered by (time, Missing Step before
-    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the row. In linear
-    # mode a ghost whose window is empty sits at that window's x, in an otherwise blank row (row(w) = w):
-    # intended, confirmed by Leo (leo-cr014-check.md, CR-015 check, note 1); its slot is counted on the next
-    # column's stack, as in the compressed timeline (L-A)
-    block_rows: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
+    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the ghost's compressed
+    # column. In linear mode a ghost whose window is empty sits at that window's x, in an otherwise blank row
+    # (row(w) = w): intended, confirmed by Leo (leo-cr014-check.md, CR-015 check, note 1); its slot and the
+    # slot-4 skip are counted on the compressed columns, as in the compressed timeline (L-A)
+    block_columns: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
     for item in (i for i in swept if i.type == "Supply Block"):
         ws, we = span(item)
-        block_rows[sign(item.player)].append((row(ws), row(we)))
+        block_columns[sign(item.player)].append((compressed_row(ws), compressed_row(we)))
     for item in sorted(ghosts, key=lambda g: (g.t, GHOSTS.index(g.type), math.inf if g.step is None else g.step, g.order)):
         w, s = w_of(item), sign(item.player)
-        ghost_row, column = row(w), compressed_row(w)
+        column = compressed_row(w)
         k = top_slot[(column, s)] + 1
-        if k == p.ghost_skip_slot and any(ra <= ghost_row <= rb for ra, rb in block_rows[s]):
+        if k == p.ghost_skip_slot and any(ca <= column <= cb for ca, cb in block_columns[s]):
             k += 1
         top_slot[(column, s)] = k
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
