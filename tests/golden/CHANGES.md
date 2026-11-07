@@ -979,3 +979,35 @@ Listed before the change, on Alcyone and spine, the view and both snapshots:
 ```json
 {"entry": "BC1d-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "6b57e6fe8308ff8461f7b1bd8d41468d837fd49891d14b3a3e4893ad909d9c42", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 3}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### BC1e: every step whose supply is a range says "you were at about N–M supply" (CR-035; Cam's G1, Stefan's D1b, Iris's qa-fix.md G1)
+
+Listed before the change, on Alcyone and spine, the view and both snapshots; descriptions only:
+- a step with a supply range whose own sentence does not compare its supply gets "You were at about {low}–{high} supply when you started it." (a node of one step) or "Step {number}: you were at about {low}–{high} supply when you started it." (a node of several, one per ranged step, in step order), en dash;
+- in the paragraph after the description's blank line: after the comparison sentence and one space when the node has one, alone when it has none (no build check, a unit type the guide does not list, after the reach); the 7 ≈ steps graded by supply are unchanged; nodes after 6:00 hold no step and get nothing;
+- Alcyone: 5 Building, 11 Units and 1 Upgrade descriptions; spine: 7 Building and 11 Units. Current output only (BC1); the workbook-faithful output is unchanged.
+
+```json
+{"entry": "BC1e-alcyone-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "f59b6deff7886b6e9cd872340ffd98ba017c54bffbd9bd8014b17b302081094b", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 5}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}, {"select": {"type": "Upgrade"}, "fields": ["description"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1e-alcyone-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "8440b065e4665834d3fccc0e71f58563b0b0ab650fafedb22ad2e75d80299f4d", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 5}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}, {"select": {"type": "Upgrade"}, "fields": ["description"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1e-alcyone-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "b5ad3ee997a898fad5fc55e724447a520da5e7c3a317f7bbdfcf063be34a85ad", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 5}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}, {"select": {"type": "Upgrade"}, "fields": ["description"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1e-spine-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["spine/G-VIEW-current.json"], "base_sha256": "da4807b19175adaecb6c6f0b7c8f43b427f99263b3991dc146828142a11df78c", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 7}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1e-spine-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["spine/G-SNAP-current-compressed.json"], "base_sha256": "999dff5b61e9017e70ced381879be8ec9bd1565d109eea14815e00886f1aa805", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 7}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1e-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Cam's coverage gap G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "91abe69d798a6560ba95a6d78fbc5ec34002976c963a312bbdb7e6ab3b6d5f76", "changes": [{"select": {"type": "Building"}, "fields": ["description"], "count": 7}, {"select": {"type": "Units"}, "fields": ["description"], "count": 11}], "added": [], "removed": []}
+```
