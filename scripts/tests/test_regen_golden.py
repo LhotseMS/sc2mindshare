@@ -81,7 +81,7 @@ def test_an_entry_already_applied_is_reported_and_passes(capsys, monkeypatch):
     regenerating reports that the entry is already applied and exits 0 without writing. (The history
     lookup is stubbed here, so the test also runs in a git archive copy; it is tested on its own below.)"""
     _need_inputs()
-    monkeypatch.setattr(regen, "_was_in_history", lambda name, sha256: True)
+    monkeypatch.setattr(regen, "_was_in_history", lambda name, sha256, **kw: True)
     before = (regen.GOLDEN / "G-SNAP-current-linear.json").read_bytes()
     assert regen.main(["--entry", "A12-snap-linear", "--golden", "G-SNAP-current-linear.json", "--write"]) == 0
     assert "already applied" in capsys.readouterr().out
@@ -159,3 +159,84 @@ def test_the_history_lookup_ignores_a_set_git_dir(tmp_path, monkeypatch, capsys)
     plain.mkdir()
     assert regen._was_in_history("G.json", "0" * 64, repo=plain) is False
     assert "history unavailable (not a git repository): checking against the entry's base" in capsys.readouterr().out
+
+
+# --- CR-035 (Kevin's call 14): spine's current goldens, and a golden that does not exist yet -----------------
+
+
+def _new_golden_setup(tmp_path, monkeypatch, entry):
+    """A fake ledger holding ``entry``, a replay folder with no golden yet, and a fixed regenerated text."""
+    fake = tmp_path / "CHANGES.md"
+    fake.write_text("```json\n" + json.dumps(entry) + "\n```\n", encoding="utf-8")
+    monkeypatch.setattr(regen, "CHANGES", fake)
+    monkeypatch.setattr(regen, "golden_dir", lambda replay="alcyone": tmp_path / replay)
+    monkeypatch.setattr(regen.golden, "load_clock_map", lambda path: {})
+    monkeypatch.setitem(regen.REGENERABLE, "G-VIEW-current.json", lambda replay="alcyone": '{"nodes": []}\n')
+    (tmp_path / "spine").mkdir()
+    return tmp_path / "spine" / "G-VIEW-current.json"
+
+
+def _sha(text):
+    import hashlib
+
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def test_the_replays_are_alcyone_and_spine():
+    assert set(regen.REPLAYS) == {"alcyone", "spine"}
+    assert regen.replay_path("spine").name == "200k dmg spine crawler ZvP.SC2Replay"
+    assert regen.golden_dir("spine") == regen.CHECKOUT / "tests" / "golden" / "spine"
+    assert regen.golden_dir() == regen.GOLDEN
+
+
+def test_a_new_golden_is_written_under_an_entry_that_changes_nothing(tmp_path, monkeypatch, capsys):
+    entry = {
+        "entry": "N1",
+        "task": "t",
+        "golden": ["spine/G-VIEW-current.json"],
+        "base_sha256": _sha('{"nodes": []}\n'),
+        "changes": [],
+        "added": [],
+        "removed": [],
+    }
+    target = _new_golden_setup(tmp_path, monkeypatch, entry)
+    assert regen.main(["--entry", "N1", "--golden", "G-VIEW-current.json", "--replay", "spine"]) == 0
+    assert not target.exists()  # checked, not written
+    assert "new golden, matches entry N1" in capsys.readouterr().out
+    assert regen.main(["--entry", "N1", "--golden", "G-VIEW-current.json", "--replay", "spine", "--write"]) == 0
+    assert target.read_text(encoding="utf-8") == '{"nodes": []}\n'
+
+
+def test_a_new_golden_whose_text_is_not_the_entrys_base_is_refused(tmp_path, monkeypatch, capsys):
+    entry = {
+        "entry": "N2",
+        "task": "t",
+        "golden": ["spine/G-VIEW-current.json"],
+        "base_sha256": "0" * 64,
+        "changes": [],
+        "added": [],
+        "removed": [],
+    }
+    target = _new_golden_setup(tmp_path, monkeypatch, entry)
+    assert regen.main(["--entry", "N2", "--golden", "G-VIEW-current.json", "--replay", "spine", "--write"]) == 1
+    assert "C4" in capsys.readouterr().out and not target.exists()
+
+
+def test_a_new_goldens_entry_may_list_no_change(tmp_path, monkeypatch, capsys):
+    entry = {
+        "entry": "N3",
+        "task": "t",
+        "golden": ["spine/G-VIEW-current.json"],
+        "base_sha256": _sha('{"nodes": []}\n'),
+        "changes": [{"select": {"type": "Battle"}, "fields": ["name"], "count": 1}],
+        "added": [],
+        "removed": [],
+    }
+    target = _new_golden_setup(tmp_path, monkeypatch, entry)
+    assert regen.main(["--entry", "N3", "--golden", "G-VIEW-current.json", "--replay", "spine", "--write"]) == 1
+    assert "lists changes" in capsys.readouterr().out and not target.exists()
+
+
+def test_an_alcyone_entry_does_not_regenerate_a_spine_golden(capsys):
+    assert regen.main(["--entry", "H1", "--golden", "G-VIEW-current.json", "--replay", "spine"]) == 2
+    assert "does not list spine/G-VIEW-current.json" in capsys.readouterr().out
