@@ -3412,7 +3412,7 @@
     "started at": "00:00:00",
     "steps": "",
     "supply range": "",
-    "verdict": "missing",
+    "verdict": "done later",
     "guide time": "",
     "off by s": "",
     "guide supply": ""
@@ -6844,7 +6844,7 @@
    "name": "Queen · missing",
    "description": "Missing: the build order guide makes 2 Queens as soon as your Hatchery finishes. You made 1 of the 2 by 3:30.\nYou made the other one later, at 9:48.",
    "type": "Missing Step",
-   "ID": "Missing Step-1",
+   "ID": "Missing Step-1-1",
    "size": [
     2.65,
     1
@@ -8032,7 +8032,7 @@
    "name1": "done later",
    "name2": "was missing at 2:21",
    "direction": 1,
-   "node1": "Missing Step-1",
+   "node1": "Missing Step-1-1",
    "node2": "Units-112"
   }
  ]

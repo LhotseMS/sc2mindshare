@@ -916,7 +916,7 @@
     "started at": "00:00:00",
     "steps": "",
     "supply range": "",
-    "verdict": "missing",
+    "verdict": "done later",
     "guide time": "",
     "off by s": "",
     "guide supply": ""
@@ -962,7 +962,7 @@
     "started at": "00:05:34",
     "steps": "",
     "supply range": "66–70",
-    "verdict": "missing",
+    "verdict": "done later",
     "guide time": "",
     "off by s": "",
     "guide supply": ""
@@ -13949,7 +13949,7 @@
    "name": "Zergling Movement Speed · missing",
    "description": "Missing: the build order guide starts Zergling Movement Speed as soon as you have 100 gas. You first had 100 gas at 4:10, after the 3:30 this build check covers.\nYou started it later, at 11:16.",
    "type": "Missing Step",
-   "ID": "Missing Step-1",
+   "ID": "Missing Step-1-1",
    "size": [
     2.65,
     1
@@ -13967,7 +13967,7 @@
    "name": "Warp Gate Research · missing",
    "description": "Missing: the build order guide starts Warp Gate Research as soon as your Cybernetics Core finishes. Your Cybernetics Core finished at 2:13, and you had not started it by 5:30.\nYou started it later, at 5:34.",
    "type": "Missing Step",
-   "ID": "Missing Step-2",
+   "ID": "Missing Step-2-1",
    "size": [
     2.65,
     1
@@ -17195,14 +17195,14 @@
    "name1": "done later",
    "name2": "was missing at 4:10",
    "direction": 1,
-   "node1": "Missing Step-1",
+   "node1": "Missing Step-1-1",
    "node2": "Upgrade-9"
   },
   {
    "name1": "done later",
    "name2": "was missing at 2:13",
    "direction": 1,
-   "node1": "Missing Step-2",
+   "node1": "Missing Step-2-1",
    "node2": "Upgrade-1"
   }
  ]

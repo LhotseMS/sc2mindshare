@@ -141,10 +141,10 @@ VIEW_NET_DELTA = [
 VIEW_NET_ADDED = [
     "Build Comparison-1#1",
     "Build Comparison-2#1",
-    "Missing Step-1#1",
-    "Missing Step-2#1",
-    "Missing Step-1>Upgrade-9#1",
-    "Missing Step-2>Upgrade-1#1",
+    "Missing Step-1-1#1",  # D2a: numbered per player
+    "Missing Step-2-1#1",
+    "Missing Step-1-1>Upgrade-9#1",
+    "Missing Step-2-1>Upgrade-1#1",
 ]
 
 
@@ -176,7 +176,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
-        "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view",
+        "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view", "BC1c-alcyone-view",
     )  # fmt: skip
 
 
@@ -194,6 +194,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "S6-view",
         "P10b-view",
         "S7-view",
+        "BC1c-alcyone-view",  # CR-035 D2a: the missing entries numbered per player (their net effect: added below)
     ]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
