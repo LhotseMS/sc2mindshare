@@ -324,3 +324,80 @@ def test_cr070_ac5_a_cost_that_cannot_be_found_exits_1_and_writes_nothing(tmp_pa
         assert "Traceback" in text and f"ValueError: {message}" in text
     assert sorted(p.name for p in fresh.parent.iterdir()) == ["graph.log"]
     assert [(p.read_bytes(), p.stat().st_mtime_ns) for p in outputs] == before
+
+
+# --- CR-035: --guide (AC7, AC10; S22, S25, S26) ------------------------------------------------------------------------
+
+
+def test_cr035_a_named_guide_is_picked_logged_and_exported(tmp_path, config):
+    """S13, S22 through the CLI: the named guide is picked for lilTiGGer (graded by time and supply), blacksquall's is
+    still suggested; both are in the log and in the exported graph."""
+    need(ALCYONE)
+    out = tmp_path / "game" / "graph.json"
+    guide = "lilTiGGer=zvp-3-hatch-before-pool-liquipedia"
+    code, _stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config, "--guide", guide)
+    assert (code, stderr) == (0, "")
+    log = (out.parent / "graph.log").read_text(encoding="utf-8")
+    assert "build check: player 1: 3 Hatch Before Pool (vs. Gate expand) (picked, score 79/105)" in log
+    assert "build check: player 2: Gate, Nexus, Core into Stargate (PvZ) (suggested, score 10/33)" in log
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    cards = [n for n in doc["nodes"] if n["type"] == "Build Comparison"]
+    assert [(c["name"], c["properties"]["player"], c["properties"]["picked"], c["properties"]["graded by"]) for c in cards] == [
+        ("Build check · 3 Hatch Before Pool (vs. Gate expand)", "lilTiGGer", "picked", "time and supply"),
+        ("Build check · Gate, Nexus, Core into Stargate (PvZ)", "blacksquall", "suggested", "supply"),
+    ]
+    step = {
+        n["properties"]["step #"]: n
+        for n in doc["nodes"]
+        if n["type"] == "Building" and n["properties"]["player"] == "lilTiGGer"
+    }
+    # S13: "17 - Hatchery at 0:52" with step 7 (1:20), +28; "19 - Hatchery at 1:25" with step 26 (3:24), +119
+    assert [
+        (step[k]["name"].rpartition(" · ")[2], step[k]["properties"]["guide time"], step[k]["properties"]["off by s"])
+        for k in (7, 26)
+    ] == [
+        ("28 s late", "0:52", "+28"),
+        ("1:59 late", "1:25", "+119"),
+    ]
+
+
+def test_cr035_a_reason_goes_to_stderr_and_the_log_and_the_build_succeeds(tmp_path, config):
+    need(ALCYONE)
+    out = tmp_path / "game" / "graph.json"
+    code, _stdout, stderr = run(
+        "build", ALCYONE, "--out", out, "--config-root", config, "--guide", "1=pvz-stargate-opener-project"
+    )
+    line = (
+        'No build check: the build order guide "Gate, Nexus, Core into Stargate (PvZ)" is for Protoss vs Zerg, '
+        "and lilTiGGer played Zerg vs Protoss."
+    )
+    assert (code, stderr) == (0, f"sc2mindshare: build check: {line}\n")
+    assert f"build check: player 1: {line}" in (out.parent / "graph.log").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("guide", ["Nobody=zvp-12-pool-economic-liquipedia", "3=zvp-12-pool-economic-liquipedia"])
+def test_s26_an_unknown_player_is_a_usage_error(tmp_path, config, guide):
+    need(ALCYONE)
+    out = tmp_path / "game" / "graph.json"
+    code, _stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config, "--guide", guide)
+    assert code == 2 and "no player" in stderr and not out.parent.exists()  # nothing written, graph.log included (finding 9)
+
+
+@pytest.mark.parametrize("guide", ["lilTiGGer", "=zvp-12-pool-economic-liquipedia", "lilTiGGer="])
+def test_a_malformed_guide_option_is_a_usage_error(tmp_path, config, guide):
+    need(ALCYONE)
+    code, _stdout, stderr = run("build", ALCYONE, "--out", tmp_path / "g.json", "--config-root", config, "--guide", guide)
+    assert code == 2 and "PLAYER=GUIDE" in stderr
+
+
+def test_s26_a_fault_in_the_comparison_fails_the_build_with_exit_1(tmp_path, config, monkeypatch):
+    need(ALCYONE)
+    import sc2mindshare.analysis.build_check as bc
+
+    def broken(*args, **kwargs):
+        raise RuntimeError("injected comparison fault")
+
+    monkeypatch.setattr(bc, "compare", broken)
+    out = tmp_path / "game" / "graph.json"
+    code, _stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config)
+    assert code == 1 and "injected comparison fault" in stderr and "unreadable" not in stderr and not out.exists()

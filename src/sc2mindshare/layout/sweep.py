@@ -247,31 +247,34 @@ def layout(
         ws = w_of(item)
         return ws, max(ws, win(item.t_end if item.t_end is not None else item.t or 0, p.window_s))
 
-    # buildings, upgrades, initiated (spec §5.6); top_slot[(row, side)] is the highest stack slot used
+    # buildings, upgrades, initiated (spec §5.6); top_slot[(column, side)] is the highest stack slot used, keyed
+    # by the compressed column in both timelines (CR-035, Leo's rule L-A), so a ghost in an empty window counts
+    # on the same stack, and the units' pad, M, the rail and the lanes are the same in both timelines
     bau_count: Counter[tuple[int, int]] = Counter()
     top_slot: defaultdict[tuple[int, int], int] = defaultdict(lambda: -1)
     for item in (i for i in swept if i.type in BAU):
         w, s = w_of(item), sign(item.player)
         k = bau_count[(w, s)]
         bau_count[(w, s)] += 1
-        top_slot[(row(w), s)] = k
+        top_slot[(compressed_row(w), s)] = k
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
 
     # ghosts (spec §13.3): after the real items of their row, ordered by (time, Missing Step before
-    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the row. In linear
-    # mode a ghost whose window is empty sits alone at that window's x, in an otherwise blank row
-    # (row(w) = w): intended, confirmed by Leo (leo-cr014-check.md, CR-015 check, note 1)
-    block_rows: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
+    # Checkpoint, step); slot 4 is skipped where a supply block of the same side covers the ghost's compressed
+    # column. In linear mode a ghost whose window is empty sits at that window's x, in an otherwise blank row
+    # (row(w) = w): intended, confirmed by Leo (leo-cr014-check.md, CR-015 check, note 1); its slot and the
+    # slot-4 skip are counted on the compressed columns, as in the compressed timeline (L-A)
+    block_columns: defaultdict[int, list[tuple[int, int]]] = defaultdict(list)
     for item in (i for i in swept if i.type == "Supply Block"):
         ws, we = span(item)
-        block_rows[sign(item.player)].append((row(ws), row(we)))
+        block_columns[sign(item.player)].append((compressed_row(ws), compressed_row(we)))
     for item in sorted(ghosts, key=lambda g: (g.t, GHOSTS.index(g.type), math.inf if g.step is None else g.step, g.order)):
         w, s = w_of(item), sign(item.player)
-        ghost_row = row(w)
-        k = top_slot[(ghost_row, s)] + 1
-        if k == p.ghost_skip_slot and any(ra <= ghost_row <= rb for ra, rb in block_rows[s]):
+        column = compressed_row(w)
+        k = top_slot[(column, s)] + 1
+        if k == p.ghost_skip_slot and any(ca <= column <= cb for ca, cb in block_columns[s]):
             k += 1
-        top_slot[(ghost_row, s)] = k
+        top_slot[(column, s)] = k
         result.positions[item.id] = (x(w), s * (p.lane_building + k * p.building_stack_step))
 
     # stats, chat, abilities (spec §5.7)
@@ -282,7 +285,7 @@ def layout(
     # units (spec §5.8); the pad counts every stack slot used in the row, ghosts too (spec §13.3 rule 4)
     spread: dict[int, float] = {}  # per side, the widest unit row beyond the lane's inner edge (§13.4)
     for w, s, buffered in flushes:
-        pad = p.building_stack_step * max(0, top_slot[(row(w), s)] + 1 - p.building_stack_free)
+        pad = p.building_stack_step * max(0, top_slot[(compressed_row(w), s)] + 1 - p.building_stack_free)
         c = 0.0
         previous_r = 0.0
         for n, u in enumerate(buffered):

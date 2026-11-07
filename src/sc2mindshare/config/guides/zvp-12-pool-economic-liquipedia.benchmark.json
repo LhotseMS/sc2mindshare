@@ -1,0 +1,77 @@
+{
+  "format_version": "1",
+  "id": "zvp-12-pool-economic-liquipedia",
+  "name": "12 Pool (economic)",
+  "race": "Zerg",
+  "vs": "Protoss",
+  "era": "LotV",
+  "patch": null,
+  "as_of": "2020-10-10",
+  "horizon": "3:00",
+  "source": {
+    "kind": "liquipedia",
+    "title": "12 Pool",
+    "url": "https://liquipedia.net/starcraft2/12_Pool",
+    "revision": 1812113,
+    "retrieved": "2026-10-18",
+    "licence": "CC BY-SA 3.0",
+    "attribution": "Liquipedia contributors, \"12 Pool\", revision 1812113, https://liquipedia.net/starcraft2/12_Pool",
+    "changes": "Transcribed the '12 Pool economic' build into steps; split the 6 Zerglings into their own step; canonical item ids added; no timings added."
+  },
+  "steps": [
+    {
+      "item": "SpawningPool",
+      "text": "12 Spawning Pool",
+      "kind": "building",
+      "supply": 12,
+      "key": true
+    },
+    {
+      "item": "Zergling",
+      "text": "-> 6 Lings ASAP",
+      "kind": "unit",
+      "count": 6,
+      "trigger": "@100% Spawning Pool"
+    },
+    {
+      "item": "Extractor",
+      "text": "14 Extractor",
+      "kind": "building",
+      "supply": 14
+    },
+    {
+      "item": "Overlord",
+      "text": "14 Overlord",
+      "kind": "unit",
+      "supply": 14
+    },
+    {
+      "item": "Hatchery",
+      "text": "16 Hatchery",
+      "kind": "building",
+      "supply": 16,
+      "key": true,
+      "note": "Natural"
+    },
+    {
+      "item": "zerglingmovementspeed",
+      "text": "@100 Gas, Metabolic Boost",
+      "kind": "upgrade",
+      "trigger": "@100 gas",
+      "key": true
+    },
+    {
+      "item": "Overlord",
+      "text": "19 Overlord",
+      "kind": "unit",
+      "supply": 19
+    },
+    {
+      "item": "Queen",
+      "text": "20 Queen",
+      "kind": "unit",
+      "supply": 20
+    }
+  ],
+  "notes": "Liquipedia stub page; the build ends at 20 Queen, so steps after it are not compared. Supply-only: verdicts are 'by supply' until simulated times are added. Horizon set to 3:00 because the source build ends about there; later steps would all read as extra."
+}

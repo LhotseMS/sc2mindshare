@@ -1,0 +1,77 @@
+{
+  "format_version": "1",
+  "id": "zvp-3-hatch-before-pool-liquipedia",
+  "name": "3 Hatch Before Pool (vs. Gate expand)",
+  "race": "Zerg",
+  "vs": "Protoss",
+  "era": "LotV",
+  "patch": null,
+  "as_of": "2017-04-12",
+  "horizon": "3:00",
+  "source": {
+    "kind": "liquipedia",
+    "title": "3 Hatch Before Pool vs. Protoss (Legacy of the Void)",
+    "url": "https://liquipedia.net/starcraft2/3_Hatch_Before_Pool_vs._Protoss_(Legacy_of_the_Void)",
+    "revision": 1148588,
+    "retrieved": "2026-10-18",
+    "licence": "CC BY-SA 3.0",
+    "attribution": "Liquipedia contributors, \"3 Hatch Before Pool vs. Protoss (Legacy of the Void)\", revision 1148588, https://liquipedia.net/starcraft2/3_Hatch_Before_Pool_vs._Protoss_(Legacy_of_the_Void)",
+    "changes": "Transcribed the '3 Hatch Before Pool vs. Gate-FE' build into steps; footnotes moved to notes; canonical item ids added; the two times are the page's own."
+  },
+  "steps": [
+    {
+      "item": "Overlord",
+      "text": "13 - Overlord",
+      "kind": "unit",
+      "supply": 13,
+      "note": "Scout after the Overlord; abort the build against a Forge first expand."
+    },
+    {
+      "item": "Hatchery",
+      "text": "17 - Hatchery at 0:52",
+      "kind": "building",
+      "supply": 17,
+      "time": "0:52",
+      "time_source": "source",
+      "key": true,
+      "note": "Natural"
+    },
+    {
+      "item": "Hatchery",
+      "text": "19 - Hatchery at 1:25",
+      "kind": "building",
+      "supply": 19,
+      "time": "1:25",
+      "time_source": "source",
+      "key": true,
+      "note": "Third base"
+    },
+    {
+      "item": "Extractor",
+      "text": "22 - Extractor",
+      "kind": "building",
+      "supply": 22
+    },
+    {
+      "item": "SpawningPool",
+      "text": "23 - Pool",
+      "kind": "building",
+      "supply": 23,
+      "key": true
+    },
+    {
+      "item": "Overlord",
+      "text": "23 - Overlord",
+      "kind": "unit",
+      "supply": 23
+    },
+    {
+      "item": "zerglingmovementspeed",
+      "text": "@100 gas: Metabolic Boost",
+      "kind": "upgrade",
+      "trigger": "@100 gas",
+      "key": true
+    }
+  ],
+  "notes": "Two steps carry the page's own times; the rest is supply-only. Liquipedia stub page from 2017. Horizon set to 3:00 because the source build ends about there; later steps would all read as extra."
+}

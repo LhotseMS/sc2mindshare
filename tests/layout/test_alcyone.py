@@ -257,8 +257,9 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # 639 = 665 less the 4 Supply Blocks CR-023's S1 (with S5) removes (11 -> 7), plus P8's last Units node,
     # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
     # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change);
-    # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds the 17 building-morph nodes
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 656)
+    # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds the 17 building-morph nodes; CR-035 (BC1) the 2
+    # cards and the 2 missing entries
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 660)
 
 
 # --- CR-073: the timeline lanes ---------------------------------------------------------------------------------

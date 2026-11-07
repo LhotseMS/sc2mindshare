@@ -189,6 +189,60 @@ def test_m_takes_the_widest_unit_row(mode):
     assert r.positions["Scouting-1"] == approx((0, 31.7))  # 12.8 + 17.0 + 0.5 + 0.6 + 0.3 + 0.5
 
 
+# CR-035, L-A (Leo's rule; CR-073 review finding 1): the stack slots are counted on the compressed columns in
+# both timelines, so a ghost in an empty window stacks on the next column's buildings in linear mode too, and
+# M, the rail and every lane keep the same y in both timelines. Fixture: windows 0 and 4 occupied (BASE);
+# 11 buildings of A in window 4 (slots 0-10), a Missing Step of A in the empty window 2: it takes slot 11.
+L_A_STACK = [it(f"Building-{k}", "Building", 45) for k in range(11)]
+
+
+@pytest.mark.parametrize(("mode", "ghost_x", "scouting_x"), [("compressed", 2.5, 2.5), ("linear", 5.0, 10.0)])
+def test_a_ghost_in_an_empty_window_takes_the_next_columns_stack_slot_in_both_timelines(mode, ghost_x, scouting_x):
+    r = lay([*BASE, *L_A_STACK, it("Missing Step-1", "Missing Step", 25), it("Scouting-1", "Scouting", 45)], mode)
+    assert r.positions["Missing Step-1"] == approx((ghost_x, -19.55))  # 8.0 + 11 x 1.05
+    # slot 11's top is 8.0 + 11 x 1.05 + 0.5 = 20.05, so M = 7.25 (linear before L-A: slot 10, M 6.2, y -20.9)
+    assert r.positions["Scouting-1"] == approx((scouting_x, -21.95))  # 12.8 + 7.25 + 0.5 + 0.6 + 0.3 + 0.5
+
+
+@pytest.mark.parametrize(("mode", "x"), [("compressed", 2.5), ("linear", 10.0)])
+def test_the_units_pad_counts_a_ghost_from_an_empty_window_in_both_timelines(mode, x):
+    unit = it("Units-1", "Units", 45, size_basis=21)  # radius 1.7
+    r = lay([*BASE, *L_A_STACK, it("Missing Step-1", "Missing Step", 25), unit, it("Scouting-1", "Scouting", 45)], mode)
+    # 12 slots used in the column: pad = 1.05 x (12 - 5) = 7.35; the unit at 12.8 + 1.7 + 7.35
+    assert r.positions["Units-1"] == approx((x, -21.85))
+    # M = the unit row, 1.7 x 2 + 7.35 = 10.75 (linear before L-A: pad 6.3, unit -20.8, Scouting -24.4)
+    assert r.positions["Scouting-1"] == approx((x, -25.45))  # 12.8 + 10.75 + 0.5 + 0.6 + 0.3 + 0.5
+
+
+# CR-035, L-A, slot 4 (Leo's ruling, Kevin's call): a supply block of side s covers the compressed columns
+# [compressed_row(ws), compressed_row(we)]; a ghost's slot 4 is skipped (k 4 -> 5) when its compressed column is
+# inside one of them, in both timelines. Fixture (Leo's slot4/probe.py): 4 buildings of A in window 4 (slots 0-3),
+# a Missing Step of A in the empty window 2 (column 1), a unit of A in window 4 (supply 2, radius 0.75).
+SLOT4_STACK = [it(f"Building-{k}", "Building", 45) for k in range(4)]
+
+
+@pytest.mark.parametrize(
+    ("block", "ghost_y", "unit_y"),
+    [
+        (it("Supply Block-1", "Supply Block", 38, t_end=48), -13.25, -14.6),  # P1: windows 3-4, column 1
+        (it("Supply Block-1", "Supply Block", 12, t_end=18), -13.25, -14.6),  # P2: empty window 1, column 1
+        (it("Supply Block-1", "Supply Block", 2, t_end=8), -12.2, -13.55),  # P3 control: window 0, column 0
+        (it("Supply Block-1", "Supply Block", 38, t_end=48, player="B"), -12.2, -13.55),  # P4 control: other side
+    ],
+    ids=["P1", "P2", "P3", "P4"],
+)
+@pytest.mark.parametrize(("mode", "ghost_x", "unit_x"), [("compressed", 2.5, 2.5), ("linear", 5.0, 10.0)])
+def test_slot_4_is_skipped_where_a_supply_block_covers_the_ghosts_compressed_column(
+    block, ghost_y, unit_y, mode, ghost_x, unit_x
+):
+    unit = it("Units-1", "Units", 45, size_basis=2)
+    r = lay([*BASE, *SLOT4_STACK, block, it("Missing Step-1", "Missing Step", 25), unit], mode)
+    # skipped: slot 5, 8.0 + 5 x 1.05; the pad 1.05 x (6 - 5) under the unit at 12.8 + 0.75 + 1.05
+    # kept: slot 4, 8.0 + 4 x 1.05; no pad, the unit at 12.8 + 0.75
+    assert r.positions["Missing Step-1"] == approx((ghost_x, ghost_y))
+    assert r.positions["Units-1"] == approx((unit_x, unit_y))
+
+
 # --- AC-9: every type has a lane; the grid is the fallback, with a warning -------------------------------------
 
 

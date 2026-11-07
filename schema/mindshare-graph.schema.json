@@ -302,14 +302,15 @@
   },
   "analysisTables": {
    "type": "object",
-   "required": ["build_times", "research_times", "units_source_sha256", "upgrades_source_sha256", "unmapped_units"],
+   "required": ["build_times", "research_times", "units_source_sha256", "upgrades_source_sha256", "unmapped_units", "supplies"],
    "additionalProperties": false,
    "properties": {
     "build_times": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}},
     "research_times": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}},
     "units_source_sha256": {"type": "string"},
     "upgrades_source_sha256": {"type": "string"},
-    "unmapped_units": {"type": "array", "items": {"type": "string"}}
+    "unmapped_units": {"type": "array", "items": {"type": "string"}},
+    "supplies": {"type": "array", "items": {"type": "array", "items": {"type": "string"}, "minItems": 2, "maxItems": 2}}
    }
   }
  }

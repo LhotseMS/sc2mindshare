@@ -84,7 +84,10 @@ class StatsSample:
 
 @dataclass(frozen=True)
 class SupplyPoint:
-    """One entry of the layer's supply history (PS2), as the layer keeps it (time as its own text)."""
+    """One entry of the layer's supply history (PS2), as the layer keeps it (time as its own text).
+
+    It adds a unit's supply when the unit is born or done, not when it starts, so it is not the game's food_used:
+    fine for supply blocks, never for a step's supply (CR-035 reads ``analysis.build_steps.supply_reading``)."""
 
     player: int
     time: str
@@ -132,13 +135,17 @@ class TimeTables:
     replay's own datapack it names: the same text, the text without spaces and punctuation, or one of
     five aliases (``analysis.exposed.UNIT_ALIASES``). The sheet's base rows ("Natural" ... "9th base")
     are the layer's, not unit types, and are left out; any other row that names no unit type is listed
-    in ``unmapped_units`` (none on the sample replays). upgradesInfo.csv is keyed by internal id already."""
+    in ``unmapped_units`` (none on the sample replays). upgradesInfo.csv is keyed by internal id already.
+
+    ``supplies`` (CR-035, D2a): unitsInfo.csv's Supply column as text, keyed like ``build_times`` ("0.5" for a
+    Zergling, "0" for an Overlord), for the exact supply reading at each step's start."""
 
     build_times: tuple[tuple[str, str], ...]
     research_times: tuple[tuple[str, str], ...]
     units_source_sha256: str
     upgrades_source_sha256: str
     unmapped_units: tuple[str, ...] = ()
+    supplies: tuple[tuple[str, str], ...] = ()
 
 
 @dataclass(frozen=True)

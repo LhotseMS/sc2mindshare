@@ -30,8 +30,10 @@ import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
+from sc2mindshare.analysis.build_check import UnknownPlayer
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.domain.guides import BuildCheck, NoBuildCheck
 from sc2mindshare.domain.models import Graph
 from sc2mindshare.export.intervals import intervals_csv, intervals_json, parse_intervals
 from sc2mindshare.export.mindshare_json import build_document, to_json
@@ -87,6 +89,14 @@ def _parser() -> argparse.ArgumentParser:
     )
     build.add_argument("--log", type=Path, default=None, help="where the run log goes (default: <out>.log)")
     build.add_argument(
+        "--guide",
+        action="append",
+        default=[],
+        metavar="PLAYER=GUIDE",
+        help="compare PLAYER's build (his name, or 1 or 2) with the build order guide GUIDE (a shipped guide's id, or "
+        "a guide file); repeatable. A player not named gets the closest guide for his matchup, marked suggested",
+    )
+    build.add_argument(
         "--with-analysis",
         action="store_true",
         help="also write the analysis values stream 2 reads (supply, stats, unit lifecycles...) as a top-level "
@@ -135,13 +145,19 @@ def _clock_map(config_root: Path, server: Server) -> tuple[dict[str, str], str |
 
 
 def _laid_out(
-    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str]
+    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str], guides: Sequence[str] = ()
 ) -> tuple[AnalysisResult, Graph, LayoutResult]:
-    """The analysis result, its graph and the layout: the one pipeline ``build`` and ``upload-clocks`` share."""
+    """The analysis result, its graph and the layout: the one pipeline ``build`` and ``upload-clocks`` share (CR-035:
+    with the build check, the guides named on the command line for ``build``)."""
     result = analyse(load_replay(replay), config_root)  # a freshly loaded replay; its exposed values feed the steps
-    graph = to_graph(result)
+    graph = to_graph(result, guides=guides)
     placed = layout(items(graph), Profile(timeline="linear" if timeline == "linear" else "compressed"), clocks)
     return result, graph, placed
+
+
+def _write_log(log: Path, text: str) -> None:
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text(text, encoding="utf-8")
 
 
 def build(
@@ -152,28 +168,40 @@ def build(
     log: Path,
     with_analysis: bool = False,
     clock_server: Server | None = None,
+    guides: Sequence[str] = (),
 ) -> int:
     clocks, no_clocks = _clock_map(config_root, clock_server or parse_server(DEFAULT_SERVER))
-    log.parent.mkdir(parents=True, exist_ok=True)
-    with log.open("w", encoding="utf-8") as log_file:
-        try:
-            with contextlib.redirect_stdout(log_file):  # the layer's debug prints
-                result, graph, placed = _laid_out(replay, config_root, timeline, clocks)
-                document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
-                if graph.intervals is None:
-                    raise ValueError("the analysis produced no battle intervals")
-                intervals = parse_intervals(graph.intervals)
-                csv_text = intervals_csv(graph.intervals)
-            if no_clocks:
-                print(f"clock record: {no_clocks}", file=log_file)
-                print(f"{PROG}: {no_clocks}", file=sys.stderr)
-            for warning in placed.warnings:
-                print(f"layout warning: {warning}", file=log_file)
-                print(f"{PROG}: layout warning: {warning}", file=sys.stderr)
-        except Exception as exc:  # noqa: BLE001  # the CLI top level: any failure is logged with its traceback, exit 1
-            traceback.print_exc(file=log_file)
-            print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
-            return 1
+    log_file = io.StringIO()  # the run's log, written once the run is known not to be a usage error (finding 9)
+    try:
+        with contextlib.redirect_stdout(log_file):  # the layer's debug prints
+            result, graph, placed = _laid_out(replay, config_root, timeline, clocks, guides)
+            build_checks = graph.build_checks
+            document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
+            if graph.intervals is None:
+                raise ValueError("the analysis produced no battle intervals")
+            intervals = parse_intervals(graph.intervals)
+            csv_text = intervals_csv(graph.intervals)
+        if no_clocks:
+            print(f"clock record: {no_clocks}", file=log_file)
+            print(f"{PROG}: {no_clocks}", file=sys.stderr)
+        for check in build_checks:
+            if isinstance(check, NoBuildCheck):
+                print(f"build check: player {check.player}: {check.line}", file=log_file)
+                print(f"{PROG}: build check: {check.line}", file=sys.stderr)
+            else:
+                how = "picked" if check.picked else "suggested"
+                print(f"build check: player {check.player}: {check.guide.name} ({how}, score {check.score})", file=log_file)
+        for warning in placed.warnings:
+            print(f"layout warning: {warning}", file=log_file)
+            print(f"{PROG}: layout warning: {warning}", file=sys.stderr)
+    except UnknownPlayer as exc:  # a usage error writes nothing, the log included (Rex's finding 9)
+        return _usage_error(str(exc))
+    except Exception as exc:  # noqa: BLE001  # the CLI top level: any failure is logged with its traceback, exit 1
+        traceback.print_exc(file=log_file)
+        _write_log(log, log_file.getvalue())
+        print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
+        return 1
+    _write_log(log, log_file.getvalue())
     outputs = {
         out: document,
         out.parent / "intervals.json": intervals_json(intervals, graph=out.name),
@@ -283,8 +311,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     foreign = _foreign_intervals(args.out)
     if foreign:
         return _usage_error(f"{foreign}: use another --out folder for this build")
+    malformed = [g for g in args.guide if not all(g.partition("=")[0::2]) or "=" not in g]
+    if malformed:
+        return _usage_error(f"--guide {malformed[0]}: write it as PLAYER=GUIDE")
     log = args.log or args.out.with_suffix(".log")
-    return build(args.replay, args.out, args.timeline, config_root, log, args.with_analysis, server)
+    return build(args.replay, args.out, args.timeline, config_root, log, args.with_analysis, server, args.guide)
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ decode-dev = []
 where = ["src"]
 
 [tool.setuptools.package-data]
-sc2mindshare = ["py.typed", "config/*.json"]
+sc2mindshare = ["py.typed", "config/*.json", "config/guides/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "scripts/tests"]

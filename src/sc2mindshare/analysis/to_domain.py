@@ -13,8 +13,10 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
 
-from sc2mindshare.analysis.build_steps import build_order, with_build_order
+from sc2mindshare.analysis.build_check import annotate, checks, named_guides, with_build_check
+from sc2mindshare.analysis.build_steps import build_order, supply_reading, with_build_order
 from sc2mindshare.analysis.fixes import EXPORT_FIXES, FIXES, LAYER_FIXES
+from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import AnalysisResult
 from sc2mindshare.domain.models import FIELDS, TIME_FIELDS, Graph, Link, Node, Value
 from sc2mindshare.domain.steps import NodeSource
@@ -119,12 +121,20 @@ def link_model(link: Any) -> Link:
     )
 
 
-def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] | None = None, *, mixed: bool = False) -> Graph:
+def to_graph(
+    result: AnalysisResult,
+    fixes: Sequence[Callable[[Graph], Graph]] | None = None,
+    *,
+    mixed: bool = False,
+    guides: Sequence[str] = (),
+) -> Graph:
     """The domain graph of ``result``, with the ledger's graph fixes applied (``fixes=()`` for the
     bug-faithful graph that renders the legacy CSV oracle). The current graph (every layer and graph fix on)
     also carries each player's build order (CR-034, ``analysis.build_steps``; ledger BO1, on by default, D47a),
     made from ``result.exposed``; a mixed run has none (its steps would read names and types the layer fixes
-    it leaves out would change, such as N1's type-at-the-time names).
+    it leaves out would change, such as N1's type-at-the-time names). With the steps comes each player's build check
+    (CR-035, ledger BC1, on by default, D1a): with the guide ``guides`` names for him (``--guide PLAYER=GUIDE``,
+    ``analysis.build_check.UnknownPlayer`` for a player the replay does not have), else the closest one, suggested.
 
     Only the two pure combinations are accepted: every layer and graph fix on (the default with a result
     of ``analyse``'s default), or none (``fixes=()`` with ``analyse(..., fixes=())``). Any other mix, such as
@@ -147,7 +157,7 @@ def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] |
         nodes=tuple(node_model(n) for n in result.nodes),
         links=tuple(link_model(lk) for lk in result.links),
         intervals=result.intervals,
-        export_fixes=export_fixes if all_on else export_fixes - {"BO1"},  # the step properties go with the steps
+        export_fixes=export_fixes if all_on else export_fixes - {"BO1", "BC1"},  # the step entries go with the steps
     )
     for fix in graph_fixes:
         graph = fix(graph)
@@ -157,9 +167,15 @@ def to_graph(result: AnalysisResult, fixes: Sequence[Callable[[Graph], Graph]] |
         order = build_order(result.exposed, result.fixes)
         for note in order.estimated:  # D60a: an estimated start is a data-quality finding for the run log only
             print(note)
+        names = {n.source.pid: n.value("name") for n in graph.nodes if n.kind == "Player" and n.source and n.source.pid}
+        numbers = {str(p.order + 1): p.pid for p in result.exposed.game.players}
+        named = named_guides(guides, names, numbers)
+        results = checks(result.exposed, order, names, named, library())
+        order = annotate(order, results, supply_reading(result.exposed))  # call 4: the verdicts go into the steps
         graph = with_build_order(graph, order, result.fixes)
         placed = {(s.player, s.number) for n in graph.nodes for s in n.steps}
         for s in order.steps:  # in the Player list only: say so in the run log, never drop it silently
             if (s.player, s.number) not in placed:
                 print(f"CR-034: step {s.number} of player {s.player} ({s.kind} {s.item}) has no node; it is in the list only")
+        graph = with_build_check(graph, order, results, result.exposed, result.fixes)
     return graph

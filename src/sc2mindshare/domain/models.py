@@ -17,6 +17,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
+from sc2mindshare.domain.guides import BuildCheck, NoBuildCheck
 from sc2mindshare.domain.steps import BuildStep, NodeSource
 from sc2mindshare.domain.time import GameTime
 
@@ -49,6 +50,9 @@ FIELDS: Mapping[str, tuple[str, ...]] = {
     "Harrasment": ("time", "player", "end time", "deaths"),
     "Scouting": ("time", "player", "unit", "base"),
     "Chat": ("time", "player"),
+    # CR-035: the build check's card (one per compared player, no time of its own) and a missing guide step
+    "Build Comparison": ("player",),
+    "Missing Step": ("time", "player"),
 }
 
 #: The fields that hold a ``GameTime``.
@@ -56,8 +60,13 @@ TIME_FIELDS = frozenset({"time", "end time"})
 #: The time fields that may be empty (None): an Energy Excess still open when the game ends.
 OPEN_ENDED = frozenset({("Energy Excess", "end time")})
 
+#: The kinds with no start: placed by their player, not by a time (a Build Comparison card, CR-035).
+UNTIMED = frozenset({"Game", "Player", "Build Comparison"})
+
 #: A field's value: a time, or the legacy text.
 Value = GameTime | str | None
+#: A property the build check adds to a node (CR-035, export fix BC1): text, a whole number, a flag or a time.
+Added = str | int | bool | GameTime
 
 
 @dataclass(frozen=True)
@@ -73,6 +82,9 @@ class Node:
     #: (Building, Upgrade and Units nodes; the others hold none)
     source: NodeSource | None = None
     steps: tuple[BuildStep, ...] = ()
+    #: CR-035: the properties the build check adds, in order, written with the export fix BC1 (on every node of the
+    #: kinds that carry them, blank where nothing was compared: CR-063)
+    added: tuple[tuple[str, Added], ...] = ()
 
     def __post_init__(self) -> None:
         if self.kind not in FIELDS:
@@ -86,8 +98,8 @@ class Node:
                     raise ValueError(f"{self.id}: {name!r} must be a GameTime, not {value!r}")
             elif not isinstance(value, str):
                 raise ValueError(f"{self.id}: {name!r} is text, not {value!r}")
-        if (self.start is None) != (self.kind in ("Game", "Player")):
-            raise ValueError(f"{self.id}: start is required for every kind but Game and Player")
+        if (self.start is None) != (self.kind in UNTIMED):
+            raise ValueError(f"{self.id}: start is required for every kind but {', '.join(sorted(UNTIMED))}")
 
     def value(self, name: str) -> str:
         """A text field's value."""
@@ -126,3 +138,5 @@ class Graph:
     #: The export fixes the document is built with (``analysis.fixes.EXPORT_FIXES`` with the graph fixes on,
     #: none for the bug-faithful graph): fixes of what the view emits, not of the graph itself (CR-023 B3).
     export_fixes: frozenset[str] = field(default=frozenset())
+    #: CR-035: each player's build check, or why there is none (the run log reports them)
+    build_checks: tuple[BuildCheck | NoBuildCheck, ...] = field(default=())

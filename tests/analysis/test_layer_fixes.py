@@ -9,7 +9,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from sc2mindshare.analysis.build_steps import build_order
+from sc2mindshare.analysis.build_check import annotate
+from sc2mindshare.analysis.build_steps import build_order, supply_reading
 from sc2mindshare.analysis.detectors import detectors
 from sc2mindshare.analysis.detectors.detectors import BaseDetector
 from sc2mindshare.analysis.exports.node import X_LD
@@ -415,10 +416,11 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     # and Scouting-1), N1 merges 11 Units groups; on spine S1 leaves 2 more (N1 only renames there); on both
     # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2);
     # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds a Building node per building
-    # morph (Alcyone 17: a Lair, a Hive, a Greater Spire and 14 Warp Gates; spine 9: a Lair and 8 Warp Gates)
+    # morph (Alcyone 17: a Lair, a Hive, a Greater Spire and 14 Warp Gates; spine 9: a Lair and 8 Warp Gates); CR-035
+    # (BC1) adds a build check card per player and the missing entries (Alcyone 2, spine 1)
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (
         4 + 3 + 11 + 2 if "Alcyone" in replay else 0
-    ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9)
+    ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9) + 2 + (2 if "Alcyone" in replay else 1)
 
 
 # --- P2: race words are no longer stripped from inside names -----------------------------------------------
@@ -667,7 +669,8 @@ def test_n1_on_alcyone_units_buildings_and_killers_take_the_type_at_the_time(n1_
     units = {label: [n for n in g.values() if n.kind == "Units"] for label, g in n1_graphs.items()}
     assert (len(units["without N1"]), len(units["fixed"])) == (183, 172)  # 193 -> 182 before P10 and P10b dropped 10
     assert (before["Units-24"].value("type"), after["Units-24"].value("type")) == ("Overseer", "Overlord")
-    assert (before["Building-6"].name, after["Building-6"].name) == ("Warp Gate", "Gateway")
+    # CR-035: the current graph's Gateway also carries its build check verdict
+    assert (before["Building-6"].name, after["Building-6"].name) == ("Warp Gate", "Gateway · on supply")
     assert after["Building-6"].value("type") == "Gateway" and after["Building-6"].start.seconds == 41
     assert (before["Building-1"].value("type"), after["Building-1"].value("type")) == ("Hive", "Hatchery")
     assert "Ravager killed Stalker" in before["Battle-12"].description
@@ -807,7 +810,7 @@ def test_p10b_on_alcyone_the_batteries_and_the_rich_extractor_are_buildings(n1_g
     (started 2:31 and 5:55), Building-101 lilTiGGer's Extractor Rich (started 13:54); no Units group of either."""
     g = n1_graphs["fixed"]
     assert [(g[i].name, g[i].value("player"), g[i].start.seconds) for i in ("Building-12", "Building-33", "Building-101")] == [
-        ("Shield Battery", "blacksquall", 151),
+        ("Shield Battery · extra", "blacksquall", 151),  # CR-035: inside blacksquall's build check, not in its guide
         ("Shield Battery 1", "blacksquall", 355),
         ("Extractor Rich", "lilTiGGer", 834),
     ]
@@ -1416,8 +1419,9 @@ def uncounted_overlord_deaths():
                 [n for n in graph.nodes if n.kind != "Supply Block"],
                 list(graph.links),
             )
-            if "F1" in fixes:  # the all-on graph carries the build order (CR-034), the mixed one does not
-                others["F1 build order"] = build_order(result.exposed, result.fixes)
+            if "F1" in fixes:  # the all-on graph carries the build order (CR-034) and its check (CR-035), the mixed none
+                order = build_order(result.exposed, result.fixes)
+                others["F1 build order"] = annotate(order, graph.build_checks, supply_reading(result.exposed))
         return [(p.player, p.time, p.supply, p.limit) for p in result.exposed.supply]
 
     without_f1 = tuple(f for f in LAYER_FIXES if f != "F1")
@@ -1439,6 +1443,30 @@ def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncoun
     s = uncounted_overlord_deaths
     assert s["F1"] == s["as it is"]
     assert _drops_of_8(s["as it is"]) - _drops_of_8(s["without F1"]) == 8
+
+
+def _without_build_check(nodes, links):
+    """``nodes`` and ``links`` without exactly what CR-035's ``with_build_check`` adds: the cards and missing entries
+    (after every other node) and their links; on a compared node, its name ending, its sentence (the last paragraph of
+    its description) and its entries; on a node with a ranged step, that last paragraph (G1); every node's entries. The steps' verdicts go with the steps
+    (``_without_build_order``)."""
+    added_kinds = ("Build Comparison", "Missing Step")
+    ghosts = {n.id for n in nodes if n.kind == "Missing Step"}
+    kept = [n for n in nodes if n.kind not in added_kinds]
+    assert [n.kind for n in nodes[len(kept) :]] == [n.kind for n in nodes if n.kind in added_kinds]  # all at the end
+    out = []
+    for node in kept:
+        verdict = dict(node.added).get("verdict")
+        # G1 (D1b): a step whose supply is a range, and whose own sentence does not compare its supply, adds its supply
+        # sentence to the same last paragraph, with or without a verdict
+        ranged = any(s.supply_range is not None and not (s.verdict and s.verdict.supply_graded) for s in node.steps)
+        if verdict:
+            node = dataclasses.replace(node, name=node.name.rpartition(" · ")[0])
+        if verdict or ranged:
+            head, sep, _sentence = node.description.rpartition(X_LD + X_LD)
+            node = dataclasses.replace(node, description=head if sep else "")
+        out.append(dataclasses.replace(node, added=()))
+    return out, [lk for lk in links if lk.node1 not in ghosts]
 
 
 def _without_build_order(nodes, order):
@@ -1471,6 +1499,7 @@ def test_f1_an_uncounted_provider_death_changes_only_the_supply(uncounted_overlo
     nodes, links = others["F1"]
     order = others["F1 build order"]
     assert order.steps and order.morphs and not any(n.steps for n in others["without F1"][0])
+    nodes, links = _without_build_check(nodes, links)
     assert (_without_build_order(nodes, order), links) == others["without F1"]
     assert [n for n in nodes if n.kind == "Battle"] and [n for n in nodes if n.kind == "Units"]
 

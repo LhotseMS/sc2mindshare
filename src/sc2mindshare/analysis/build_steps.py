@@ -15,8 +15,10 @@ TD-18) into the steps by P0-2's rules (``sources/specs/stream2-build-step-extrac
 - **One line per batch** (Leo; D52a): per player and item, starts in (loop, unit id) order join the line
   opened by the item's first start when within 8 loops of it (anchored, not chained); the step number
   counts lines, in (start loop, unit id) order.
-- **Supply** (Leo): ``floor(food_used)`` of the last PlayerStats sample at or before the start; 12 before
-  the first sample.
+- **Supply** (CR-035, D2a; Leo's reading R(L)): the last PlayerStats sample at or before the start (12 before
+  the first sample) plus every visible supply change strictly between that sample and the start, rounded
+  down (``supply_reading``). Where the changes between two samples do not add up to the next sample, the
+  step also carries the range its supply lies in (marked ≈, D6a).
 - **Notes:** "cancelled" (a building its owner killed before it was done, P0-2 §3.5) and "chrono possible"
   (Rex's rule, D59a: a Chrono Boost of the player on a building whose type at the chrono can make the item,
   active at ``[L, L + 448)``, overlapping a member's ``[start, done)``; the start never moves).
@@ -34,12 +36,13 @@ import bisect
 import re
 from collections import defaultdict
 from collections.abc import Iterable
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from fractions import Fraction
 
 from sc2mindshare.analysis.exports.node import X_LD  # the layer's line break in descriptions
 from sc2mindshare.analysis.exposed import research_row
-from sc2mindshare.domain.exposed import Exposed, UnitLife
+from sc2mindshare.domain.exposed import Exposed, TypeChange, UnitLife
+from sc2mindshare.domain.guides import Later
 from sc2mindshare.domain.models import Graph, Node
 from sc2mindshare.domain.steps import (
     BuildingMorph,
@@ -115,6 +118,13 @@ PRODUCERS: dict[str, frozenset[str]] = {
 }
 _SAME_PRODUCER = {"WarpGate": "Gateway"}
 
+#: CR-035 (Kevin's call, Leo): a gas building on a rich geyser is its base building for the build check: the same
+#: item, supply and build time (the support tables have no row of its own).
+RICH_GEYSERS = {"ExtractorRich": "Extractor", "AssimilatorRich": "Assimilator", "RefineryRich": "Refinery"}
+
+#: CR-035 (Leo's reading): Zerg structures that are not made from a Drone (a Queen's tumor, the Nydus worm).
+NO_DRONE = re.compile(r"CreepTumor\w*|NydusCanal\w*")
+
 #: The kind of node that holds a step of each kind (a building morph's node is made here; a unit morph has none).
 _HELD_BY = {"building": "Building", "worker": "Units", "unit": "Units", "upgrade": "Upgrade"}
 
@@ -139,6 +149,7 @@ class _Start:
     cancelled: bool = False
     morph: BuildingMorph | None = None
     name: str | None = None  # the display name, when not the item's own (an upgrade's display-name row)
+    estimated: bool = False  # no build or research time: the start is estimated at its end (D60a; CR-035 AC3)
 
 
 def _cancelled(u: UnitLife) -> bool:
@@ -173,6 +184,7 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
     returning = _returning_drones(exposed.units)
 
     def derived(player: int, item: str, end: int, seconds: Fraction | None) -> Fraction:
+        """The start (end - the time); with no time, the end itself, noted in ``estimated``."""
         if seconds is None:
             estimated.append(
                 f"CR-034: no build or research time for {item} (player {player}): its start is estimated at loop {end}"
@@ -193,7 +205,8 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
         elif u.born_loop is not None:
             kind = "worker" if u.first_type in WORKERS else "unit"
             start = derived(u.owner, u.first_type, u.born_loop, times.get(u.first_type))
-            out.append(_Start(u.owner, kind, u.first_type, start, u.unit_id, u.born_loop))
+            guessed = times.get(u.first_type) is None
+            out.append(_Start(u.owner, kind, u.first_type, start, u.unit_id, u.born_loop, estimated=guessed))
     changes = defaultdict(list)
     for c in exposed.type_changes:
         changes[c.unit_id].append(c)
@@ -205,7 +218,8 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
             if (c.before, c.after) in BUILDING_MORPHS:
                 start = derived(u.owner, c.after, c.loop, times.get(c.after))
                 morph = BuildingMorph(u.owner, unit_id, c.before, c.after, c.loop, start)
-                out.append(_Start(u.owner, "building morph", c.after, start, unit_id, None, morph=morph))
+                guessed = times.get(c.after) is None
+                out.append(_Start(u.owner, "building morph", c.after, start, unit_id, None, morph=morph, estimated=guessed))
             elif c.after in UNIT_MORPH_COCOONS and i + 1 < len(unit_changes):
                 if unit_changes[i + 1].after == UNIT_MORPH_COCOONS[c.after]:
                     out.append(_Start(u.owner, "unit morph", unit_changes[i + 1].after, Fraction(c.loop), unit_id, None))
@@ -215,19 +229,140 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
         row = research_row(up.upgrade, exposed.tables.research_times)  # D63a: by upgrade id
         start = derived(up.player, up.upgrade, up.loop, _seconds(row[1]) if row else None)
         name = row[0] if row and " " in row[0] else None  # a row named for display names the step
-        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop, name=name))
+        guessed = not row or _seconds(row[1]) is None
+        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop, name=name, estimated=guessed))
     return out
 
 
-def _supply_at(exposed: Exposed) -> dict[int, tuple[list[int], list[int]]]:
-    """Per player, the PlayerStats loops in order and ``floor(food_used)`` at each."""
-    samples: dict[int, list[tuple[int, int]]] = defaultdict(list)
+def every_start(exposed: Exposed, player: int) -> tuple[Later, ...]:
+    """CR-035 (call 8): every start of the player in the whole game, not only to 6:00, less the cancelled ones (they
+    never count as made, call 6), in start order: where a guide step not made in time was made later."""
+    made = [s for s in _starts(exposed, []) if s.player == player and not s.cancelled]
+    made.sort(key=lambda s: (s.start, s.unit_id if s.unit_id is not None else 0, s.item))
+    return tuple(
+        Later(RICH_GEYSERS.get(s.item, s.item), s.start, s.kind, s.unit_id, s.done if s.kind == "upgrade" else None)
+        for s in made
+    )
+
+
+@dataclass(frozen=True)
+class SupplyReading:
+    """One player's supply as the game counts it (``food_used``: units in production included), at any loop
+    (CR-035, D2a; Leo's algorithm notes §1): the PlayerStats samples, and the visible changes between them."""
+
+    loops: tuple[int, ...]  # the samples' loops, in order
+    food: tuple[Fraction, ...]  # food_used at each sample
+    changes: tuple[tuple[Fraction, Fraction], ...]  # (loop, supply change), in loop order
+    _keys: tuple[Fraction, ...] = field(default=(), repr=False, compare=False)
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "_keys", tuple(loop for loop, _ in self.changes))
+
+    def _sum(self, after: Fraction, upto: Fraction, inclusive: bool) -> Fraction:
+        """The changes in ``(after, upto)``, or ``(after, upto]`` when ``inclusive``."""
+        lo = bisect.bisect_right(self._keys, after)
+        hi = (bisect.bisect_right if inclusive else bisect.bisect_left)(self._keys, upto)
+        return sum((d for _, d in self.changes[lo:hi]), Fraction(0))
+
+    def exact(self, loop: Fraction) -> tuple[Fraction, Fraction]:
+        """R before rounding, and the other end of its window: ``left`` = the last sample at or before ``loop``
+        (12 before the first) + the changes strictly between it and ``loop``; ``right`` = the next sample less the
+        changes from ``loop`` to it. They differ when the changes between the two samples do not add up."""
+        i = bisect.bisect_right(self.loops, loop)
+        s0_loop, s0 = (Fraction(self.loops[i - 1]), self.food[i - 1]) if i else (Fraction(0), Fraction(START_SUPPLY))
+        left = s0 + self._sum(s0_loop, loop, inclusive=False)
+        if i >= len(self.loops):
+            return left, left
+        s1_loop = Fraction(self.loops[i])
+        lo, hi = bisect.bisect_left(self._keys, loop), bisect.bisect_right(self._keys, s1_loop)
+        right = self.food[i] - sum((d for _, d in self.changes[lo:hi]), Fraction(0))  # the changes in [loop, s1]
+        return left, right
+
+    def reached(self, supply: int) -> Fraction | None:
+        """The first loop from which the reading R is at least ``supply`` (a guide step's supply moment, Leo §4), or
+        None if it never is. R changes only at a sample or a change, so those are the moments looked at."""
+        if START_SUPPLY >= supply:
+            return Fraction(0)
+        moments = sorted({Fraction(loop) for loop in self.loops} | set(self._keys))
+        return next((m for m in moments if self.at(m + Fraction(1, 1000))[0] >= supply), None)
+
+    def at(self, loop: Fraction) -> tuple[int, tuple[int, int] | None]:
+        """R, ``floor`` of the reading at ``loop`` (nothing at exactly ``loop`` counts), and its range (low, high)
+        when the window cannot pin it to one value (D6a), else None."""
+        left, right = self.exact(loop)
+        r, other = int(left // 1), int(right // 1)
+        return r, (None if r == other else (min(r, other), max(r, other)))
+
+
+def _food(value: float) -> Fraction:
+    """A sample's food_used (whole or half) as an exact fraction."""
+    return Fraction(value).limit_denominator(2)
+
+
+def supply_reading(exposed: Exposed) -> dict[int, SupplyReading]:
+    """Per player, the samples and the visible supply changes (Leo's algorithm notes §1): a unit adds its supply
+    at its start (a building or warp-in at its init, a trained unit at born - build time, a returning Drone at
+    its birth, a unit of the game's start at 0); a Zerg structure takes its Drone (-1 at its init); a morph adds
+    the difference (a cocoon counts as what it becomes); a death subtracts, except a Drone that died with no
+    killer (it became a structure, already counted)."""
+    supplies = {k: _seconds(v) or Fraction(0) for k, v in exposed.tables.supplies}  # "-" (none) reads as 0
+    for cocoon, result in UNIT_MORPH_COCOONS.items():
+        supplies.setdefault(cocoon, supplies.get(result, Fraction(0)))
+    times = {k: _seconds(v) for k, v in exposed.tables.build_times}
+    for rich, base in RICH_GEYSERS.items():  # a rich geyser's building reads its base type's rows
+        supplies.setdefault(rich, supplies.get(base, Fraction(0)))
+        times.setdefault(rich, times.get(base))
+    zerg = {p.pid for p in exposed.game.players if p.race.startswith("Z")}
+    returning = _returning_drones(exposed.units)
+    changes_of: dict[int, list[TypeChange]] = defaultdict(list)
+    for c in exposed.type_changes:
+        changes_of[c.unit_id].append(c)
+    deltas: dict[int, list[tuple[Fraction, Fraction]]] = defaultdict(list)
+    for u in exposed.units:
+        if u.hallucinated:
+            continue
+        own = supplies.get(u.first_type, Fraction(0))
+        if 0 in (u.born_loop, u.init_loop):
+            start = Fraction(0)
+        elif u.init_loop is not None:
+            start = Fraction(u.init_loop)
+        elif u.unit_id in returning or u.born_loop is None:
+            start = Fraction(u.born_loop or 0)
+        else:
+            seconds = times.get(u.first_type)
+            start = Fraction(u.born_loop) - (loops_of(seconds) if seconds is not None and own else 0)
+        if own:
+            deltas[u.owner].append((start, own))
+        if (
+            u.owner in zerg
+            and u.init_loop not in (None, 0)
+            and not own
+            and not NO_DRONE.fullmatch(u.first_type)
+            and u.first_type not in ("Larva", "Egg")
+            and not u.first_type.endswith("Cocoon")
+        ):
+            deltas[u.owner].append((Fraction(u.init_loop), Fraction(-1)))
+        current = own
+        for c in changes_of.get(u.unit_id, []):
+            after = supplies.get(c.after, current)
+            if after != current:
+                deltas[u.owner].append((Fraction(c.loop), after - current))
+                current = after
+        if u.died_loop is not None and current:
+            if u.owner in zerg and u.first_type == "Drone" and u.killer is None:
+                continue
+            deltas[u.owner].append((Fraction(u.died_loop), -current))
+    samples: dict[int, list[tuple[int, Fraction]]] = defaultdict(list)
     for s in exposed.stats:
-        samples[s.player].append((s.loop, int(s.food_used)))
+        samples[s.player].append((s.loop, _food(s.food_used)))
     out = {}
-    for player, rows in samples.items():
-        rows.sort()
-        out[player] = ([loop for loop, _ in rows], [food for _, food in rows])
+    for p in exposed.game.players:
+        rows = sorted(samples.get(p.pid, []))
+        out[p.pid] = SupplyReading(
+            tuple(loop for loop, _ in rows),
+            tuple(food for _, food in rows),
+            tuple(sorted(deltas.get(p.pid, []), key=lambda d: d[0])),
+        )
     return out
 
 
@@ -258,14 +393,15 @@ def _chrono_possible(members: list[_Start], chronos: list[tuple[int, str]]) -> b
     return False
 
 
-def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
-    """Every player's numbered steps up to the horizon, and the building morphs of the whole game."""
+def build_order(exposed: Exposed, fixes: Iterable[str], horizon_second: int = HORIZON_SECOND) -> BuildOrder:
+    """Every player's numbered steps up to the horizon (6:00, D48a; the build check reads further for a guide that
+    reaches past 5:30, Stefan's D1a), and the building morphs of the whole game."""
     names = frozenset(fixes)
     estimated: list[str] = []
     starts = _starts(exposed, estimated)
-    horizon = min(HORIZON_SECOND, second_of(Fraction(exposed.game.loops)))
+    horizon = min(horizon_second, second_of(Fraction(exposed.game.loops)))
     morphs = tuple(sorted((s.morph for s in starts if s.morph is not None), key=lambda m: (m.start, m.unit_id)))
-    supply = _supply_at(exposed)
+    supply = supply_reading(exposed)
     chronos = _chrono_marks(exposed)
 
     def key(s: _Start) -> tuple[Fraction, int, str]:
@@ -284,10 +420,10 @@ def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
             else:
                 open_lines[group] = [s]
                 lines.append(open_lines[group])
-        loops, food = supply.get(player, ([], []))
+        reading = supply.get(player, SupplyReading((), (), ()))
         for number, members in enumerate(lines, start=1):
             first = members[0]
-            at = bisect.bisect_right(loops, first.start)  # samples at or before the start
+            at_supply, supply_range = reading.at(first.start)
             steps.append(
                 BuildStep(
                     player=player,
@@ -296,11 +432,13 @@ def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
                     item=first.item,
                     name=first.name or clean_name(first.item, True, names),
                     start=first.start,
-                    supply=food[at - 1] if at else START_SUPPLY,
+                    supply=at_supply,
+                    supply_range=supply_range,
                     unit_ids=tuple(m.unit_id for m in members if m.unit_id is not None),
                     done_loop=first.done if first.kind == "upgrade" else None,
                     cancelled=first.cancelled,
                     chrono_possible=_chrono_possible(members, chronos.get(player, [])),
+                    estimated=first.estimated,
                 )
             )
     return BuildOrder(tuple(steps), morphs, horizon, tuple(estimated))

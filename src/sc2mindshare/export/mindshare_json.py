@@ -15,7 +15,7 @@ from typing import Any
 
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.models import Graph
-from sc2mindshare.export.view import GAME_PROPERTIES, STEP_PROPERTIES, link_view, node_view
+from sc2mindshare.export.view import CHECK_PROPERTIES, GAME_PROPERTIES, STEP_PROPERTIES, link_view, node_view
 from sc2mindshare.layout.profile import Profile
 from sc2mindshare.layout.sweep import LayoutResult
 
@@ -87,7 +87,7 @@ def build_document(
             )
     check_same_properties(nodes)
     document = {
-        "visuals": cfg["visuals"],
+        "visuals": visuals_for(cfg["visuals"], graph.export_fixes),
         "detail": detail_for(cfg["detail"], graph.export_fixes),
         "dataTypes": data_types_for(cfg["dataTypes"], graph.export_fixes),
         "nodes": nodes,
@@ -124,6 +124,24 @@ def _first_difference(id1: str, keys1: tuple[str, ...], id2: str, keys2: tuple[s
     return f"property {keys1[i]!r} is at position {i + 1} in {id1!r} but at position {keys2.index(keys1[i]) + 1} in {id2!r}"
 
 
+#: CR-035 BC1 (Vera's F3; Iris's qa-fix.md, P0-6 §7): the card and the missing entry as boxes, the card in the
+#: workbook's Comparison blue, the missing entry with a grey border (AC5 "grey"); after the workbook's entries.
+CHECK_VISUALS: tuple[dict[str, str], ...] = (
+    {"nodeType": "Build Comparison", "shape": "rectangle", "borderColor": "#000066"},
+    {"nodeType": "Missing Step", "shape": "rectangle", "borderColor": "#8c8c8c"},
+)
+
+
+def visuals_for(visuals: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
+    """The workbook's ``visuals``; with ``BC1`` (CR-035) the build check's two node types follow, as boxes (without an
+    entry Mindshare draws a small default circle). The workbook-faithful document keeps the workbook's list."""
+    if "BC1" not in export_fixes:
+        return visuals
+    if clash := sorted({v["nodeType"] for v in CHECK_VISUALS} & {v.get("nodeType") for v in visuals}):
+        raise ValueError(f"the added node types {clash} already have visuals")
+    return [*visuals, *(dict(v) for v in CHECK_VISUALS)]
+
+
 def detail_for(detail: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
     """The workbook's ``detail``; with the export fix ``B12`` (CR-023, D16a) only properties that exist: Stats'
     "eco Min" (the layer emits no economy spending) is dropped and Initiated's "subtype" is its "type"; with ``G2``
@@ -147,13 +165,19 @@ GAME_DETAIL = ("date played (UTC)", "length")
 
 def data_types_for(data_types: dict[str, str], export_fixes: frozenset[str]) -> dict[str, str]:
     """The workbook's ``dataTypes``; with the export fix ``G2`` (CR-067) the Game properties' types follow, and with
-    ``BO1`` (CR-034) the step properties' types, after the workbook's entries, none of which changes (their names are
-    new: ``view.GAME_PROPERTIES``, ``view.STEP_PROPERTIES``)."""
+    ``BO1`` (CR-034) the step properties' types, and with ``BC1`` (CR-035) the build check's, after the workbook's
+    entries, none of which changes (their names are new: ``view.GAME_PROPERTIES``, ``view.STEP_PROPERTIES``,
+    ``view.CHECK_PROPERTIES``)."""
     added: dict[str, str] = {}
     if "G2" in export_fixes:
         added |= {name: data_type for name, _field, data_type in GAME_PROPERTIES}
     if "BO1" in export_fixes:
         added |= dict(STEP_PROPERTIES)
+    if "BC1" in export_fixes:  # CR-035: one global type per name, so a name two kinds share has one type
+        for properties in CHECK_PROPERTIES.values():
+            for name, data_type in properties:
+                if added.setdefault(name, data_type) != data_type:
+                    raise ValueError(f"BC1: {name!r} is declared as {added[name]!r} and as {data_type!r}")
     if clash := sorted(set(added) & set(data_types)):
         raise ValueError(f"the added properties {clash} are already declared in dataTypes")
     return data_types | added

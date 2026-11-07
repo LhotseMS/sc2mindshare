@@ -125,8 +125,9 @@ def research_row(upgrade: str, research_times: Iterable[tuple[str, str]]) -> tup
 _BASE_ROW = re.compile(r"(Main base|Natural|\d+(st|nd|rd|th) base)")
 
 
-def _build_times(table: Any, known: set[str]) -> tuple[tuple[tuple[str, str], ...], tuple[str, ...]]:
-    """unitsInfo.csv's build times keyed by unit type id (see ``TimeTables``), and the rows that name none."""
+def _build_times(table: Any, known: set[str], column: str = "Build Time") -> tuple[tuple[tuple[str, str], ...], tuple[str, ...]]:
+    """unitsInfo.csv's build times (or another ``column``, CR-035: the Supply) keyed by unit type id (see
+    ``TimeTables``), and the rows that name none."""
     keyed: list[tuple[str, str]] = []
     unmapped: list[str] = []
     for name, row in table.items():
@@ -139,7 +140,7 @@ def _build_times(table: Any, known: set[str]) -> tuple[tuple[tuple[str, str], ..
         elif any(key == unit_id for key, _ in keyed):
             raise ValueError(f"unitsInfo.csv has two rows for unit type {unit_id!r} (the second is {name!r})")
         else:
-            keyed.append((unit_id, str(row["Build Time"])))
+            keyed.append((unit_id, str(row[column])))
     return tuple(keyed), tuple(unmapped)
 
 
@@ -242,12 +243,15 @@ def expose(replay: Any, ctx: Any, support_root: Path) -> Exposed:
         and e.player is not None
         and vars(e).get("ability_name") == CHRONO_BOOST  # upstream's own value, not a fork property
     )
-    build_times, unmapped = _build_times(ctx.simple.unitsInfoDict, {str(u.name) for u in replay.datapack.units.values()})
+    known = {str(u.name) for u in replay.datapack.units.values()}
+    build_times, unmapped = _build_times(ctx.simple.unitsInfoDict, known)
+    supplies, _ = _build_times(ctx.simple.unitsInfoDict, known, "Supply")
     tables = TimeTables(
         build_times=build_times,
         research_times=tuple((name, str(row["Upgrade Time"])) for name, row in ctx.simple.upgradesInfoDict.items()),
         units_source_sha256=_sha256(support_root / "unitsInfo.csv"),
         upgrades_source_sha256=_sha256(support_root / "upgradesInfo.csv"),
         unmapped_units=unmapped,
+        supplies=supplies,
     )
     return Exposed(game, units, changes, upgrades, stats, supply, chronos, tables)
