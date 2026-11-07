@@ -39,6 +39,11 @@ class Profile:
     rail_height: float = 0.6  # §13.4, P0-6 §4.5
     rail_clearance: float = 0.5  # §13.4, beyond the widest unit row
     unit_spread_floor: float = 5.8  # §13.4: M_side >= 5.8
+    # CR-073: the timeline lanes beyond the rail band (Leo's Algorithm notes, points 3 and 4; D1a)
+    lane_clearance: float = 0.3  # between the rail band and the events lane, and between two lanes
+    event_step: float = 1.05  # one stacked card to the next (card height 1.0 + 0.05)
+    bar_height: float = 1.0  # D1a: the supply-block height
+    bar_gap: float = 0.05  # between two stacked bars
     grid_origin: tuple[float, float] = (15.0, 0.0)  # P:688
     grid_step: float = 3.0  # P:749-767
     grid_columns: int = 4
@@ -64,3 +69,11 @@ OCCUPYING = frozenset({"Battle", "Stats", "Chat", "Ability"}) | BAU
 CARDS = {"Coaching": "anchor_coaching", "Build Comparison": "anchor_build_comparison"}
 GHOSTS = ("Missing Step", "Checkpoint")  # in this order when they tie (§13.3 rule 3)
 RAIL = frozenset({"Scouting Gap"})
+#: CR-073: the timeline lanes of each side, from the units outward: the events lane (cards at their start),
+#: then the inject-delay and spare-energy lanes (bars over their period). Never occupying, like the rail.
+TIMELINE_LANES = {"Scouting": "events", "Harrasment": "events", "Inject Delay": "inject", "Energy Excess": "energy"}
+LANE_ORDER = ("events", "inject", "energy")
+BAR_LANES = frozenset({"inject", "energy"})
+#: CR-073 D2b: a harassment card sits on the attacker's side, the opponent of the node's player (the player
+#: who lost the workers); the node's player itself is unchanged.
+OPPONENT_SIDE = frozenset({"Harrasment"})
