@@ -8,7 +8,9 @@ events row the inject lane starts at 21.3 (bar centre 21.8) and the energy lane 
 
 import pytest
 
-from sc2mindshare.domain.models import FIELDS
+from sc2mindshare.domain.models import FIELDS, Node
+from sc2mindshare.domain.time import GameTime
+from sc2mindshare.layout.items import item
 from sc2mindshare.layout.profile import CARDS, GHOSTS, RAIL, TIMELINE_LANES, Profile
 from sc2mindshare.layout.sweep import SWEPT, LayoutItem, layout
 
@@ -259,3 +261,28 @@ def test_y_and_sizes_are_rounded_to_6_decimals():
     ys = [r.positions[f"Scouting-{k}"][1] for k in range(3)]
     assert ys == [-20.5, -21.55, -22.6]  # exact, not approx
     assert r.positions["Inject Delay-1"][1] == -23.9 and r.sizes["Inject Delay-1"] == [2.5, 1.0]
+
+
+# --- the domain's open end reaches the layout (Morgan's finding 2) ---------------------------------------------
+
+
+def _bar(kind, end):
+    start = GameTime.from_seconds(30)
+    values = (("time", start), ("player", "A"), ("end time", end), ("duration", "5"))
+    return Node(kind, f"{kind}-1", kind, "", (), values, start)
+
+
+def test_the_domains_open_end_reaches_the_layout():
+    open_ = item(_bar("Energy Excess", None), 0)
+    assert (open_.open_end, open_.t_end) == (True, None)
+    closed = item(_bar("Energy Excess", GameTime.from_seconds(45)), 0)
+    assert (closed.open_end, closed.t_end) == (False, 45)
+    inject = item(_bar("Inject Delay", GameTime.from_seconds(45)), 0)
+    assert (inject.open_end, inject.t_end) == (False, 45)
+
+
+def test_an_inject_delay_cannot_be_open_ended():
+    # only an Energy Excess may have no end (OPEN_ENDED); an Inject Delay without one is refused by the domain,
+    # so the layout never sees it, and its item is never open-ended
+    with pytest.raises(ValueError, match="must be a GameTime"):
+        _bar("Inject Delay", None)
