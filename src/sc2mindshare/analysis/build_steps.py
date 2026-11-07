@@ -42,6 +42,7 @@ from fractions import Fraction
 from sc2mindshare.analysis.exports.node import X_LD  # the layer's line break in descriptions
 from sc2mindshare.analysis.exposed import research_row
 from sc2mindshare.domain.exposed import Exposed, TypeChange, UnitLife
+from sc2mindshare.domain.guides import Later
 from sc2mindshare.domain.models import Graph, Node
 from sc2mindshare.domain.steps import (
     BuildingMorph,
@@ -144,6 +145,7 @@ class _Start:
     cancelled: bool = False
     morph: BuildingMorph | None = None
     name: str | None = None  # the display name, when not the item's own (an upgrade's display-name row)
+    estimated: bool = False  # no build or research time: the start is estimated at its end (D60a; CR-035 AC3)
 
 
 def _cancelled(u: UnitLife) -> bool:
@@ -178,6 +180,7 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
     returning = _returning_drones(exposed.units)
 
     def derived(player: int, item: str, end: int, seconds: Fraction | None) -> Fraction:
+        """The start (end - the time); with no time, the end itself, noted in ``estimated``."""
         if seconds is None:
             estimated.append(
                 f"CR-034: no build or research time for {item} (player {player}): its start is estimated at loop {end}"
@@ -198,7 +201,8 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
         elif u.born_loop is not None:
             kind = "worker" if u.first_type in WORKERS else "unit"
             start = derived(u.owner, u.first_type, u.born_loop, times.get(u.first_type))
-            out.append(_Start(u.owner, kind, u.first_type, start, u.unit_id, u.born_loop))
+            guessed = times.get(u.first_type) is None
+            out.append(_Start(u.owner, kind, u.first_type, start, u.unit_id, u.born_loop, estimated=guessed))
     changes = defaultdict(list)
     for c in exposed.type_changes:
         changes[c.unit_id].append(c)
@@ -210,7 +214,8 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
             if (c.before, c.after) in BUILDING_MORPHS:
                 start = derived(u.owner, c.after, c.loop, times.get(c.after))
                 morph = BuildingMorph(u.owner, unit_id, c.before, c.after, c.loop, start)
-                out.append(_Start(u.owner, "building morph", c.after, start, unit_id, None, morph=morph))
+                guessed = times.get(c.after) is None
+                out.append(_Start(u.owner, "building morph", c.after, start, unit_id, None, morph=morph, estimated=guessed))
             elif c.after in UNIT_MORPH_COCOONS and i + 1 < len(unit_changes):
                 if unit_changes[i + 1].after == UNIT_MORPH_COCOONS[c.after]:
                     out.append(_Start(u.owner, "unit morph", unit_changes[i + 1].after, Fraction(c.loop), unit_id, None))
@@ -220,8 +225,17 @@ def _starts(exposed: Exposed, estimated: list[str]) -> list[_Start]:
         row = research_row(up.upgrade, exposed.tables.research_times)  # D63a: by upgrade id
         start = derived(up.player, up.upgrade, up.loop, _seconds(row[1]) if row else None)
         name = row[0] if row and " " in row[0] else None  # a row named for display names the step
-        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop, name=name))
+        guessed = not row or _seconds(row[1]) is None
+        out.append(_Start(up.player, "upgrade", up.upgrade, start, None, up.loop, name=name, estimated=guessed))
     return out
+
+
+def every_start(exposed: Exposed, player: int) -> tuple[Later, ...]:
+    """CR-035 (call 8): every start of the player in the whole game, not only to 6:00, less the cancelled ones (they
+    never count as made, call 6), in start order: where a guide step not made in time was made later."""
+    made = [s for s in _starts(exposed, []) if s.player == player and not s.cancelled]
+    made.sort(key=lambda s: (s.start, s.unit_id if s.unit_id is not None else 0, s.item))
+    return tuple(Later(s.item, s.start, s.kind, s.unit_id, s.done if s.kind == "upgrade" else None) for s in made)
 
 
 @dataclass(frozen=True)
@@ -405,6 +419,7 @@ def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
                     done_loop=first.done if first.kind == "upgrade" else None,
                     cancelled=first.cancelled,
                     chrono_possible=_chrono_possible(members, chronos.get(player, [])),
+                    estimated=first.estimated,
                 )
             )
     return BuildOrder(tuple(steps), morphs, horizon, tuple(estimated))

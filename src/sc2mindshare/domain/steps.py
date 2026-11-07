@@ -52,6 +52,7 @@ class BuildStep:
     cancelled: bool = False
     chrono_possible: bool = False
     supply_range: tuple[int, int] | None = None  # (low, high) where the reading is only known within a range (≈)
+    estimated: bool = False  # the start is estimated (no build or research time, D60a): never graded (CR-035 AC3)
 
     def __post_init__(self) -> None:
         if self.kind not in KINDS:
