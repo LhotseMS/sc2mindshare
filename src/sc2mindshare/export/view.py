@@ -37,6 +37,9 @@ STEP_PROPERTIES: tuple[tuple[str, str], ...] = (
     ("at supply", "int"),
     ("started at", "time[h:m:s]"),
     ("steps", "string"),
+    # CR-035 (D2a, D6a; Kevin's call 13): the range the step's supply lies in, "17–19", where the reading cannot pin it
+    # to one value; "" on every other node (Mindshare refuses a blank int, D62b)
+    ("supply range", "string"),
 )
 STEP_KINDS = frozenset({"Building", "Upgrade", "Units"})
 
@@ -166,7 +169,8 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
 
 def step_properties(node: Node) -> dict[str, Any]:
     """CR-034 BO1: the first step's number, supply and start, and the list of the node's steps when it holds two
-    or more (AC-2); a node holding no step carries 0, 0, 00:00:00 and "" (D62b: Mindshare needs every node of a
+    or more (AC-2), and (CR-035) the first step's supply range; a node holding no step carries 0, 0, 00:00:00, ""
+    and "" (D62b: Mindshare needs every node of a
     type to have the same keys, and refuses null or a blank int)."""
     first = node.steps[0] if node.steps else None
     return {
@@ -175,7 +179,13 @@ def step_properties(node: Node) -> dict[str, Any]:
         # a pre-game start shows 00:00:00, as every pre-game time property does (P3d); its sign is in the line
         "started at": game_hms(max(0, first.second) if first else 0),
         "steps": " / ".join(s.line() for s in node.steps) if len(node.steps) > 1 else "",
+        "supply range": supply_range_text(first.supply_range) if first else "",
     }
+
+
+def supply_range_text(supply_range: tuple[int, int] | None) -> str:
+    """CR-035 (call 13): a ≈ step's range, low–high with an en dash ("17–19"); "" when the supply is exact."""
+    return "" if supply_range is None else f"{supply_range[0]}\u2013{supply_range[1]}"
 
 
 def link_view(link: Link) -> dict[str, Any]:

@@ -118,7 +118,14 @@ VIEW_NET_DELTA = [
     {"select": {"type": "Player"}, "fields": ["description"], "count": 2},
     {
         "select": {"type": "Upgrade"},
-        "fields": ["properties.step #", "properties.at supply", "properties.started at", "properties.steps"],
+        # CR-035 BO2: the exact supply (in "at supply") and the supply range, on the same 8 Upgrades
+        "fields": [
+            "properties.step #",
+            "properties.at supply",
+            "properties.started at",
+            "properties.steps",
+            "properties.supply range",
+        ],
         "count": 8,
     },
 ]
@@ -152,6 +159,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
+        "BO2-alcyone-view",
     )  # fmt: skip
 
 
@@ -276,8 +284,8 @@ def test_buildings_net_of_the_ledger():
     morphs = [n for n in new if int(n["ID"].split("-")[1]) > 113]
     assert [n["ID"] for n in morphs] == [f"Building-{i}" for i in range(114, 131)]
     assert sorted({n["properties"]["type"] for n in morphs}) == ["Greater Spire", "Hive", "Lair", "Warp Gate"]
-    steps = ("step #", "at supply", "started at", "steps")
-    assert all(list(n["properties"])[-4:] == list(steps) for n in new)
+    steps = ("step #", "at supply", "started at", "steps", "supply range")  # CR-035 BO2: + supply range
+    assert all(list(n["properties"])[-5:] == list(steps) for n in new)
     new = [{**n, "properties": {k: v for k, v in n["properties"].items() if k not in steps}} for n in new if n not in morphs]
     added = {
         n["ID"]: (n["name"], n["properties"]["player"])
@@ -327,6 +335,7 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
             "at supply": 0,
             "started at": "00:00:00",
             "steps": "",
+            "supply range": "",  # BO2 (CR-035)
         }
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
     workbook = load_config()["dataTypes"]
@@ -561,6 +570,7 @@ def test_g2_each_game_property_is_declared_with_its_data_type(document):
     workbook = load_config()["dataTypes"]
     data_types = document["current"]["dataTypes"]
     steps = [("step #", "int"), ("at supply", "int"), ("started at", "time[h:m:s]"), ("steps", "string")]
+    steps.append(("supply range", "string"))  # CR-035 BO2
     game = [(name, kind) for name, kind, _value in GAME_PROPERTIES]
     assert list(data_types.items()) == list(workbook.items()) + game + steps
     assert document["faithful"]["dataTypes"] == workbook

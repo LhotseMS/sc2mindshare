@@ -46,11 +46,12 @@ class BuildStep:
     item: str  # the internal id at the start (U3, never the final type): "SpawningPool", "WarpGateResearch"
     name: str  # the display name, as the nodes are named: "Spawning Pool"
     start: Fraction  # the first member's start, in loops
-    supply: int  # floor(food_used) at the last sample at or before the start (Leo's reading)
+    supply: int  # R: the supply at the start, Leo's exact reading (CR-035, D2a)
     unit_ids: tuple[int, ...]  # the members, in (start, unit id) order; an upgrade has none
     done_loop: int | None = None  # an upgrade's completion loop (the key of its Upgrade node)
     cancelled: bool = False
     chrono_possible: bool = False
+    supply_range: tuple[int, int] | None = None  # (low, high) where the reading is only known within a range (≈)
 
     def __post_init__(self) -> None:
         if self.kind not in KINDS:

@@ -281,9 +281,10 @@ def test_spines_current_goldens_have_no_whole_number_with_a_decimal_part(name):
         ("BC0-spine-snap-linear", "G-SNAP-current-linear.json"),
     ],
 )
-def test_the_bc0_entries_pass_the_delta_check_on_their_new_file(entry, name):
-    """The H1 pattern for a new file: base = the file, no change; check_golden_delta passes it as written."""
-    entries = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))
-    path = regen.golden_dir("spine") / name
-    assert entries[entry]["golden"] == [f"spine/{name}"]
-    assert regen.check_golden_delta.check_delta(entries[entry], path, path) == []
+def test_the_bc0_entries_change_nothing(entry, name):
+    """The H1 pattern for a new file: the entry names one spine golden and lists no change, addition or removal (its
+    base, the new file's sha256, was checked by C4 when the file was written; later entries change the file)."""
+    e = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))[entry]
+    assert e["golden"] == [f"spine/{name}"]
+    assert (e["changes"], e["added"], e["removed"], e.get("renumber")) == ([], [], [], None)
+    assert len(e["base_sha256"]) == 64

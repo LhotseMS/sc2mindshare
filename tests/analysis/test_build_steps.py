@@ -6,6 +6,9 @@ reference is QA's re-based Alcyone oracle (P0-5 §1, ``ALCYONE_LIL`` and ``ALCYO
 it: lilTiGGer 50 steps, blacksquall 68, with the Chrono column). Synthetic games go through the real path
 (``build_order`` on an ``Exposed``), with unit ids in sc2reader's index/recycle form. A start is in loops;
 the second shown is ``floor(start / 22.4)``: 6:00 is loop 8064, 6:01 is loop 8086.4.
+
+CR-035 (D2a) re-based the supplies to the supply at each step's start (QA's re-based oracle §1.1-1.2,
+``.scratch/qa/cr-035/alcyone-expected-rebased.md``); the reading itself is tested in test_supply_reading.py.
 """
 
 import contextlib
@@ -60,47 +63,47 @@ Z, P = 1, 2  # the synthetic games' players: Zerg, Protoss
 
 ALCYONE_LIL = """
 1. 12 0:18 Spawning Pool
-2. 12 0:21 Drone
+2. 11 0:21 Drone
 3. 12 0:26 Drone
 4. 13 0:29 Drone
 5. 14 0:39 Overlord
 6. 14 1:06 Zergling ×6
 7. 19 1:20 Hatchery
-8. 19 1:24 Zergling ×2
+8. 18 1:24 Zergling ×2
 9. 17 1:28 Zergling ×2
-10. 17 1:32 Queen
+10. 18 1:32 Queen
 11. 20 1:40 Drone
 12. 21 1:51 Drone
 13. 20 2:25 Drone ×2
-14. 20 2:27 Overlord
+14. 22 2:27 Overlord
 15. 22 2:31 Queen
-16. 22 2:32 Queen
-17. 22 2:35 Drone
+16. 24 2:32 Queen
+17. 26 2:35 Drone
 18. 26 2:46 Drone ×2
 19. 28 2:54 Drone ×2
 20. 29 3:05 Extractor
-21. 29 3:08 Drone ×3
+21. 28 3:08 Drone ×3
 22. 31 3:17 Overlord
 23. 31 3:19 Overlord
 24. 31 3:21 Drone
-25. 31 3:23 Drone
-26. 31 3:24 Hatchery
+25. 32 3:23 Drone
+26. 33 3:24 Hatchery
 27. 32 3:30 Drone ×2
 28. 34 3:51 Queen ×2
-29. 38 3:56 Drone ×4
+29. 37 3:56 Drone ×4
 30. 41 4:05 Drone ×4
 31. 45 4:17 Overlord
 32. 45 4:25 Overlord
 33. 45 4:27 Drone ×2
 34. 47 4:38 Extractor
 35. 46 4:47 Roach Warren
-36. 46 4:51 Drone ×8
+36. 45 4:51 Drone ×8
 37. 53 4:54 Extractor
 38. 52 5:01 Queen
-39. 52 5:06 Lair
+39. 54 5:06 Lair
 40. 54 5:10 Drone ×2
-41. 54 5:11 Spore Crawler
-42. 54 5:12 Spore Crawler
+41. 56 5:11 Spore Crawler
+42. 55 5:12 Spore Crawler
 43. 54 5:12 Drone
 44. 55 5:20 Overlord ×2
 45. 55 5:27 Roach ×5
@@ -114,70 +117,70 @@ ALCYONE_BLACK = """
 1. 12 0:00 Probe
 2. 13 0:12 Probe · chrono possible
 3. 14 0:20 Probe · chrono possible
-4. 14 0:20 Pylon
+4. 15 0:20 Pylon
 5. 15 0:38 Probe · chrono possible
-6. 15 0:41 Gateway
+6. 16 0:41 Gateway
 7. 16 0:50 Probe
-8. 16 0:52 Assimilator
+8. 17 0:52 Assimilator
 9. 17 1:02 Probe
 10. 18 1:14 Probe
 11. 19 1:26 Probe
-12. 19 1:30 Zealot · chrono possible
+12. 20 1:30 Zealot · chrono possible
 13. 20 1:34 Nexus
 14. 20 1:37 Cybernetics Core
 15. 22 1:47 Pylon
 16. 22 1:58 Zealot · chrono possible
 17. 22 2:04 Gateway
-18. 24 2:20 Probe
+18. 21 2:20 Probe
 19. 22 2:28 Adept
 20. 24 2:31 Shield Battery
 21. 24 2:32 Probe
 22. 25 2:44 Probe
 23. 26 2:52 Probe
-24. 26 2:52 Adept
-25. 26 2:56 Probe
+24. 27 2:52 Adept
+25. 29 2:56 Probe
 26. 30 3:04 Probe
 27. 31 3:07 Assimilator
 28. 31 3:08 Probe
-29. 31 3:11 Adept
+29. 32 3:11 Adept
 30. 34 3:16 Probe
 31. 35 3:20 Probe
 32. 36 3:28 Probe
-33. 36 3:33 Probe
+33. 37 3:33 Probe
 34. 38 3:40 Probe
 35. 39 3:45 Probe
 36. 40 3:52 Probe
 37. 41 3:57 Probe
 38. 42 4:04 Probe
-39. 42 4:09 Probe
+39. 43 4:09 Probe
 40. 44 4:10 Stargate
 41. 44 4:12 Stalker
-42. 44 4:13 Pylon
+42. 46 4:13 Pylon
 43. 46 4:17 Pylon
 44. 46 4:17 Assimilator
 45. 46 4:19 Assimilator
 46. 46 4:31 Probe ×2 · chrono possible
-47. 46 4:31 Stalker
+47. 47 4:31 Stalker
 48. 50 4:39 Probe ×2 · chrono possible
 49. 52 4:46 Void Ray · chrono possible
-50. 52 4:47 Pylon
-51. 52 4:47 Probe ×2 · chrono possible
-52. 52 4:50 Pylon
+50. 56 4:47 Pylon
+51. 56 4:47 Probe ×2 · chrono possible
+52. 58 4:50 Pylon
 53. 54 4:57 Probe ×2 · chrono possible
 54. 60 5:09 Probe ×2
-55. 60 5:11 Pylon
+55. 62 5:11 Pylon
 56. 62 5:15 Pylon
 57. 62 5:21 Void Ray · chrono possible
 58. 62 5:21 Pylon
 59. 62 5:21 Probe ×2
-60. 62 5:25 Pylon
+60. 64 5:25 Pylon
 61. 64 5:31 Pylon
 62. 64 5:33 Probe ×2
-63. 64 5:34 Warp Gate Research · chrono possible
+63. 66 5:34 Warp Gate Research · chrono possible
 64. 70 5:40 Nexus
 65. 70 5:45 Adept ×2
-66. 70 5:46 Probe
-67. 70 5:47 Probe
+66. 74 5:46 Probe
+67. 75 5:47 Probe
 68. 76 5:55 Shield Battery
 """.strip().splitlines()
 
@@ -237,7 +240,8 @@ def test_s03_two_items_at_the_same_loop_are_ordered_by_unit_id():
 
 def test_s03_close_starts_of_different_items_are_ordered_by_loop_not_by_kind():
     first = [life(uid(900), Z, "SpawningPool", init=2000), drone(100, 2006.2)]  # the building's id is higher
-    assert lines(game(first)) == ["1. 12 1:29 Spawning Pool", "2. 12 1:29 Drone"]
+    # CR-035 (D2a): the Pool's Drone is counted off from its init, so the Drone after it is at 11
+    assert lines(game(first)) == ["1. 12 1:29 Spawning Pool", "2. 11 1:29 Drone"]
     later = [life(uid(900), Z, "SpawningPool", init=2010), drone(100, 2006.2)]
     assert lines(game(later)) == ["1. 12 1:29 Drone", "2. 12 1:29 Spawning Pool"]
 
@@ -356,7 +360,9 @@ def test_s12_a_unit_morph_starts_when_its_cocoon_does(first, cocoon, result, nam
     units = [life(uid(1), Z, first, init=1000)]  # its own start at init, so the morph is the second line
     changes = [TypeChange(uid(1), 3000, first, cocoon), TypeChange(uid(1), 3300, cocoon, result)]
     morph = build_order(game(units, changes), FIXES).of(Z)[1]
-    assert (morph.kind, morph.item, morph.line()) == ("unit morph", result, f"2. 12 2:13 {name}")  # loop 3000: 2:13
+    # loop 3000: 2:13; CR-035 (D2a): the synthetic unit has an init and no supply in the tables, so it reads as a Zerg
+    # structure and takes its Drone (-1)
+    assert (morph.kind, morph.item, morph.line()) == ("unit morph", result, f"2. 11 2:13 {name}")
 
 
 def test_s12_a_cancelled_unit_morph_is_no_step_and_the_roach_keeps_its_own():
@@ -457,7 +463,8 @@ def test_s14_nothing_nobody_builds_is_a_step_and_the_numbering_is_the_same_witho
         UpgradeDone(Z, "GameHeartActive", 1400, 1),
     ]
     with_noise = lines(game([*real, *noise], upgrades=cosmetic))
-    assert with_noise == lines(game(real)) == ["1. 12 0:44 Drone", "2. 12 0:49 Spawning Pool", "3. 12 0:53 Drone"]
+    # CR-035 (D2a): the Pool's Drone is counted off, so the last Drone is at 11
+    assert with_noise == lines(game(real)) == ["1. 12 0:44 Drone", "2. 12 0:49 Spawning Pool", "3. 11 0:53 Drone"]
 
 
 # --- S16 · AC-8: cancels and the Drone that comes back -------------------------------------------------------------
@@ -482,7 +489,7 @@ def test_s16_the_return_window_and_the_unit_index_decide():
 def test_s16_a_finished_building_its_owner_destroys_later_is_not_cancelled():
     destroyed = life(uid(230), Z, "Extractor", init=1699, done=2170, died=3000, killer=Z, killing=uid(230))
     back = life(uid(230, 2), Z, "Drone", born=3010)
-    assert lines(game([destroyed, back])) == ["1. 12 1:15 Extractor", "2. 12 2:02 Drone"]
+    assert lines(game([destroyed, back])) == ["1. 12 1:15 Extractor", "2. 11 2:02 Drone"]  # CR-035: the Extractor's Drone
 
 
 def test_s16_a_death_before_done_with_no_killer_or_another_killer_is_not_a_cancel():
@@ -600,7 +607,7 @@ def _steps(node):
     return {k: props[k] for k in ZEROS if k in props}
 
 
-ZEROS = {"step #": 0, "at supply": 0, "started at": "00:00:00", "steps": ""}
+ZEROS = {"step #": 0, "at supply": 0, "started at": "00:00:00", "steps": "", "supply range": ""}  # CR-035: + supply range
 
 
 def test_s08_s09_each_step_sits_on_the_node_of_its_first_unit_and_every_node_of_the_kinds_carries_the_four_keys():
@@ -622,11 +629,25 @@ def test_s08_s09_each_step_sits_on_the_node_of_its_first_unit_and_every_node_of_
         "at supply": 12,
         "started at": "00:00:44",
         "steps": "1. 12 0:44 Drone ×2 / 2. 12 0:49 Drone",
+        "supply range": "",
     }
-    assert _steps(nodes["Units-2"]) == {"step #": 4, "at supply": 12, "started at": "00:00:58", "steps": ""}
+    # CR-035 (D2a): the Pool (0:53) takes its Drone, so the steps after it are at 11
+    assert _steps(nodes["Units-2"]) == {"step #": 4, "at supply": 11, "started at": "00:00:58", "steps": "", "supply range": ""}
     assert _steps(nodes["Units-3"]) == ZEROS
-    assert _steps(nodes["Building-1"]) == {"step #": 3, "at supply": 12, "started at": "00:00:53", "steps": ""}
-    assert _steps(nodes["Upgrade-1"]) == {"step #": 5, "at supply": 12, "started at": "00:02:22", "steps": ""}
+    assert _steps(nodes["Building-1"]) == {
+        "step #": 3,
+        "at supply": 12,
+        "started at": "00:00:53",
+        "steps": "",
+        "supply range": "",
+    }
+    assert _steps(nodes["Upgrade-1"]) == {
+        "step #": 5,
+        "at supply": 11,
+        "started at": "00:02:22",
+        "steps": "",
+        "supply range": "",
+    }
     assert _steps(nodes["Battle-1"]) == {} and _steps(nodes["Player-1"]) == {}
     listed = [
         "Red Zerg build 9 units and killed 0 units.",
@@ -635,8 +656,8 @@ def test_s08_s09_each_step_sits_on_the_node_of_its_first_unit_and_every_node_of_
         "1. 12 0:44 Drone ×2",
         "2. 12 0:49 Drone",
         "3. 12 0:53 Spawning Pool",
-        "4. 12 0:58 Drone",
-        "5. 12 2:22 Zergling Movement Speed",
+        "4. 11 0:58 Drone",
+        "5. 11 2:22 Zergling Movement Speed",
     ]
     assert nodes["Player-1"].description.split("X_LD") == listed
     assert node_view(nodes["Player-1"], EXPORT)["description"].split("\n")[:3] == [
@@ -681,7 +702,7 @@ def test_s11_a_building_morph_is_a_building_node_at_its_start_its_id_continuing_
         306,
     )  # 8145 - 1276.8
     assert (gate.name, gate.value("player"), gate.value("type"), gate.start.seconds) == ("Warp Gate", "Pat", "Warp Gate", 434)
-    assert _steps(lair) == {"step #": 1, "at supply": 12, "started at": "00:05:06", "steps": ""}
+    assert _steps(lair) == {"step #": 1, "at supply": 12, "started at": "00:05:06", "steps": "", "supply range": ""}
     assert _steps(gate) == ZEROS  # after 6:00: a node, no step (D53b)
     assert _steps(nodes[0]) == ZEROS  # the Hatchery keeps its node, holds no step
 
@@ -724,11 +745,12 @@ def test_s19_only_the_player_with_steps_gets_a_list():
 
 def test_the_step_properties_are_declared_after_the_workbooks_data_types():
     data_types = build_document(Graph((), (), export_fixes=frozenset({"BO1"})), config=load_config())["dataTypes"]
-    assert list(data_types.items())[-4:] == [
+    assert list(data_types.items())[-5:] == [
         ("step #", "int"),
         ("at supply", "int"),
         ("started at", "time[h:m:s]"),
         ("steps", "string"),
+        ("supply range", "string"),  # CR-035 (call 13)
     ]
     assert set(ZEROS).isdisjoint(build_document(Graph((), ()), config=load_config())["dataTypes"])
 
@@ -780,7 +802,7 @@ def test_s01_alcyone_counts_and_anchors(alcyone):
 def test_s07_a_drone_later_used_for_a_building_is_still_its_own_step(alcyone):
     _, order, _, _ = alcyone
     lil = {s.number: s for s in order.of(1)}
-    assert lil[2].unit_ids == (64225281,) and lil[2].line() == "2. 12 0:21 Drone"
+    assert lil[2].unit_ids == (64225281,) and lil[2].line() == "2. 11 0:21 Drone"  # CR-035: the Pool's Drone is off
     # Vera's S07 example: 84148225 is in step 30's four (83886081 shares its start loop and has the lower id)
     assert sorted(lil[30].unit_ids) == [83886081, 84148225, 84410369, 84672513] and lil[30].line() == "30. 41 4:05 Drone ×4"
 
@@ -790,7 +812,7 @@ def test_s10_names_are_the_type_at_the_time(alcyone):
     names = {s.name for s in order.steps}
     assert not names & {"Overseer", "Ravager", "Ravager Cocoon", "Hive", "Main base", "Warp Gate", "Adept Phase Shift"}
     assert next(s for s in order.of(2) if s.kind == "building" and s.item != "Pylon").name == "Gateway"
-    assert order.of(1)[13].line() == "14. 20 2:27 Overlord"  # the legacy "Overseer"
+    assert order.of(1)[13].line() == "14. 22 2:27 Overlord"  # the legacy "Overseer"; CR-035 oracle §1.1: 22
 
 
 def test_s11_alcyone_has_17_building_morph_nodes_and_only_the_lair_is_a_step(alcyone):
@@ -813,16 +835,23 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
         return {k: node["properties"][k] for k in ZEROS}
 
     pool = next(n for n in doc["nodes"] if n["name"] == "Spawning Pool")
-    assert steps_of(pool) == {"step #": 1, "at supply": 12, "started at": "00:00:18", "steps": ""}
+    assert steps_of(pool) == {"step #": 1, "at supply": 12, "started at": "00:00:18", "steps": "", "supply range": ""}
     assert pool["properties"]["time"] == "00:00:19"  # the existing value is unchanged
     lair = next(n for n in doc["nodes"] if n["name"] == "Lair")
-    assert steps_of(lair) == {"step #": 39, "at supply": 52, "started at": "00:05:06", "steps": ""}
+    # CR-035 (D2a, D6a; QA's re-based oracle §1.1, §1.2): the supply at the start, and the range on ≈ steps
+    assert steps_of(lair) == {"step #": 39, "at supply": 54, "started at": "00:05:06", "steps": "", "supply range": ""}
     natural = next(n for n in doc["nodes"] if n["name"] == "Natural")
-    assert steps_of(natural) == {"step #": 7, "at supply": 19, "started at": "00:01:20", "steps": ""}
+    assert steps_of(natural) == {"step #": 7, "at supply": 19, "started at": "00:01:20", "steps": "", "supply range": "17–19"}
     gateway = next(n for n in doc["nodes"] if n["name"] == "Gateway" and n["properties"]["player"] == "blacksquall")
-    assert steps_of(gateway) == {"step #": 6, "at supply": 15, "started at": "00:00:41", "steps": ""}
+    assert steps_of(gateway) == {"step #": 6, "at supply": 16, "started at": "00:00:41", "steps": "", "supply range": ""}
     wgr = next(n for n in doc["nodes"] if n["name"] == "Warp Gate Research")
-    assert steps_of(wgr) == {"step #": 63, "at supply": 64, "started at": "00:05:34", "steps": ""}  # one step: no list
+    assert steps_of(wgr) == {  # one step: no list
+        "step #": 63,
+        "at supply": 66,
+        "started at": "00:05:34",
+        "steps": "",
+        "supply range": "66–70",
+    }
     lings = next(n for n in doc["nodes"] if n["type"] == "Units" and n["properties"]["step #"] == 6)
     assert (lings["name"], lings["properties"]["time"], lings["properties"]["at supply"]) == ("6 Zerglings", "00:01:20", 14)
     assert steps_of(by_id["Building-1"]) == ZEROS  # lilTiGGer's "Main base"
@@ -834,6 +863,7 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
             ("at supply", "int"),
             ("started at", "str"),
             ("steps", "str"),
+            ("supply range", "str"),
         ]
     for n in doc["nodes"]:
         if n["type"] not in ("Building", "Upgrade", "Units"):
@@ -996,7 +1026,7 @@ def test_d63a_spine_upgrades_start_at_done_minus_their_research_time():
     order = build_order(result.exposed, result.fixes)
     upgrades = [s.line() for s in order.of(1) if s.kind == "upgrade"]
     assert upgrades == [
-        "24. 31 3:23 Zergling Movement Speed",
+        "24. 35 3:23 Zergling Movement Speed",  # CR-035 oracle §1.3: 35
         "38. 57 4:38 Pneumatized Carapace",
         "60. 65 5:59 Glial Reconstitution",
     ]

@@ -163,7 +163,8 @@
   "step #": "int",
   "at supply": "int",
   "started at": "time[h:m:s]",
-  "steps": "string"
+  "steps": "string",
+  "supply range": "string"
  },
  "nodes": [
   {
@@ -190,7 +191,7 @@
   },
   {
    "name": "Piliskner",
-   "description": "Red Zerg build 409 units and killed 119 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Drone\n2. 13 0:12 Overlord\n3. 13 0:17 Drone\n4. 14 0:30 Drone ×2\n5. 16 0:41 Spawning Pool\n6. 15 0:47 Drone\n7. 16 1:10 Hatchery\n8. 15 1:15 Extractor · cancelled\n9. 16 1:28 Zergling ×6\n10. 19 1:37 Queen\n11. 21 1:44 Overlord\n12. 21 1:52 Drone\n13. 22 2:04 Drone\n14. 23 2:11 Extractor\n15. 23 2:13 Hatchery\n16. 21 2:32 Drone ×3\n17. 24 2:37 Queen\n18. 26 2:48 Drone ×2\n19. 26 2:48 Drone\n20. 29 3:02 Drone ×2\n21. 29 3:02 Drone\n22. 31 3:23 Drone ×3\n23. 31 3:23 Drone\n24. 31 3:23 Zergling Movement Speed\n25. 31 3:26 Drone\n26. 36 3:27 Drone ×3\n27. 39 3:43 Overlord\n28. 39 3:43 Drone ×2\n29. 41 3:52 Overlord\n30. 41 3:54 Lair\n31. 41 4:06 Zergling ×2\n32. 41 4:06 Zergling ×14\n33. 41 4:08 Overlord\n34. 49 4:20 Overlord\n35. 49 4:28 Drone\n36. 49 4:29 Drone ×7\n37. 57 4:37 Overlord\n38. 57 4:38 Pneumatized Carapace\n39. 57 4:39 Drone ×2\n40. 57 4:42 Extractor\n41. 57 4:42 Spore Crawler\n42. 57 4:43 Spore Crawler\n43. 57 4:45 Spore Crawler\n44. 54 5:00 Drone ×3\n45. 54 5:00 Drone\n46. 54 5:04 Extractor\n47. 54 5:05 Extractor\n48. 56 5:07 Roach Warren\n49. 56 5:08 Evolution Chamber\n50. 56 5:08 Drone ×3\n51. 56 5:09 Baneling Nest\n52. 56 5:19 Drone ×3\n53. 59 5:25 Spine Crawler\n54. 59 5:26 Spine Crawler\n55. 57 5:41 Drone\n56. 58 5:44 Overlord ×3\n57. 58 5:55 Roach\n58. 58 5:55 Roach ×3\n59. 58 5:56 Overlord\n60. 65 5:59 Glial Reconstitution",
+   "description": "Red Zerg build 409 units and killed 119 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Drone\n2. 13 0:12 Overlord\n3. 13 0:17 Drone\n4. 14 0:30 Drone ×2\n5. 16 0:41 Spawning Pool\n6. 15 0:47 Drone\n7. 16 1:10 Hatchery\n8. 15 1:15 Extractor · cancelled\n9. 16 1:28 Zergling ×6\n10. 19 1:37 Queen\n11. 21 1:44 Overlord\n12. 21 1:52 Drone\n13. 22 2:04 Drone\n14. 23 2:11 Extractor\n15. 22 2:13 Hatchery\n16. 21 2:32 Drone ×3\n17. 24 2:37 Queen\n18. 26 2:48 Drone ×2\n19. 28 2:48 Drone\n20. 29 3:02 Drone ×2\n21. 31 3:02 Drone\n22. 31 3:23 Drone ×3\n23. 34 3:23 Drone\n24. 35 3:23 Zergling Movement Speed\n25. 35 3:26 Drone\n26. 36 3:27 Drone ×3\n27. 39 3:43 Overlord\n28. 39 3:43 Drone ×2\n29. 41 3:52 Overlord\n30. 41 3:54 Lair\n31. 41 4:06 Zergling ×2\n32. 42 4:06 Zergling ×14\n33. 49 4:08 Overlord\n34. 49 4:20 Overlord\n35. 49 4:28 Drone\n36. 50 4:29 Drone ×7\n37. 57 4:37 Overlord\n38. 57 4:38 Pneumatized Carapace\n39. 57 4:39 Drone ×2\n40. 59 4:42 Extractor\n41. 58 4:42 Spore Crawler\n42. 57 4:43 Spore Crawler\n43. 56 4:45 Spore Crawler\n44. 54 5:00 Drone ×3\n45. 57 5:00 Drone\n46. 58 5:04 Extractor\n47. 57 5:05 Extractor\n48. 56 5:07 Roach Warren\n49. 55 5:08 Evolution Chamber\n50. 54 5:08 Drone ×3\n51. 57 5:09 Baneling Nest\n52. 56 5:19 Drone ×3\n53. 59 5:25 Spine Crawler\n54. 58 5:26 Spine Crawler\n55. 57 5:41 Drone\n56. 58 5:44 Overlord ×3\n57. 57 5:55 Roach\n58. 59 5:55 Roach ×3\n59. 65 5:56 Overlord\n60. 65 5:59 Glial Reconstitution",
    "type": "Player",
    "ID": "Player-1",
    "size": [
@@ -201,7 +202,7 @@
   },
   {
    "name": "serega",
-   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 15 0:38 Gateway\n7. 16 0:44 Probe · chrono possible\n8. 16 0:46 Assimilator\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core\n13. 18 1:29 Gateway\n14. 20 1:36 Pylon\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator\n17. 21 1:54 Zealot · chrono possible\n18. 21 1:59 Probe\n19. 24 2:16 Nexus\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 34 3:36 Probe · chrono possible\n31. 34 3:36 Immortal\n32. 38 3:46 Sentry\n33. 38 3:46 Probe · chrono possible\n34. 38 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 42 3:59 Probe\n37. 44 4:02 Pylon\n38. 44 4:10 Probe · chrono possible\n39. 44 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 46 4:21 Immortal\n42. 46 4:23 Probe · chrono possible\n43. 52 4:26 Pylon\n44. 54 4:32 Sentry\n45. 54 4:32 Gateway\n46. 54 4:38 Gateway\n47. 54 4:44 Probe ×2\n48. 54 4:45 Pylon\n49. 58 4:47 Sentry\n50. 58 4:49 Warp Prism · chrono possible\n51. 58 4:55 Warp Gate\n52. 58 4:56 Probe\n53. 57 5:00 Probe\n54. 57 5:02 Gateway\n55. 57 5:04 Gateway\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway\n58. 60 5:17 Sentry\n59. 60 5:18 Warp Gate\n60. 62 5:22 Gateway\n61. 62 5:24 Pylon\n62. 62 5:24 Sentry\n63. 62 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 70 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 70 5:59 Adept",
+   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 16 0:38 Gateway\n7. 16 0:44 Probe · chrono possible\n8. 17 0:46 Assimilator\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core\n13. 18 1:29 Gateway\n14. 20 1:36 Pylon\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator\n17. 21 1:54 Zealot · chrono possible\n18. 23 1:59 Probe\n19. 24 2:16 Nexus\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 35 3:36 Probe · chrono possible\n31. 36 3:36 Immortal\n32. 38 3:46 Sentry\n33. 40 3:46 Probe · chrono possible\n34. 41 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 43 3:59 Probe\n37. 44 4:02 Pylon\n38. 44 4:10 Probe · chrono possible\n39. 45 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 47 4:21 Immortal\n42. 51 4:23 Probe · chrono possible\n43. 52 4:26 Pylon\n44. 54 4:32 Sentry\n45. 56 4:32 Gateway\n46. 56 4:38 Gateway\n47. 54 4:44 Probe ×2\n48. 56 4:45 Pylon\n49. 58 4:47 Sentry\n50. 60 4:49 Warp Prism · chrono possible\n51. 56 4:55 Warp Gate\n52. 56 4:56 Probe\n53. 57 5:00 Probe\n54. 58 5:02 Gateway\n55. 58 5:04 Gateway\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway\n58. 60 5:17 Sentry\n59. 62 5:18 Warp Gate\n60. 62 5:22 Gateway\n61. 62 5:24 Pylon\n62. 62 5:24 Sentry\n63. 64 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 72 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 74 5:59 Adept",
    "type": "Player",
    "ID": "Player-2",
    "size": [
@@ -577,9 +578,10 @@
     "time": "00:03:23",
     "player": "Piliskner",
     "step #": 24,
-    "at supply": 31,
+    "at supply": 35,
     "started at": "00:03:23",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -597,7 +599,8 @@
     "step #": 24,
     "at supply": 28,
     "started at": "00:03:07",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -616,7 +619,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -635,7 +639,8 @@
     "step #": 5,
     "at supply": 16,
     "started at": "00:00:41",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -654,7 +659,8 @@
     "step #": 7,
     "at supply": 16,
     "started at": "00:01:10",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -673,7 +679,8 @@
     "step #": 14,
     "at supply": 23,
     "started at": "00:02:11",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -690,9 +697,10 @@
     "player": "Piliskner",
     "type": "Hatchery",
     "step #": 15,
-    "at supply": 23,
+    "at supply": 22,
     "started at": "00:02:13",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -709,9 +717,10 @@
     "player": "Piliskner",
     "type": "Extractor",
     "step #": 40,
-    "at supply": 57,
+    "at supply": 59,
     "started at": "00:04:42",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -728,9 +737,10 @@
     "player": "Piliskner",
     "type": "Spore Crawler",
     "step #": 41,
-    "at supply": 57,
+    "at supply": 58,
     "started at": "00:04:42",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -749,7 +759,8 @@
     "step #": 42,
     "at supply": 57,
     "started at": "00:04:43",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -766,9 +777,10 @@
     "player": "Piliskner",
     "type": "Spore Crawler",
     "step #": 43,
-    "at supply": 57,
+    "at supply": 56,
     "started at": "00:04:45",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -785,9 +797,10 @@
     "player": "Piliskner",
     "type": "Extractor",
     "step #": 46,
-    "at supply": 54,
+    "at supply": 58,
     "started at": "00:05:04",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -804,9 +817,10 @@
     "player": "Piliskner",
     "type": "Extractor",
     "step #": 47,
-    "at supply": 54,
+    "at supply": 57,
     "started at": "00:05:05",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -823,9 +837,10 @@
     "player": "Piliskner",
     "type": "Evolution Chamber",
     "step #": 49,
-    "at supply": 56,
+    "at supply": 55,
     "started at": "00:05:08",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -844,7 +859,8 @@
     "step #": 48,
     "at supply": 56,
     "started at": "00:05:07",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -861,9 +877,10 @@
     "player": "Piliskner",
     "type": "Baneling Nest",
     "step #": 51,
-    "at supply": 56,
+    "at supply": 57,
     "started at": "00:05:09",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -882,7 +899,8 @@
     "step #": 53,
     "at supply": 59,
     "started at": "00:05:25",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -899,9 +917,10 @@
     "player": "Piliskner",
     "type": "Spine Crawler",
     "step #": 54,
-    "at supply": 59,
+    "at supply": 58,
     "started at": "00:05:26",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -920,7 +939,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -939,7 +959,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -958,7 +979,8 @@
     "step #": 3,
     "at supply": 14,
     "started at": "00:00:20",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -975,9 +997,10 @@
     "player": "serega",
     "type": "Assimilator",
     "step #": 8,
-    "at supply": 16,
+    "at supply": 17,
     "started at": "00:00:46",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -994,9 +1017,10 @@
     "player": "serega",
     "type": "Gateway",
     "step #": 6,
-    "at supply": 15,
+    "at supply": 16,
     "started at": "00:00:38",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1015,7 +1039,8 @@
     "step #": 14,
     "at supply": 20,
     "started at": "00:01:36",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1034,7 +1059,8 @@
     "step #": 12,
     "at supply": 18,
     "started at": "00:01:26",
-    "steps": ""
+    "steps": "",
+    "supply range": "18–20"
    }
   },
   {
@@ -1053,7 +1079,8 @@
     "step #": 16,
     "at supply": 21,
     "started at": "00:01:42",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1072,7 +1099,8 @@
     "step #": 13,
     "at supply": 18,
     "started at": "00:01:29",
-    "steps": ""
+    "steps": "",
+    "supply range": "18–20"
    }
   },
   {
@@ -1091,7 +1119,8 @@
     "step #": 19,
     "at supply": 24,
     "started at": "00:02:16",
-    "steps": ""
+    "steps": "",
+    "supply range": "22–24"
    }
   },
   {
@@ -1110,7 +1139,8 @@
     "step #": 21,
     "at supply": 26,
     "started at": "00:02:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1129,7 +1159,8 @@
     "step #": 37,
     "at supply": 44,
     "started at": "00:04:02",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1148,7 +1179,8 @@
     "step #": 43,
     "at supply": 52,
     "started at": "00:04:26",
-    "steps": ""
+    "steps": "",
+    "supply range": "52–54"
    }
   },
   {
@@ -1165,9 +1197,10 @@
     "player": "serega",
     "type": "Pylon",
     "step #": 48,
-    "at supply": 54,
+    "at supply": 56,
     "started at": "00:04:45",
-    "steps": ""
+    "steps": "",
+    "supply range": "56–58"
    }
   },
   {
@@ -1184,9 +1217,10 @@
     "player": "serega",
     "type": "Gateway",
     "step #": 45,
-    "at supply": 54,
+    "at supply": 56,
     "started at": "00:04:32",
-    "steps": ""
+    "steps": "",
+    "supply range": "54–56"
    }
   },
   {
@@ -1203,9 +1237,10 @@
     "player": "serega",
     "type": "Gateway",
     "step #": 46,
-    "at supply": 54,
+    "at supply": 56,
     "started at": "00:04:38",
-    "steps": ""
+    "steps": "",
+    "supply range": "54–56"
    }
   },
   {
@@ -1224,7 +1259,8 @@
     "step #": 61,
     "at supply": 62,
     "started at": "00:05:24",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1241,9 +1277,10 @@
     "player": "serega",
     "type": "Gateway",
     "step #": 54,
-    "at supply": 57,
+    "at supply": 58,
     "started at": "00:05:02",
-    "steps": ""
+    "steps": "",
+    "supply range": "58–60"
    }
   },
   {
@@ -1260,9 +1297,10 @@
     "player": "serega",
     "type": "Gateway",
     "step #": 55,
-    "at supply": 57,
+    "at supply": 58,
     "started at": "00:05:04",
-    "steps": ""
+    "steps": "",
+    "supply range": "58–60"
    }
   },
   {
@@ -1281,7 +1319,8 @@
     "step #": 57,
     "at supply": 60,
     "started at": "00:05:11",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1300,7 +1339,8 @@
     "step #": 65,
     "at supply": 68,
     "started at": "00:05:41",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1319,7 +1359,8 @@
     "step #": 67,
     "at supply": 70,
     "started at": "00:05:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1338,7 +1379,8 @@
     "step #": 68,
     "at supply": 70,
     "started at": "00:05:46",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1357,7 +1399,8 @@
     "step #": 60,
     "at supply": 62,
     "started at": "00:05:22",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1376,7 +1419,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1395,7 +1439,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1414,7 +1459,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1433,7 +1479,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1452,7 +1499,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1471,7 +1519,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1490,7 +1539,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1509,7 +1559,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1528,7 +1579,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1547,7 +1599,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1566,7 +1619,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1585,7 +1639,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1604,7 +1659,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1623,7 +1679,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1642,7 +1699,8 @@
     "step #": 30,
     "at supply": 41,
     "started at": "00:03:54",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1659,9 +1717,10 @@
     "player": "serega",
     "type": "Warp Gate",
     "step #": 51,
-    "at supply": 58,
+    "at supply": 56,
     "started at": "00:04:55",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1680,7 +1739,8 @@
     "step #": 56,
     "at supply": 60,
     "started at": "00:05:10",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1697,9 +1757,10 @@
     "player": "serega",
     "type": "Warp Gate",
     "step #": 59,
-    "at supply": 60,
+    "at supply": 62,
     "started at": "00:05:18",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1716,9 +1777,10 @@
     "player": "serega",
     "type": "Warp Gate",
     "step #": 63,
-    "at supply": 62,
+    "at supply": 64,
     "started at": "00:05:24",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1735,9 +1797,10 @@
     "player": "serega",
     "type": "Warp Gate",
     "step #": 70,
-    "at supply": 70,
+    "at supply": 72,
     "started at": "00:05:49",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1756,7 +1819,8 @@
     "step #": 71,
     "at supply": 72,
     "started at": "00:05:51",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1775,7 +1839,8 @@
     "step #": 72,
     "at supply": 70,
     "started at": "00:05:57",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1794,7 +1859,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1858,7 +1924,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1877,7 +1944,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1896,7 +1964,8 @@
     "step #": 1,
     "at supply": 12,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1915,7 +1984,8 @@
     "step #": 3,
     "at supply": 13,
     "started at": "00:00:17",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1934,7 +2004,8 @@
     "step #": 2,
     "at supply": 13,
     "started at": "00:00:12",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1953,7 +2024,8 @@
     "step #": 4,
     "at supply": 14,
     "started at": "00:00:30",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1972,7 +2044,8 @@
     "step #": 6,
     "at supply": 15,
     "started at": "00:00:47",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -1991,7 +2064,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2010,7 +2084,8 @@
     "step #": 9,
     "at supply": 16,
     "started at": "00:01:28",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2029,7 +2104,8 @@
     "step #": 11,
     "at supply": 21,
     "started at": "00:01:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2048,7 +2124,8 @@
     "step #": 12,
     "at supply": 21,
     "started at": "00:01:52",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2067,7 +2144,8 @@
     "step #": 10,
     "at supply": 19,
     "started at": "00:01:37",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2086,7 +2164,8 @@
     "step #": 13,
     "at supply": 22,
     "started at": "00:02:04",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2105,7 +2184,8 @@
     "step #": 16,
     "at supply": 21,
     "started at": "00:02:32",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2124,7 +2204,8 @@
     "step #": 18,
     "at supply": 26,
     "started at": "00:02:48",
-    "steps": "18. 26 2:48 Drone ×2 / 19. 26 2:48 Drone"
+    "steps": "18. 26 2:48 Drone ×2 / 19. 28 2:48 Drone",
+    "supply range": ""
    }
   },
   {
@@ -2143,7 +2224,8 @@
     "step #": 17,
     "at supply": 24,
     "started at": "00:02:37",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2162,7 +2244,8 @@
     "step #": 20,
     "at supply": 29,
     "started at": "00:03:02",
-    "steps": "20. 29 3:02 Drone ×2 / 21. 29 3:02 Drone"
+    "steps": "20. 29 3:02 Drone ×2 / 21. 31 3:02 Drone",
+    "supply range": ""
    }
   },
   {
@@ -2181,7 +2264,8 @@
     "step #": 22,
     "at supply": 31,
     "started at": "00:03:23",
-    "steps": "22. 31 3:23 Drone ×3 / 23. 31 3:23 Drone / 25. 31 3:26 Drone / 26. 36 3:27 Drone ×3"
+    "steps": "22. 31 3:23 Drone ×3 / 23. 34 3:23 Drone / 25. 35 3:26 Drone / 26. 36 3:27 Drone ×3",
+    "supply range": ""
    }
   },
   {
@@ -2200,7 +2284,8 @@
     "step #": 28,
     "at supply": 39,
     "started at": "00:03:43",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2219,7 +2304,8 @@
     "step #": 27,
     "at supply": 39,
     "started at": "00:03:43",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2238,7 +2324,8 @@
     "step #": 29,
     "at supply": 41,
     "started at": "00:03:52",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2257,7 +2344,8 @@
     "step #": 31,
     "at supply": 41,
     "started at": "00:04:06",
-    "steps": "31. 41 4:06 Zergling ×2 / 32. 41 4:06 Zergling ×14"
+    "steps": "31. 41 4:06 Zergling ×2 / 32. 42 4:06 Zergling ×14",
+    "supply range": ""
    }
   },
   {
@@ -2274,9 +2362,10 @@
     "total at time": 5,
     "supply": 0,
     "step #": 33,
-    "at supply": 41,
+    "at supply": 49,
     "started at": "00:04:08",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2295,7 +2384,8 @@
     "step #": 34,
     "at supply": 49,
     "started at": "00:04:20",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2314,7 +2404,8 @@
     "step #": 35,
     "at supply": 49,
     "started at": "00:04:28",
-    "steps": "35. 49 4:28 Drone / 36. 49 4:29 Drone ×7"
+    "steps": "35. 49 4:28 Drone / 36. 50 4:29 Drone ×7",
+    "supply range": ""
    }
   },
   {
@@ -2333,7 +2424,8 @@
     "step #": 39,
     "at supply": 57,
     "started at": "00:04:39",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2352,7 +2444,8 @@
     "step #": 37,
     "at supply": 57,
     "started at": "00:04:37",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2371,7 +2464,8 @@
     "step #": 44,
     "at supply": 54,
     "started at": "00:05:00",
-    "steps": "44. 54 5:00 Drone ×3 / 45. 54 5:00 Drone"
+    "steps": "44. 54 5:00 Drone ×3 / 45. 57 5:00 Drone",
+    "supply range": ""
    }
   },
   {
@@ -2388,9 +2482,10 @@
     "total at time": 46,
     "supply": 3,
     "step #": 50,
-    "at supply": 56,
+    "at supply": 54,
     "started at": "00:05:08",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2409,7 +2504,8 @@
     "step #": 52,
     "at supply": 56,
     "started at": "00:05:19",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2428,7 +2524,8 @@
     "step #": 55,
     "at supply": 57,
     "started at": "00:05:41",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2447,7 +2544,8 @@
     "step #": 56,
     "at supply": 58,
     "started at": "00:05:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2464,9 +2562,10 @@
     "total at time": 4,
     "supply": 8,
     "step #": 57,
-    "at supply": 58,
+    "at supply": 57,
     "started at": "00:05:55",
-    "steps": "57. 58 5:55 Roach / 58. 58 5:55 Roach ×3"
+    "steps": "57. 57 5:55 Roach / 58. 59 5:55 Roach ×3",
+    "supply range": ""
    }
   },
   {
@@ -2483,9 +2582,10 @@
     "total at time": 10,
     "supply": 0,
     "step #": 59,
-    "at supply": 58,
+    "at supply": 65,
     "started at": "00:05:56",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2504,7 +2604,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2523,7 +2624,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2542,7 +2644,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2561,7 +2664,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2580,7 +2684,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2599,7 +2704,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2618,7 +2724,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2637,7 +2744,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2656,7 +2764,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2675,7 +2784,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2694,7 +2804,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2713,7 +2824,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2732,7 +2844,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2751,7 +2864,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2770,7 +2884,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2789,7 +2904,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2808,7 +2924,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2827,7 +2944,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2846,7 +2964,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2865,7 +2984,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2884,7 +3004,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2903,7 +3024,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2922,7 +3044,8 @@
     "step #": 1,
     "at supply": 12,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2941,7 +3064,8 @@
     "step #": 2,
     "at supply": 13,
     "started at": "00:00:13",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2960,7 +3084,8 @@
     "step #": 4,
     "at supply": 14,
     "started at": "00:00:25",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2979,7 +3104,8 @@
     "step #": 5,
     "at supply": 15,
     "started at": "00:00:36",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -2998,7 +3124,8 @@
     "step #": 7,
     "at supply": 16,
     "started at": "00:00:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3017,7 +3144,8 @@
     "step #": 9,
     "at supply": 17,
     "started at": "00:00:54",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3036,7 +3164,8 @@
     "step #": 10,
     "at supply": 18,
     "started at": "00:01:06",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3055,7 +3184,8 @@
     "step #": 11,
     "at supply": 19,
     "started at": "00:01:22",
-    "steps": ""
+    "steps": "",
+    "supply range": "17–19"
    }
   },
   {
@@ -3074,7 +3204,8 @@
     "step #": 15,
     "at supply": 20,
     "started at": "00:01:39",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3091,9 +3222,10 @@
     "total at time": 20,
     "supply": 1,
     "step #": 18,
-    "at supply": 21,
+    "at supply": 23,
     "started at": "00:01:59",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3112,7 +3244,8 @@
     "step #": 17,
     "at supply": 21,
     "started at": "00:01:54",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3131,7 +3264,8 @@
     "step #": 20,
     "at supply": 24,
     "started at": "00:02:19",
-    "steps": ""
+    "steps": "",
+    "supply range": "22–24"
    }
   },
   {
@@ -3150,7 +3284,8 @@
     "step #": 22,
     "at supply": 26,
     "started at": "00:02:44",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3169,7 +3304,8 @@
     "step #": 23,
     "at supply": 27,
     "started at": "00:02:56",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3188,7 +3324,8 @@
     "step #": 25,
     "at supply": 28,
     "started at": "00:03:09",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3207,7 +3344,8 @@
     "step #": 26,
     "at supply": 29,
     "started at": "00:03:17",
-    "steps": ""
+    "steps": "",
+    "supply range": "28–29"
    }
   },
   {
@@ -3226,7 +3364,8 @@
     "step #": 27,
     "at supply": 29,
     "started at": "00:03:25",
-    "steps": "27. 29 3:25 Probe · chrono possible / 28. 30 3:28 Probe · chrono possible"
+    "steps": "27. 29 3:25 Probe · chrono possible / 28. 30 3:28 Probe · chrono possible",
+    "supply range": ""
    }
   },
   {
@@ -3245,7 +3384,8 @@
     "step #": 29,
     "at supply": 34,
     "started at": "00:03:35",
-    "steps": "29. 34 3:35 Probe · chrono possible / 30. 34 3:36 Probe · chrono possible"
+    "steps": "29. 34 3:35 Probe · chrono possible / 30. 35 3:36 Probe · chrono possible",
+    "supply range": "32–34"
    }
   },
   {
@@ -3262,9 +3402,10 @@
     "total at time": 30,
     "supply": 2,
     "step #": 33,
-    "at supply": 38,
+    "at supply": 40,
     "started at": "00:03:46",
-    "steps": "33. 38 3:46 Probe · chrono possible / 34. 38 3:47 Probe · chrono possible"
+    "steps": "33. 40 3:46 Probe · chrono possible / 34. 41 3:47 Probe · chrono possible",
+    "supply range": ""
    }
   },
   {
@@ -3283,7 +3424,8 @@
     "step #": 32,
     "at supply": 38,
     "started at": "00:03:46",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3302,7 +3444,8 @@
     "step #": 35,
     "at supply": 42,
     "started at": "00:03:58",
-    "steps": "35. 42 3:58 Probe / 36. 42 3:59 Probe"
+    "steps": "35. 42 3:58 Probe / 36. 43 3:59 Probe",
+    "supply range": ""
    }
   },
   {
@@ -3319,9 +3462,10 @@
     "total at time": 1,
     "supply": 4,
     "step #": 31,
-    "at supply": 34,
+    "at supply": 36,
     "started at": "00:03:36",
-    "steps": ""
+    "steps": "",
+    "supply range": "34–36"
    }
   },
   {
@@ -3340,7 +3484,8 @@
     "step #": 38,
     "at supply": 44,
     "started at": "00:04:10",
-    "steps": "38. 44 4:10 Probe · chrono possible / 39. 44 4:11 Probe · chrono possible"
+    "steps": "38. 44 4:10 Probe · chrono possible / 39. 45 4:11 Probe · chrono possible",
+    "supply range": ""
    }
   },
   {
@@ -3359,7 +3504,8 @@
     "step #": 40,
     "at supply": 46,
     "started at": "00:04:18",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3376,9 +3522,10 @@
     "total at time": 36,
     "supply": 1,
     "step #": 42,
-    "at supply": 46,
+    "at supply": 51,
     "started at": "00:04:23",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3397,7 +3544,8 @@
     "step #": 44,
     "at supply": 54,
     "started at": "00:04:32",
-    "steps": ""
+    "steps": "",
+    "supply range": "52–54"
    }
   },
   {
@@ -3416,7 +3564,8 @@
     "step #": 47,
     "at supply": 54,
     "started at": "00:04:44",
-    "steps": ""
+    "steps": "",
+    "supply range": "54–56"
    }
   },
   {
@@ -3433,9 +3582,10 @@
     "total at time": 2,
     "supply": 4,
     "step #": 41,
-    "at supply": 46,
+    "at supply": 47,
     "started at": "00:04:21",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3452,9 +3602,10 @@
     "total at time": 40,
     "supply": 2,
     "step #": 52,
-    "at supply": 58,
+    "at supply": 56,
     "started at": "00:04:56",
-    "steps": "52. 58 4:56 Probe / 53. 57 5:00 Probe"
+    "steps": "52. 56 4:56 Probe / 53. 57 5:00 Probe",
+    "supply range": ""
    }
   },
   {
@@ -3473,7 +3624,8 @@
     "step #": 49,
     "at supply": 58,
     "started at": "00:04:47",
-    "steps": ""
+    "steps": "",
+    "supply range": "54–58"
    }
   },
   {
@@ -3492,7 +3644,8 @@
     "step #": 58,
     "at supply": 60,
     "started at": "00:05:17",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3509,9 +3662,10 @@
     "total at time": 1,
     "supply": 2,
     "step #": 50,
-    "at supply": 58,
+    "at supply": 60,
     "started at": "00:04:49",
-    "steps": ""
+    "steps": "",
+    "supply range": "56–60"
    }
   },
   {
@@ -3530,7 +3684,8 @@
     "step #": 62,
     "at supply": 62,
     "started at": "00:05:24",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3549,7 +3704,8 @@
     "step #": 64,
     "at supply": 64,
     "started at": "00:05:33",
-    "steps": "64. 64 5:33 Zealot ×2 / 66. 68 5:42 Zealot"
+    "steps": "64. 64 5:33 Zealot ×2 / 66. 68 5:42 Zealot",
+    "supply range": ""
    }
   },
   {
@@ -3568,7 +3724,8 @@
     "step #": 69,
     "at supply": 70,
     "started at": "00:05:48",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3587,7 +3744,8 @@
     "step #": 73,
     "at supply": 70,
     "started at": "00:05:58",
-    "steps": "73. 70 5:58 Adept ×2 / 74. 70 5:59 Adept"
+    "steps": "73. 70 5:58 Adept ×2 / 74. 74 5:59 Adept",
+    "supply range": ""
    }
   },
   {
@@ -3606,7 +3764,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3625,7 +3784,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3644,7 +3804,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3663,7 +3824,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3682,7 +3844,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3701,7 +3864,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3720,7 +3884,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3739,7 +3904,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3758,7 +3924,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3777,7 +3944,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3796,7 +3964,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3815,7 +3984,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3834,7 +4004,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3853,7 +4024,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3872,7 +4044,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3891,7 +4064,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3910,7 +4084,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3929,7 +4104,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3948,7 +4124,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3967,7 +4144,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -3986,7 +4164,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4005,7 +4184,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4024,7 +4204,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4043,7 +4224,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4062,7 +4244,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4081,7 +4264,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4100,7 +4284,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4119,7 +4304,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
@@ -4138,7 +4324,8 @@
     "step #": 0,
     "at supply": 0,
     "started at": "00:00:00",
-    "steps": ""
+    "steps": "",
+    "supply range": ""
    }
   },
   {
