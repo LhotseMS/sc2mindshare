@@ -64,6 +64,16 @@
    "nodeType": "Supply Block",
    "shape": "rectangle",
    "borderColor": "#eb2f96"
+  },
+  {
+   "nodeType": "Build Comparison",
+   "shape": "rectangle",
+   "borderColor": "#000066"
+  },
+  {
+   "nodeType": "Missing Step",
+   "shape": "rectangle",
+   "borderColor": "#8c8c8c"
   }
  ],
  "detail": [
@@ -218,7 +228,7 @@
   },
   {
    "name": "lilTiGGer",
-   "description": "Red Zerg build 938 units and killed 358 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:18 Spawning Pool · on supply\n2. 11 0:21 Drone\n3. 12 0:26 Drone\n4. 13 0:29 Drone\n5. 14 0:39 Overlord · on supply\n6. 14 1:06 Zergling ×6 · done\n7. 19 1:20 Hatchery · on supply ≈\n8. 18 1:24 Zergling ×2 · extra\n9. 17 1:28 Zergling ×2 · extra\n10. 18 1:32 Queen · on supply ≈\n11. 20 1:40 Drone\n12. 21 1:51 Drone\n13. 20 2:25 Drone ×2\n14. 22 2:27 Overlord · 3 supply late\n15. 22 2:31 Queen · extra\n16. 24 2:32 Queen · extra\n17. 26 2:35 Drone\n18. 26 2:46 Drone ×2\n19. 28 2:54 Drone ×2\n20. 29 3:05 Extractor · 15 supply late\n21. 28 3:08 Drone ×3\n22. 31 3:17 Overlord · extra\n23. 31 3:19 Overlord · extra\n24. 31 3:21 Drone\n25. 32 3:23 Drone\n26. 33 3:24 Hatchery · extra\n27. 32 3:30 Drone ×2\n28. 34 3:51 Queen ×2\n29. 37 3:56 Drone ×4\n30. 41 4:05 Drone ×4\n31. 45 4:17 Overlord\n32. 45 4:25 Overlord\n33. 45 4:27 Drone ×2\n34. 47 4:38 Extractor\n35. 46 4:47 Roach Warren\n36. 45 4:51 Drone ×8\n37. 53 4:54 Extractor\n38. 52 5:01 Queen\n39. 54 5:06 Lair\n40. 54 5:10 Drone ×2\n41. 56 5:11 Spore Crawler\n42. 55 5:12 Spore Crawler\n43. 54 5:12 Drone\n44. 55 5:20 Overlord ×2\n45. 55 5:27 Roach ×5\n46. 65 5:34 Overlord\n47. 65 5:35 Overlord\n48. 65 5:42 Roach ×4\n49. 73 5:55 Overlord\n50. 73 5:56 Roach ×5",
+   "description": "Red Zerg build 938 units and killed 358 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:18 Spawning Pool · on supply\n2. 11 0:21 Drone\n3. 12 0:26 Drone\n4. 13 0:29 Drone\n5. 14 0:39 Overlord · on supply\n6. 14 1:06 Zergling ×6 · about 14–16 supply · done\n7. 19 1:20 Hatchery · about 17–19 supply · on supply ≈\n8. 18 1:24 Zergling ×2 · about 16–18 supply · extra\n9. 17 1:28 Zergling ×2 · about 15–17 supply · extra\n10. 18 1:32 Queen · about 16–18 supply · on supply ≈\n11. 20 1:40 Drone\n12. 21 1:51 Drone\n13. 20 2:25 Drone ×2\n14. 22 2:27 Overlord · 3 supply late\n15. 22 2:31 Queen · extra\n16. 24 2:32 Queen · extra\n17. 26 2:35 Drone\n18. 26 2:46 Drone ×2\n19. 28 2:54 Drone ×2\n20. 29 3:05 Extractor · 15 supply late\n21. 28 3:08 Drone ×3\n22. 31 3:17 Overlord · extra\n23. 31 3:19 Overlord · extra\n24. 31 3:21 Drone\n25. 32 3:23 Drone\n26. 33 3:24 Hatchery · extra\n27. 32 3:30 Drone ×2\n28. 34 3:51 Queen ×2\n29. 37 3:56 Drone ×4\n30. 41 4:05 Drone ×4\n31. 45 4:17 Overlord\n32. 45 4:25 Overlord\n33. 45 4:27 Drone ×2\n34. 47 4:38 Extractor\n35. 46 4:47 Roach Warren\n36. 45 4:51 Drone ×8\n37. 53 4:54 Extractor\n38. 52 5:01 Queen\n39. 54 5:06 Lair\n40. 54 5:10 Drone ×2\n41. 56 5:11 Spore Crawler\n42. 55 5:12 Spore Crawler\n43. 54 5:12 Drone\n44. 55 5:20 Overlord ×2\n45. 55 5:27 Roach ×5\n46. 65 5:34 Overlord\n47. 65 5:35 Overlord\n48. 65 5:42 Roach ×4\n49. 73 5:55 Overlord\n50. 73 5:56 Roach ×5",
    "type": "Player",
    "ID": "Player-1",
    "size": [
@@ -236,7 +246,7 @@
   },
   {
    "name": "blacksquall",
-   "description": "Blue Protoss build 294 units and killed 143 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:12 Probe · chrono possible\n3. 14 0:20 Probe · chrono possible\n4. 15 0:20 Pylon · on supply ≈\n5. 15 0:38 Probe · chrono possible\n6. 16 0:41 Gateway · on supply\n7. 16 0:50 Probe\n8. 17 0:52 Assimilator · on supply\n9. 17 1:02 Probe\n10. 18 1:14 Probe\n11. 19 1:26 Probe\n12. 20 1:30 Zealot · chrono possible\n13. 20 1:34 Nexus · on supply ≈\n14. 20 1:37 Cybernetics Core · on supply ≈\n15. 22 1:47 Pylon · on supply\n16. 22 1:58 Zealot · chrono possible\n17. 22 2:04 Gateway · extra\n18. 21 2:20 Probe\n19. 22 2:28 Adept\n20. 24 2:31 Shield Battery · extra\n21. 24 2:32 Probe\n22. 25 2:44 Probe\n23. 26 2:52 Probe\n24. 27 2:52 Adept\n25. 29 2:56 Probe\n26. 30 3:04 Probe\n27. 31 3:07 Assimilator · 10 supply late\n28. 31 3:08 Probe\n29. 32 3:11 Adept\n30. 34 3:16 Probe\n31. 35 3:20 Probe\n32. 36 3:28 Probe\n33. 37 3:33 Probe\n34. 38 3:40 Probe\n35. 39 3:45 Probe\n36. 40 3:52 Probe\n37. 41 3:57 Probe\n38. 42 4:04 Probe\n39. 43 4:09 Probe\n40. 44 4:10 Stargate · done\n41. 44 4:12 Stalker\n42. 46 4:13 Pylon · extra\n43. 46 4:17 Pylon · extra\n44. 46 4:17 Assimilator · extra\n45. 46 4:19 Assimilator · extra\n46. 46 4:31 Probe ×2 · chrono possible\n47. 47 4:31 Stalker\n48. 50 4:39 Probe ×2 · chrono possible\n49. 52 4:46 Void Ray · chrono possible · done\n50. 56 4:47 Pylon · extra\n51. 56 4:47 Probe ×2 · chrono possible\n52. 58 4:50 Pylon · extra\n53. 54 4:57 Probe ×2 · chrono possible\n54. 60 5:09 Probe ×2\n55. 62 5:11 Pylon · extra\n56. 62 5:15 Pylon · extra\n57. 62 5:21 Void Ray · chrono possible · extra\n58. 62 5:21 Pylon · extra\n59. 62 5:21 Probe ×2\n60. 64 5:25 Pylon · extra\n61. 64 5:31 Pylon\n62. 64 5:33 Probe ×2\n63. 66 5:34 Warp Gate Research · chrono possible · done later\n64. 70 5:40 Nexus\n65. 70 5:45 Adept ×2\n66. 74 5:46 Probe\n67. 75 5:47 Probe\n68. 76 5:55 Shield Battery",
+   "description": "Blue Protoss build 294 units and killed 143 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:12 Probe · chrono possible\n3. 14 0:20 Probe · chrono possible · about 13–14 supply\n4. 15 0:20 Pylon · about 14–15 supply · on supply ≈\n5. 15 0:38 Probe · chrono possible\n6. 16 0:41 Gateway · on supply\n7. 16 0:50 Probe\n8. 17 0:52 Assimilator · on supply\n9. 17 1:02 Probe\n10. 18 1:14 Probe\n11. 19 1:26 Probe · about 17–19 supply\n12. 20 1:30 Zealot · chrono possible · about 18–20 supply\n13. 20 1:34 Nexus · about 20–22 supply · on supply ≈\n14. 20 1:37 Cybernetics Core · about 20–22 supply · on supply ≈\n15. 22 1:47 Pylon · on supply\n16. 22 1:58 Zealot · chrono possible · about 20–22 supply\n17. 22 2:04 Gateway · about 22–24 supply · extra\n18. 21 2:20 Probe\n19. 22 2:28 Adept\n20. 24 2:31 Shield Battery · extra\n21. 24 2:32 Probe\n22. 25 2:44 Probe\n23. 26 2:52 Probe\n24. 27 2:52 Adept\n25. 29 2:56 Probe\n26. 30 3:04 Probe\n27. 31 3:07 Assimilator · 10 supply late\n28. 31 3:08 Probe\n29. 32 3:11 Adept\n30. 34 3:16 Probe\n31. 35 3:20 Probe\n32. 36 3:28 Probe\n33. 37 3:33 Probe\n34. 38 3:40 Probe\n35. 39 3:45 Probe\n36. 40 3:52 Probe\n37. 41 3:57 Probe\n38. 42 4:04 Probe\n39. 43 4:09 Probe\n40. 44 4:10 Stargate · done\n41. 44 4:12 Stalker\n42. 46 4:13 Pylon · extra\n43. 46 4:17 Pylon · extra\n44. 46 4:17 Assimilator · extra\n45. 46 4:19 Assimilator · extra\n46. 46 4:31 Probe ×2 · chrono possible\n47. 47 4:31 Stalker\n48. 50 4:39 Probe ×2 · chrono possible\n49. 52 4:46 Void Ray · chrono possible · about 48–52 supply · done\n50. 56 4:47 Pylon · about 52–56 supply · extra\n51. 56 4:47 Probe ×2 · chrono possible · about 52–56 supply\n52. 58 4:50 Pylon · about 54–58 supply · extra\n53. 54 4:57 Probe ×2 · chrono possible · about 54–58 supply\n54. 60 5:09 Probe ×2\n55. 62 5:11 Pylon · extra\n56. 62 5:15 Pylon · about 58–62 supply · extra\n57. 62 5:21 Void Ray · chrono possible · about 58–62 supply · extra\n58. 62 5:21 Pylon · extra\n59. 62 5:21 Probe ×2\n60. 64 5:25 Pylon · extra\n61. 64 5:31 Pylon · about 64–68 supply\n62. 64 5:33 Probe ×2 · about 64–68 supply\n63. 66 5:34 Warp Gate Research · chrono possible · about 66–70 supply · done later\n64. 70 5:40 Nexus\n65. 70 5:45 Adept ×2\n66. 74 5:46 Probe\n67. 75 5:47 Probe\n68. 76 5:55 Shield Battery",
    "type": "Player",
    "ID": "Player-2",
    "size": [
@@ -5373,7 +5383,7 @@
     "step #": 8,
     "at supply": 18,
     "started at": "00:01:24",
-    "steps": "8. 18 1:24 Zergling ×2 · extra / 9. 17 1:28 Zergling ×2 · extra",
+    "steps": "8. 18 1:24 Zergling ×2 · about 16–18 supply · extra / 9. 17 1:28 Zergling ×2 · about 15–17 supply · extra",
     "supply range": "16–18",
     "verdict": "extra",
     "guide time": "",
