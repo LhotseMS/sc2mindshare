@@ -79,7 +79,7 @@ def test_micro_fixture_rows_for_the_new_types(mode):
     assert {k: v for k, v in r.positions.items() if k in base.positions} == base.positions
     assert {k: v for k, v in r.sizes.items() if k in base.sizes} == base.sizes
     assert r.rows == base.rows and r.extra_nodes == base.extra_nodes
-    assert r.warnings == []
+    assert r.warnings == base.warnings == ["Mystery-1: type 'Mystery' has no lane: placed on the grid"]  # CR-073
 
 
 # --- lane tests (spec §13.6) ----------------------------------------------------------------------------------

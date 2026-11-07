@@ -12,15 +12,29 @@ from __future__ import annotations
 import itertools
 import math
 from collections import Counter, defaultdict
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 
-from sc2mindshare.layout.profile import BAU, CARDS, GHOSTS, OCCUPYING, RAIL, SINGLE_POINT, Profile
+from sc2mindshare.layout.profile import (
+    BAR_LANES,
+    BAU,
+    CARDS,
+    GHOSTS,
+    LANE_ORDER,
+    OCCUPYING,
+    OPPONENT_SIDE,
+    RAIL,
+    SINGLE_POINT,
+    TIMELINE_LANES,
+    Profile,
+)
 
 Size = float | list[float]
 
 SWEPT = OCCUPYING | {"Units", "Supply Block"}
 ANCHORS = frozenset({"Game", "Player"})
+#: Every type the layout has a place for; any other goes to the grid with a warning (CR-073, AC-9).
+KNOWN = SWEPT | ANCHORS | set(CARDS) | set(GHOSTS) | RAIL | set(TIMELINE_LANES)
 
 
 @dataclass(frozen=True)
@@ -30,9 +44,10 @@ class LayoutItem:
     t: float | None  # signed seconds; None for Game and Player
     order: int  # the tie-break: position in the node list
     player: str | None = None
-    t_end: float | None = None  # Supply Block and Scouting Gap only
+    t_end: float | None = None  # Supply Block, Scouting Gap, Energy Excess and Inject Delay only
     size_basis: float | None = None  # Battle: supply lost; Units: supply
     step: int | None = None  # Missing Step and Checkpoint: the benchmark step index (ghost order, spec §13.3)
+    open_end: bool = False  # CR-073: an Energy Excess still open when the game ends (t_end is then None)
 
 
 @dataclass(frozen=True)
@@ -135,6 +150,7 @@ def layout(
     grid: list[LayoutItem] = []
     ghosts: list[LayoutItem] = []  # Missing Step, Checkpoint: never occupy a window (spec §13.3)
     gaps: list[LayoutItem] = []  # Scouting Gap: the outer rail, never occupying (spec §13.4)
+    lanes: list[LayoutItem] = []  # CR-073: the timeline lanes beyond the rail, never occupying
 
     def neither_side(item: LayoutItem) -> bool:
         if item.player in (side_a, side_b):
@@ -155,6 +171,14 @@ def layout(
             if not neither_side(item):
                 (ghosts if item.type in GHOSTS else gaps).append(item)
             continue
+        if item.type in TIMELINE_LANES and item.t is not None:
+            if not neither_side(item):
+                if item.type in OPPONENT_SIDE and side_b is None:  # D2b: no single opponent to sit with
+                    result.warnings.append(f"{item.id}: {item.player!r} has no single opponent: placed on the grid")
+                    grid.append(item)
+                else:
+                    lanes.append(item)
+            continue
         if item.type in SWEPT and item.t is not None:
             if item.type != "Battle" and item.player not in (side_a, side_b):
                 result.warnings.append(f"{item.id}: player {item.player!r} is neither side: placed on the grid (G3)")
@@ -162,6 +186,8 @@ def layout(
             else:
                 swept.append(item)
         else:
+            if item.type not in KNOWN:  # CR-073 (B-c): an unknown type is reported, not placed silently
+                result.warnings.append(f"{item.id}: type {item.type!r} has no lane: placed on the grid")
             grid.append(item)
     swept.sort(key=_key)
 
@@ -202,13 +228,14 @@ def layout(
     ordered = sorted(occupied)
     rank = {w: r for r, w in enumerate(ordered)}
 
-    def row(w: int) -> int:
-        if p.timeline == "linear":
-            return w
+    def compressed_row(w: int) -> int:
         if w in rank:
             return rank[w]
         later = [x for x in ordered if x > w]
         return rank[later[0]] if later else len(ordered)
+
+    def row(w: int) -> int:
+        return w if p.timeline == "linear" else compressed_row(w)
 
     def x(w: int) -> float:
         return row(w) * p.row_pitch
@@ -309,14 +336,25 @@ def layout(
             if a.t_end is not None and b_.t is not None and b_.t < a.t_end:
                 result.warnings.append(f"{a.id} and {b_.id} overlap (G5)")
 
-    # the Scouting Gap rail (spec §13.4, TD-45): supply-block geometry, height 0.6, beyond the side's
-    # widest unit row over the whole game (floor 5.8), so it stays one straight band per side
+    # M per side for the whole game (spec §13.4; CR-073, Leo's Algorithm notes point 3): beyond the widest unit
+    # row and the highest building or ghost stack top, floor 5.8; the rail and the timeline lanes stand on it
+    stack_tops: dict[int, float] = {}
+    for (_row, s), k in top_slot.items():
+        if k >= 0:
+            top = p.lane_building + k * p.building_stack_step + p.default_size[1] / 2
+            stack_tops[s] = max(stack_tops.get(s, 0.0), top)
+
+    def margin(s: int) -> float:
+        return max(p.unit_spread_floor, spread.get(s, 0.0), stack_tops.get(s, 0.0) - p.lane_units)
+
+    # the Scouting Gap rail (spec §13.4, TD-45): supply-block geometry, height 0.6, beyond M, so it stays one
+    # straight band per side
     gaps.sort(key=_key)
     for item in gaps:
         s = sign(item.player)
         ws, we = span(item)
         xa, xb = x(ws), x(we)
-        offset = p.lane_units + max(p.unit_spread_floor, spread.get(s, 0.0)) + p.rail_clearance + p.rail_height / 2
+        offset = p.lane_units + margin(s) + p.rail_clearance + p.rail_height / 2
         result.positions[item.id] = ((xa + xb) / 2, s * offset)
         result.sizes[item.id] = [xb - xa + p.row_pitch, p.rail_height]
     for side in (-1, 1):
@@ -324,6 +362,8 @@ def layout(
         for a, b_ in itertools.pairwise(side_gaps):
             if a.t_end is not None and b_.t is not None and b_.t < a.t_end:
                 result.warnings.append(f"{a.id} and {b_.id} overlap (G5)")
+
+    _timeline_lanes(lanes, p, result, w_of, compressed_row, x, ordered, margin, sign)
 
     # clock images (spec §5.9, B7, G6)
     stats_windows = {w_of(i) for i in swept if i.type == "Stats"}
@@ -357,3 +397,83 @@ def layout(
     if not swept:
         result.warnings.append("no items to sweep (G4)")
     return result
+
+
+def _timeline_lanes(
+    lanes: Sequence[LayoutItem],
+    p: Profile,
+    result: LayoutResult,
+    w_of: Callable[[LayoutItem], int],
+    compressed_row: Callable[[int], int],
+    x: Callable[[int], float],
+    ordered: Sequence[int],
+    margin: Callable[[int], float],
+    sign: Callable[[str | None], int],
+) -> None:
+    """CR-073: Harrasment, Scouting, Inject Delay and Energy Excess in lanes beyond the rail band (Leo's
+    Algorithm notes, CR-073). They never occupy a window, so no column is added and no other node moves.
+
+    Cards sit at their start column, bars span their start to their end column (supply-block geometry); an
+    open end runs to the last occupied window, never before the start. Per side and lane, items are stacked
+    first fit on their compressed columns, and the levels are used in both modes, so each y is the same in
+    the compressed and the linear timeline. The rail band (12.8 + M + 0.5, 0.6 wide) is always reserved;
+    then the events lane, the inject-delay lane and the spare-energy lane, each at least one row deep."""
+    placed: list[tuple[LayoutItem, int, str, int, int]] = []  # (item, side, lane, first window, last window)
+    for item in lanes:
+        lane = TIMELINE_LANES[item.type]
+        s = sign(item.player)
+        if item.type in OPPONENT_SIDE:  # D2b: the attacker's side
+            s = -s
+        ws = w_of(item)
+        if lane not in BAR_LANES:
+            we = ws
+        elif item.open_end:
+            we = max(ws, ordered[-1]) if ordered else ws
+        else:
+            if item.t_end is not None and item.t is not None and item.t_end < item.t:
+                result.warnings.append(f"{item.id}: ends before it starts (G5)")
+            end = item.t_end if item.t_end is not None else item.t
+            assert end is not None
+            we = max(ws, win(end, p.window_s))
+        placed.append((item, s, lane, ws, we))
+
+    level: dict[str, int] = {}
+    depth: dict[tuple[int, str], int] = {}
+    for s in (-1, 1):
+        for lane in LANE_ORDER:
+            ends: list[int] = []  # per level, the last compressed column used
+            group = [e for e in placed if e[1] == s and e[2] == lane]
+            group.sort(key=lambda e: (compressed_row(e[3]), e[0].t or 0.0, compressed_row(e[4]), e[0].order))
+            for item, _s, _lane, ws, we in group:
+                cs, ce = compressed_row(ws), compressed_row(we)
+                k = next((n for n, last in enumerate(ends) if last < cs), len(ends))
+                if k == len(ends):
+                    ends.append(ce)
+                else:
+                    ends[k] = ce
+                level[item.id] = k
+            depth[(s, lane)] = max(1, len(ends))  # an empty lane keeps its row
+
+    card = p.default_size[1]
+    for s in (-1, 1):
+        start = p.lane_units + margin(s) + p.rail_clearance + p.rail_height + p.lane_clearance
+        inner: dict[str, float] = {}
+        for lane in LANE_ORDER:
+            inner[lane] = start
+            rows = depth[(s, lane)]
+            if lane in BAR_LANES:
+                start += p.bar_height + (p.bar_height + p.bar_gap) * (rows - 1)
+            else:
+                start += card + p.event_step * (rows - 1)
+            start += p.lane_clearance
+        for item, side, lane, ws, we in placed:
+            if side != s:
+                continue
+            if lane in BAR_LANES:
+                y = inner[lane] + p.bar_height / 2 + (p.bar_height + p.bar_gap) * level[item.id]
+                xa, xb = x(ws), x(we)
+                result.positions[item.id] = ((xa + xb) / 2, s * round(y, 6))
+                result.sizes[item.id] = [round(xb - xa + p.row_pitch, 6), round(p.bar_height, 6)]
+            else:
+                y = inner[lane] + card / 2 + p.event_step * level[item.id]
+                result.positions[item.id] = (x(ws), s * round(y, 6))

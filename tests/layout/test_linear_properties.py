@@ -97,14 +97,16 @@ def test_y_and_sizes_are_identical_except_battle_y_and_supply_block_widths(game)
     for item in its:
         if item.type != "Battle":  # a battle's shift depends on the x distance to the previous battle
             assert linear.positions[item.id][1] == compressed.positions[item.id][1], item.id
-        if item.type == "Supply Block":
+        if item.type in ("Supply Block", "Energy Excess", "Inject Delay"):  # bars span their windows (CR-073)
             assert linear.sizes[item.id][1:] == compressed.sizes[item.id][1:], item.id
         else:
             assert linear.sizes[item.id] == compressed.sizes[item.id], item.id
     anchored = [
         i
         for i in its
-        if i.type not in {"Battle", "Building", "Upgrade", "Initiated", "Units", "Stats", "Chat", "Ability", "Supply Block"}
+        if i.type
+        not in {"Battle", "Building", "Upgrade", "Initiated", "Units", "Stats", "Chat", "Ability", "Supply Block"}
+        | {"Energy Excess", "Inject Delay", "Scouting", "Harrasment"}  # CR-073: on the timeline now
     ]
     for item in anchored:  # anchors and the grid do not move at all
         assert linear.positions[item.id] == compressed.positions[item.id], item.id
@@ -132,3 +134,15 @@ def test_clocks_only_on_occupied_windows_and_empty_rows_stay_blank(game):
     assert empty  # both games have empty windows, so the property is exercised
     xs = {linear.positions[i.id][0] for i in _swept(its)} | {c.x for c in linear.extra_nodes}
     assert not {w * PITCH for w in empty} & xs
+
+
+def test_lane_bars_span_their_windows(game):
+    """CR-073: an inject-delay or spare-energy bar spans its start to its end window in linear mode (an open end:
+    to the last occupied window; never before its start)."""
+    _name, its, _compressed, linear = game
+    last = max(w for _r, w, _x in linear.rows)
+    for b in (i for i in its if i.type in ("Energy Excess", "Inject Delay")):
+        ws = win(b.t)
+        we = max(ws, last) if b.open_end else max(ws, win(b.t_end if b.t_end is not None else b.t))
+        assert linear.sizes[b.id] == [(we - ws + 1) * PITCH, 1.0], b.id
+        assert linear.positions[b.id][0] == (ws + we) / 2 * PITCH, b.id
