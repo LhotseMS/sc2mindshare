@@ -310,7 +310,7 @@ def load(path: Path) -> Guide:
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise GuideError("it is not a JSON file") from exc
     except OSError as exc:
-        raise GuideError(f"it could not be opened ({exc.strerror or type(exc).__name__})") from exc
+        raise GuideError(f"opening it failed ({exc.strerror or type(exc).__name__})") from exc
     return parse(data, path.name)
 
 

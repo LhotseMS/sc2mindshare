@@ -1030,7 +1030,7 @@ def test_ac9_no_patch_wins_over_an_unreadable_game_patch():
 
 
 def test_finding1_a_step_with_a_supply_and_a_trigger_sits_at_the_later_moment():
-    """Leo, finding 1: Alcyone, lilTiGGer named Hatchery First; Zergling Movement Speed (17 supply, @100 gas) is due at
+    """Leo, finding 1: Alcyone, lilTiGGer named Hatchery First; Zergling Movement Speed (21 supply, @100 gas) is due at
     the later of 1:40 (R reached the guide's 21 supply) and 4:10 (100 gas): it sits at 4:10."""
     _graph, docs = _documents(ALCYONE, guides=("lilTiGGer=zvx-17-hatch-17-gas-17-pool-liquipedia",))
     for mode, x in (("compressed", 45.0), ("linear", 60.0)):
@@ -1186,5 +1186,5 @@ def test_finding8_a_guide_file_that_cannot_be_opened_is_unreadable(alcyone, tmp_
     monkeypatch.setattr(pathlib.Path, "read_text", refuse)
     assert _picks(alcyone, {LIL: str(path)})[0] == (
         "none, file unreadable",
-        f'No build check: the build order guide file "{path}" could not be read: it could not be opened (Permission denied).',
+        f'No build check: the build order guide file "{path}" could not be read: opening it failed (Permission denied).',
     )
