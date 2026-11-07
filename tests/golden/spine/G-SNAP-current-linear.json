@@ -236,7 +236,7 @@
   },
   {
    "name": "serega",
-   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon · on supply\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 16 0:38 Gateway · on supply\n7. 16 0:44 Probe · chrono possible\n8. 17 0:46 Assimilator · on supply\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core · on supply\n13. 18 1:29 Gateway · extra\n14. 20 1:36 Pylon · on supply\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator · on supply\n17. 21 1:54 Zealot · chrono possible\n18. 23 1:59 Probe\n19. 24 2:16 Nexus · 3 supply late\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility · extra\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research · done\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 35 3:36 Probe · chrono possible\n31. 36 3:36 Immortal\n32. 38 3:46 Sentry\n33. 40 3:46 Probe · chrono possible\n34. 41 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 43 3:59 Probe\n37. 44 4:02 Pylon · extra\n38. 44 4:10 Probe · chrono possible\n39. 45 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 47 4:21 Immortal\n42. 51 4:23 Probe · chrono possible\n43. 52 4:26 Pylon · extra\n44. 54 4:32 Sentry\n45. 56 4:32 Gateway · extra\n46. 56 4:38 Gateway · extra\n47. 54 4:44 Probe ×2\n48. 56 4:45 Pylon · extra\n49. 58 4:47 Sentry\n50. 60 4:49 Warp Prism · chrono possible\n51. 56 4:55 Warp Gate\n52. 56 4:56 Probe\n53. 57 5:00 Probe\n54. 58 5:02 Gateway · extra\n55. 58 5:04 Gateway · extra\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway · extra\n58. 60 5:17 Sentry\n59. 62 5:18 Warp Gate\n60. 62 5:22 Gateway · extra\n61. 62 5:24 Pylon · extra\n62. 62 5:24 Sentry\n63. 64 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 72 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 74 5:59 Adept",
+   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon · on supply\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 16 0:38 Gateway · on supply\n7. 16 0:44 Probe · chrono possible\n8. 17 0:46 Assimilator · on supply\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core · on supply ≈\n13. 18 1:29 Gateway · extra\n14. 20 1:36 Pylon · on supply\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator · on supply\n17. 21 1:54 Zealot · chrono possible\n18. 23 1:59 Probe\n19. 24 2:16 Nexus · 3 supply late ≈\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility · extra\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research · done\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 35 3:36 Probe · chrono possible\n31. 36 3:36 Immortal\n32. 38 3:46 Sentry\n33. 40 3:46 Probe · chrono possible\n34. 41 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 43 3:59 Probe\n37. 44 4:02 Pylon · extra\n38. 44 4:10 Probe · chrono possible\n39. 45 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 47 4:21 Immortal\n42. 51 4:23 Probe · chrono possible\n43. 52 4:26 Pylon · extra\n44. 54 4:32 Sentry\n45. 56 4:32 Gateway · extra\n46. 56 4:38 Gateway · extra\n47. 54 4:44 Probe ×2\n48. 56 4:45 Pylon · extra\n49. 58 4:47 Sentry\n50. 60 4:49 Warp Prism · chrono possible\n51. 56 4:55 Warp Gate\n52. 56 4:56 Probe\n53. 57 5:00 Probe\n54. 58 5:02 Gateway · extra\n55. 58 5:04 Gateway · extra\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway · extra\n58. 60 5:17 Sentry\n59. 62 5:18 Warp Gate\n60. 62 5:22 Gateway · extra\n61. 62 5:24 Pylon · extra\n62. 62 5:24 Sentry\n63. 64 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 72 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 74 5:59 Adept",
    "type": "Player",
    "ID": "Player-2",
    "size": [
@@ -723,7 +723,7 @@
   },
   {
    "name": "Zergling Movement Speed · done",
-   "description": "Piliskner completed Zergling Movement Speed at 00:03:23\n\nDone: the build order guide has this step as soon as you have 100 gas, and you made it.",
+   "description": "Piliskner completed Zergling Movement Speed at 00:03:23\n\nDone: the build order guide asks for this step as soon as you have 100 gas, and you made it.",
    "type": "Upgrade",
    "ID": "Upgrade-1",
    "size": [
@@ -751,7 +751,7 @@
   },
   {
    "name": "Warp Gate Research · done",
-   "description": "serega completed Warp Gate Research at 00:03:07\n\nDone: the build order guide has this step as soon as your Cybernetics Core finishes, and you made it.",
+   "description": "serega completed Warp Gate Research at 00:03:07\n\nDone: the build order guide asks for this step as soon as your Cybernetics Core finishes, and you made it.",
    "type": "Upgrade",
    "ID": "Upgrade-2",
    "size": [
@@ -1416,7 +1416,7 @@
    }
   },
   {
-   "name": "Cybernetics Core · on supply",
+   "name": "Cybernetics Core · on supply ≈",
    "description": "On supply: you were at about 18–20 supply when you started it; the build order guide has it at 20.",
    "type": "Building",
    "ID": "Building-8",
@@ -1503,7 +1503,7 @@
    }
   },
   {
-   "name": "Natural · 3 supply late",
+   "name": "Natural · 3 supply late ≈",
    "description": "A bit late (by supply): you were at about 22–24 supply when you started it; the build order guide has it at 19. You made more units first, so it came later in your build order.",
    "type": "Building",
    "ID": "Building-14",
@@ -3101,7 +3101,7 @@
   },
   {
    "name": "Queen · done",
-   "description": "Queen completed by Piliskner in last 10s from 00:03:10\n\nDone: the build order guide has this step as soon as your Hatchery finishes, and you made it.",
+   "description": "Queen completed by Piliskner in last 10s from 00:03:10\n\nDone: the build order guide asks for this step as soon as your Hatchery finishes, and you made it.",
    "type": "Units",
    "ID": "Units-30",
    "size": 0.75,
@@ -8326,7 +8326,7 @@
   },
   {
    "name": "Build check · Hatchery First: 17 Hatch 17 Gas 17 Pool",
-   "description": "Your opening compared with the build order guide \"Hatchery First: 17 Hatch 17 Gas 17 Pool\" for Zerg vs Protoss. It covers the first 3:00 of the game.\nSuggested: you did not name a build order guide, so we used the one closest to your opening.\nBy supply: this build order guide gives supply counts, not times, so each step is compared by the supply you were on when you started it. A step marked ≈ is one where we know your supply only roughly.\n\n7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 done later, 1 partly made).\n2 Queens: you made 1 of the 2 in time, and the other later, at 9:48.\nExtra, not in the build order guide: 1 Queen, 1 Hatchery.\nCounted, not graded: 24 Drones, 6 Zerglings.\n\nPatch unknown: the build order guide does not say which patch it was written for (last edited 2018-01-12), so some timings may have changed since. Most community build orders carry this note.\n\nSource: Liquipedia, \"Hatchery First (Legacy of the Void)\", revision 1258135, https://liquipedia.net/starcraft2/Hatchery_First_(Legacy_of_the_Void). Text by Liquipedia contributors, licensed CC BY-SA 3.0. We turned it into steps.",
+   "description": "Your opening compared with the build order guide \"Hatchery First: 17 Hatch 17 Gas 17 Pool\" for Zerg vs Protoss. It covers the first 3:00 of the game.\nSuggested: you did not name a build order guide, so we used the one closest to your opening.\nBy supply: this build order guide gives supply counts, not times, so each step is compared by the supply you were on when you started it. A step marked ≈ is one where we know your supply only roughly.\n\n7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 partly made).\n2 Queens: you made 1 of the 2 in time, and the other later, at 9:48.\nExtra, not in the build order guide: 1 Queen, 1 Hatchery.\nCounted, not graded: 24 Drones, 6 Zerglings.\n\nPatch unknown: the build order guide does not say which patch it was written for (last edited 2018-01-12), so some timings may have changed since. Most community build orders carry this note.\n\nSource: Liquipedia, \"Hatchery First (Legacy of the Void)\", revision 1258135, https://liquipedia.net/starcraft2/Hatchery_First_(Legacy_of_the_Void). Text by Liquipedia contributors, licensed CC BY-SA 3.0. We turned it into steps.",
    "type": "Build Comparison",
    "ID": "Build Comparison-1",
    "size": [
