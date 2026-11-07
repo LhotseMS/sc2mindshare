@@ -96,6 +96,8 @@ class BuildStep:
             text += " · cancelled"
         if self.chrono_possible:
             text += " · chrono possible"
+        if self.supply_range is not None:  # CR-035 (Vera's F1, Iris): every step's range, in its own line
+            text += f" · about {self.supply_range[0]}\u2013{self.supply_range[1]} supply"
         if self.verdict is not None:  # CR-035 (call 4): the one text form, in the steps line and the Player list
             text += f" · {self.verdict.ending}"
         return text

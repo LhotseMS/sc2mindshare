@@ -87,7 +87,7 @@ def build_document(
             )
     check_same_properties(nodes)
     document = {
-        "visuals": cfg["visuals"],
+        "visuals": visuals_for(cfg["visuals"], graph.export_fixes),
         "detail": detail_for(cfg["detail"], graph.export_fixes),
         "dataTypes": data_types_for(cfg["dataTypes"], graph.export_fixes),
         "nodes": nodes,
@@ -122,6 +122,24 @@ def _first_difference(id1: str, keys1: tuple[str, ...], id2: str, keys2: tuple[s
     if i < len(keys2) and keys2[i] not in keys1:
         return f"{id2!r} has property {keys2[i]!r}, which {id1!r} lacks"
     return f"property {keys1[i]!r} is at position {i + 1} in {id1!r} but at position {keys2.index(keys1[i]) + 1} in {id2!r}"
+
+
+#: CR-035 BC1 (Vera's F3; Iris's qa-fix.md, P0-6 §7): the card and the missing entry as boxes, the card in the
+#: workbook's Comparison blue, the missing entry with a grey border (AC5 "grey"); after the workbook's entries.
+CHECK_VISUALS: tuple[dict[str, str], ...] = (
+    {"nodeType": "Build Comparison", "shape": "rectangle", "borderColor": "#000066"},
+    {"nodeType": "Missing Step", "shape": "rectangle", "borderColor": "#8c8c8c"},
+)
+
+
+def visuals_for(visuals: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:
+    """The workbook's ``visuals``; with ``BC1`` (CR-035) the build check's two node types follow, as boxes (without an
+    entry Mindshare draws a small default circle). The workbook-faithful document keeps the workbook's list."""
+    if "BC1" not in export_fixes:
+        return visuals
+    if clash := sorted({v["nodeType"] for v in CHECK_VISUALS} & {v.get("nodeType") for v in visuals}):
+        raise ValueError(f"the added node types {clash} already have visuals")
+    return [*visuals, *(dict(v) for v in CHECK_VISUALS)]
 
 
 def detail_for(detail: list[dict[str, Any]], export_fixes: frozenset[str]) -> list[dict[str, Any]]:

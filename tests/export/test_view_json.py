@@ -341,7 +341,14 @@ def test_buildings_net_of_the_ledger():
 def test_document_key_order_and_config_parts(document):
     doc = document["current"]
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
-    assert doc["visuals"] == load_config()["visuals"]
+    # CR-035 BC1 (F3): the card and the missing entry as boxes, after the workbook's entries; the faithful list is the
+    # workbook's
+    assert doc["visuals"] == [
+        *load_config()["visuals"],
+        {"nodeType": "Build Comparison", "shape": "rectangle", "borderColor": "#000066"},
+        {"nodeType": "Missing Step", "shape": "rectangle", "borderColor": "#8c8c8c"},
+    ]
+    assert document["faithful"]["visuals"] == load_config()["visuals"]
     assert json.loads(to_json(doc)) == doc
 
 

@@ -650,10 +650,11 @@ def _row_verdict(row: Row, step: GuideStep) -> StepVerdict:
     )
 
 
-def _done_later_verdict(step: GuideStep, missing_at: float) -> StepVerdict:
+def _done_later_verdict(missing_at: float) -> StepVerdict:
     """The real step of a guide step that was missing at its moment and made later (Iris: ends ``· done later``)."""
     sentence = f"Done later: the build order guide has this step earlier; it was missing at {_mmss_of(missing_at)}."
-    return StepVerdict(DONE_LATER, DONE_LATER, _guide_time(step), "", _guide_supply(step), sentence)  # Iris R3
+    # Iris R3; F2 (qa-fix.md): the verdict and its sentence only, the guide's values stay on the missing entry
+    return StepVerdict(DONE_LATER, DONE_LATER, "", "", "", sentence)
 
 
 def ghost_seconds(row: Row, step: GuideStep, guide: Guide, reading: SupplyReading) -> float:
@@ -699,7 +700,7 @@ def annotate(order: BuildOrder, results: Sequence[BuildCheck | NoBuildCheck], re
             if step is not None:
                 guide_step = by_number[row.guide_step]
                 missing_at = ghost_seconds(row, guide_step, check.guide, readings[check.player])
-                verdicts.setdefault((check.player, step.number), _done_later_verdict(guide_step, missing_at))
+                verdicts.setdefault((check.player, step.number), _done_later_verdict(missing_at))
     steps = tuple(
         replace(s, verdict=verdicts[(s.player, s.number)]) if (s.player, s.number) in verdicts else s for s in order.steps
     )
@@ -1024,7 +1025,7 @@ def with_build_check(
             )
             ghosts.append((ghost, at, seconds))
             if at is not None and not any(s.verdict for s in nodes[at].steps):
-                marked.setdefault(at, _done_later_verdict(step, seconds))
+                marked.setdefault(at, _done_later_verdict(seconds))
 
     for i, node in enumerate(nodes):
         if node.kind not in ("Building", "Upgrade", "Units"):

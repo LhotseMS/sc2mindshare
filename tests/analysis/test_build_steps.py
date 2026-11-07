@@ -313,7 +313,7 @@ def test_s06_starts_within_8_loops_of_the_first_share_a_line(gap, expected):
 def test_s06_a_group_may_cross_a_second_boundary_and_shows_its_first_member():
     units = [life(uid(1), P, "Pylon", init=1340), life(uid(2), P, "Pylon", init=1347)]  # 59.8 s and 60.1 s
     stats = [sample(P, 1300, 14.0), sample(P, 1345, 15.0)]
-    assert lines(game(units, stats=stats), P) == ["1. 14 0:59 Pylon ×2"]
+    assert lines(game(units, stats=stats), P) == ["1. 14 0:59 Pylon ×2 · about 14–15 supply"]  # CR-035 F1: the range
 
 
 def test_s06_the_grouping_is_anchored_not_chained():
@@ -340,9 +340,14 @@ def test_the_supply_is_food_used_at_the_last_sample_at_or_before_the_start_round
         life(uid(2), Z, "Extractor", init=160),
         life(uid(3), Z, "Hatchery", init=330),
     ]
-    assert lines(game(units, stats=stats)) == ["1. 12 0:07 Spawning Pool", "2. 13 0:07 Extractor", "3. 14 0:14 Hatchery"]
+    # CR-035 F1: a step whose supply the samples cannot pin carries its range in its line
+    assert lines(game(units, stats=stats)) == [
+        "1. 12 0:07 Spawning Pool · about 12–15 supply",
+        "2. 13 0:07 Extractor · about 13–15 supply",
+        "3. 14 0:14 Hatchery",
+    ]
     before_any = game([life(uid(4), Z, "SpawningPool", init=5)], stats=[sample(Z, 10, 20.0)])
-    assert lines(before_any) == ["1. 12 0:00 Spawning Pool"]
+    assert lines(before_any) == ["1. 12 0:00 Spawning Pool · about 12–21 supply"]
 
 
 # --- S12 · AC-4: morphs ---------------------------------------------------------------------------------------------
@@ -793,8 +798,10 @@ def alcyone_annotated(alcyone):
 
 def test_s01_s02_s17_alcyone_matches_the_oracle_line_for_line(alcyone):
     _, order, _, _ = alcyone
-    assert [s.line() for s in order.of(1)] == ALCYONE_LIL  # lilTiGGer: 50 steps
-    assert [s.line() for s in order.of(2)] == ALCYONE_BLACK  # blacksquall: 68, the oracle's chrono marks included
+    # CR-035 F1: a ≈ step's line also carries its range (the ≈ sets are S03's literals); without it, CR-034's oracle
+    assert [replace(s, supply_range=None).line() for s in order.of(1)] == ALCYONE_LIL  # lilTiGGer: 50 steps
+    assert [replace(s, supply_range=None).line() for s in order.of(2)] == ALCYONE_BLACK  # blacksquall: 68
+    assert order.of(1)[5].line() == "6. 14 1:06 Zergling ×6 · about 14–16 supply"
     assert (len(ALCYONE_LIL), len(ALCYONE_BLACK)) == (50, 68)
 
 
@@ -910,12 +917,12 @@ def test_s18_the_player_lists_are_the_node_steps(alcyone, alcyone_annotated):
     # CR-035 (call 4): each list is the build order with each compared step's verdict added, in the same words as on
     # the nodes; without the verdicts it is CR-034's oracle, line for line
     assert lil[3:] == [s.line() for s in alcyone_annotated.of(1)] and lil[-1] == "50. 73 5:56 Roach ×5"
-    assert [replace(s, verdict=None).line() for s in alcyone_annotated.of(1)] == ALCYONE_LIL
+    assert [replace(s, verdict=None, supply_range=None).line() for s in alcyone_annotated.of(1)] == ALCYONE_LIL
     assert lil[3:8] == ["1. 12 0:18 Spawning Pool · on supply", "2. 11 0:21 Drone", "3. 12 0:26 Drone", "4. 13 0:29 Drone",
                         "5. 14 0:39 Overlord · on supply"]  # fmt: skip
     assert black[1:3] == ["", "Build order to 6:00 (supply, time, item):"]
     assert black[3:] == [s.line() for s in alcyone_annotated.of(2)]
-    assert [replace(s, verdict=None).line() for s in alcyone_annotated.of(2)] == ALCYONE_BLACK
+    assert [replace(s, verdict=None, supply_range=None).line() for s in alcyone_annotated.of(2)] == ALCYONE_BLACK
     on_nodes = sorted(((s.player, s.number), s.line()) for n in graph.nodes for s in n.steps)
     assert [line for (player, _), line in on_nodes if player == 1] == lil[3:]
     assert [line for (player, _), line in on_nodes if player == 2] == black[3:]
@@ -1034,7 +1041,7 @@ def test_s15_spine_the_cancelled_extractor_and_the_returning_drone():
     assert [s.number for s in piliskner] == list(range(1, len(piliskner) + 1))
     cancelled = [s for s in piliskner if s.cancelled]
     assert [(s.item, s.unit_ids, s.second) for s in cancelled] == [("Extractor", (60293121,), 75)]
-    assert cancelled[0].line().endswith(" 1:15 Extractor · cancelled")
+    assert cancelled[0].line().endswith(" 1:15 Extractor · cancelled · about 15–16 supply")  # CR-035 F1: after the notes
     assert not [s for s in order.steps if 60293122 in s.unit_ids]  # the Drone born at 1:25 comes back; nobody built it
 
 

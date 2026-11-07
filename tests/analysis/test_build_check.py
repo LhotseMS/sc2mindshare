@@ -791,7 +791,9 @@ def test_s07_s08_s10_the_compared_steps(alcyone_docs):
     assert (pool["name"], pool["properties"]["guide supply"]) == ("Spawning Pool · on supply", "12")
     lings = _by_step(doc, "lilTiGGer", 8)  # S10: one node, steps 8 and 9, each line with its own verdict
     assert lings["name"] == "4 Zerglings · extra"
-    assert lings["properties"]["steps"] == "8. 18 1:24 Zergling ×2 · extra / 9. 17 1:28 Zergling ×2 · extra"
+    assert lings["properties"]["steps"] == (  # CR-035 F1: each step's range in its own line
+        "8. 18 1:24 Zergling ×2 · about 16–18 supply · extra / 9. 17 1:28 Zergling ×2 · about 15–17 supply · extra"
+    )
     lil = next(n for n in doc["nodes"] if n["type"] == "Player" and n["name"] == "lilTiGGer")
     for line in lings["properties"]["steps"].split(" / "):
         assert line in lil["description"].split("\n")  # the same words on the node and in the Player list
@@ -921,7 +923,7 @@ def test_s27_the_wording(alcyone_docs, spine_docs):
         for n in _nodes(doc):
             if " · " in n["name"] and n["type"] in ("Building", "Upgrade", "Units", "Missing Step"):
                 tail = n["name"].rpartition(" · ")[2]
-                assert len(tail) <= (15 if tail.endswith(" ≈") else 14), n["name"]
+                assert len(tail) <= (17 if tail.endswith(" ≈") else 15), n["name"]  # Iris R2 (Vera's A1)
             text = f"{n['name']} {n['description']}".lower()
             for word in ("wrong", "bad", "too many", "mistake", "benchmark"):
                 assert f" {word}" not in text, (n["ID"], word)
@@ -1188,3 +1190,36 @@ def test_finding8_a_guide_file_that_cannot_be_opened_is_unreadable(alcyone, tmp_
         "none, file unreadable",
         f'No build check: the build order guide file "{path}" could not be read: opening it failed (Permission denied).',
     )
+
+
+# --- CR-035 QA fix round (Vera's F1-F3, Iris's qa-fix.md) ---------------------------------------------------------------
+
+
+def test_qa_f1_a_second_step_shows_its_own_supply_range(alcyone_docs, spine_docs):
+    """Vera's F1: a node's `supply range` is its first step's; every step whose supply is a range carries it in its own
+    line, the second step of a node included (spine Units-36 and Units-58, Alcyone Units-15)."""
+    spine = {n["ID"]: n for n in spine_docs[1]["compressed"][0]["nodes"]}
+    alcyone = {n["ID"]: n for n in alcyone_docs[1]["compressed"][0]["nodes"]}
+    for node, number, low_high in (
+        (spine["Units-36"], 28, "30–33"),
+        (spine["Units-58"], 53, "57–59"),
+        (alcyone["Units-15"], 9, "15–17"),
+    ):
+        line = next(line for line in node["properties"]["steps"].split(" / ") if line.startswith(f"{number}. "))
+        assert f" · about {low_high} supply" in line, node["ID"]
+    assert spine["Units-36"]["properties"]["supply range"] == ""  # the first step's: pinned
+    assert alcyone["Units-15"]["properties"]["supply range"] == "16–18"
+    natural = _by_step(alcyone_docs[1]["compressed"][0], "lilTiGGer", 7)
+    assert natural["properties"]["supply range"] == "17–19"
+    lil = next(n for n in alcyone_docs[1]["compressed"][0]["nodes"] if n["type"] == "Player" and n["name"] == "lilTiGGer")
+    assert "7. 19 1:20 Hatchery · about 17–19 supply · on supply ≈" in lil["description"].split("\n")
+
+
+def test_qa_f2_a_done_later_node_carries_no_guide_values():
+    """Vera's F2 (Iris): a node done later carries the verdict and its sentence only; the guide's values stay on the
+    missing entry."""
+    _graph, docs = _documents(ALCYONE, guides=("lilTiGGer=zvx-17-hatch-17-gas-17-pool-liquipedia",))
+    by_id = {n["ID"]: n for n in docs["compressed"][0]["nodes"]}
+    entries = [by_id["Upgrade-9"]["properties"][k] for k in CHECK_KEYS]
+    assert entries == ["done later", "", "", ""]
+    assert by_id["Missing Step-1-1"]["properties"]["guide supply"] == "21"  # on the missing entry it links from
