@@ -947,3 +947,35 @@ Listed before the change, on Alcyone and spine, the view and both snapshots:
 ```json
 {"entry": "BC1c-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "c367a1d6839af6ac2009e877e39b638a9841e1934063584172db719a4e356c71", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 1, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["properties.verdict"], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### BC1d: the card and the missing entry drawn as boxes, and every step's supply range in its line (CR-035 QA fix round; Vera's F3, F1, F2; Iris's qa-fix.md; Stefan's D1a on AC12)
+
+Listed before the change, on Alcyone and spine, the view and both snapshots:
+- F3: `visuals` gains, after the workbook's 13 entries, `{"nodeType": "Build Comparison", "shape": "rectangle", "borderColor": "#000066"}` and `{"nodeType": "Missing Step", "shape": "rectangle", "borderColor": "#8c8c8c"}` (export fix BC1; `config/visuals.json` and the workbook-faithful documents unchanged).
+- F1: a step whose supply is a range carries ` · about <low>–<high> supply` in its line, after the cancelled and chrono notes and before the verdict: in each Player's build order list (2 per replay) and in the `steps` line of a Units node holding several steps (Alcyone 1: Units-15; spine 3, Units-36 and Units-58 among them). The node's `supply range` entry stays its first step's.
+- F2: a node done later carries no guide time, off by s or guide supply; no golden changes (the done-later nodes of the goldens come from trigger steps, whose entries are already "").
+
+```json
+{"entry": "BC1d-alcyone-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "c25bd13016a515e674702824de8c7465a5d7efda650303f81eeaebb26026e9c3", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 1}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1d-alcyone-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "d5f9b6fd7367dabd2fc503c4a1194327032c901bc05d69aa26a8fb7ef9360592", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 1}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1d-alcyone-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "eeff3e16c653c0ccc3b890e81abb88034c1861a19bb7011d8c37a5dda0a6d5a3", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 1}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1d-spine-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["spine/G-VIEW-current.json"], "base_sha256": "33afba045f399037f6874f09fbd09483725b95eb7df9096e369a1a930fb6d45d", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 3}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1d-spine-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["spine/G-SNAP-current-compressed.json"], "base_sha256": "7fa88368e0ae82c91c7cbcc87f04f171ab49b770c31f9246afd4c2fd55efd1ff", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 3}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1d-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): QA's F3 (visuals) and F1 (each step's supply range), Iris's qa-fix.md; Stefan's D1a (AC12)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "6b57e6fe8308ff8461f7b1bd8d41468d837fd49891d14b3a3e4893ad909d9c42", "changes": [{"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 3}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "visuals"}, "fields": [""], "count": 1}], "added": [], "removed": []}
+```
