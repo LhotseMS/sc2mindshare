@@ -37,6 +37,20 @@ def loops_of(seconds: Fraction) -> Fraction:
 
 
 @dataclass(frozen=True)
+class StepVerdict:
+    """What the build check says of a step (CR-035, AC3; Iris's endings, Kevin's calls 1 and 4): the verdict word,
+    the name ending (at most 14 characters, 15 with " ≈"), the guide's time and supply and the Δ in seconds as text
+    ("" when blank, call 1), and the sentence its node's description gets."""
+
+    verdict: str  # "on supply", "late", "extra", "missing" (a step done later) ...
+    ending: str  # "15 supply late", "28 s late", "on supply ≈", "done later" ...
+    guide_time: str = ""
+    off_by_s: str = ""
+    guide_supply: str = ""
+    sentence: str = ""
+
+
+@dataclass(frozen=True)
 class BuildStep:
     """One numbered line of a player's build order: ``count`` starts of one item within 8 loops (Leo)."""
 
@@ -53,6 +67,7 @@ class BuildStep:
     chrono_possible: bool = False
     supply_range: tuple[int, int] | None = None  # (low, high) where the reading is only known within a range (≈)
     estimated: bool = False  # the start is estimated (no build or research time, D60a): never graded (CR-035 AC3)
+    verdict: StepVerdict | None = None  # CR-035: the build check's verdict, when the step was compared
 
     def __post_init__(self) -> None:
         if self.kind not in KINDS:
@@ -80,6 +95,8 @@ class BuildStep:
             text += " · cancelled"
         if self.chrono_possible:
             text += " · chrono possible"
+        if self.verdict is not None:  # CR-035 (call 4): the one text form, in the steps line and the Player list
+            text += f" · {self.verdict.ending}"
         return text
 
 

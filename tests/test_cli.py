@@ -329,7 +329,9 @@ def test_cr070_ac5_a_cost_that_cannot_be_found_exits_1_and_writes_nothing(tmp_pa
 # --- CR-035: --guide (AC7, AC10; S22, S25, S26) ------------------------------------------------------------------------
 
 
-def test_cr035_a_named_guide_is_picked_and_logged_and_the_graph_is_unchanged_for_now(tmp_path, config):
+def test_cr035_a_named_guide_is_picked_logged_and_exported(tmp_path, config):
+    """S13, S22 through the CLI: the named guide is picked for lilTiGGer (graded by time and supply), blacksquall's is
+    still suggested; both are in the log and in the exported graph."""
     need(ALCYONE)
     out = tmp_path / "game" / "graph.json"
     guide = "lilTiGGer=zvp-3-hatch-before-pool-liquipedia"
@@ -338,7 +340,25 @@ def test_cr035_a_named_guide_is_picked_and_logged_and_the_graph_is_unchanged_for
     log = (out.parent / "graph.log").read_text(encoding="utf-8")
     assert "build check: player 1: 3 Hatch Before Pool (vs. Gate expand) (picked, score 79/105)" in log
     assert "build check: player 2: Gate, Nexus, Core into Stargate (PvZ) (suggested, score 10/33)" in log
-    assert out.read_bytes() == (GOLDEN / "G-SNAP-current-compressed.json").read_bytes()  # exported from commit 8 on
+    doc = json.loads(out.read_text(encoding="utf-8"))
+    cards = [n for n in doc["nodes"] if n["type"] == "Build Comparison"]
+    assert [(c["name"], c["properties"]["player"], c["properties"]["picked"], c["properties"]["graded by"]) for c in cards] == [
+        ("Build check · 3 Hatch Before Pool (vs. Gate expand)", "lilTiGGer", "picked", "time and supply"),
+        ("Build check · Gate, Nexus, Core into Stargate (PvZ)", "blacksquall", "suggested", "supply"),
+    ]
+    step = {
+        n["properties"]["step #"]: n
+        for n in doc["nodes"]
+        if n["type"] == "Building" and n["properties"]["player"] == "lilTiGGer"
+    }
+    # S13: "17 - Hatchery at 0:52" with step 7 (1:20), +28; "19 - Hatchery at 1:25" with step 26 (3:24), +119
+    assert [
+        (step[k]["name"].rpartition(" · ")[2], step[k]["properties"]["guide time"], step[k]["properties"]["off by s"])
+        for k in (7, 26)
+    ] == [
+        ("28 s late", "0:52", "+28"),
+        ("1:59 late", "1:25", "+119"),
+    ]
 
 
 def test_cr035_a_reason_goes_to_stderr_and_the_log_and_the_build_succeeds(tmp_path, config):

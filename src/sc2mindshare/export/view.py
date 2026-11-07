@@ -13,6 +13,7 @@ import math
 from typing import Any
 
 from sc2mindshare.domain.models import Link, Node
+from sc2mindshare.domain.time import GameTime
 from sc2mindshare.export.time_text import game_hms, text_values
 
 X_LD = "X_LD"
@@ -42,6 +43,41 @@ STEP_PROPERTIES: tuple[tuple[str, str], ...] = (
     ("supply range", "string"),
 )
 STEP_KINDS = frozenset({"Building", "Upgrade", "Units"})
+
+#: CR-035 (export fix BC1; P0-6 §4.0-§4.2, Iris; Kevin's calls 1 and 2): the build check's properties per node kind,
+#: with their Mindshare data types. On every Building, Upgrade and Units node the four step entries, "" where nothing
+#: was compared (Mindshare refuses a blank number, D62b, so they are text); on every Player node ``build check``; the
+#: card's and the missing entry's own. ``at supply`` (CR-034) is the supply the player was on: not declared twice.
+CHECK_PROPERTIES: dict[str, tuple[tuple[str, str], ...]] = {
+    "Building": (("verdict", "string"), ("guide time", "string"), ("off by s", "string"), ("guide supply", "string")),
+    "Player": (("build check", "string"),),
+    "Build Comparison": (
+        ("build order guide", "string"),
+        ("graded by", "string"),
+        ("picked", "string"),
+        ("team draft", "bool"),
+        ("patch", "string"),
+        ("old guide", "bool"),
+        ("covers to", "time[h:m:s]"),
+        ("on time", "int"),
+        ("a bit late", "int"),
+        ("late", "int"),
+        ("early", "int"),
+        ("done", "int"),
+        ("missing", "int"),
+        ("extra", "int"),
+        ("not compared", "int"),
+    ),
+    "Missing Step": (
+        ("item", "string"),
+        ("guide supply", "string"),
+        ("done later at", "string"),
+        ("build order guide", "string"),
+    ),
+}
+CHECK_PROPERTIES = {**CHECK_PROPERTIES, "Upgrade": CHECK_PROPERTIES["Building"], "Units": CHECK_PROPERTIES["Building"]}
+#: The kinds whose entries may be blank (every node of the kind carries them, compared or not).
+_BLANK_ALLOWED = STEP_KINDS | {"Player"}
 
 #: The legacy text of a bool and its value (CR-067 G2's ``ladder``); any other text is a KeyError.
 BOOL_TEXT = {"True": True, "False": False}
@@ -114,7 +150,8 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
     if node.kind not in ("Game", "Player"):
         # CR-063 (D4a, in both documents): always written, a blank as "" (the workbook left a blank out), so every
         # node of a type has the same properties; Mindshare accepts the blank (AC-3). A time is never blank.
-        props["time"] = hhmmss(v["time"])
+        if "time" in v:  # a Build Comparison card has none (CR-035)
+            props["time"] = hhmmss(v["time"])
         props["player"] = v["player"]
     if node.images:
         view["images"] = list(node.images)
@@ -159,10 +196,12 @@ def node_view(node: Node, export_fixes: frozenset[str] = frozenset()) -> dict[st
             props |= {
                 name: BOOL_TEXT[v[field]] if data_type == "bool" else v[field] for name, field, data_type in GAME_PROPERTIES
             }
-    elif kind == "Player":
+    elif kind in ("Player", "Build Comparison"):  # CR-035: the card has the Player card's size (spec §13.2)
         view["size"] = [7.8, 2.2]
     if "BO1" in export_fixes and kind in STEP_KINDS:
         props |= step_properties(node)
+    if "BC1" in export_fixes and kind in CHECK_PROPERTIES:
+        props |= check_properties(node)
     view["properties"] = props
     return view
 
@@ -181,6 +220,23 @@ def step_properties(node: Node) -> dict[str, Any]:
         "steps": " / ".join(s.line() for s in node.steps) if len(node.steps) > 1 else "",
         "supply range": supply_range_text(first.supply_range) if first else "",
     }
+
+
+def check_properties(node: Node) -> dict[str, Any]:
+    """CR-035 BC1: the build check's entries of ``node`` (``Node.added``) in the declared order; on a Building,
+    Upgrade, Units or Player node an entry not given is "" (not compared). An entry that is not declared, or a card's or
+    missing entry's entry that is not given, is an error rather than a node that differs from the others of its type."""
+    declared = CHECK_PROPERTIES[node.kind]
+    added = dict(node.added)
+    if unknown := sorted(set(added) - {name for name, _ in declared}):
+        raise ValueError(f"{node.id}: build check entries {unknown} are not declared for {node.kind}")
+    out: dict[str, Any] = {}
+    for name, _ in declared:
+        if name not in added and node.kind not in _BLANK_ALLOWED:
+            raise ValueError(f"{node.id}: the build check entry {name!r} is missing")
+        value = added.get(name, "")
+        out[name] = game_hms(value.seconds) if isinstance(value, GameTime) else value
+    return out
 
 
 def supply_range_text(supply_range: tuple[int, int] | None) -> str:

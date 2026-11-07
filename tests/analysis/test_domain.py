@@ -91,7 +91,8 @@ def test_spine_models_render_the_live_legacy_csv(tmp_path):
 
 def test_every_node_has_its_kinds_declared_fields(alcyone):
     kinds = {n.kind for n in alcyone.nodes}
-    assert kinds == set(FIELDS)  # Alcyone has every kind
+    # Alcyone has every kind the legacy layer makes; CR-035's card and missing entry are made on the current graph only
+    assert kinds == set(FIELDS) - {"Build Comparison", "Missing Step"}
     assert all(tuple(k for k, _ in n.values) == FIELDS[n.kind] for n in alcyone.nodes)
 
 

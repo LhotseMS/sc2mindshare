@@ -110,7 +110,8 @@ VIEW_NET_DELTA = [
     {"select": {"type": "Ability"}, "fields": ["properties.combat", "properties.queued", "properties.minimap"], "count": 215},
     # P2: battle descriptions and the speed upgrade ("ling" -> "Zergling"); its Units renames are in the Units net test
     {"select": {"type": "Battle"}, "fields": ["description"], "count": 12},
-    {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 1},
+    # (CR-035 BC1: Warp Gate Research, done later, gets an ending and a sentence too: 2 Upgrades)
+    {"select": {"type": "Upgrade"}, "fields": ["name", "description"], "count": 2},
     # P10c: blacksquall's Shield Batteries count in Battle-12 and Battle-27 (their descriptions are among P2's 12)
     {"select": {"type": "Battle"}, "fields": ["properties.dead", "properties.p2 dead"], "count": 2},
     # BO1 (CR-034): the build order in each Player's description, the step properties on every Upgrade (Building and
@@ -125,9 +126,25 @@ VIEW_NET_DELTA = [
             "properties.started at",
             "properties.steps",
             "properties.supply range",
+            # CR-035 BC1: the build check's four entries on every Upgrade
+            "properties.verdict",
+            "properties.guide time",
+            "properties.off by s",
+            "properties.guide supply",
         ],
         "count": 8,
     },
+    # CR-035 BC1: each Player's build check
+    {"select": {"type": "Player"}, "fields": ["properties.build check"], "count": 2},
+]
+#: CR-035 BC1: the cards, the missing entries and their done later links (the other types' are set aside).
+VIEW_NET_ADDED = [
+    "Build Comparison-1#1",
+    "Build Comparison-2#1",
+    "Missing Step-1#1",
+    "Missing Step-2#1",
+    "Missing Step-1>Upgrade-9#1",
+    "Missing Step-2>Upgrade-1#1",
 ]
 
 
@@ -159,7 +176,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
-        "BO2-alcyone-view",
+        "BO2-alcyone-view", "BC1-alcyone-view",
     )  # fmt: skip
 
 
@@ -190,7 +207,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "entry": "+".join(VIEW_LEDGER),
         "base_sha256": cgd.golden.sha256(old_rest),
         "changes": VIEW_NET_DELTA,
-        "added": [],
+        "added": VIEW_NET_ADDED,
         "removed": [],
     }
     assert cgd.check_delta(net, old_rest, new_rest) == []
@@ -336,6 +353,10 @@ def test_p3d_the_main_bases_show_00_00_00_and_their_real_start_in_the_descriptio
             "started at": "00:00:00",
             "steps": "",
             "supply range": "",  # BO2 (CR-035)
+            "verdict": "",  # BC1 (CR-035): not compared, so the build check's entries are empty
+            "guide time": "",
+            "off by s": "",
+            "guide supply": "",
         }
         assert current[node_id]["description"] == "Started 71 s before the game (real start -00:01:11)."
     workbook = load_config()["dataTypes"]
@@ -499,11 +520,11 @@ def test_b3_the_graph_carries_its_export_fixes():
     from sc2mindshare.analysis.run import AnalysisResult
     from sc2mindshare.domain.exposed import Exposed, GameContext, TimeTables
 
-    assert EXPORT_FIXES == ("B3", "P13", "B12", "G2", "BO1")
+    assert EXPORT_FIXES == ("B3", "P13", "B12", "G2", "BO1", "BC1")
     assert to_graph(AnalysisResult((), (), None), fixes=()).export_fixes == frozenset()
     empty = Exposed(GameContext(0, "", 0, "1v1", 1, False, ()), (), (), (), (), (), (), TimeTables((), (), "", ""))
     assert to_graph(AnalysisResult((), (), None, empty, fixes=frozenset(LAYER_FIXES))).export_fixes == frozenset(
-        {"B3", "P13", "B12", "G2", "BO1"}
+        {"B3", "P13", "B12", "G2", "BO1", "BC1"}
     )
     scout = view.node_view(_node("Scouting", [("time", "01:42"), ("player", "p"), ("unit", "Drone"), ("base", "Natural")]))
     assert scout["properties"]["time"] == "01:42:00"
@@ -572,7 +593,13 @@ def test_g2_each_game_property_is_declared_with_its_data_type(document):
     steps = [("step #", "int"), ("at supply", "int"), ("started at", "time[h:m:s]"), ("steps", "string")]
     steps.append(("supply range", "string"))  # CR-035 BO2
     game = [(name, kind) for name, kind, _value in GAME_PROPERTIES]
-    assert list(data_types.items()) == list(workbook.items()) + game + steps
+    # CR-035 BC1: the build check's entries, each name once (a step node's, a Player's, the card's, the missing entry's)
+    check = [("verdict", "string"), ("guide time", "string"), ("off by s", "string"), ("guide supply", "string")]
+    check += [("build check", "string"), ("build order guide", "string"), ("graded by", "string"), ("picked", "string")]
+    check += [("team draft", "bool"), ("patch", "string"), ("old guide", "bool"), ("covers to", "time[h:m:s]")]
+    check += [(name, "int") for name in ("on time", "a bit late", "late", "early", "done", "missing", "extra", "not compared")]
+    check += [("item", "string"), ("done later at", "string")]
+    assert list(data_types.items()) == list(workbook.items()) + game + steps + check
     assert document["faithful"]["dataTypes"] == workbook
 
 

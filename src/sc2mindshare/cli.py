@@ -30,7 +30,7 @@ import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
-from sc2mindshare.analysis.build_check import checks
+from sc2mindshare.analysis.build_check import UnknownPlayer
 from sc2mindshare.analysis.build_steps import build_order
 from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import AnalysisResult, analyse
@@ -147,34 +147,14 @@ def _clock_map(config_root: Path, server: Server) -> tuple[dict[str, str], str |
 
 
 def _laid_out(
-    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str]
+    replay: Path, config_root: Path, timeline: str, clocks: dict[str, str], guides: Sequence[str] = ()
 ) -> tuple[AnalysisResult, Graph, LayoutResult]:
-    """The analysis result, its graph and the layout: the one pipeline ``build`` and ``upload-clocks`` share."""
+    """The analysis result, its graph and the layout: the one pipeline ``build`` and ``upload-clocks`` share (CR-035:
+    with the build check, the guides named on the command line for ``build``)."""
     result = analyse(load_replay(replay), config_root)  # a freshly loaded replay; its exposed values feed the steps
-    graph = to_graph(result)
+    graph = to_graph(result, guides=guides)
     placed = layout(items(graph), Profile(timeline="linear" if timeline == "linear" else "compressed"), clocks)
     return result, graph, placed
-
-
-class UnknownPlayer(ValueError):
-    """A --guide names a player the replay does not have (a usage error, exit 2)."""
-
-
-def _build_checks(result: AnalysisResult, graph: Graph, guides: Sequence[str]) -> tuple[BuildCheck | NoBuildCheck, ...]:
-    """CR-035: each player's build check, with the guides named on the command line (``PLAYER=GUIDE``; PLAYER is the
-    name on his Player node, or his number in the game, 1 or 2)."""
-    if result.exposed is None:
-        return ()
-    names = {n.source.pid: n.value("name") for n in graph.nodes if n.kind == "Player" and n.source and n.source.pid}
-    numbers = {str(p.order + 1): p.pid for p in result.exposed.game.players}
-    named: dict[int, str] = {}
-    for request in guides:
-        player, _, guide = request.partition("=")
-        pid = next((p for p, name in names.items() if name == player), numbers.get(player))
-        if pid is None:
-            raise UnknownPlayer(f"--guide {request}: no player {player!r} in this replay (players: {', '.join(names.values())})")
-        named[pid] = guide
-    return checks(result.exposed, build_order(result.exposed, result.fixes), names, named, library())
 
 
 def build(
@@ -192,8 +172,8 @@ def build(
     with log.open("w", encoding="utf-8") as log_file:
         try:
             with contextlib.redirect_stdout(log_file):  # the layer's debug prints
-                result, graph, placed = _laid_out(replay, config_root, timeline, clocks)
-                build_checks = _build_checks(result, graph, guides)
+                result, graph, placed = _laid_out(replay, config_root, timeline, clocks, guides)
+                build_checks = graph.build_checks
                 document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
                 if graph.intervals is None:
                     raise ValueError("the analysis produced no battle intervals")

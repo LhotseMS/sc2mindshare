@@ -6,7 +6,9 @@ fixture guides are checked by the guide check like a shipped one (``analysis.gui
 """
 
 import contextlib
+import dataclasses
 import io
+import json
 import os
 import pathlib
 from collections import Counter
@@ -14,11 +16,12 @@ from fractions import Fraction
 
 import pytest
 
-from sc2mindshare.analysis.build_check import compare, interval_verdict, supply_band, time_band
+from sc2mindshare.analysis.build_check import age_line, compare, ending, interval_verdict, supply_band, time_band
 from sc2mindshare.analysis.build_steps import build_order
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.guides import library, parse
 from sc2mindshare.analysis.run import analyse
+from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.domain.exposed import (
     Exposed,
     GameContext,
@@ -28,6 +31,11 @@ from sc2mindshare.domain.exposed import (
     TypeChange,
     UnitLife,
 )
+from sc2mindshare.domain.guides import Row
+from sc2mindshare.export.mindshare_json import build_document
+from sc2mindshare.layout.items import items
+from sc2mindshare.layout.profile import Profile
+from sc2mindshare.layout.sweep import layout
 from sc2mindshare.reader.loader import load_replay
 
 CHECKOUT = pathlib.Path(__file__).resolve().parents[2]
@@ -615,3 +623,292 @@ def test_the_kth_missing_occurrence_takes_the_kth_later_start():
     assert [r.verdict for r in rows] == ["done", "missing", "missing"]
     assert rows[1].done_later is not None and rows[1].done_later.start == 10000 - Fraction(4032, 5)
     assert rows[2].done_later is None  # the later starts ran out
+
+
+# --- CR-035 commit 8: the build check in the export (BC1; AC2-AC10, AC12; S05-S08, S10, S12, S16, S17, S20, S24, S25,
+# S27, S34-S36). Literals from QA's oracle, Iris's wording and Leo's §4 layout prediction. ----------------------------
+
+
+def _documents(path, guides=()):
+    """The current graph of a replay, and its document in both timelines (no clock pictures)."""
+    _need(path)
+    with contextlib.redirect_stdout(io.StringIO()):
+        graph = to_graph(analyse(load_replay(path), MS_SC), guides=guides)
+    docs = {}
+    for mode in ("compressed", "linear"):
+        placed = layout(items(graph), Profile(timeline=mode), {})
+        docs[mode] = (json.loads(json.dumps(build_document(graph, placed))), placed)
+    return graph, docs
+
+
+@pytest.fixture(scope="module")
+def alcyone_docs():
+    return _documents(ALCYONE)
+
+
+@pytest.fixture(scope="module")
+def spine_docs():
+    return _documents(SPINE)
+
+
+def _nodes(doc, kind=None):
+    return [n for n in doc["nodes"] if kind is None or n["type"] == kind]
+
+
+def _by_step(doc, player, number):
+    return next(n for n in doc["nodes"] if n["properties"].get("step #") == number and n["properties"]["player"] == player)
+
+
+CHECK_KEYS = ("verdict", "guide time", "off by s", "guide supply")
+
+
+def test_endings_by_supply_and_by_time():
+    """Iris's endings: by supply "N supply late/early"; by time "N s late" under 60 s, "m:ss late" from 60 s."""
+    row = lambda verdict, graded, off, approx=False: Row(1, 1, verdict, graded, None, off, approx)
+    assert ending(row("late", "supply", 15)) == "15 supply late"
+    assert ending(row("a bit late", "supply", 3, True)) == "3 supply late ≈"  # 15 characters, the accepted overflow
+    assert ending(row("early", "supply", -3)) == "3 supply early"
+    assert ending(row("on supply", "supply", -1, True)) == "on supply ≈"
+    assert ending(row("a bit late", "time", 28)) == "28 s late"
+    assert ending(row("late", "time", 59)) == "59 s late"
+    assert ending(row("late", "time", 60)) == "1:00 late"
+    assert ending(row("late", "time", 119)) == "1:59 late"
+    assert ending(row("early", "time", -11)) == "11 s early"
+    assert ending(row("on time", "time", 10)) == "on time"
+    assert ending(Row(1, 1, "done")) == "done" and ending(Row(1, 1, "not compared")) == "not compared"
+
+
+def test_s24_the_age_line():
+    liquipedia, draft = GUIDES[POOL12], GUIDES[STARGATE]
+    assert age_line(liquipedia, "5.0.14.93272") == (
+        True,
+        (
+            "Patch unknown: the build order guide does not say which patch it was written for (last edited 2020-10-10), "
+            "so some timings may have changed since. Most community build orders carry this note."
+        ),
+    )
+    assert (
+        age_line(draft, "5.0.14.93272")[1].startswith("Patch unknown:")
+        and "(written 2026-10-18)" in age_line(draft, "5.0.14")[1]
+    )
+    at = dataclasses.replace(liquipedia, patch="5.0.12")
+    assert age_line(at, "5.0.14.93272") == (False, "")  # 2 patches behind: no note
+    behind = dataclasses.replace(liquipedia, patch="5.0.11")
+    assert age_line(behind, "5.0.14.93272") == (
+        True,
+        (
+            "Older build order guide: written for patch 5.0.11, more than 2 patches before this game (5.0.14), so some "
+            "timings may have changed since."
+        ),
+    )
+    assert age_line(at, "") == (False, "Patch not compared: we could not read this game's patch, so some timings may differ.")
+
+
+def test_s05_s06_one_card_per_player_beside_his_entry(alcyone_docs):
+    _, docs = alcyone_docs
+    for doc, placed in docs.values():
+        cards = _nodes(doc, "Build Comparison")
+        assert [(c["ID"], c["name"], c["properties"]["player"]) for c in cards] == [
+            ("Build Comparison-1", "Build check · 12 Pool (economic)", "lilTiGGer"),
+            ("Build Comparison-2", "Build check · Gate, Nexus, Core into Stargate (PvZ)", "blacksquall"),
+        ]
+        assert [(c["position"]["x"], c["position"]["y"], c["size"]) for c in cards] == [
+            (-6, -14, [7.8, 2.2]),
+            (-6, 14, [7.8, 2.2]),
+        ]
+    lil, black = _nodes(docs["compressed"][0], "Build Comparison")
+    assert lil["properties"] == {
+        "player": "lilTiGGer", "build order guide": "12 Pool (economic)", "graded by": "supply", "picked": "suggested",
+        "team draft": False, "patch": "patch unknown", "old guide": True, "covers to": "00:03:00",
+        "on time": 4, "a bit late": 1, "late": 1, "early": 0, "done": 1, "missing": 1, "extra": 7, "not compared": 0,
+    }  # fmt: skip
+    assert black["properties"] == {
+        "player": "blacksquall", "build order guide": "Gate, Nexus, Core into Stargate (PvZ)", "graded by": "supply",
+        "picked": "suggested", "team draft": True, "patch": "patch unknown", "old guide": True, "covers to": "00:05:00",
+        "on time": 6, "a bit late": 0, "late": 1, "early": 0, "done": 2, "missing": 1, "extra": 13, "not compared": 0,
+    }  # fmt: skip
+    paragraphs = lil["description"].split("\n\n")
+    assert paragraphs[0].split("\n") == [
+        (
+            'Your opening compared with the build order guide "12 Pool (economic)" for Zerg vs Protoss. It covers the first '
+            "3:00 of the game."
+        ),
+        "Suggested: you did not name a build order guide, so we used the one closest to your opening.",
+        (
+            "By supply: this build order guide gives supply counts, not times, so each step is compared by the supply you "
+            "were on when you started it. A step marked ≈ is one where we know your supply only roughly."
+        ),
+    ]
+    assert paragraphs[1].split("\n") == [
+        "8 steps in the build order guide: 4 on supply · 1 done · 1 a bit late · 1 late · 1 missing (1 done later).",
+        "Extra, not in the build order guide: 4 Zerglings, 2 Queens, 2 Overlords, 1 Hatchery.",
+        "Counted, not graded: 17 Drones.",
+    ]
+    assert paragraphs[3] == (
+        'Source: Liquipedia, "12 Pool", revision 1812113, https://liquipedia.net/starcraft2/12_Pool. Text by Liquipedia '
+        "contributors, licensed CC BY-SA 3.0. We turned it into steps."
+    )
+    assert "Team draft: written by the Mindshare team and not yet checked by a Protoss player" in black["description"]
+    assert "Team draft" not in lil["description"]
+
+
+def test_s07_s08_s10_the_compared_steps(alcyone_docs):
+    _graph, docs = alcyone_docs
+    doc = docs["compressed"][0]
+    extractor, overlord, natural, queen = (_by_step(doc, "lilTiGGer", k) for k in (20, 14, 7, 10))
+    assert [extractor["name"], *(extractor["properties"][k] for k in ("at supply", *CHECK_KEYS))] == [
+        "Extractor · 15 supply late", 29, "late", "", "", "14"
+    ]  # fmt: skip
+    assert extractor["description"] == (  # the layer gives the Extractor no description: the sentence alone
+        "Late (by supply): you were at 29 supply when you started it; the build order guide has it at 14. You made more "
+        "units first, so it came later in your build order."
+    )
+    assert (overlord["name"], overlord["properties"]["verdict"]) == ("Overlord · 3 supply late", "a bit late")
+    assert (natural["name"], natural["properties"]["supply range"], natural["properties"]["guide supply"]) == (
+        "Natural · on supply ≈", "17–19", "16"
+    )  # fmt: skip
+    assert "you were at about 17–19 supply when you started it" in natural["description"]
+    assert (queen["name"], queen["properties"]["at supply"], queen["properties"]["supply range"]) == (
+        "Queen · on supply ≈",
+        18,
+        "16–18",
+    )
+    pool = _by_step(doc, "lilTiGGer", 1)
+    assert (pool["name"], pool["properties"]["guide supply"]) == ("Spawning Pool · on supply", "12")
+    lings = _by_step(doc, "lilTiGGer", 8)  # S10: one node, steps 8 and 9, each line with its own verdict
+    assert lings["name"] == "4 Zerglings · extra"
+    assert lings["properties"]["steps"] == "8. 18 1:24 Zergling ×2 · extra / 9. 17 1:28 Zergling ×2 · extra"
+    lil = next(n for n in doc["nodes"] if n["type"] == "Player" and n["name"] == "lilTiGGer")
+    for line in lings["properties"]["steps"].split(" / "):
+        assert line in lil["description"].split("\n")  # the same words on the node and in the Player list
+
+
+def test_s12_every_step_node_carries_the_four_entries_blank_where_not_compared(alcyone_docs, spine_docs):
+    for _, docs in (alcyone_docs, spine_docs):
+        doc = docs["compressed"][0]
+        for n in _nodes(doc):
+            if n["type"] in ("Building", "Upgrade", "Units"):
+                values = [n["properties"][k] for k in CHECK_KEYS]
+                assert all(isinstance(v, str) for v in values), n["ID"]
+                assert (values[0] == "") == (" · " not in n["name"].removeprefix("Missing")), n["ID"]  # an ending iff compared
+            if n["type"] == "Player":
+                assert n["properties"]["build check"]
+    doc = alcyone_docs[1]["compressed"][0]
+    roach = _by_step(doc, "lilTiGGer", 45)  # 5:27: after the 3:30 the build check covers
+    assert [roach["properties"][k] for k in CHECK_KEYS] == ["", "", "", ""] and " · " not in roach["name"]
+    assert [n["properties"]["build check"] for n in _nodes(doc, "Player")] == [
+        "12 Pool (economic)",
+        "Gate, Nexus, Core into Stargate (PvZ)",
+    ]
+
+
+def test_s16_s17_the_missing_entries_on_alcyone(alcyone_docs):
+    _, docs = alcyone_docs
+    for mode, xs in (("compressed", (45.0, 25.0)), ("linear", (60.0, 32.5))):
+        doc, _placed = docs[mode]
+        ghosts = _nodes(doc, "Missing Step")
+        assert [(g["position"]["x"], g["position"]["y"]) for g in ghosts] == [(xs[0], -8), (xs[1], 8)]
+    doc = docs["compressed"][0]
+    mb, wg = _nodes(doc, "Missing Step")
+    assert (mb["name"], mb["properties"]["time"], mb["properties"]["done later at"]) == (
+        "Zergling Movement Speed · missing",
+        "00:04:10",
+        "11:16",
+    )
+    assert mb["description"] == (
+        "Missing: the build order guide starts Zergling Movement Speed as soon as you have 100 gas. You first had 100 gas "
+        "at 4:10, after the 3:30 this build check covers.\nYou started it later, at 11:16."
+    )
+    assert (wg["name"], wg["properties"]["time"], wg["properties"]["done later at"]) == (
+        "Warp Gate Research · missing",
+        "00:02:13",
+        "5:34",
+    )
+    links = [(lk["node1"], lk["node2"], lk["name1"], lk["name2"]) for lk in doc["links"] if lk["name1"] == "done later"]
+    assert links == [
+        ("Missing Step-1", "Upgrade-9", "done later", "was missing at 4:10"),
+        ("Missing Step-2", "Upgrade-1", "done later", "was missing at 2:13"),
+    ]
+    by_id = {n["ID"]: n for n in doc["nodes"]}
+    assert (
+        by_id["Upgrade-9"]["name"].endswith(" · done later") and by_id["Upgrade-1"]["name"] == "Warp Gate Research · done later"
+    )
+
+
+def test_s30_the_build_check_moves_no_existing_node_and_adds_no_row(alcyone_docs, spine_docs):
+    """Leo's §4: nothing that was placed before moves, and no row or clock is added (Alcyone 86 rows, spine 57)."""
+    for (graph, docs), rows in ((alcyone_docs, 86), (spine_docs, 57)):
+        plain = dataclasses.replace(
+            graph,
+            nodes=tuple(n for n in graph.nodes if n.kind not in ("Build Comparison", "Missing Step")),
+        )
+        for mode in ("compressed", "linear"):
+            before = layout(items(plain), Profile(timeline=mode), {})
+            after = docs[mode][1]
+            assert {k: v for k, v in after.positions.items() if k in before.positions} == before.positions
+            assert len(after.rows) == len(before.rows) == rows
+            assert after.extra_nodes == before.extra_nodes  # the clock pictures (none without a clock map)
+
+
+def test_s20_s34_s36_spine(spine_docs):
+    _, docs = spine_docs
+    for mode, x in (("compressed", 27.5), ("linear", 35.0)):
+        (ghost,) = _nodes(docs[mode][0], "Missing Step")
+        assert (ghost["name"], ghost["position"]["x"], ghost["position"]["y"]) == ("Queen · missing", x, -8)
+    doc = docs["compressed"][0]
+    (ghost,) = _nodes(doc, "Missing Step")
+    assert ghost["description"] == (
+        "Missing: the build order guide makes 2 Queens as soon as your Hatchery finishes. You made 1 of the 2 by 3:30."
+        "\nYou made the other one later, at 9:48."
+    )
+    assert [(lk["node2"], lk["name2"]) for lk in doc["links"] if lk["node1"] == ghost["ID"]] == [
+        ("Units-112", "was missing at 2:21")
+    ]
+    zerg, protoss = _nodes(doc, "Build Comparison")
+    assert zerg["description"].split("\n\n")[1].split("\n")[:2] == [
+        "7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 done later, 1 partly made).",
+        "2 Queens: you made 1 of the 2 in time, and the other later, at 9:48.",
+    ]
+    assert (_by_step(doc, "Piliskner", 10)["name"], _by_step(doc, "Piliskner", 17)["name"]) == ("Queen · extra", "Queen · done")
+    assert "4 Warp Gates (they follow from Warp Gate research)" in protoss["description"]
+    assert all(" · " not in n["name"] for n in _nodes(doc, "Building") if n["properties"]["type"] == "Warp Gate")
+
+
+def test_s25_a_player_with_no_build_check_gets_one_line_and_no_card(alcyone_docs):
+    graph, _ = _documents(ALCYONE, guides=("1=pvz-stargate-opener-project",))
+    lil = next(n for n in graph.nodes if n.kind == "Player" and n.value("name") == "lilTiGGer")
+    line = (
+        'No build check: the build order guide "Gate, Nexus, Core into Stargate (PvZ)" is for Protoss vs Zerg, and '
+        "lilTiGGer played Zerg vs Protoss."
+    )
+    assert lil.description.endswith("X_LDX_LD" + line) and dict(lil.added) == {"build check": "none, other matchup"}
+    assert [n.value("player") for n in graph.nodes if n.kind in ("Build Comparison", "Missing Step")] == ["blacksquall"] * 2
+    assert not [
+        n
+        for n in graph.nodes
+        if n.kind != "Player" and n.added and n.value("player") == "lilTiGGer" and dict(n.added).get("verdict")
+    ]
+    # the other player's card and verdicts are those of the run without the fault (a card is numbered by its player)
+    plain = alcyone_docs[0]
+    theirs = lambda g: [
+        (n.id, n.name, n.description, n.added)
+        for n in g.nodes
+        if n.kind not in ("Player", "Missing Step") and n.added and n.value("player") == "blacksquall"
+    ]
+    assert theirs(graph) == theirs(plain)
+
+
+def test_s27_the_wording(alcyone_docs, spine_docs):
+    for _, docs in (alcyone_docs, spine_docs):
+        doc = docs["compressed"][0]
+        for n in _nodes(doc):
+            if " · " in n["name"] and n["type"] in ("Building", "Upgrade", "Units", "Missing Step"):
+                tail = n["name"].rpartition(" · ")[2]
+                assert len(tail) <= (15 if tail.endswith(" ≈") else 14), n["name"]
+            text = f"{n['name']} {n['description']}".lower()
+            for word in ("wrong", "bad", "too many", "mistake", "benchmark"):
+                assert f" {word}" not in text, (n["ID"], word)
+            for agent in ("Cam", "Leo", "Iris", "Vera", "Morgan", "Rex", "Kevin"):
+                assert agent not in f"{n['name']} {n['description']}".split(), (n["ID"], agent)
+        for c in _nodes(doc, "Build Comparison"):
+            assert "A step marked ≈ is one where we know your supply only roughly." in c["description"]

@@ -107,6 +107,7 @@ def test_y_and_sizes_are_identical_except_battle_y_and_supply_block_widths(game)
         if i.type
         not in {"Battle", "Building", "Upgrade", "Initiated", "Units", "Stats", "Chat", "Ability", "Supply Block"}
         | {"Energy Excess", "Inject Delay", "Scouting", "Harrasment"}  # CR-073: on the timeline now
+        | {"Missing Step"}  # CR-035: a missing entry sits at its window, like the buildings it stands among
     ]
     for item in anchored:  # anchors and the grid do not move at all
         assert linear.positions[item.id] == compressed.positions[item.id], item.id

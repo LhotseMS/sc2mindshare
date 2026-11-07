@@ -21,9 +21,11 @@ from fractions import Fraction
 
 import pytest
 
-from sc2mindshare.analysis.build_steps import PRODUCERS, RETURN_LOOPS, build_order, with_build_order
+from sc2mindshare.analysis.build_check import annotate, checks
+from sc2mindshare.analysis.build_steps import PRODUCERS, RETURN_LOOPS, build_order, supply_reading, with_build_order
 from sc2mindshare.analysis.exposed import UPGRADE_ALIASES, research_row
 from sc2mindshare.analysis.fixes import LAYER_FIXES
+from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.domain.exposed import (
@@ -781,6 +783,14 @@ def alcyone():
     return result, order, graph, doc
 
 
+@pytest.fixture(scope="module")
+def alcyone_annotated(alcyone):
+    """CR-035: the build order as the graph holds it, each compared step with its verdict (``to_graph``'s own steps)."""
+    result, order, graph, _ = alcyone
+    names = {n.source.pid: n.value("name") for n in graph.nodes if n.kind == "Player" and n.source and n.source.pid}
+    return annotate(order, checks(result.exposed, order, names, {}, library()), supply_reading(result.exposed))
+
+
 def test_s01_s02_s17_alcyone_matches_the_oracle_line_for_line(alcyone):
     _, order, _, _ = alcyone
     assert [s.line() for s in order.of(1)] == ALCYONE_LIL  # lilTiGGer: 50 steps
@@ -834,17 +844,17 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
     def steps_of(node):
         return {k: node["properties"][k] for k in ZEROS}
 
-    pool = next(n for n in doc["nodes"] if n["name"] == "Spawning Pool")
+    pool = next(n for n in doc["nodes"] if n["name"] == "Spawning Pool · on supply")  # CR-035: its verdict ending
     assert steps_of(pool) == {"step #": 1, "at supply": 12, "started at": "00:00:18", "steps": "", "supply range": ""}
     assert pool["properties"]["time"] == "00:00:19"  # the existing value is unchanged
-    lair = next(n for n in doc["nodes"] if n["name"] == "Lair")
+    lair = next(n for n in doc["nodes"] if n["name"] == "Lair")  # 5:06: after the 3:30 the build check covers
     # CR-035 (D2a, D6a; QA's re-based oracle §1.1, §1.2): the supply at the start, and the range on ≈ steps
     assert steps_of(lair) == {"step #": 39, "at supply": 54, "started at": "00:05:06", "steps": "", "supply range": ""}
-    natural = next(n for n in doc["nodes"] if n["name"] == "Natural")
+    natural = next(n for n in doc["nodes"] if n["name"] == "Natural · on supply ≈")
     assert steps_of(natural) == {"step #": 7, "at supply": 19, "started at": "00:01:20", "steps": "", "supply range": "17–19"}
-    gateway = next(n for n in doc["nodes"] if n["name"] == "Gateway" and n["properties"]["player"] == "blacksquall")
+    gateway = next(n for n in doc["nodes"] if n["name"] == "Gateway · on supply" and n["properties"]["player"] == "blacksquall")
     assert steps_of(gateway) == {"step #": 6, "at supply": 16, "started at": "00:00:41", "steps": "", "supply range": ""}
-    wgr = next(n for n in doc["nodes"] if n["name"] == "Warp Gate Research")
+    wgr = next(n for n in doc["nodes"] if n["name"] == "Warp Gate Research · done later")
     assert steps_of(wgr) == {  # one step: no list
         "step #": 63,
         "at supply": 66,
@@ -853,7 +863,11 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
         "supply range": "66–70",
     }
     lings = next(n for n in doc["nodes"] if n["type"] == "Units" and n["properties"]["step #"] == 6)
-    assert (lings["name"], lings["properties"]["time"], lings["properties"]["at supply"]) == ("6 Zerglings", "00:01:20", 14)
+    assert (lings["name"], lings["properties"]["time"], lings["properties"]["at supply"]) == (
+        "6 Zerglings · done",
+        "00:01:20",
+        14,
+    )
     assert steps_of(by_id["Building-1"]) == ZEROS  # lilTiGGer's "Main base"
     for kind in ("Building", "Upgrade", "Units"):
         shapes = {tuple((k, type(v).__name__) for k, v in n["properties"].items()) for n in doc["nodes"] if n["type"] == kind}
@@ -871,9 +885,9 @@ def test_s08_alcyone_spot_values_and_the_same_four_keys_on_every_node_of_a_type(
     assert not [d for d in doc["detail"] if set(d["properties"]) & set(ZEROS)]  # none on the node face
 
 
-def test_s09_alcyone_nodes_with_several_steps_list_them_in_order(alcyone):
-    _, order, graph, _ = alcyone
-    line_of = {(s.player, s.number): s.line() for s in order.steps}
+def test_s09_alcyone_nodes_with_several_steps_list_them_in_order(alcyone, alcyone_annotated):
+    _, _, graph, _ = alcyone
+    line_of = {(s.player, s.number): s.line() for s in alcyone_annotated.steps}  # CR-035: with their verdicts
     multi = [n for n in graph.nodes if len(n.steps) > 1]
     assert multi and all(n.kind == "Units" for n in multi)
     for n in multi:
@@ -889,12 +903,19 @@ def test_s08_every_alcyone_step_is_on_exactly_one_node(alcyone):
     assert set(placed) == {(s.player, s.number) for s in order.steps}
 
 
-def test_s18_the_player_lists_are_the_node_steps(alcyone):
+def test_s18_the_player_lists_are_the_node_steps(alcyone, alcyone_annotated):
     _, _, graph, doc = alcyone
     lil, black = (n["description"].split("\n") for n in doc["nodes"] if n["type"] == "Player")
     assert lil[:3] == ["Red Zerg build 938 units and killed 358 units.", "", "Build order to 6:00 (supply, time, item):"]
-    assert lil[3:] == ALCYONE_LIL and lil[-1] == "50. 73 5:56 Roach ×5"
-    assert black[1:3] == ["", "Build order to 6:00 (supply, time, item):"] and black[3:] == ALCYONE_BLACK
+    # CR-035 (call 4): each list is the build order with each compared step's verdict added, in the same words as on
+    # the nodes; without the verdicts it is CR-034's oracle, line for line
+    assert lil[3:] == [s.line() for s in alcyone_annotated.of(1)] and lil[-1] == "50. 73 5:56 Roach ×5"
+    assert [replace(s, verdict=None).line() for s in alcyone_annotated.of(1)] == ALCYONE_LIL
+    assert lil[3:8] == ["1. 12 0:18 Spawning Pool · on supply", "2. 11 0:21 Drone", "3. 12 0:26 Drone", "4. 13 0:29 Drone",
+                        "5. 14 0:39 Overlord · on supply"]  # fmt: skip
+    assert black[1:3] == ["", "Build order to 6:00 (supply, time, item):"]
+    assert black[3:] == [s.line() for s in alcyone_annotated.of(2)]
+    assert [replace(s, verdict=None).line() for s in alcyone_annotated.of(2)] == ALCYONE_BLACK
     on_nodes = sorted(((s.player, s.number), s.line()) for n in graph.nodes for s in n.steps)
     assert [line for (player, _), line in on_nodes if player == 1] == lil[3:]
     assert [line for (player, _), line in on_nodes if player == 2] == black[3:]
