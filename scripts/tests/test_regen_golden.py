@@ -294,3 +294,30 @@ def test_the_bc0_entries_change_nothing(entry, name):
     assert e["golden"] == [f"spine/{name}"]
     assert (e["changes"], e["added"], e["removed"], e.get("renumber")) == ([], [], [], None)
     assert len(e["base_sha256"]) == 64
+
+
+#: CR-035 (L-B): Leo's independent spine prediction, a few nodes: (compressed position, size), (linear position, size).
+#: The full 34 are the ledger entries TL1-spine-snap-compressed and TL1-spine-snap-linear.
+SPINE_LANE_LITERALS = {
+    "Scouting-2": (((20.0, -21.0), [2.65, 1]), ((25.0, -21.0), [2.65, 1])),
+    "Harrasment-6": (((115.0, -21.0), [2.65, 1]), ((132.5, -21.0), [2.65, 1])),  # serega's, on Piliskner's side (D2b)
+    "Inject Delay-3": (((83.75, -22.3), [25.0, 1.0]), ((96.25, -22.3), [35.0, 1.0])),
+    "Energy Excess-11": (((116.25, 24.3), [50.0, 1.0]), ((136.25, 24.3), [55.0, 1.0])),  # open end: the last column
+}
+SPINE_LANE_TYPES = {"Harrasment", "Scouting", "Energy Excess", "Inject Delay"}
+
+
+@pytest.mark.parametrize("mode", ["compressed", "linear"])
+def test_spines_lane_nodes_are_where_leo_predicted(mode):
+    doc = json.loads((regen.golden_dir("spine") / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
+    lane_nodes = {n["ID"]: n for n in doc["nodes"] if n["type"] in SPINE_LANE_TYPES}
+    expected = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))[f"TL1-spine-snap-{mode}"]["expected"]
+    assert len(lane_nodes) == len(expected) == 34 and set(lane_nodes) == set(expected)
+    for node_id, want in expected.items():
+        n = lane_nodes[node_id]
+        assert [n["position"]["x"], n["position"]["y"]] == [round(v, 4) for v in want["position"]], node_id
+        assert n["size"] == [round(v, 4) for v in want.get("size", [2.65, 1])], node_id
+    for node_id, by_mode in SPINE_LANE_LITERALS.items():
+        position, size = by_mode[0 if mode == "compressed" else 1]
+        n = lane_nodes[node_id]
+        assert (n["position"]["x"], n["position"]["y"]) == position and n["size"] == size, node_id
