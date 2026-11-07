@@ -970,8 +970,9 @@ def test_a1_d1a_a_supply_verdict_on_a_range_is_marked_and_only_a_supply_verdict(
 
 def test_a3_the_done_sentence(alcyone_docs):
     lings = _by_step(alcyone_docs[1]["compressed"][0], "lilTiGGer", 6)
-    assert lings["description"].endswith(
-        "\n\nDone: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it."
+    assert lings["description"].endswith(  # G1 (D1b): the step's supply range follows in the same paragraph
+        "\n\nDone: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it. "
+        "You were at about 14–16 supply when you started it."
     )
 
 
@@ -1223,3 +1224,26 @@ def test_qa_f2_a_done_later_node_carries_no_guide_values():
     entries = [by_id["Upgrade-9"]["properties"][k] for k in CHECK_KEYS]
     assert entries == ["done later", "", "", ""]
     assert by_id["Missing Step-1-1"]["properties"]["guide supply"] == "21"  # on the missing entry it links from
+
+
+def test_g1_every_step_whose_supply_is_a_range_says_so(alcyone_docs, spine_docs):
+    """Cam's G1, Stefan's D1b (AC1 as written), Iris's qa-fix.md G1: one literal per case."""
+    alcyone = {n["ID"]: n for n in alcyone_docs[1]["compressed"][0]["nodes"]}
+    spine = {n["ID"]: n for n in spine_docs[1]["compressed"][0]["nodes"]}
+    last = lambda node: node["description"].split("\n\n")[-1]
+    # a single step with a verdict: the comparison sentence, then the supply sentence
+    assert last(alcyone["Units-13"]) == (
+        "Done: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it. "
+        "You were at about 14–16 supply when you started it."
+    )
+    # no comparison (after blacksquall's 5:30): the supply sentence alone
+    assert (alcyone["Building-32"]["properties"]["verdict"], last(alcyone["Building-32"])) == (
+        "",
+        "You were at about 64–68 supply when you started it.",
+    )
+    # several steps (Probes, counted, not graded): one Step N sentence per ranged step
+    assert last(spine["Units-36"]) == "Step 28: you were at about 30–33 supply when you started it."
+    # a ≈ step graded by supply: its own sentence already says it, nothing added
+    assert last(alcyone["Building-9"]) == (
+        "On supply: you were at about 17–19 supply when you started it; the build order guide has it at 16."
+    )

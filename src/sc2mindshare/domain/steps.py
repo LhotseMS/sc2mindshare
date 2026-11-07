@@ -49,6 +49,7 @@ class StepVerdict:
     off_by_s: str = ""
     guide_supply: str = ""
     sentence: str = ""
+    supply_graded: bool = False  # the sentence compares the step's supply (it then says "you were at about N–M supply")
 
 
 @dataclass(frozen=True)

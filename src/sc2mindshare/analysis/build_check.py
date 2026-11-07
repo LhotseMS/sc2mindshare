@@ -647,6 +647,7 @@ def _row_verdict(row: Row, step: GuideStep) -> StepVerdict:
         off_by_s=_signed(row.off) if row.graded_by == "time" and row.off is not None else "",
         guide_supply=_guide_supply(step),
         sentence=_sentence(row, step),
+        supply_graded=row.graded_by == "supply",
     )
 
 
@@ -1031,9 +1032,20 @@ def with_build_check(
         if node.kind not in ("Building", "Upgrade", "Units"):
             continue
         verdict = next((s.verdict for s in node.steps if s.verdict is not None), marked.get(i))
-        if verdict is None:
+        # Stefan's D1b, Iris's G1: every step whose supply is a range says so, unless its own sentence compares its supply
+        supply = [
+            f"{f'Step {s.number}: you' if len(node.steps) > 1 else 'You'} were at about "
+            f"{s.supply_range[0]}\u2013{s.supply_range[1]} supply when you started it."
+            for s in node.steps
+            if s.supply_range is not None and not (s.verdict is not None and s.verdict.supply_graded)
+        ]
+        paragraph = " ".join(([verdict.sentence] if verdict is not None else []) + supply)
+        if not paragraph:
             continue
-        description = f"{node.description}{X_LD}{X_LD}{verdict.sentence}" if node.description else verdict.sentence
+        description = f"{node.description}{X_LD}{X_LD}{paragraph}" if node.description else paragraph
+        if verdict is None:  # no comparison: the supply sentence(s) only
+            nodes[i] = replace(node, description=description)
+            continue
         nodes[i] = replace(
             node,
             name=f"{node.name} · {verdict.ending}",

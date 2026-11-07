@@ -1448,7 +1448,7 @@ def test_f1_on_alcyone_an_uncounted_provider_death_still_lowers_the_limit(uncoun
 def _without_build_check(nodes, links):
     """``nodes`` and ``links`` without exactly what CR-035's ``with_build_check`` adds: the cards and missing entries
     (after every other node) and their links; on a compared node, its name ending, its sentence (the last paragraph of
-    its description) and its entries; every node's entries. The steps' verdicts go with the steps
+    its description) and its entries; on a node with a ranged step, that last paragraph (G1); every node's entries. The steps' verdicts go with the steps
     (``_without_build_order``)."""
     added_kinds = ("Build Comparison", "Missing Step")
     ghosts = {n.id for n in nodes if n.kind == "Missing Step"}
@@ -1457,10 +1457,14 @@ def _without_build_check(nodes, links):
     out = []
     for node in kept:
         verdict = dict(node.added).get("verdict")
+        # G1 (D1b): a step whose supply is a range, and whose own sentence does not compare its supply, adds its supply
+        # sentence to the same last paragraph, with or without a verdict
+        ranged = any(s.supply_range is not None and not (s.verdict and s.verdict.supply_graded) for s in node.steps)
         if verdict:
-            name, _, _ending = node.name.rpartition(" · ")
+            node = dataclasses.replace(node, name=node.name.rpartition(" · ")[0])
+        if verdict or ranged:
             head, sep, _sentence = node.description.rpartition(X_LD + X_LD)
-            node = dataclasses.replace(node, name=name, description=head if sep else "")
+            node = dataclasses.replace(node, description=head if sep else "")
         out.append(dataclasses.replace(node, added=()))
     return out, [lk for lk in links if lk.node1 not in ghosts]
 
