@@ -240,3 +240,50 @@ def test_a_new_goldens_entry_may_list_no_change(tmp_path, monkeypatch, capsys):
 def test_an_alcyone_entry_does_not_regenerate_a_spine_golden(capsys):
     assert regen.main(["--entry", "H1", "--golden", "G-VIEW-current.json", "--replay", "spine"]) == 2
     assert "does not list spine/G-VIEW-current.json" in capsys.readouterr().out
+
+
+def _need_spine():
+    try:
+        regen.golden.require(regen.replay_path("spine"), "spine replay")
+    except regen.golden.InputMissing as exc:
+        if regen.golden.strict():
+            pytest.fail(str(exc))
+        pytest.skip(str(exc))
+
+
+@pytest.mark.parametrize("name", sorted(regen.REGENERABLE))
+def test_each_spine_current_golden_is_what_the_code_makes_byte_for_byte(name):
+    """CR-035 call 14: spine's current goldens (BC0) are held to the code like Alcyone's."""
+    _need_spine()
+    assert regen.REGENERABLE[name]("spine") == (regen.golden_dir("spine") / name).read_text(encoding="utf-8"), (
+        f"spine/{name} differs from the current code's output: write a CHANGES.md entry, then "
+        f"scripts/regen_golden.py --entry <id> --golden {name} --replay spine --write"
+    )
+
+
+@pytest.mark.parametrize("name", sorted(regen.REGENERABLE))
+def test_spines_current_goldens_have_no_whole_number_with_a_decimal_part(name):
+    literals = []
+
+    def keep(text):
+        literals.append(text)
+        return float(text)
+
+    json.loads((regen.golden_dir("spine") / name).read_text(encoding="utf-8"), parse_float=keep)
+    assert literals and [t for t in literals if float(t).is_integer()] == []
+
+
+@pytest.mark.parametrize(
+    ("entry", "name"),
+    [
+        ("BC0-spine-view", "G-VIEW-current.json"),
+        ("BC0-spine-snap-compressed", "G-SNAP-current-compressed.json"),
+        ("BC0-spine-snap-linear", "G-SNAP-current-linear.json"),
+    ],
+)
+def test_the_bc0_entries_pass_the_delta_check_on_their_new_file(entry, name):
+    """The H1 pattern for a new file: base = the file, no change; check_golden_delta passes it as written."""
+    entries = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))
+    path = regen.golden_dir("spine") / name
+    assert entries[entry]["golden"] == [f"spine/{name}"]
+    assert regen.check_golden_delta.check_delta(entries[entry], path, path) == []
