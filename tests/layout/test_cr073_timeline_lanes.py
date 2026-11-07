@@ -189,6 +189,31 @@ def test_m_takes_the_widest_unit_row(mode):
     assert r.positions["Scouting-1"] == approx((0, 31.7))  # 12.8 + 17.0 + 0.5 + 0.6 + 0.3 + 0.5
 
 
+# CR-035, L-A (Leo's rule; CR-073 review finding 1): the stack slots are counted on the compressed columns in
+# both timelines, so a ghost in an empty window stacks on the next column's buildings in linear mode too, and
+# M, the rail and every lane keep the same y in both timelines. Fixture: windows 0 and 4 occupied (BASE);
+# 11 buildings of A in window 4 (slots 0-10), a Missing Step of A in the empty window 2: it takes slot 11.
+L_A_STACK = [it(f"Building-{k}", "Building", 45) for k in range(11)]
+
+
+@pytest.mark.parametrize(("mode", "ghost_x", "scouting_x"), [("compressed", 2.5, 2.5), ("linear", 5.0, 10.0)])
+def test_a_ghost_in_an_empty_window_takes_the_next_columns_stack_slot_in_both_timelines(mode, ghost_x, scouting_x):
+    r = lay([*BASE, *L_A_STACK, it("Missing Step-1", "Missing Step", 25), it("Scouting-1", "Scouting", 45)], mode)
+    assert r.positions["Missing Step-1"] == approx((ghost_x, -19.55))  # 8.0 + 11 x 1.05
+    # slot 11's top is 8.0 + 11 x 1.05 + 0.5 = 20.05, so M = 7.25 (linear before L-A: slot 10, M 6.2, y -20.9)
+    assert r.positions["Scouting-1"] == approx((scouting_x, -21.95))  # 12.8 + 7.25 + 0.5 + 0.6 + 0.3 + 0.5
+
+
+@pytest.mark.parametrize(("mode", "x"), [("compressed", 2.5), ("linear", 10.0)])
+def test_the_units_pad_counts_a_ghost_from_an_empty_window_in_both_timelines(mode, x):
+    unit = it("Units-1", "Units", 45, size_basis=21)  # radius 1.7
+    r = lay([*BASE, *L_A_STACK, it("Missing Step-1", "Missing Step", 25), unit, it("Scouting-1", "Scouting", 45)], mode)
+    # 12 slots used in the column: pad = 1.05 x (12 - 5) = 7.35; the unit at 12.8 + 1.7 + 7.35
+    assert r.positions["Units-1"] == approx((x, -21.85))
+    # M = the unit row, 1.7 x 2 + 7.35 = 10.75 (linear before L-A: pad 6.3, unit -20.8, Scouting -24.4)
+    assert r.positions["Scouting-1"] == approx((x, -25.45))  # 12.8 + 10.75 + 0.5 + 0.6 + 0.3 + 0.5
+
+
 # --- AC-9: every type has a lane; the grid is the fallback, with a warning -------------------------------------
 
 
