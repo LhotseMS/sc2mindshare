@@ -1,0 +1,72 @@
+{
+  "format_version": "1",
+  "id": "zvx-17-hatch-17-gas-17-pool-liquipedia",
+  "name": "Hatchery First: 17 Hatch 17 Gas 17 Pool",
+  "race": "Zerg",
+  "vs": "Any",
+  "era": "LotV",
+  "patch": null,
+  "as_of": "2018-01-12",
+  "horizon": "3:00",
+  "source": {
+    "kind": "liquipedia",
+    "title": "Hatchery First (Legacy of the Void)",
+    "url": "https://liquipedia.net/starcraft2/Hatchery_First_(Legacy_of_the_Void)",
+    "revision": 1258135,
+    "retrieved": "2026-10-18",
+    "licence": "CC BY-SA 3.0",
+    "attribution": "Liquipedia contributors, \"Hatchery First (Legacy of the Void)\", revision 1258135, https://liquipedia.net/starcraft2/Hatchery_First_(Legacy_of_the_Void)",
+    "changes": "Transcribed the '17-Hatch' build into steps; the two Queens as one step with count 2; canonical item ids added; no timings added."
+  },
+  "steps": [
+    {
+      "item": "Overlord",
+      "text": "13 Overlord",
+      "kind": "unit",
+      "supply": 13
+    },
+    {
+      "item": "Hatchery",
+      "text": "17 Hatchery",
+      "kind": "building",
+      "supply": 17,
+      "key": true,
+      "note": "Natural"
+    },
+    {
+      "item": "Extractor",
+      "text": "17 Extractor",
+      "kind": "building",
+      "supply": 17
+    },
+    {
+      "item": "SpawningPool",
+      "text": "17 Pool",
+      "kind": "building",
+      "supply": 17,
+      "key": true
+    },
+    {
+      "item": "Overlord",
+      "text": "21 Overlord",
+      "kind": "unit",
+      "supply": 21
+    },
+    {
+      "item": "zerglingmovementspeed",
+      "text": "21 @100 gas start Metabolic Boost",
+      "kind": "upgrade",
+      "supply": 21,
+      "trigger": "@100 gas",
+      "key": true
+    },
+    {
+      "item": "Queen",
+      "text": "@100% Hatchery add two Queens",
+      "kind": "unit",
+      "count": 2,
+      "trigger": "@100% Hatchery"
+    }
+  ],
+  "notes": "The standard hatch-first opening, usable against any race. Supply-only. Horizon set to 3:00 because the source build ends about there; later steps would all read as extra."
+}

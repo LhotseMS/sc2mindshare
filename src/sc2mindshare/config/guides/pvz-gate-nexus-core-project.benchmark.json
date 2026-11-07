@@ -1,0 +1,80 @@
+{
+  "format_version": "1",
+  "id": "pvz-gate-nexus-core-project",
+  "name": "Gate, Gas, Nexus, Core (PvZ standard expand)",
+  "race": "Protoss",
+  "vs": "Zerg",
+  "era": "LotV",
+  "patch": null,
+  "as_of": "2026-10-18",
+  "horizon": "5:00",
+  "source": {
+    "kind": "project",
+    "author": "Cam (Business Analyst)",
+    "created": "2026-10-18",
+    "licence": "project"
+  },
+  "steps": [
+    {
+      "item": "Pylon",
+      "text": "14 Pylon",
+      "kind": "building",
+      "supply": 14
+    },
+    {
+      "item": "Gateway",
+      "text": "16 Gateway",
+      "kind": "building",
+      "supply": 16,
+      "key": true
+    },
+    {
+      "item": "Assimilator",
+      "text": "17 Assimilator",
+      "kind": "building",
+      "supply": 17
+    },
+    {
+      "item": "Nexus",
+      "text": "19 Nexus",
+      "kind": "building",
+      "supply": 19,
+      "key": true,
+      "note": "Natural"
+    },
+    {
+      "item": "CyberneticsCore",
+      "text": "20 Cybernetics Core",
+      "kind": "building",
+      "supply": 20,
+      "key": true
+    },
+    {
+      "item": "Assimilator",
+      "text": "21 Assimilator",
+      "kind": "building",
+      "supply": 21
+    },
+    {
+      "item": "Pylon",
+      "text": "22 Pylon",
+      "kind": "building",
+      "supply": 22
+    },
+    {
+      "item": "WarpGateResearch",
+      "text": "@100% Core: Warp Gate",
+      "kind": "upgrade",
+      "trigger": "@100% Cybernetics Core",
+      "key": true
+    },
+    {
+      "item": "Adept",
+      "text": "@100% Core: Adept",
+      "kind": "unit",
+      "trigger": "@100% Cybernetics Core",
+      "optional": true
+    }
+  ],
+  "notes": "DRAFT authored by Cam from common LotV practice [asserted, not checked against a source]; a Protoss player should confirm it. No Liquipedia PvZ page has LotV supplies (all start at 9 Pylon, the pre-LotV 6-worker start). Timings to be added by an SC2 Planner run (time_source 'simulated'). Horizon set to 5:00 because the source build ends about there; later steps would all read as extra."
+}
