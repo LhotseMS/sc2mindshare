@@ -915,3 +915,35 @@ Listed before the change, on Alcyone and spine, the view and both snapshots; tex
 ```json
 {"entry": "BC1b-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Iris's wording check A1, A3, A4 and Stefan's D1a", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "48cbc540a1c13f96aaeae6508747863e1d32dcbcbd0a93ff7afd713e0a4ffed7", "changes": [{"select": {"type": "Building"}, "fields": ["name"], "count": 2}, {"select": {"type": "Units"}, "fields": ["description"], "count": 1}, {"select": {"type": "Upgrade"}, "fields": ["description"], "count": 2}, {"select": {"type": "Player"}, "fields": ["description"], "count": 1}, {"select": {"type": "Build Comparison"}, "fields": ["description"], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### BC1c: Missing Step IDs per player, and the verdict of a node done later (CR-035 review round 1; Stefan's D2a, Iris's R3)
+
+Listed before the change, on Alcyone and spine, the view and both snapshots:
+- D2a (Rex's finding 5): a missing entry's ID is numbered per player, as the cards are (`Missing Step-<player>-<n>`), so a player with no build check never renumbers the other's entries. Alcyone: Missing Step-1 -> Missing Step-1-1 (lilTiGGer), Missing Step-2 -> Missing Step-2-1 (blacksquall); spine: Missing Step-1 -> Missing Step-1-1 (Piliskner). Paired by player, item and time; their `done later` links follow. Nothing else of theirs changes.
+- R3 (Rex's N1): a real node done later carries `verdict` "done later" (was "missing"), as its name ending says: Alcyone Upgrade-9 and Upgrade-1, spine Units-112.
+- Findings 1, 2, 4 and 10 (Leo's rulings), R1 and findings 8 and 9 change no golden (Leo measured findings 1, 4 and 10; no shipped guide reaches past 5:30).
+
+```json
+{"entry": "BC1c-alcyone-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["alcyone/G-VIEW-current.json"], "base_sha256": "7f59ddc7dba093996b7cb082b0882a214da50b1c07dcb5e9263b91e84fb83b24", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 2, "links_dropped": 0}], "changes": [{"select": {"type": "Upgrade"}, "fields": ["properties.verdict"], "count": 2}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1c-alcyone-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["alcyone/G-SNAP-current-compressed.json"], "base_sha256": "0f436801a3ab4df2248f5bb0df7a2c0aab778cdb485fbda5495d26ffc89e50f9", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 2, "links_dropped": 0}], "changes": [{"select": {"type": "Upgrade"}, "fields": ["properties.verdict"], "count": 2}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1c-alcyone-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["alcyone/G-SNAP-current-linear.json"], "base_sha256": "774823db888bf7a162541302a1d4f74d18680075744e0ea76303ee8f97e56f0b", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 2, "links_dropped": 0}], "changes": [{"select": {"type": "Upgrade"}, "fields": ["properties.verdict"], "count": 2}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1c-spine-view", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["spine/G-VIEW-current.json"], "base_sha256": "1b23f43cf4e7bccdb68728224667bac0129647dd0b05fd92a75f12a58e5e13f3", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 1, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["properties.verdict"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1c-spine-snap-compressed", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["spine/G-SNAP-current-compressed.json"], "base_sha256": "5297a6208ca0b4774d143ebeb8691b64757120df28b79f8cceb5b78eeb1817bf", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 1, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["properties.verdict"], "count": 1}], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC1c-spine-snap-linear", "task": "CR-035", "defect": "BC1 the build check is not in the graph (CR-035): Rex's review round 1, Stefan's D2a (Missing Step IDs per player) and Iris's R3 (verdict done later)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "c367a1d6839af6ac2009e877e39b638a9841e1934063584172db719a4e356c71", "renumber": [{"type": "Missing Step", "key": ["properties.player", "properties.item", "properties.time"], "retype": {}, "merged": {}, "ids_changed": 1, "links_dropped": 0}], "changes": [{"select": {"type": "Units"}, "fields": ["properties.verdict"], "count": 1}], "added": [], "removed": []}
+```
