@@ -287,7 +287,8 @@ def test_units_net_of_the_ledger():
     assert old == {k: v for k, v in new.items() if k != p8[0]}
     units = {name: [n for n in _doc(name)["nodes"] if n["type"] == "Units"] for name in ("G-VIEW-1.json", "G-VIEW-current.json")}
     assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 172)
-    assert len(_doc("G-VIEW-current.json")["links"]) - len(_doc("G-VIEW-1.json")["links"]) == 152 - 163
+    links = [lk for lk in _doc("G-VIEW-current.json")["links"] if not lk["node1"].startswith("Missing Step-")]  # CR-035
+    assert len(links) - len(_doc("G-VIEW-1.json")["links"]) == 152 - 163
 
 
 def test_buildings_net_of_the_ledger():
@@ -295,15 +296,26 @@ def test_buildings_net_of_the_ledger():
     and -101), renumbering the later ones; without them the Buildings pair with G-VIEW-1's in order, player by
     player, and the 23 the other entries changed (P3d/P3e, P11, N1) are the only ones whose fields differ. BO1
     (CR-034) adds the 17 building-morph nodes after them (Building-114 to -130) and the four step properties on
-    every Building, which this net check sets aside (their values are tests/analysis/test_build_steps.py's)."""
+    every Building, which this net check sets aside (their values are tests/analysis/test_build_steps.py's); CR-035
+    (BC1) adds the build check's four entries, and on a compared Building its name ending and its sentence, set aside
+    the same way (their values are tests/analysis/test_build_check.py's)."""
     old = [n for n in _doc("G-VIEW-1.json")["nodes"] if n["type"] == "Building"]
     new = [n for n in _doc("G-VIEW-current.json")["nodes"] if n["type"] == "Building"]
     morphs = [n for n in new if int(n["ID"].split("-")[1]) > 113]
     assert [n["ID"] for n in morphs] == [f"Building-{i}" for i in range(114, 131)]
     assert sorted({n["properties"]["type"] for n in morphs}) == ["Greater Spire", "Hive", "Lair", "Warp Gate"]
     steps = ("step #", "at supply", "started at", "steps", "supply range")  # CR-035 BO2: + supply range
-    assert all(list(n["properties"])[-5:] == list(steps) for n in new)
-    new = [{**n, "properties": {k: v for k, v in n["properties"].items() if k not in steps}} for n in new if n not in morphs]
+    check = ("verdict", "guide time", "off by s", "guide supply")  # CR-035 BC1
+    assert all(list(n["properties"])[-9:] == [*steps, *check] for n in new)
+
+    def unchecked(n):
+        if n["properties"]["verdict"]:  # a compared Building: its ending and its sentence (after one blank line)
+            head, sep, _sentence = n["description"].rpartition("\n\n")
+            n = {**n, "name": n["name"].rpartition(" · ")[0], "description": head if sep else ""}
+        return {**n, "properties": {k: v for k, v in n["properties"].items() if k not in (*steps, *check)}}
+
+    assert sum(1 for n in new if n["properties"]["verdict"]) == 24
+    new = [unchecked(n) for n in new if n not in morphs]
     added = {
         n["ID"]: (n["name"], n["properties"]["player"])
         for n in new

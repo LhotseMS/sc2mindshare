@@ -164,7 +164,29 @@
   "at supply": "int",
   "started at": "time[h:m:s]",
   "steps": "string",
-  "supply range": "string"
+  "supply range": "string",
+  "verdict": "string",
+  "guide time": "string",
+  "off by s": "string",
+  "guide supply": "string",
+  "build check": "string",
+  "build order guide": "string",
+  "graded by": "string",
+  "picked": "string",
+  "team draft": "bool",
+  "patch": "string",
+  "old guide": "bool",
+  "covers to": "time[h:m:s]",
+  "on time": "int",
+  "a bit late": "int",
+  "late": "int",
+  "early": "int",
+  "done": "int",
+  "missing": "int",
+  "extra": "int",
+  "not compared": "int",
+  "item": "string",
+  "done later at": "string"
  },
  "nodes": [
   {
@@ -196,14 +218,16 @@
   },
   {
    "name": "Piliskner",
-   "description": "Red Zerg build 409 units and killed 119 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Drone\n2. 13 0:12 Overlord\n3. 13 0:17 Drone\n4. 14 0:30 Drone ×2\n5. 16 0:41 Spawning Pool\n6. 15 0:47 Drone\n7. 16 1:10 Hatchery\n8. 15 1:15 Extractor · cancelled\n9. 16 1:28 Zergling ×6\n10. 19 1:37 Queen\n11. 21 1:44 Overlord\n12. 21 1:52 Drone\n13. 22 2:04 Drone\n14. 23 2:11 Extractor\n15. 22 2:13 Hatchery\n16. 21 2:32 Drone ×3\n17. 24 2:37 Queen\n18. 26 2:48 Drone ×2\n19. 28 2:48 Drone\n20. 29 3:02 Drone ×2\n21. 31 3:02 Drone\n22. 31 3:23 Drone ×3\n23. 34 3:23 Drone\n24. 35 3:23 Zergling Movement Speed\n25. 35 3:26 Drone\n26. 36 3:27 Drone ×3\n27. 39 3:43 Overlord\n28. 39 3:43 Drone ×2\n29. 41 3:52 Overlord\n30. 41 3:54 Lair\n31. 41 4:06 Zergling ×2\n32. 42 4:06 Zergling ×14\n33. 49 4:08 Overlord\n34. 49 4:20 Overlord\n35. 49 4:28 Drone\n36. 50 4:29 Drone ×7\n37. 57 4:37 Overlord\n38. 57 4:38 Pneumatized Carapace\n39. 57 4:39 Drone ×2\n40. 59 4:42 Extractor\n41. 58 4:42 Spore Crawler\n42. 57 4:43 Spore Crawler\n43. 56 4:45 Spore Crawler\n44. 54 5:00 Drone ×3\n45. 57 5:00 Drone\n46. 58 5:04 Extractor\n47. 57 5:05 Extractor\n48. 56 5:07 Roach Warren\n49. 55 5:08 Evolution Chamber\n50. 54 5:08 Drone ×3\n51. 57 5:09 Baneling Nest\n52. 56 5:19 Drone ×3\n53. 59 5:25 Spine Crawler\n54. 58 5:26 Spine Crawler\n55. 57 5:41 Drone\n56. 58 5:44 Overlord ×3\n57. 57 5:55 Roach\n58. 59 5:55 Roach ×3\n59. 65 5:56 Overlord\n60. 65 5:59 Glial Reconstitution",
+   "description": "Red Zerg build 409 units and killed 119 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Drone\n2. 13 0:12 Overlord · on supply\n3. 13 0:17 Drone\n4. 14 0:30 Drone ×2\n5. 16 0:41 Spawning Pool · on supply\n6. 15 0:47 Drone\n7. 16 1:10 Hatchery · on supply\n8. 15 1:15 Extractor · cancelled\n9. 16 1:28 Zergling ×6\n10. 19 1:37 Queen · extra\n11. 21 1:44 Overlord · on supply\n12. 21 1:52 Drone\n13. 22 2:04 Drone\n14. 23 2:11 Extractor · 6 supply late\n15. 22 2:13 Hatchery · extra\n16. 21 2:32 Drone ×3\n17. 24 2:37 Queen · done\n18. 26 2:48 Drone ×2\n19. 28 2:48 Drone\n20. 29 3:02 Drone ×2\n21. 31 3:02 Drone\n22. 31 3:23 Drone ×3\n23. 34 3:23 Drone\n24. 35 3:23 Zergling Movement Speed · done\n25. 35 3:26 Drone\n26. 36 3:27 Drone ×3\n27. 39 3:43 Overlord\n28. 39 3:43 Drone ×2\n29. 41 3:52 Overlord\n30. 41 3:54 Lair\n31. 41 4:06 Zergling ×2\n32. 42 4:06 Zergling ×14\n33. 49 4:08 Overlord\n34. 49 4:20 Overlord\n35. 49 4:28 Drone\n36. 50 4:29 Drone ×7\n37. 57 4:37 Overlord\n38. 57 4:38 Pneumatized Carapace\n39. 57 4:39 Drone ×2\n40. 59 4:42 Extractor\n41. 58 4:42 Spore Crawler\n42. 57 4:43 Spore Crawler\n43. 56 4:45 Spore Crawler\n44. 54 5:00 Drone ×3\n45. 57 5:00 Drone\n46. 58 5:04 Extractor\n47. 57 5:05 Extractor\n48. 56 5:07 Roach Warren\n49. 55 5:08 Evolution Chamber\n50. 54 5:08 Drone ×3\n51. 57 5:09 Baneling Nest\n52. 56 5:19 Drone ×3\n53. 59 5:25 Spine Crawler\n54. 58 5:26 Spine Crawler\n55. 57 5:41 Drone\n56. 58 5:44 Overlord ×3\n57. 57 5:55 Roach\n58. 59 5:55 Roach ×3\n59. 65 5:56 Overlord\n60. 65 5:59 Glial Reconstitution",
    "type": "Player",
    "ID": "Player-1",
    "size": [
     7.8,
     2.2
    ],
-   "properties": {},
+   "properties": {
+    "build check": "Hatchery First: 17 Hatch 17 Gas 17 Pool"
+   },
    "position": {
     "x": -6,
     "y": -9,
@@ -212,14 +236,16 @@
   },
   {
    "name": "serega",
-   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 16 0:38 Gateway\n7. 16 0:44 Probe · chrono possible\n8. 17 0:46 Assimilator\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core\n13. 18 1:29 Gateway\n14. 20 1:36 Pylon\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator\n17. 21 1:54 Zealot · chrono possible\n18. 23 1:59 Probe\n19. 24 2:16 Nexus\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 35 3:36 Probe · chrono possible\n31. 36 3:36 Immortal\n32. 38 3:46 Sentry\n33. 40 3:46 Probe · chrono possible\n34. 41 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 43 3:59 Probe\n37. 44 4:02 Pylon\n38. 44 4:10 Probe · chrono possible\n39. 45 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 47 4:21 Immortal\n42. 51 4:23 Probe · chrono possible\n43. 52 4:26 Pylon\n44. 54 4:32 Sentry\n45. 56 4:32 Gateway\n46. 56 4:38 Gateway\n47. 54 4:44 Probe ×2\n48. 56 4:45 Pylon\n49. 58 4:47 Sentry\n50. 60 4:49 Warp Prism · chrono possible\n51. 56 4:55 Warp Gate\n52. 56 4:56 Probe\n53. 57 5:00 Probe\n54. 58 5:02 Gateway\n55. 58 5:04 Gateway\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway\n58. 60 5:17 Sentry\n59. 62 5:18 Warp Gate\n60. 62 5:22 Gateway\n61. 62 5:24 Pylon\n62. 62 5:24 Sentry\n63. 64 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 72 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 74 5:59 Adept",
+   "description": "Blue Protoss build 201 units and killed 46 units.\n\nBuild order to 6:00 (supply, time, item):\n1. 12 0:00 Probe\n2. 13 0:13 Probe\n3. 14 0:20 Pylon · on supply\n4. 14 0:25 Probe\n5. 15 0:36 Probe · chrono possible\n6. 16 0:38 Gateway · on supply\n7. 16 0:44 Probe · chrono possible\n8. 17 0:46 Assimilator · on supply\n9. 17 0:54 Probe · chrono possible\n10. 18 1:06 Probe\n11. 19 1:22 Zealot · chrono possible\n12. 18 1:26 Cybernetics Core · on supply\n13. 18 1:29 Gateway · extra\n14. 20 1:36 Pylon · on supply\n15. 20 1:39 Probe\n16. 21 1:42 Assimilator · on supply\n17. 21 1:54 Zealot · chrono possible\n18. 23 1:59 Probe\n19. 24 2:16 Nexus · 3 supply late\n20. 24 2:19 Stalker · chrono possible\n21. 26 2:44 Robotics Facility · extra\n22. 26 2:44 Probe\n23. 27 2:56 Probe\n24. 28 3:07 Warp Gate Research · done\n25. 28 3:09 Probe\n26. 29 3:17 Probe · chrono possible\n27. 29 3:25 Probe · chrono possible\n28. 30 3:28 Probe · chrono possible\n29. 34 3:35 Probe · chrono possible\n30. 35 3:36 Probe · chrono possible\n31. 36 3:36 Immortal\n32. 38 3:46 Sentry\n33. 40 3:46 Probe · chrono possible\n34. 41 3:47 Probe · chrono possible\n35. 42 3:58 Probe\n36. 43 3:59 Probe\n37. 44 4:02 Pylon · extra\n38. 44 4:10 Probe · chrono possible\n39. 45 4:11 Probe · chrono possible\n40. 46 4:18 Probe · chrono possible\n41. 47 4:21 Immortal\n42. 51 4:23 Probe · chrono possible\n43. 52 4:26 Pylon · extra\n44. 54 4:32 Sentry\n45. 56 4:32 Gateway · extra\n46. 56 4:38 Gateway · extra\n47. 54 4:44 Probe ×2\n48. 56 4:45 Pylon · extra\n49. 58 4:47 Sentry\n50. 60 4:49 Warp Prism · chrono possible\n51. 56 4:55 Warp Gate\n52. 56 4:56 Probe\n53. 57 5:00 Probe\n54. 58 5:02 Gateway · extra\n55. 58 5:04 Gateway · extra\n56. 60 5:10 Warp Gate\n57. 60 5:11 Gateway · extra\n58. 60 5:17 Sentry\n59. 62 5:18 Warp Gate\n60. 62 5:22 Gateway · extra\n61. 62 5:24 Pylon · extra\n62. 62 5:24 Sentry\n63. 64 5:24 Warp Gate\n64. 64 5:33 Zealot ×2\n65. 68 5:41 Pylon\n66. 68 5:42 Zealot\n67. 70 5:44 Pylon\n68. 70 5:46 Pylon\n69. 70 5:48 Zealot\n70. 72 5:49 Warp Gate\n71. 72 5:51 Warp Gate\n72. 70 5:57 Warp Gate\n73. 70 5:58 Adept ×2\n74. 74 5:59 Adept",
    "type": "Player",
    "ID": "Player-2",
    "size": [
     7.8,
     2.2
    ],
-   "properties": {},
+   "properties": {
+    "build check": "Gate, Gas, Nexus, Core (PvZ standard expand)"
+   },
    "position": {
     "x": -6,
     "y": 9,
@@ -696,8 +722,8 @@
    }
   },
   {
-   "name": "Zergling Movement Speed",
-   "description": "Piliskner completed Zergling Movement Speed at 00:03:23",
+   "name": "Zergling Movement Speed · done",
+   "description": "Piliskner completed Zergling Movement Speed at 00:03:23\n\nDone: the build order guide has this step as soon as you have 100 gas, and you made it.",
    "type": "Upgrade",
    "ID": "Upgrade-1",
    "size": [
@@ -711,7 +737,11 @@
     "at supply": 35,
     "started at": "00:03:23",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "done",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "21"
    },
    "position": {
     "x": 50,
@@ -720,8 +750,8 @@
    }
   },
   {
-   "name": "Warp Gate Research",
-   "description": "serega completed Warp Gate Research at 00:03:07",
+   "name": "Warp Gate Research · done",
+   "description": "serega completed Warp Gate Research at 00:03:07\n\nDone: the build order guide has this step as soon as your Cybernetics Core finishes, and you made it.",
    "type": "Upgrade",
    "ID": "Upgrade-2",
    "size": [
@@ -735,7 +765,11 @@
     "at supply": 28,
     "started at": "00:03:07",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "done",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 45,
@@ -760,7 +794,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -769,8 +807,8 @@
    }
   },
   {
-   "name": "Spawning Pool",
-   "description": "",
+   "name": "Spawning Pool · on supply",
+   "description": "On supply: you were at 16 supply when you started it; the build order guide has it at 17.",
    "type": "Building",
    "ID": "Building-6",
    "size": [
@@ -785,7 +823,11 @@
     "at supply": 16,
     "started at": "00:00:41",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "17"
    },
    "position": {
     "x": 10,
@@ -794,8 +836,8 @@
    }
   },
   {
-   "name": "Natural",
-   "description": "",
+   "name": "Natural · on supply",
+   "description": "On supply: you were at 16 supply when you started it; the build order guide has it at 17.",
    "type": "Building",
    "ID": "Building-11",
    "size": [
@@ -810,7 +852,11 @@
     "at supply": 16,
     "started at": "00:01:10",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "17"
    },
    "position": {
     "x": 15,
@@ -819,8 +865,8 @@
    }
   },
   {
-   "name": "Extractor",
-   "description": "",
+   "name": "Extractor · 6 supply late",
+   "description": "Late (by supply): you were at 23 supply when you started it; the build order guide has it at 17. You made more units first, so it came later in your build order.",
    "type": "Building",
    "ID": "Building-12",
    "size": [
@@ -835,7 +881,11 @@
     "at supply": 23,
     "started at": "00:02:11",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "late",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "17"
    },
    "position": {
     "x": 32.5,
@@ -844,8 +894,8 @@
    }
   },
   {
-   "name": "3rd base",
-   "description": "",
+   "name": "3rd base · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-13",
    "size": [
@@ -860,7 +910,11 @@
     "at supply": 22,
     "started at": "00:02:13",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 32.5,
@@ -885,7 +939,11 @@
     "at supply": 59,
     "started at": "00:04:42",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -910,7 +968,11 @@
     "at supply": 58,
     "started at": "00:04:42",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -935,7 +997,11 @@
     "at supply": 57,
     "started at": "00:04:43",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -960,7 +1026,11 @@
     "at supply": 56,
     "started at": "00:04:45",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -985,7 +1055,11 @@
     "at supply": 58,
     "started at": "00:05:04",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1010,7 +1084,11 @@
     "at supply": 57,
     "started at": "00:05:05",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1035,7 +1113,11 @@
     "at supply": 55,
     "started at": "00:05:08",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1060,7 +1142,11 @@
     "at supply": 56,
     "started at": "00:05:07",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1085,7 +1171,11 @@
     "at supply": 57,
     "started at": "00:05:09",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1110,7 +1200,11 @@
     "at supply": 59,
     "started at": "00:05:25",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -1135,7 +1229,11 @@
     "at supply": 58,
     "started at": "00:05:26",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -1160,7 +1258,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 92.5,
@@ -1185,7 +1287,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -1194,8 +1300,8 @@
    }
   },
   {
-   "name": "Pylon",
-   "description": "",
+   "name": "Pylon · on supply",
+   "description": "On supply: you were at 14 supply when you started it; the build order guide has it at 14.",
    "type": "Building",
    "ID": "Building-3",
    "size": [
@@ -1210,7 +1316,11 @@
     "at supply": 14,
     "started at": "00:00:20",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "14"
    },
    "position": {
     "x": 2.5,
@@ -1219,8 +1329,8 @@
    }
   },
   {
-   "name": "Assimilator",
-   "description": "",
+   "name": "Assimilator · on supply",
+   "description": "On supply: you were at 17 supply when you started it; the build order guide has it at 17.",
    "type": "Building",
    "ID": "Building-4",
    "size": [
@@ -1235,7 +1345,11 @@
     "at supply": 17,
     "started at": "00:00:46",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "17"
    },
    "position": {
     "x": 10,
@@ -1244,8 +1358,8 @@
    }
   },
   {
-   "name": "Gateway",
-   "description": "",
+   "name": "Gateway · on supply",
+   "description": "On supply: you were at 16 supply when you started it; the build order guide has it at 16.",
    "type": "Building",
    "ID": "Building-5",
    "size": [
@@ -1260,7 +1374,11 @@
     "at supply": 16,
     "started at": "00:00:38",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "16"
    },
    "position": {
     "x": 7.5,
@@ -1269,8 +1387,8 @@
    }
   },
   {
-   "name": "Pylon 1",
-   "description": "",
+   "name": "Pylon 1 · on supply",
+   "description": "On supply: you were at 20 supply when you started it; the build order guide has it at 22.",
    "type": "Building",
    "ID": "Building-7",
    "size": [
@@ -1285,7 +1403,11 @@
     "at supply": 20,
     "started at": "00:01:36",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "22"
    },
    "position": {
     "x": 22.5,
@@ -1294,8 +1416,8 @@
    }
   },
   {
-   "name": "Cybernetics Core",
-   "description": "",
+   "name": "Cybernetics Core · on supply",
+   "description": "On supply: you were at about 18–20 supply when you started it; the build order guide has it at 20.",
    "type": "Building",
    "ID": "Building-8",
    "size": [
@@ -1310,7 +1432,11 @@
     "at supply": 18,
     "started at": "00:01:26",
     "steps": "",
-    "supply range": "18–20"
+    "supply range": "18–20",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "20"
    },
    "position": {
     "x": 20,
@@ -1319,8 +1445,8 @@
    }
   },
   {
-   "name": "Assimilator 1",
-   "description": "",
+   "name": "Assimilator 1 · on supply",
+   "description": "On supply: you were at 21 supply when you started it; the build order guide has it at 21.",
    "type": "Building",
    "ID": "Building-9",
    "size": [
@@ -1335,7 +1461,11 @@
     "at supply": 21,
     "started at": "00:01:42",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "21"
    },
    "position": {
     "x": 25,
@@ -1344,8 +1474,8 @@
    }
   },
   {
-   "name": "Gateway 1",
-   "description": "",
+   "name": "Gateway 1 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-10",
    "size": [
@@ -1360,7 +1490,11 @@
     "at supply": 18,
     "started at": "00:01:29",
     "steps": "",
-    "supply range": "18–20"
+    "supply range": "18–20",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 20,
@@ -1369,8 +1503,8 @@
    }
   },
   {
-   "name": "Natural",
-   "description": "",
+   "name": "Natural · 3 supply late",
+   "description": "A bit late (by supply): you were at about 22–24 supply when you started it; the build order guide has it at 19. You made more units first, so it came later in your build order.",
    "type": "Building",
    "ID": "Building-14",
    "size": [
@@ -1385,7 +1519,11 @@
     "at supply": 24,
     "started at": "00:02:16",
     "steps": "",
-    "supply range": "22–24"
+    "supply range": "22–24",
+    "verdict": "a bit late",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "19"
    },
    "position": {
     "x": 32.5,
@@ -1394,8 +1532,8 @@
    }
   },
   {
-   "name": "Robotics Facility",
-   "description": "",
+   "name": "Robotics Facility · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-15",
    "size": [
@@ -1410,7 +1548,11 @@
     "at supply": 26,
     "started at": "00:02:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 40,
@@ -1419,8 +1561,8 @@
    }
   },
   {
-   "name": "Pylon 2",
-   "description": "",
+   "name": "Pylon 2 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-16",
    "size": [
@@ -1435,7 +1577,11 @@
     "at supply": 44,
     "started at": "00:04:02",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 60,
@@ -1444,8 +1590,8 @@
    }
   },
   {
-   "name": "Pylon 3",
-   "description": "",
+   "name": "Pylon 3 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-17",
    "size": [
@@ -1460,7 +1606,11 @@
     "at supply": 52,
     "started at": "00:04:26",
     "steps": "",
-    "supply range": "52–54"
+    "supply range": "52–54",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 65,
@@ -1469,8 +1619,8 @@
    }
   },
   {
-   "name": "Pylon 4",
-   "description": "",
+   "name": "Pylon 4 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-18",
    "size": [
@@ -1485,7 +1635,11 @@
     "at supply": 56,
     "started at": "00:04:45",
     "steps": "",
-    "supply range": "56–58"
+    "supply range": "56–58",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -1494,8 +1648,8 @@
    }
   },
   {
-   "name": "Gateway 2",
-   "description": "",
+   "name": "Gateway 2 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-23",
    "size": [
@@ -1510,7 +1664,11 @@
     "at supply": 56,
     "started at": "00:04:32",
     "steps": "",
-    "supply range": "54–56"
+    "supply range": "54–56",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 67.5,
@@ -1519,8 +1677,8 @@
    }
   },
   {
-   "name": "Gateway 3",
-   "description": "",
+   "name": "Gateway 3 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-24",
    "size": [
@@ -1535,7 +1693,11 @@
     "at supply": 56,
     "started at": "00:04:38",
     "steps": "",
-    "supply range": "54–56"
+    "supply range": "54–56",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 67.5,
@@ -1544,8 +1706,8 @@
    }
   },
   {
-   "name": "Pylon 5",
-   "description": "",
+   "name": "Pylon 5 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-28",
    "size": [
@@ -1560,7 +1722,11 @@
     "at supply": 62,
     "started at": "00:05:24",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -1569,8 +1735,8 @@
    }
   },
   {
-   "name": "Gateway 4",
-   "description": "",
+   "name": "Gateway 4 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-30",
    "size": [
@@ -1585,7 +1751,11 @@
     "at supply": 58,
     "started at": "00:05:02",
     "steps": "",
-    "supply range": "58–60"
+    "supply range": "58–60",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1594,8 +1764,8 @@
    }
   },
   {
-   "name": "Gateway 5",
-   "description": "",
+   "name": "Gateway 5 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-31",
    "size": [
@@ -1610,7 +1780,11 @@
     "at supply": 58,
     "started at": "00:05:04",
     "steps": "",
-    "supply range": "58–60"
+    "supply range": "58–60",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -1619,8 +1793,8 @@
    }
   },
   {
-   "name": "Gateway 6",
-   "description": "",
+   "name": "Gateway 6 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-33",
    "size": [
@@ -1635,7 +1809,11 @@
     "at supply": 60,
     "started at": "00:05:11",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 77.5,
@@ -1660,7 +1838,11 @@
     "at supply": 68,
     "started at": "00:05:41",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -1685,7 +1867,11 @@
     "at supply": 70,
     "started at": "00:05:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -1710,7 +1896,11 @@
     "at supply": 70,
     "started at": "00:05:46",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -1719,8 +1909,8 @@
    }
   },
   {
-   "name": "Gateway 7",
-   "description": "",
+   "name": "Gateway 7 · extra",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Building",
    "ID": "Building-39",
    "size": [
@@ -1735,7 +1925,11 @@
     "at supply": 62,
     "started at": "00:05:22",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -1760,7 +1954,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 117.5,
@@ -1785,7 +1983,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 117.5,
@@ -1810,7 +2012,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 127.5,
@@ -1835,7 +2041,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 127.5,
@@ -1860,7 +2070,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 130,
@@ -1885,7 +2099,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 130,
@@ -1910,7 +2128,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 127.5,
@@ -1935,7 +2157,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 152.5,
@@ -1960,7 +2186,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 152.5,
@@ -1985,7 +2215,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -2010,7 +2244,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 155,
@@ -2035,7 +2273,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 155,
@@ -2060,7 +2302,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 155,
@@ -2085,7 +2331,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 155,
@@ -2110,7 +2360,11 @@
     "at supply": 41,
     "started at": "00:03:54",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 57.5,
@@ -2135,7 +2389,11 @@
     "at supply": 56,
     "started at": "00:04:55",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 72.5,
@@ -2160,7 +2418,11 @@
     "at supply": 60,
     "started at": "00:05:10",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -2185,7 +2447,11 @@
     "at supply": 62,
     "started at": "00:05:18",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 77.5,
@@ -2210,7 +2476,11 @@
     "at supply": 64,
     "started at": "00:05:24",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -2235,7 +2505,11 @@
     "at supply": 72,
     "started at": "00:05:49",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -2260,7 +2534,11 @@
     "at supply": 72,
     "started at": "00:05:51",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 87.5,
@@ -2285,7 +2563,11 @@
     "at supply": 70,
     "started at": "00:05:57",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 87.5,
@@ -2310,7 +2592,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 90,
@@ -2395,7 +2681,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -2420,7 +2710,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -2445,7 +2739,11 @@
     "at supply": 12,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -2470,7 +2768,11 @@
     "at supply": 13,
     "started at": "00:00:17",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 7.5,
@@ -2479,8 +2781,8 @@
    }
   },
   {
-   "name": "Overlord",
-   "description": "Overlord completed by Piliskner in last 10s from 00:00:30",
+   "name": "Overlord · on supply",
+   "description": "Overlord completed by Piliskner in last 10s from 00:00:30\n\nOn supply: you were at 13 supply when you started it; the build order guide has it at 13.",
    "type": "Units",
    "ID": "Units-8",
    "size": 0.75,
@@ -2495,7 +2797,11 @@
     "at supply": 13,
     "started at": "00:00:12",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "13"
    },
    "position": {
     "x": 7.5,
@@ -2520,7 +2826,11 @@
     "at supply": 14,
     "started at": "00:00:30",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 7.5,
@@ -2545,7 +2855,11 @@
     "at supply": 15,
     "started at": "00:00:47",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 15,
@@ -2570,7 +2884,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 17.5,
@@ -2595,7 +2913,11 @@
     "at supply": 16,
     "started at": "00:01:28",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 22.5,
@@ -2604,8 +2926,8 @@
    }
   },
   {
-   "name": "Overlord",
-   "description": "Overlord completed by Piliskner in last 10s from 00:02:00",
+   "name": "Overlord · on supply",
+   "description": "Overlord completed by Piliskner in last 10s from 00:02:00\n\nOn supply: you were at 21 supply when you started it; the build order guide has it at 21.",
    "type": "Units",
    "ID": "Units-20",
    "size": 0.75,
@@ -2620,7 +2942,11 @@
     "at supply": 21,
     "started at": "00:01:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "on supply",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": "21"
    },
    "position": {
     "x": 30,
@@ -2645,7 +2971,11 @@
     "at supply": 21,
     "started at": "00:01:52",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 30,
@@ -2654,8 +2984,8 @@
    }
   },
   {
-   "name": "Queen",
-   "description": "Queen completed by Piliskner in last 10s from 00:02:10",
+   "name": "Queen · extra",
+   "description": "Queen completed by Piliskner in last 10s from 00:02:10\n\nExtra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
    "type": "Units",
    "ID": "Units-22",
    "size": 0.75,
@@ -2670,7 +3000,11 @@
     "at supply": 19,
     "started at": "00:01:37",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "extra",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 30,
@@ -2695,7 +3029,11 @@
     "at supply": 22,
     "started at": "00:02:04",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 32.5,
@@ -2720,7 +3058,11 @@
     "at supply": 21,
     "started at": "00:02:32",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 37.5,
@@ -2745,7 +3087,11 @@
     "at supply": 26,
     "started at": "00:02:48",
     "steps": "18. 26 2:48 Drone ×2 / 19. 28 2:48 Drone",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 42.5,
@@ -2754,8 +3100,8 @@
    }
   },
   {
-   "name": "Queen",
-   "description": "Queen completed by Piliskner in last 10s from 00:03:10",
+   "name": "Queen · done",
+   "description": "Queen completed by Piliskner in last 10s from 00:03:10\n\nDone: the build order guide has this step as soon as your Hatchery finishes, and you made it.",
    "type": "Units",
    "ID": "Units-30",
    "size": 0.75,
@@ -2770,7 +3116,11 @@
     "at supply": 24,
     "started at": "00:02:37",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "done",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 45,
@@ -2795,7 +3145,11 @@
     "at supply": 29,
     "started at": "00:03:02",
     "steps": "20. 29 3:02 Drone ×2 / 21. 31 3:02 Drone",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 45,
@@ -2820,7 +3174,11 @@
     "at supply": 31,
     "started at": "00:03:23",
     "steps": "22. 31 3:23 Drone ×3 / 23. 34 3:23 Drone / 25. 35 3:26 Drone / 26. 36 3:27 Drone ×3",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 52.5,
@@ -2845,7 +3203,11 @@
     "at supply": 39,
     "started at": "00:03:43",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 57.5,
@@ -2870,7 +3232,11 @@
     "at supply": 39,
     "started at": "00:03:43",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 57.5,
@@ -2895,7 +3261,11 @@
     "at supply": 41,
     "started at": "00:03:52",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 60,
@@ -2920,7 +3290,11 @@
     "at supply": 41,
     "started at": "00:04:06",
     "steps": "31. 41 4:06 Zergling ×2 / 32. 42 4:06 Zergling ×14",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 62.5,
@@ -2945,7 +3319,11 @@
     "at supply": 49,
     "started at": "00:04:08",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 65,
@@ -2970,7 +3348,11 @@
     "at supply": 49,
     "started at": "00:04:20",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 67.5,
@@ -2995,7 +3377,11 @@
     "at supply": 49,
     "started at": "00:04:28",
     "steps": "35. 49 4:28 Drone / 36. 50 4:29 Drone ×7",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 67.5,
@@ -3020,7 +3406,11 @@
     "at supply": 57,
     "started at": "00:04:39",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 70,
@@ -3045,7 +3435,11 @@
     "at supply": 57,
     "started at": "00:04:37",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 72.5,
@@ -3070,7 +3464,11 @@
     "at supply": 54,
     "started at": "00:05:00",
     "steps": "44. 54 5:00 Drone ×3 / 45. 57 5:00 Drone",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -3095,7 +3493,11 @@
     "at supply": 54,
     "started at": "00:05:08",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 77.5,
@@ -3120,7 +3522,11 @@
     "at supply": 56,
     "started at": "00:05:19",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -3145,7 +3551,11 @@
     "at supply": 57,
     "started at": "00:05:41",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -3170,7 +3580,11 @@
     "at supply": 58,
     "started at": "00:05:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 87.5,
@@ -3195,7 +3609,11 @@
     "at supply": 57,
     "started at": "00:05:55",
     "steps": "57. 57 5:55 Roach / 58. 59 5:55 Roach ×3",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 90,
@@ -3220,7 +3638,11 @@
     "at supply": 65,
     "started at": "00:05:56",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 90,
@@ -3245,7 +3667,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 92.5,
@@ -3270,7 +3696,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 102.5,
@@ -3295,7 +3725,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 102.5,
@@ -3320,7 +3754,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 102.5,
@@ -3345,7 +3783,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 105,
@@ -3370,7 +3812,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 110,
@@ -3395,7 +3841,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 112.5,
@@ -3420,7 +3870,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 117.5,
@@ -3445,7 +3899,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 120,
@@ -3470,7 +3928,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 122.5,
@@ -3495,7 +3957,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 127.5,
@@ -3520,7 +3986,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 130,
@@ -3545,7 +4015,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 132.5,
@@ -3570,7 +4044,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 135,
@@ -3595,7 +4073,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 142.5,
@@ -3620,7 +4102,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -3629,8 +4115,8 @@
    }
   },
   {
-   "name": "Queen",
-   "description": "Queen completed by Piliskner in last 10s from 00:10:20",
+   "name": "Queen · done later",
+   "description": "Queen completed by Piliskner in last 10s from 00:10:20\n\nDone later: the build order guide has this step earlier; it was missing at 2:21.",
    "type": "Units",
    "ID": "Units-112",
    "size": 0.75,
@@ -3645,7 +4131,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "missing",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 152.5,
@@ -3670,7 +4160,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 152.5,
@@ -3695,7 +4189,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 160,
@@ -3720,7 +4218,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 160,
@@ -3745,7 +4247,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 160,
@@ -3770,7 +4276,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -3795,7 +4305,11 @@
     "at supply": 12,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 0,
@@ -3820,7 +4334,11 @@
     "at supply": 13,
     "started at": "00:00:13",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 2.5,
@@ -3845,7 +4363,11 @@
     "at supply": 14,
     "started at": "00:00:25",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 7.5,
@@ -3870,7 +4392,11 @@
     "at supply": 15,
     "started at": "00:00:36",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 10,
@@ -3895,7 +4421,11 @@
     "at supply": 16,
     "started at": "00:00:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 15,
@@ -3920,7 +4450,11 @@
     "at supply": 17,
     "started at": "00:00:54",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 15,
@@ -3945,7 +4479,11 @@
     "at supply": 18,
     "started at": "00:01:06",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 17.5,
@@ -3970,7 +4508,11 @@
     "at supply": 19,
     "started at": "00:01:22",
     "steps": "",
-    "supply range": "17–19"
+    "supply range": "17–19",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 25,
@@ -3995,7 +4537,11 @@
     "at supply": 20,
     "started at": "00:01:39",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 25,
@@ -4020,7 +4566,11 @@
     "at supply": 23,
     "started at": "00:01:59",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 30,
@@ -4045,7 +4595,11 @@
     "at supply": 21,
     "started at": "00:01:54",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 32.5,
@@ -4070,7 +4624,11 @@
     "at supply": 24,
     "started at": "00:02:19",
     "steps": "",
-    "supply range": "22–24"
+    "supply range": "22–24",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 40,
@@ -4095,7 +4653,11 @@
     "at supply": 26,
     "started at": "00:02:44",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 42.5,
@@ -4120,7 +4682,11 @@
     "at supply": 27,
     "started at": "00:02:56",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 45,
@@ -4145,7 +4711,11 @@
     "at supply": 28,
     "started at": "00:03:09",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 47.5,
@@ -4170,7 +4740,11 @@
     "at supply": 29,
     "started at": "00:03:17",
     "steps": "",
-    "supply range": "28–29"
+    "supply range": "28–29",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 50,
@@ -4195,7 +4769,11 @@
     "at supply": 29,
     "started at": "00:03:25",
     "steps": "27. 29 3:25 Probe · chrono possible / 28. 30 3:28 Probe · chrono possible",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 52.5,
@@ -4220,7 +4798,11 @@
     "at supply": 34,
     "started at": "00:03:35",
     "steps": "29. 34 3:35 Probe · chrono possible / 30. 35 3:36 Probe · chrono possible",
-    "supply range": "32–34"
+    "supply range": "32–34",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 55,
@@ -4245,7 +4827,11 @@
     "at supply": 40,
     "started at": "00:03:46",
     "steps": "33. 40 3:46 Probe · chrono possible / 34. 41 3:47 Probe · chrono possible",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 57.5,
@@ -4270,7 +4856,11 @@
     "at supply": 38,
     "started at": "00:03:46",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 60,
@@ -4295,7 +4885,11 @@
     "at supply": 42,
     "started at": "00:03:58",
     "steps": "35. 42 3:58 Probe / 36. 43 3:59 Probe",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 60,
@@ -4320,7 +4914,11 @@
     "at supply": 36,
     "started at": "00:03:36",
     "steps": "",
-    "supply range": "34–36"
+    "supply range": "34–36",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 62.5,
@@ -4345,7 +4943,11 @@
     "at supply": 44,
     "started at": "00:04:10",
     "steps": "38. 44 4:10 Probe · chrono possible / 39. 45 4:11 Probe · chrono possible",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 62.5,
@@ -4370,7 +4972,11 @@
     "at supply": 46,
     "started at": "00:04:18",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 65,
@@ -4395,7 +5001,11 @@
     "at supply": 51,
     "started at": "00:04:23",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 67.5,
@@ -4420,7 +5030,11 @@
     "at supply": 54,
     "started at": "00:04:32",
     "steps": "",
-    "supply range": "52–54"
+    "supply range": "52–54",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 72.5,
@@ -4445,7 +5059,11 @@
     "at supply": 54,
     "started at": "00:04:44",
     "steps": "",
-    "supply range": "54–56"
+    "supply range": "54–56",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 72.5,
@@ -4470,7 +5088,11 @@
     "at supply": 47,
     "started at": "00:04:21",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 72.5,
@@ -4495,7 +5117,11 @@
     "at supply": 56,
     "started at": "00:04:56",
     "steps": "52. 56 4:56 Probe / 53. 57 5:00 Probe",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -4520,7 +5146,11 @@
     "at supply": 58,
     "started at": "00:04:47",
     "steps": "",
-    "supply range": "54–58"
+    "supply range": "54–58",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 75,
@@ -4545,7 +5175,11 @@
     "at supply": 60,
     "started at": "00:05:17",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 77.5,
@@ -4570,7 +5204,11 @@
     "at supply": 60,
     "started at": "00:04:49",
     "steps": "",
-    "supply range": "56–60"
+    "supply range": "56–60",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 77.5,
@@ -4595,7 +5233,11 @@
     "at supply": 62,
     "started at": "00:05:24",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 80,
@@ -4620,7 +5262,11 @@
     "at supply": 64,
     "started at": "00:05:33",
     "steps": "64. 64 5:33 Zealot ×2 / 66. 68 5:42 Zealot",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -4645,7 +5291,11 @@
     "at supply": 70,
     "started at": "00:05:48",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 85,
@@ -4670,7 +5320,11 @@
     "at supply": 70,
     "started at": "00:05:58",
     "steps": "73. 70 5:58 Adept ×2 / 74. 74 5:59 Adept",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 87.5,
@@ -4695,7 +5349,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 90,
@@ -4720,7 +5378,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 102.5,
@@ -4745,7 +5407,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 102.5,
@@ -4770,7 +5436,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 110,
@@ -4795,7 +5465,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 110,
@@ -4820,7 +5494,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 117.5,
@@ -4845,7 +5523,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 117.5,
@@ -4870,7 +5552,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 120,
@@ -4895,7 +5581,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 122.5,
@@ -4920,7 +5610,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 127.5,
@@ -4945,7 +5639,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 130,
@@ -4970,7 +5668,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 130,
@@ -4995,7 +5697,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 132.5,
@@ -5020,7 +5726,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 132.5,
@@ -5045,7 +5755,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 132.5,
@@ -5070,7 +5784,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 135,
@@ -5095,7 +5813,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 135,
@@ -5120,7 +5842,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 140,
@@ -5145,7 +5871,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 142.5,
@@ -5170,7 +5900,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -5195,7 +5929,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -5220,7 +5958,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -5245,7 +5987,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 147.5,
@@ -5270,7 +6016,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 150,
@@ -5295,7 +6045,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 152.5,
@@ -5320,7 +6074,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 155,
@@ -5345,7 +6103,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 160,
@@ -5370,7 +6132,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 160,
@@ -5395,7 +6161,11 @@
     "at supply": 0,
     "started at": "00:00:00",
     "steps": "",
-    "supply range": ""
+    "supply range": "",
+    "verdict": "",
+    "guide time": "",
+    "off by s": "",
+    "guide supply": ""
    },
    "position": {
     "x": 162.5,
@@ -7551,6 +8321,95 @@
    "position": {
     "x": 15,
     "y": 21.7,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Build check · Hatchery First: 17 Hatch 17 Gas 17 Pool",
+   "description": "Your opening compared with the build order guide \"Hatchery First: 17 Hatch 17 Gas 17 Pool\" for Zerg vs Protoss. It covers the first 3:00 of the game.\nSuggested: you did not name a build order guide, so we used the one closest to your opening.\nBy supply: this build order guide gives supply counts, not times, so each step is compared by the supply you were on when you started it. A step marked ≈ is one where we know your supply only roughly.\n\n7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 done later, 1 partly made).\n2 Queens: you made 1 of the 2 in time, and the other later, at 9:48.\nExtra, not in the build order guide: 1 Queen, 1 Hatchery.\nCounted, not graded: 24 Drones, 6 Zerglings.\n\nPatch unknown: the build order guide does not say which patch it was written for (last edited 2018-01-12), so some timings may have changed since. Most community build orders carry this note.\n\nSource: Liquipedia, \"Hatchery First (Legacy of the Void)\", revision 1258135, https://liquipedia.net/starcraft2/Hatchery_First_(Legacy_of_the_Void). Text by Liquipedia contributors, licensed CC BY-SA 3.0. We turned it into steps.",
+   "type": "Build Comparison",
+   "ID": "Build Comparison-1",
+   "size": [
+    7.8,
+    2.2
+   ],
+   "properties": {
+    "player": "Piliskner",
+    "build order guide": "Hatchery First: 17 Hatch 17 Gas 17 Pool",
+    "graded by": "supply",
+    "picked": "suggested",
+    "team draft": false,
+    "patch": "patch unknown",
+    "old guide": true,
+    "covers to": "00:03:00",
+    "on time": 4,
+    "a bit late": 0,
+    "late": 1,
+    "early": 0,
+    "done": 1,
+    "missing": 1,
+    "extra": 2,
+    "not compared": 0
+   },
+   "position": {
+    "x": -6,
+    "y": -14,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Build check · Gate, Gas, Nexus, Core (PvZ standard expand)",
+   "description": "Your opening compared with the build order guide \"Gate, Gas, Nexus, Core (PvZ standard expand)\" for Protoss vs Zerg. It covers the first 5:00 of the game.\nSuggested: you did not name a build order guide, so we used the one closest to your opening.\nBy supply: this build order guide gives supply counts, not times, so each step is compared by the supply you were on when you started it. A step marked ≈ is one where we know your supply only roughly.\nTeam draft: written by the Mindshare team and not yet checked by a Protoss player, so take its verdicts as a first pointer.\n\n8 steps in the build order guide: 6 on supply · 1 done · 1 a bit late.\nExtra, not in the build order guide: 7 Gateways, 4 Pylons, 1 Robotics Facility.\nCounted, not graded: 29 Probes, 2 Zealots, 1 Stalker, 2 Immortals, 5 Sentries, 1 Warp Prism, 4 Warp Gates (they follow from Warp Gate research).\n\nPatch unknown: the build order guide does not say which patch it was written for (written 2026-10-18), so some timings may have changed since.\n\nSource: Mindshare team draft, 2026-10-18.",
+   "type": "Build Comparison",
+   "ID": "Build Comparison-2",
+   "size": [
+    7.8,
+    2.2
+   ],
+   "properties": {
+    "player": "serega",
+    "build order guide": "Gate, Gas, Nexus, Core (PvZ standard expand)",
+    "graded by": "supply",
+    "picked": "suggested",
+    "team draft": true,
+    "patch": "patch unknown",
+    "old guide": true,
+    "covers to": "00:05:00",
+    "on time": 6,
+    "a bit late": 1,
+    "late": 0,
+    "early": 0,
+    "done": 1,
+    "missing": 0,
+    "extra": 12,
+    "not compared": 0
+   },
+   "position": {
+    "x": -6,
+    "y": 14,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Queen · missing",
+   "description": "Missing: the build order guide makes 2 Queens as soon as your Hatchery finishes. You made 1 of the 2 by 3:30.\nYou made the other one later, at 9:48.",
+   "type": "Missing Step",
+   "ID": "Missing Step-1",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:21",
+    "player": "Piliskner",
+    "item": "Queen",
+    "guide supply": "",
+    "done later at": "9:48",
+    "build order guide": "Hatchery First: 17 Hatch 17 Gas 17 Pool"
+   },
+   "position": {
+    "x": 35,
+    "y": -8,
     "z": 0.01
    }
   },
@@ -10227,6 +11086,13 @@
    "node1": "Units-117",
    "node2": "Units-121",
    "description": "same units"
+  },
+  {
+   "name1": "done later",
+   "name2": "was missing at 2:21",
+   "direction": 1,
+   "node1": "Missing Step-1",
+   "node2": "Units-112"
   }
  ]
 }
