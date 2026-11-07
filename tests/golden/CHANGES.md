@@ -803,3 +803,16 @@ Predicted, listed before the change (both replays, the view and both snapshots, 
 ```json
 {"entry": "BO2-spine-snap-linear", "task": "CR-035", "defect": "BO2 a step's supply is the last 7-second sample, not the supply at its start (CR-035 D2a, D6a; Kevin's call 13)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "985f40674972b3dfcc56609f696507a0bf88080c190e49feca09bf18fb0aed77", "changes": [{"select": {"type": "Building"}, "fields": ["properties.at supply"], "count": 20}, {"select": {"type": "Units"}, "fields": ["properties.at supply"], "count": 11}, {"select": {"type": "Upgrade"}, "fields": ["properties.at supply"], "count": 1}, {"select": {"type": "Units"}, "fields": ["properties.steps"], "count": 13}, {"select": {"type": "Building"}, "fields": ["properties.supply range"], "count": 63}, {"select": {"type": "Units"}, "fields": ["properties.supply range"], "count": 121}, {"select": {"type": "Upgrade"}, "fields": ["properties.supply range"], "count": 2}, {"select": {"type": "Player"}, "fields": ["description"], "count": 2}, {"select": {"ID": "dataTypes"}, "fields": [""], "count": 1}], "added": [], "removed": []}
 ```
+
+
+### BC2: the build check's verdict rows, a new golden per replay (CR-035, AC2-AC7, AC10; no change to any other golden)
+
+CR-035 compares each player's steps with a build order guide (`analysis/build_check.py`). Its result per player and replay is kept as a golden of its own (approach §2, form d): `alcyone/build-check.json` and `spine/build-check.json`, made by `scripts/regen_golden.py --golden build-check.json [--replay spine]` with no guide named, so each player gets the closest guide for his matchup (D1a). Each player's entry lists the guide, picked or suggested, the score (an exact fraction), how the steps were graded, every guide occurrence with its verdict, the paired step, the Δ, ≈, the trigger's moment and the done-later start, then the extras and the units counted, not graded; or the reason there is no build check (AC10). The values are checked as literals against QA's oracle in `tests/analysis/test_build_check.py`. Each entry follows the H1 pattern for a new file (BC0): its base is the new file's sha256 and it lists no change. The Mindshare documents do not change: nothing is exported yet.
+
+```json
+{"entry": "BC2-alcyone-checks", "task": "CR-035", "defect": "BC2 the build check has no golden (CR-035, approach §2 form d)", "golden": ["alcyone/build-check.json"], "base_sha256": "e57b7b25b653cdbaebc8d6a14490bcf368d278f584db5869cc7261cb2ebe006a", "changes": [], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC2-spine-checks", "task": "CR-035", "defect": "BC2 the build check has no golden (CR-035, approach §2 form d)", "golden": ["spine/build-check.json"], "base_sha256": "1b622d3df854ff578a31d9023d88b52b7f66e991d2da5765593323de93713df3", "changes": [], "added": [], "removed": []}
+```
