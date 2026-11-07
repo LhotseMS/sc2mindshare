@@ -751,3 +751,20 @@ Mindshare refuses a whole import when two nodes of one type carry different prop
 The import check (AC-3; Vera, 2026-11-06, Stefan's local Mindshare) accepted a blank target and a blank player, and a Battle with and without a picture, with no "different parameters" error. One side effect, cosmetic: a blank player adds an empty option to that type's player list in Mindshare's node editor; only a replay with a blank player name has it. A `time` is never blank (the Node model refuses a node without one), so writing it always changes nothing.
 
 Predicted: no golden changes. No node of any golden has a blank or missing time, player or target, and no type is mixed in any of them (checked at 144e561 on the six Alcyone JSON goldens and the Alcyone and spine model goldens, and on the four documents the code builds from Alcyone and spine), so every node is written with the same keys and values as before. No entry block.
+
+
+### BC0: spine's current goldens, made at the base (CR-035, Kevin's call 14; no change to any golden)
+
+CR-035's AC12 checks the current output of Alcyone and spine (D7a), but spine had only workbook-faithful goldens (`spine/G-CSV-1.csv`, `spine/Intervals-1.csv`, `spine/models-faithful.json`), so there was no committed "before" for its current output. BC0 adds `spine/G-VIEW-current.json`, `spine/G-SNAP-current-compressed.json` and `spine/G-SNAP-current-linear.json`, made by `scripts/regen_golden.py --replay spine` from the code at af37022 (no product change; the snapshots with the committed fixture clock record, as Alcyone's). Each entry follows the H1 pattern for a new file: its base is the new file's own sha256 and it lists no change, so `check_golden_delta.py --old <file> --new <file>` passes it and every later spine entry has a base. Nothing else changes.
+
+```json
+{"entry": "BC0-spine-view", "task": "CR-035", "defect": "BC0 spine has no current golden (CR-035 call 14, AC12, D7a)", "golden": ["spine/G-VIEW-current.json"], "base_sha256": "dc138bb0acaab98cc5721a06eb7b2b7c1ce59eae5147b2f0af4e3f2e01be845d", "changes": [], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC0-spine-snap-compressed", "task": "CR-035", "defect": "BC0 spine has no current golden (CR-035 call 14, AC12, D7a)", "golden": ["spine/G-SNAP-current-compressed.json"], "base_sha256": "6906bcd7b18a8823c89b5d723565b515759b23d6056f8bd72fa2f9f73ffa606a", "changes": [], "added": [], "removed": []}
+```
+
+```json
+{"entry": "BC0-spine-snap-linear", "task": "CR-035", "defect": "BC0 spine has no current golden (CR-035 call 14, AC12, D7a)", "golden": ["spine/G-SNAP-current-linear.json"], "base_sha256": "985f40674972b3dfcc56609f696507a0bf88080c190e49feca09bf18fb0aed77", "changes": [], "added": [], "removed": []}
+```
