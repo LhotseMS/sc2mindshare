@@ -30,8 +30,12 @@ import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
+from sc2mindshare.analysis.build_check import checks
+from sc2mindshare.analysis.build_steps import build_order
+from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
+from sc2mindshare.domain.guides import BuildCheck, NoBuildCheck
 from sc2mindshare.domain.models import Graph
 from sc2mindshare.export.intervals import intervals_csv, intervals_json, parse_intervals
 from sc2mindshare.export.mindshare_json import build_document, to_json
@@ -86,6 +90,14 @@ def _parser() -> argparse.ArgumentParser:
         "the build never contacts it)",
     )
     build.add_argument("--log", type=Path, default=None, help="where the run log goes (default: <out>.log)")
+    build.add_argument(
+        "--guide",
+        action="append",
+        default=[],
+        metavar="PLAYER=GUIDE",
+        help="compare PLAYER's build (his name, or 1 or 2) with the build order guide GUIDE (a shipped guide's id, or "
+        "a guide file); repeatable. A player not named gets the closest guide for his matchup, marked suggested",
+    )
     build.add_argument(
         "--with-analysis",
         action="store_true",
@@ -144,6 +156,27 @@ def _laid_out(
     return result, graph, placed
 
 
+class UnknownPlayer(ValueError):
+    """A --guide names a player the replay does not have (a usage error, exit 2)."""
+
+
+def _build_checks(result: AnalysisResult, graph: Graph, guides: Sequence[str]) -> tuple[BuildCheck | NoBuildCheck, ...]:
+    """CR-035: each player's build check, with the guides named on the command line (``PLAYER=GUIDE``; PLAYER is the
+    name on his Player node, or his number in the game, 1 or 2)."""
+    if result.exposed is None:
+        return ()
+    names = {n.source.pid: n.value("name") for n in graph.nodes if n.kind == "Player" and n.source and n.source.pid}
+    numbers = {str(p.order + 1): p.pid for p in result.exposed.game.players}
+    named: dict[int, str] = {}
+    for request in guides:
+        player, _, guide = request.partition("=")
+        pid = next((p for p, name in names.items() if name == player), numbers.get(player))
+        if pid is None:
+            raise UnknownPlayer(f"--guide {request}: no player {player!r} in this replay (players: {', '.join(names.values())})")
+        named[pid] = guide
+    return checks(result.exposed, build_order(result.exposed, result.fixes), names, named, library())
+
+
 def build(
     replay: Path,
     out: Path,
@@ -152,6 +185,7 @@ def build(
     log: Path,
     with_analysis: bool = False,
     clock_server: Server | None = None,
+    guides: Sequence[str] = (),
 ) -> int:
     clocks, no_clocks = _clock_map(config_root, clock_server or parse_server(DEFAULT_SERVER))
     log.parent.mkdir(parents=True, exist_ok=True)
@@ -159,6 +193,7 @@ def build(
         try:
             with contextlib.redirect_stdout(log_file):  # the layer's debug prints
                 result, graph, placed = _laid_out(replay, config_root, timeline, clocks)
+                build_checks = _build_checks(result, graph, guides)
                 document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
                 if graph.intervals is None:
                     raise ValueError("the analysis produced no battle intervals")
@@ -167,9 +202,18 @@ def build(
             if no_clocks:
                 print(f"clock record: {no_clocks}", file=log_file)
                 print(f"{PROG}: {no_clocks}", file=sys.stderr)
+            for check in build_checks:
+                if isinstance(check, NoBuildCheck):
+                    print(f"build check: player {check.player}: {check.line}", file=log_file)
+                    print(f"{PROG}: build check: {check.line}", file=sys.stderr)
+                else:
+                    how = "picked" if check.picked else "suggested"
+                    print(f"build check: player {check.player}: {check.guide.name} ({how}, score {check.score})", file=log_file)
             for warning in placed.warnings:
                 print(f"layout warning: {warning}", file=log_file)
                 print(f"{PROG}: layout warning: {warning}", file=sys.stderr)
+        except UnknownPlayer as exc:
+            return _usage_error(str(exc))
         except Exception as exc:  # noqa: BLE001  # the CLI top level: any failure is logged with its traceback, exit 1
             traceback.print_exc(file=log_file)
             print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
@@ -283,8 +327,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     foreign = _foreign_intervals(args.out)
     if foreign:
         return _usage_error(f"{foreign}: use another --out folder for this build")
+    malformed = [g for g in args.guide if not all(g.partition("=")[0::2]) or "=" not in g]
+    if malformed:
+        return _usage_error(f"--guide {malformed[0]}: write it as PLAYER=GUIDE")
     log = args.log or args.out.with_suffix(".log")
-    return build(args.replay, args.out, args.timeline, config_root, log, args.with_analysis, server)
+    return build(args.replay, args.out, args.timeline, config_root, log, args.with_analysis, server, args.guide)
 
 
 if __name__ == "__main__":

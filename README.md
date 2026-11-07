@@ -18,13 +18,13 @@ sc2mindshare build "MS SC/Alcyone LE__lilTiGGer_vs_blacksquall/Alcyone LE__lilTi
     --out out/graph.json --config-root "MS SC"
 ```
 
-This writes `out/graph.json` (the Mindshare import document), `out/intervals.json` and `out/Intervals.csv` (the battle windows `execs/screenshotGame.py` reads), and `out/graph.log` (what the analysis printed while it ran). On Alcyone, `graph.json` is byte-identical to `tests/golden/alcyone/G-SNAP-1-compressed.json` (`--timeline linear`: `G-SNAP-1-linear.json`) and `Intervals.csv` to `Intervals-1.csv`. Exit codes: 0 built, 1 the analysis failed (traceback in the log), 2 a usage error. `--with-analysis` adds the analysis values stream 2 reads (unit lifecycles with the type at birth, type changes, upgrades, every PlayerStats sample, the supply history, Chrono Boosts, the game context and the time tables) as a top-level `analysis` object; it is not part of the Mindshare import format.
+This writes `out/graph.json` (the Mindshare import document), `out/intervals.json` and `out/Intervals.csv` (the battle windows `execs/screenshotGame.py` reads), and `out/graph.log` (what the analysis printed while it ran). On Alcyone, `graph.json` is byte-identical to `tests/golden/alcyone/G-SNAP-1-compressed.json` (`--timeline linear`: `G-SNAP-1-linear.json`) and `Intervals.csv` to `Intervals-1.csv`. Exit codes: 0 built, 1 the analysis failed (traceback in the log), 2 a usage error. `--with-analysis` adds the analysis values stream 2 reads (unit lifecycles with the type at birth, type changes, upgrades, every PlayerStats sample, the supply history, Chrono Boosts, the game context and the time tables) as a top-level `analysis` object; it is not part of the Mindshare import format. `--guide PLAYER=GUIDE` (repeatable) compares PLAYER's opening (his name, or 1 or 2) with a build order guide: one of the five shipped in `src/sc2mindshare/config/guides/` (by its id) or a guide file; a player not named gets the closest guide for his matchup, marked suggested. A guide that cannot be found or read, or is for another matchup, gives that player no build check, with the reason on stderr and in the log; the build still succeeds.
 
 <!-- build --help -->
 ```text
 usage: sc2mindshare build [-h] --out OUT [--timeline {compressed,linear}]
                           [--config-root CONFIG_ROOT] [--clock-server CLOCK_SERVER] [--log LOG]
-                          [--with-analysis]
+                          [--guide PLAYER=GUIDE] [--with-analysis]
                           REPLAY
 
 Build the Mindshare import document of REPLAY, and the battle intervals for the screenshot tool
@@ -46,6 +46,9 @@ options:
                         whose clock pictures to use, from the clock record (default
                         http://localhost:3042, the local Mindshare; the build never contacts it)
   --log LOG             where the run log goes (default: <out>.log)
+  --guide PLAYER=GUIDE  compare PLAYER's build (his name, or 1 or 2) with the build order guide
+                        GUIDE (a shipped guide's id, or a guide file); repeatable. A player not
+                        named gets the closest guide for his matchup, marked suggested
   --with-analysis       also write the analysis values stream 2 reads (supply, stats, unit
                         lifecycles...) as a top-level 'analysis' object (not part of the Mindshare
                         import format)

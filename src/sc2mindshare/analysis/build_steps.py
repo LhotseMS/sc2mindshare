@@ -271,6 +271,14 @@ class SupplyReading:
         right = self.food[i] - sum((d for _, d in self.changes[lo:hi]), Fraction(0))  # the changes in [loop, s1]
         return left, right
 
+    def reached(self, supply: int) -> Fraction | None:
+        """The first loop from which the reading R is at least ``supply`` (a guide step's supply moment, Leo §4), or
+        None if it never is. R changes only at a sample or a change, so those are the moments looked at."""
+        if START_SUPPLY >= supply:
+            return Fraction(0)
+        moments = sorted({Fraction(loop) for loop in self.loops} | set(self._keys))
+        return next((m for m in moments if self.at(m + Fraction(1, 1000))[0] >= supply), None)
+
     def at(self, loop: Fraction) -> tuple[int, tuple[int, int] | None]:
         """R, ``floor`` of the reading at ``loop`` (nothing at exactly ``loop`` counts), and its range (low, high)
         when the window cannot pin it to one value (D6a), else None."""

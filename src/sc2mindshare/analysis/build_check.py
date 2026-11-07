@@ -29,8 +29,11 @@ import re
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from fractions import Fraction
+from pathlib import Path
+from typing import Any
 
-from sc2mindshare.analysis.build_steps import WARP_IN_UNITS, _seconds, every_start
+from sc2mindshare.analysis.build_steps import WARP_IN_UNITS, SupplyReading, _seconds, every_start, supply_reading
+from sc2mindshare.analysis.guides import GuideError, load
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.guides import (
     A_BIT_LATE,
@@ -47,6 +50,7 @@ from sc2mindshare.domain.guides import (
     Guide,
     GuideStep,
     Later,
+    NoBuildCheck,
     Occurrence,
     Row,
 )
@@ -292,3 +296,156 @@ def _score(guide: Guide, slots: Sequence[_Slot], structural: int) -> Fraction:
         per.setdefault(slot.step.number, []).append(x)
     total = sum((sum(xs, Fraction(0)) / len(xs) for xs in per.values()), Fraction(0))
     return (total + structural) / (len(per) + structural)
+
+
+# --- the guide for each player: named or suggested, or the reason there is none (AC7, AC10) ---------------------------
+
+RACE_LETTER = {"Zerg": "Z", "Protoss": "P", "Terran": "T"}
+
+
+def _mmss(seconds: int) -> str:
+    return f"{seconds // 60}:{seconds % 60:02d}"
+
+
+def _matchup(race: str, opponent: str | None) -> str:
+    return f"{race} vs {opponent or 'nobody'}"
+
+
+def first_moment(guide: Guide, check: BuildCheck, reading: SupplyReading) -> Fraction | None:
+    """The moment of the guide's first step, in seconds (Leo §2, per step kind): its time; the moment the player first
+    had its supply (R); its trigger's moment. None when it never came."""
+    step = guide.steps[0]
+    if step.time is not None:
+        return Fraction(step.time)
+    if step.time_interval is not None:
+        return Fraction(step.time_interval[0])
+    if step.trigger is not None:
+        return check.rows_of(step.number)[0].moment
+    bounds = step.supply_bounds
+    assert bounds is not None
+    loop = reading.reached(bounds[0])
+    return None if loop is None else loop / LOOPS_PER_SECOND
+
+
+def _too_short(guide: Guide, check: BuildCheck, reading: SupplyReading) -> bool:
+    """AC10: nothing paired, and the game ended before the moment of the guide's first step (or it never came)."""
+    if any(r.paired is not None for r in check.rows):
+        return False
+    moment = first_moment(guide, check, reading)
+    return moment is None or check.game_second < moment
+
+
+def suggestion_key(check: BuildCheck) -> tuple[Fraction, int, str]:
+    """D1a, Leo §3: the lowest score; a guide for this exact matchup before one for any opponent; then the id."""
+    return (check.score, 0 if check.guide.vs != "Any" else 1, check.guide.id)
+
+
+def resolve(argument: str, guides: Sequence[Guide]) -> Guide:
+    """A guide named on the command line: a shipped guide's id, or a guide file. ``FileNotFoundError`` when it is
+    neither; ``GuideError`` (with the player-facing message) when the file cannot be read or fails the check."""
+    shipped = {g.id: g for g in guides}
+    if argument in shipped:
+        return shipped[argument]
+    path = Path(argument)
+    if not path.is_file():
+        raise FileNotFoundError(argument)
+    return load(path)
+
+
+def checks(
+    exposed: Exposed,
+    order: BuildOrder,
+    names: dict[int, str],
+    named: dict[int, str],
+    guides: Sequence[Guide],
+) -> tuple[BuildCheck | NoBuildCheck, ...]:
+    """Each player's build check, in pid order: with the guide named for him (``named``: pid -> a guide id or file),
+    else the closest guide for his race and matchup, marked suggested (D1a); or why there is none (AC10). Only
+    finding and reading a named guide can turn into a reason: a fault in the comparison itself is raised (call 10)."""
+    readings = supply_reading(exposed)
+    out: list[BuildCheck | NoBuildCheck] = []
+    for context in sorted(exposed.game.players, key=lambda p: p.pid):
+        pid, race, opponent = context.pid, context.race, context.opponent_race
+        name = names.get(pid, f"player {pid}")
+        reading = readings[pid]
+        if pid in named:
+            argument = named[pid]
+            try:
+                guide = resolve(argument, guides)
+            except FileNotFoundError:
+                out.append(
+                    NoBuildCheck(
+                        pid, "none, file not found", f'No build check: the build order guide file "{argument}" was not found.'
+                    )
+                )
+                continue
+            except GuideError as exc:
+                line = f'No build check: the build order guide file "{argument}" could not be read: {exc}.'
+                out.append(NoBuildCheck(pid, "none, file unreadable", line))
+                continue
+            if not guide.matches(race, opponent):
+                line = (
+                    f'No build check: the build order guide "{guide.name}" is for {_matchup(guide.race, guide.vs)}, '
+                    f"and {name} played {_matchup(race, opponent)}."
+                )
+                out.append(NoBuildCheck(pid, "none, other matchup", line))
+                continue
+            candidates = [compare(exposed, order, guide, pid, picked=True)]
+        else:
+            candidates = [compare(exposed, order, g, pid, picked=False) for g in guides if g.matches(race, opponent)]
+            if not candidates:
+                letters = f"{RACE_LETTER.get(race, race)}v{RACE_LETTER.get(opponent or '', opponent or '?')}"
+                line = f"No build check: there is no build order guide for {_matchup(race, opponent)} yet."
+                out.append(NoBuildCheck(pid, f"none, no build order guide for {letters}", line))
+                continue
+        check = min(candidates, key=suggestion_key)
+        if _too_short(check.guide, check, reading):
+            line = (
+                f"No build check: the game ended at {_mmss(check.game_second)}, before the first step of the build "
+                f"order guide ({check.guide.steps[0].text})."
+            )
+            out.append(NoBuildCheck(pid, "none, game too short", line))
+            continue
+        out.append(check)
+    return tuple(out)
+
+
+# --- the verdict rows, as the build-check golden keeps them (CR-035, approach §2 form d) -------------------------------
+
+
+def _text(value: Fraction | None) -> str | None:
+    return None if value is None else str(value)
+
+
+def check_doc(result: BuildCheck | NoBuildCheck) -> dict[str, Any]:
+    """One player's build check as plain JSON: every guide occurrence with its verdict, the extras and the counted
+    units; or the reason there is none. Fractions as text ("5/12")."""
+    if isinstance(result, NoBuildCheck):
+        return {"player": result.player, "build check": result.value, "line": result.line}
+    return {
+        "player": result.player,
+        "build check": result.guide.name,
+        "guide": result.guide.id,
+        "picked": result.picked,
+        "score": str(result.score),
+        "graded by": result.graded_by,
+        "game second": result.game_second,
+        "rows": [
+            {
+                "guide step": r.guide_step,
+                "occurrence": r.occurrence,
+                "verdict": r.verdict,
+                "graded by": r.graded_by,
+                "step": r.paired.step if r.paired else None,
+                "off": r.off,
+                "approx": r.approx,
+                "moment": _text(r.moment),
+                "done later": None
+                if r.done_later is None
+                else {"item": r.done_later.item, "start": _text(r.done_later.start), "unit": r.done_later.unit_id},
+            }
+            for r in result.rows
+        ],
+        "extras": [[step, item] for step, item in result.extras],
+        "counted": [[item, n] for item, n in result.counted],
+    }

@@ -420,3 +420,134 @@ def test_s34_a_count_step_made_in_full_counts_once_as_done():
     two = _synthetic(game([pool, *queens[:2]]), steps)
     assert [r.verdict for r in two.rows_of(2)] == ["done", "done", "missing"]
     assert two.step_verdict(two.guide.steps[1]) == "missing" and two.rows_of(2)[2].done_later is None
+
+
+# --- the guide for each player (AC7, AC10; S22, S23, S25, S26) -----------------------------------------------------
+
+from sc2mindshare.analysis.build_check import checks, suggestion_key
+from sc2mindshare.domain.guides import BuildCheck, NoBuildCheck
+
+NAMES = {LIL: "lilTiGGer", BLACK: "blacksquall"}
+
+
+def _picks(game, named=None, guides=None):
+    exposed, order = game
+    out = checks(exposed, order, NAMES, named or {}, guides if guides is not None else tuple(GUIDES.values()))
+    return [(c.guide.id, c.picked) if isinstance(c, BuildCheck) else (c.value, c.line) for c in out]
+
+
+def test_s22_with_no_guide_named_each_player_gets_the_closest_suggested(alcyone, spine):
+    assert _picks(alcyone) == [(POOL12, False), (STARGATE, False)]
+    assert _picks(spine) == [(HATCH1, False), (GNC, False)]  # vs Any counts as a match
+
+
+def test_s22_a_named_guide_is_picked_and_the_other_player_still_gets_a_suggestion(alcyone):
+    assert _picks(alcyone, {LIL: HATCH3}) == [(HATCH3, True), (STARGATE, False)]
+
+
+def test_s23_the_library_order_does_not_change_the_picks(alcyone):
+    assert _picks(alcyone, guides=tuple(reversed(list(GUIDES.values())))) == _picks(alcyone)
+
+
+def test_s23_an_exact_tie_goes_to_the_exact_matchup_then_the_id(alcyone):
+    """Two guides with the same steps tie exactly; the key is (score, exact matchup before vs Any, id)."""
+    steps = [{"item": "Overlord", "text": "14 Overlord", "kind": "unit", "supply": 14}]
+    a, b = _guide(steps, gid="tie-b"), _guide(steps, gid="tie-a")
+    assert _picks(alcyone, guides=(a, b))[0] == ("tie-a", False)
+    any_vs = _guide(steps, gid="tie-0", vs="Any")
+    assert _picks(alcyone, guides=(any_vs, a))[0] == ("tie-b", False)  # the exact matchup beats a lower id with vs Any
+
+
+def test_s23_the_scores_and_their_key_are_exact_fractions(alcyone):
+    """The score is a Fraction (1/10 + 2/10 equals 3/10 as fractions, not as floats), and so is the key's first part."""
+    check = _check(alcyone, GUIDES[POOL12], LIL)
+    assert type(check.score) is Fraction and suggestion_key(check) == (Fraction(5, 12), 0, POOL12)
+
+
+def test_s25_a_guide_for_another_matchup_gives_no_build_check_and_the_other_player_is_unchanged(alcyone):
+    assert _picks(alcyone, {LIL: STARGATE}) == [
+        (
+            "none, other matchup",
+            (
+                'No build check: the build order guide "Gate, Nexus, Core into Stargate (PvZ)" is for Protoss vs Zerg, '
+                "and lilTiGGer played Zerg vs Protoss."
+            ),
+        ),
+        (STARGATE, False),
+    ]
+    exposed, order = alcyone
+    alone = checks(exposed, order, NAMES, {}, tuple(GUIDES.values()))[1]
+    faulted = checks(exposed, order, NAMES, {LIL: STARGATE}, tuple(GUIDES.values()))[1]
+    assert alone == faulted
+
+
+def test_s25_a_named_file_not_found_or_unreadable(alcyone, tmp_path):
+    missing = tmp_path / "nope.benchmark.json"
+    assert _picks(alcyone, {LIL: str(missing)})[0] == (
+        "none, file not found",
+        f'No build check: the build order guide file "{missing}" was not found.',
+    )
+    bad = tmp_path / "bad.benchmark.json"
+    bad.write_text("{not json", encoding="utf-8")
+    assert _picks(alcyone, {LIL: str(bad)})[0] == (
+        "none, file unreadable",
+        f'No build check: the build order guide file "{bad}" could not be read: it is not a JSON file.',
+    )
+    import json
+
+    v5 = tmp_path / "v5.benchmark.json"
+    data = json.loads((CHECKOUT / "src/sc2mindshare/config/guides" / f"{POOL12}.benchmark.json").read_text(encoding="utf-8"))
+    data["steps"][2].pop("supply")
+    v5.write_text(json.dumps(data), encoding="utf-8")
+    value, line = _picks(alcyone, {LIL: str(v5)})[0]
+    assert (value, line.endswith("could not be read: Step 3: give one of supply, time or trigger.")) == (
+        "none, file unreadable",
+        True,
+    )
+    assert "benchmark" not in line.replace(str(v5), "")
+
+
+def test_s25_a_matchup_no_guide_covers():
+    players = (PlayerContext(Z, 0, "Zerg", "Terran"), PlayerContext(P, 1, "Terran", "Zerg"))
+    exposed = game()
+    exposed = Exposed(
+        GameContext(92440, "5.0.13.92440", 20000, "1v1", 1, True, players),
+        exposed.units,
+        exposed.type_changes,
+        exposed.upgrades,
+        exposed.stats,
+        exposed.supply,
+        exposed.chronos,
+        exposed.tables,
+    )
+    out = checks(exposed, build_order(exposed, LAYER_FIXES), {}, {}, tuple(GUIDES.values()))
+    # vs Any covers Zerg vs Terran: a guide was found (this empty game is then too short for it)
+    assert out[0].value == "none, game too short"
+    assert out[1] == NoBuildCheck(
+        P, "none, no build order guide for TvZ", "No build check: there is no build order guide for Terran vs Zerg yet."
+    )
+
+
+def test_s25_a_game_too_short_for_the_first_step():
+    """Nothing paired, and the game ended (0:15) before the moment of the guide's first step (20 supply, which the
+    player never reaches)."""
+    steps = [{"item": "Queen", "text": "20 Queen", "kind": "unit", "supply": 20}]
+    exposed = game(loops=336)
+    out = checks(exposed, build_order(exposed, LAYER_FIXES), {Z: "Zed"}, {}, (_guide(steps),))
+    assert out[0] == NoBuildCheck(
+        Z,
+        "none, game too short",
+        "No build check: the game ended at 0:15, before the first step of the build order guide (20 Queen).",
+    )
+
+
+def test_s26_a_fault_in_the_comparison_is_raised_not_turned_into_a_reason(alcyone, monkeypatch):
+    import sc2mindshare.analysis.build_check as bc
+
+    def broken(*args, **kwargs):
+        raise RuntimeError("injected")
+
+    monkeypatch.setattr(bc, "compare", broken)
+    exposed, order = alcyone
+    with pytest.raises(RuntimeError, match="injected"):
+        checks(exposed, order, NAMES, {LIL: POOL12}, tuple(GUIDES.values()))

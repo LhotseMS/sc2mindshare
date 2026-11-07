@@ -1,0 +1,317 @@
+{
+ "players": [
+  {
+   "player": 1,
+   "build check": "Hatchery First: 17 Hatch 17 Gas 17 Pool",
+   "guide": "zvx-17-hatch-17-gas-17-pool-liquipedia",
+   "picked": false,
+   "score": "11/42",
+   "graded by": "supply",
+   "game second": 660,
+   "rows": [
+    {
+     "guide step": 1,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 2,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 7,
+     "off": -1,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 3,
+     "occurrence": 1,
+     "verdict": "late",
+     "graded by": "supply",
+     "step": 14,
+     "off": 6,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 4,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 5,
+     "off": -1,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 5,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 11,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 6,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 24,
+     "off": null,
+     "approx": false,
+     "moment": "200",
+     "done later": null
+    },
+    {
+     "guide step": 7,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 17,
+     "off": null,
+     "approx": false,
+     "moment": "3963/28",
+     "done later": null
+    },
+    {
+     "guide step": 7,
+     "occurrence": 2,
+     "verdict": "missing",
+     "graded by": null,
+     "step": null,
+     "off": null,
+     "approx": false,
+     "moment": "3963/28",
+     "done later": {
+      "item": "Queen",
+      "start": "65873/5",
+      "unit": 105644033
+     }
+    }
+   ],
+   "extras": [
+    [
+     10,
+     "Queen"
+    ],
+    [
+     15,
+     "Hatchery"
+    ]
+   ],
+   "counted": [
+    [
+     "Drone",
+     24
+    ],
+    [
+     "Zergling",
+     6
+    ]
+   ]
+  },
+  {
+   "player": 2,
+   "build check": "Gate, Gas, Nexus, Core (PvZ standard expand)",
+   "guide": "pvz-gate-nexus-core-project",
+   "picked": false,
+   "score": "7/20",
+   "graded by": "supply",
+   "game second": 660,
+   "rows": [
+    {
+     "guide step": 1,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 3,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 6,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 3,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 8,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 4,
+     "occurrence": 1,
+     "verdict": "a bit late",
+     "graded by": "supply",
+     "step": 19,
+     "off": 3,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 5,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 12,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 6,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 16,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 7,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 14,
+     "off": -2,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 8,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 24,
+     "off": null,
+     "approx": false,
+     "moment": "13737/112",
+     "done later": null
+    },
+    {
+     "guide step": 9,
+     "occurrence": 1,
+     "verdict": "optional",
+     "graded by": null,
+     "step": null,
+     "off": null,
+     "approx": false,
+     "moment": "13737/112",
+     "done later": null
+    }
+   ],
+   "extras": [
+    [
+     13,
+     "Gateway"
+    ],
+    [
+     21,
+     "RoboticsFacility"
+    ],
+    [
+     37,
+     "Pylon"
+    ],
+    [
+     43,
+     "Pylon"
+    ],
+    [
+     45,
+     "Gateway"
+    ],
+    [
+     46,
+     "Gateway"
+    ],
+    [
+     48,
+     "Pylon"
+    ],
+    [
+     54,
+     "Gateway"
+    ],
+    [
+     55,
+     "Gateway"
+    ],
+    [
+     57,
+     "Gateway"
+    ],
+    [
+     60,
+     "Gateway"
+    ],
+    [
+     61,
+     "Pylon"
+    ]
+   ],
+   "counted": [
+    [
+     "Probe",
+     29
+    ],
+    [
+     "Zealot",
+     2
+    ],
+    [
+     "Stalker",
+     1
+    ],
+    [
+     "Immortal",
+     2
+    ],
+    [
+     "Sentry",
+     5
+    ],
+    [
+     "WarpPrism",
+     1
+    ],
+    [
+     "WarpGate",
+     4
+    ]
+   ]
+  }
+ ]
+}

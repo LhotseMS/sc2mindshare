@@ -31,7 +31,13 @@ def _need_inputs():
 
 
 def test_the_regenerable_goldens_are_the_non_frozen_ones():
-    assert set(regen.REGENERABLE) == {"G-VIEW-current.json", "G-SNAP-current-compressed.json", "G-SNAP-current-linear.json"}
+    assert set(regen.REGENERABLE) == {
+        "G-VIEW-current.json",
+        "G-SNAP-current-compressed.json",
+        "G-SNAP-current-linear.json",
+        "build-check.json",  # CR-035
+    }
+    assert set(regen.DOCUMENTS) == set(regen.REGENERABLE) - {"build-check.json"}
     assert not set(regen.REGENERABLE) & regen.FROZEN
 
 
@@ -44,7 +50,7 @@ def test_each_non_frozen_golden_is_what_the_code_makes_byte_for_byte(name):
     )
 
 
-@pytest.mark.parametrize("name", sorted(regen.REGENERABLE))
+@pytest.mark.parametrize("name", sorted(regen.DOCUMENTS))
 def test_whole_numbers_have_no_decimal_part(name):
     """D7a A12 (VBA-JSON's number format): no number literal in a non-frozen golden is a whole number
     written with a decimal part. Strings such as "50.0" are text and are not looked at."""
@@ -261,7 +267,7 @@ def test_each_spine_current_golden_is_what_the_code_makes_byte_for_byte(name):
     )
 
 
-@pytest.mark.parametrize("name", sorted(regen.REGENERABLE))
+@pytest.mark.parametrize("name", sorted(regen.DOCUMENTS))
 def test_spines_current_goldens_have_no_whole_number_with_a_decimal_part(name):
     literals = []
 

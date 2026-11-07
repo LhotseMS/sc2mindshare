@@ -1,0 +1,403 @@
+{
+ "players": [
+  {
+   "player": 1,
+   "build check": "12 Pool (economic)",
+   "guide": "zvp-12-pool-economic-liquipedia",
+   "picked": false,
+   "score": "5/12",
+   "graded by": "supply",
+   "game second": 998,
+   "rows": [
+    {
+     "guide step": 1,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 1,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 2,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 3,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 4,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 5,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 6,
+     "verdict": "done",
+     "graded by": null,
+     "step": 6,
+     "off": null,
+     "approx": false,
+     "moment": "259/4",
+     "done later": null
+    },
+    {
+     "guide step": 3,
+     "occurrence": 1,
+     "verdict": "late",
+     "graded by": "supply",
+     "step": 20,
+     "off": 15,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 4,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 5,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 5,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 7,
+     "off": 1,
+     "approx": true,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 6,
+     "occurrence": 1,
+     "verdict": "missing",
+     "graded by": null,
+     "step": null,
+     "off": null,
+     "approx": false,
+     "moment": "250",
+     "done later": {
+      "item": "zerglingmovementspeed",
+      "start": "75732/5",
+      "unit": null
+     }
+    },
+    {
+     "guide step": 7,
+     "occurrence": 1,
+     "verdict": "a bit late",
+     "graded by": "supply",
+     "step": 14,
+     "off": 3,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 8,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 10,
+     "off": -2,
+     "approx": true,
+     "moment": null,
+     "done later": null
+    }
+   ],
+   "extras": [
+    [
+     8,
+     "Zergling"
+    ],
+    [
+     8,
+     "Zergling"
+    ],
+    [
+     9,
+     "Zergling"
+    ],
+    [
+     9,
+     "Zergling"
+    ],
+    [
+     15,
+     "Queen"
+    ],
+    [
+     16,
+     "Queen"
+    ],
+    [
+     22,
+     "Overlord"
+    ],
+    [
+     23,
+     "Overlord"
+    ],
+    [
+     26,
+     "Hatchery"
+    ]
+   ],
+   "counted": [
+    [
+     "Drone",
+     17
+    ]
+   ]
+  },
+  {
+   "player": 2,
+   "build check": "Gate, Nexus, Core into Stargate (PvZ)",
+   "guide": "pvz-stargate-opener-project",
+   "picked": false,
+   "score": "10/33",
+   "graded by": "supply",
+   "game second": 998,
+   "rows": [
+    {
+     "guide step": 1,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 4,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 2,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 6,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 3,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 8,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 4,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 13,
+     "off": 1,
+     "approx": true,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 5,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 14,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 6,
+     "occurrence": 1,
+     "verdict": "late",
+     "graded by": "supply",
+     "step": 27,
+     "off": 10,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 7,
+     "occurrence": 1,
+     "verdict": "on supply",
+     "graded by": "supply",
+     "step": 15,
+     "off": 0,
+     "approx": false,
+     "moment": null,
+     "done later": null
+    },
+    {
+     "guide step": 8,
+     "occurrence": 1,
+     "verdict": "missing",
+     "graded by": null,
+     "step": null,
+     "off": null,
+     "approx": false,
+     "moment": "14927/112",
+     "done later": {
+      "item": "WarpGateResearch",
+      "start": "7488",
+      "unit": null
+     }
+    },
+    {
+     "guide step": 9,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 40,
+     "off": null,
+     "approx": false,
+     "moment": "14927/112",
+     "done later": null
+    },
+    {
+     "guide step": 10,
+     "occurrence": 1,
+     "verdict": "done",
+     "graded by": null,
+     "step": 49,
+     "off": null,
+     "approx": false,
+     "moment": "2349/8",
+     "done later": null
+    }
+   ],
+   "extras": [
+    [
+     17,
+     "Gateway"
+    ],
+    [
+     20,
+     "ShieldBattery"
+    ],
+    [
+     42,
+     "Pylon"
+    ],
+    [
+     43,
+     "Pylon"
+    ],
+    [
+     44,
+     "Assimilator"
+    ],
+    [
+     45,
+     "Assimilator"
+    ],
+    [
+     50,
+     "Pylon"
+    ],
+    [
+     52,
+     "Pylon"
+    ],
+    [
+     55,
+     "Pylon"
+    ],
+    [
+     56,
+     "Pylon"
+    ],
+    [
+     57,
+     "VoidRay"
+    ],
+    [
+     58,
+     "Pylon"
+    ],
+    [
+     60,
+     "Pylon"
+    ]
+   ],
+   "counted": [
+    [
+     "Probe",
+     37
+    ],
+    [
+     "Zealot",
+     2
+    ],
+    [
+     "Adept",
+     3
+    ],
+    [
+     "Stalker",
+     2
+    ]
+   ]
+  }
+ ]
+}

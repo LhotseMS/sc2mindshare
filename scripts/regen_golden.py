@@ -37,6 +37,9 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from sc2mindshare.analysis.build_check import check_doc, checks
+from sc2mindshare.analysis.build_steps import build_order
+from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import analyse
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.domain.models import Graph
@@ -106,11 +109,26 @@ def _snapshot(mode: Timeline) -> Callable[..., str]:
     return make
 
 
+def _build_check(replay: str = "alcyone") -> str:
+    """CR-035: each player's build check with no guide named (the suggestion, D1a), as verdict rows."""
+    with contextlib.redirect_stdout(io.StringIO()):
+        result = analyse(load_replay(replay_path(replay)), root() / "MS SC")
+        graph = to_graph(result)
+    assert result.exposed is not None
+    names = {n.source.pid: n.value("name") for n in graph.nodes if n.kind == "Player" and n.source and n.source.pid}
+    order = build_order(result.exposed, result.fixes)
+    players = [check_doc(c) for c in checks(result.exposed, order, names, {}, library())]
+    return json.dumps({"players": players}, ensure_ascii=False, indent=1) + "\n"
+
+
+#: The Mindshare documents among the non-frozen goldens.
+DOCUMENTS = ("G-VIEW-current.json", "G-SNAP-current-compressed.json", "G-SNAP-current-linear.json")
 #: Non-frozen goldens: file name -> how the current code makes it (for the replay it is given).
 REGENERABLE: dict[str, Callable[..., str]] = {
     "G-VIEW-current.json": _view_current,
     "G-SNAP-current-compressed.json": _snapshot("compressed"),
     "G-SNAP-current-linear.json": _snapshot("linear"),
+    "build-check.json": _build_check,  # CR-035: the verdict rows (approach §2 form d)
 }
 
 
