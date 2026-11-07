@@ -16,8 +16,8 @@ from fractions import Fraction
 
 import pytest
 
-from sc2mindshare.analysis.build_check import age_line, compare, ending, interval_verdict, supply_band, time_band
-from sc2mindshare.analysis.build_steps import build_order
+from sc2mindshare.analysis.build_check import age_line, compare, ending, ghost_seconds, interval_verdict, supply_band, time_band
+from sc2mindshare.analysis.build_steps import build_order, supply_reading
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.guides import library, parse
 from sc2mindshare.analysis.run import analyse
@@ -912,3 +912,13 @@ def test_s27_the_wording(alcyone_docs, spine_docs):
                 assert agent not in f"{n['name']} {n['description']}".split(), (n["ID"], agent)
         for c in _nodes(doc, "Build Comparison"):
             assert "A step marked ≈ is one where we know your supply only roughly." in c["description"]
+
+
+def test_s18_a_supply_step_missing_entry_sits_where_the_player_first_reached_its_supply(alcyone):
+    """S18 (Kevin's call 5): a guide step with a supply and no time is placed at the moment the exact reading R first
+    reached its supply: lilTiGGer reached 16 at loop 1488.2, 1:06.4 (the last-sample reading would give 1:11.4)."""
+    exposed, _ = alcyone
+    reading = supply_reading(exposed)[LIL]
+    nydus = _guide([{"item": "NydusNetwork", "text": "16 Nydus Network", "kind": "building", "supply": 16}])
+    check = _check(alcyone, nydus, LIL)
+    assert ghost_seconds(check.rows[0], nydus.steps[0], nydus, reading) == pytest.approx(66.4375)
