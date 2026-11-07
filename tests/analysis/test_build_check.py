@@ -289,6 +289,7 @@ def test_s20_s34_s36_spine_zerg_against_hatch_first(spine):
     rows = _rows(check)
     assert rows[0] == (1, 2, "on supply", 0, False)
     assert rows[1] == (2, 7, "on supply", -1, False)
+    assert rows[2] == (3, 14, "late", 6, False)  # Leo's re-base: the cancelled Extractor (step 8) never pairs
     assert rows[3:] == [
         (4, 5, "on supply", -1, False),
         (5, 11, "on supply", 0, False),
@@ -300,7 +301,8 @@ def test_s20_s34_s36_spine_zerg_against_hatch_first(spine):
     assert int(second.done_later.start / Fraction(112, 5)) == 588  # ... done later at 9:48 (O-9)
     assert (second.done_later.item, second.done_later.kind) == ("Queen", "unit")
     assert check.step_verdict(GUIDES[HATCH1].steps[6]) == "missing"  # a partly made count step counts once, missing
-    assert (10, "Queen") in check.extras and (15, "Hatchery") in check.extras  # the 1:37 Queen, before the Hatchery
+    assert check.extras == ((10, "Queen"), (15, "Hatchery"))  # the 1:37 Queen, before the Hatchery; no Extractor extra
+    assert _card(check) == ({"on supply": 4, "late": 1, "done": 1, "missing": 1}, 2)  # Leo's re-base (S34)
 
 
 def test_s19_spine_the_cancelled_extractor_never_pairs(spine):
@@ -330,14 +332,18 @@ def test_s20_spine_protoss_against_gate_nexus_core(spine):
 
 
 def test_s22_spine_suggestion_scores_as_exact_fractions(spine):
-    """spine Protoss as Leo's O-11. spine Zerg's 3 Hatch score is O-11's; the hatch-first and 12 Pool scores differ from
-    O-11's 1/6 and 3/16, which let the cancelled Extractor pair (Leo's script; call 6 and AC5 forbid it): the pick and
-    its order stay, and those two literals wait for Leo's re-base (reported to Kevin)."""
+    """spine Protoss as Leo's O-11; spine Zerg as Leo re-based it with the cancelled Extractor never pairing (call 6):
+    hatch-first ahead of 12 Pool by 5/168."""
     protoss = {gid: _check(spine, GUIDES[gid], 2).score for gid in (GNC, STARGATE)}
     assert protoss == {GNC: Fraction(7, 20), STARGATE: Fraction(11, 24)}
     zerg = {gid: _check(spine, GUIDES[gid], 1).score for gid in (HATCH1, POOL12, HATCH3)}
-    assert zerg[HATCH3] == Fraction(31, 70)
-    assert zerg[HATCH1] < zerg[POOL12] < zerg[HATCH3]
+    assert zerg == {HATCH1: Fraction(11, 42), POOL12: Fraction(7, 24), HATCH3: Fraction(31, 70)}
+    assert zerg[POOL12] - zerg[HATCH1] == Fraction(5, 168)
+
+
+def test_spine_zerg_against_12_pool_pairs_the_extractor_after_the_cancelled_one(spine):
+    check = _check(spine, GUIDES[POOL12], 1)
+    assert _rows(check)[7] == (3, 14, "late", 9, False)
 
 
 # --- synthetic games ------------------------------------------------------------------------------------------------
@@ -521,8 +527,9 @@ def test_s25_a_matchup_no_guide_covers():
         exposed.tables,
     )
     out = checks(exposed, build_order(exposed, LAYER_FIXES), {}, {}, tuple(GUIDES.values()))
-    # vs Any covers Zerg vs Terran: a guide was found (this empty game is then too short for it)
-    assert out[0].value == "none, game too short"
+    # vs Any covers Zerg vs Terran; the empty game runs past the window (14:52), so it is compared: every step missing
+    assert isinstance(out[0], BuildCheck) and out[0].guide.id == HATCH1
+    assert {r.verdict for r in out[0].rows} == {"missing"}
     assert out[1] == NoBuildCheck(
         P, "none, no build order guide for TvZ", "No build check: there is no build order guide for Terran vs Zerg yet."
     )
@@ -551,3 +558,60 @@ def test_s26_a_fault_in_the_comparison_is_raised_not_turned_into_a_reason(alcyon
     exposed, order = alcyone
     with pytest.raises(RuntimeError, match="injected"):
         checks(exposed, order, NAMES, {LIL: POOL12}, tuple(GUIDES.values()))
+
+
+# --- commit 6c: Leo's and Kevin's answers of 2026-11-07 -------------------------------------------------------------
+
+
+def test_too_short_takes_the_earlier_of_the_first_moment_and_the_window_edge():
+    """Nothing paired, a first step whose moment never comes: too short only if the game ends before the reach + 30 s
+    (3:30); a game past it is compared, every step missing."""
+    steps = [{"item": "Queen", "text": "20 Queen", "kind": "unit", "supply": 20}]
+    short = game(loops=4700)  # 3:29
+    out = checks(short, build_order(short, LAYER_FIXES), {Z: "Zed"}, {}, (_guide(steps),))
+    assert isinstance(out[0], NoBuildCheck) and out[0].value == "none, game too short"
+    long = game(loops=4704)  # 3:30
+    out = checks(long, build_order(long, LAYER_FIXES), {Z: "Zed"}, {}, (_guide(steps),))
+    assert isinstance(out[0], BuildCheck) and [r.verdict for r in out[0].rows] == ["missing"]
+
+
+def test_a_rich_geyser_building_pairs_as_its_base_and_takes_its_drone():
+    rich = life(uid(1), Z, "ExtractorRich", init=1000)
+    drone = life(uid(2), Z, "Drone", born=1369)  # started at 1100.2
+    exposed = game([rich, drone])
+    order = build_order(exposed, LAYER_FIXES)
+    assert [s.supply for s in order.of(Z)] == [12, 11]  # the rich Extractor takes its Drone, like an Extractor
+    check = compare(exposed, order, _guide(EXTRACTOR), Z, picked=True)
+    assert _rows(check) == [(1, 1, "on supply", -2, False)]
+    assert check.rows[0].paired.item == "Extractor"
+    trigger = [*EXTRACTOR, {"item": "Drone", "text": "Drone", "kind": "worker", "trigger": "@100% Extractor"}]
+    moment = compare(exposed, order, _guide(trigger), Z, picked=True).rows[1].moment
+    assert moment == Fraction(1000) / Fraction(112, 5) + 21  # the base Extractor's build time
+
+
+def test_s35c_a_trigger_on_a_building_the_guide_does_not_list_uses_the_players_own(alcyone):
+    """@100% Spire with no Spire step: lilTiGGer's own Spire, started at loop 14039 (10:26), plus 71 s."""
+    steps = [{"item": "Mutalisk", "text": "@100% Spire: Mutalisks", "kind": "unit", "trigger": "@100% Spire"}]
+    row = _check(alcyone, _guide(steps), LIL).rows[0]
+    assert row.moment == Fraction(14039) / Fraction(112, 5) + 71
+
+
+def test_the_trigger_fallback_skips_a_cancelled_building_and_has_no_moment_without_one():
+    cancelled = life(uid(1), Z, "Extractor", init=1000, died=1200, killer=Z, killing=uid(1))
+    steps = [{"item": "Drone", "text": "Drone", "kind": "worker", "trigger": "@100% Extractor"}]
+    assert _synthetic(game([cancelled]), steps).rows[0].moment is None
+    built = life(uid(2), Z, "Extractor", init=1500)
+    assert _synthetic(game([cancelled, built]), steps).rows[0].moment == Fraction(1500) / Fraction(112, 5) + 21
+
+
+def test_the_kth_missing_occurrence_takes_the_kth_later_start():
+    pool = life(uid(1), Z, "SpawningPool", init=400)
+    queens = [life(uid(10), Z, "Queen", born=3106), life(uid(11), Z, "Queen", born=10000)]  # 2:22 in, 7:10 later
+    steps = [
+        {"item": "SpawningPool", "text": "12 Pool", "kind": "building", "supply": 12},
+        {"item": "Queen", "text": "3 Queens", "kind": "unit", "count": 3, "trigger": "@100% Spawning Pool"},
+    ]
+    rows = _synthetic(game([pool, *queens]), steps).rows_of(2)
+    assert [r.verdict for r in rows] == ["done", "missing", "missing"]
+    assert rows[1].done_later is not None and rows[1].done_later.start == 10000 - Fraction(4032, 5)
+    assert rows[2].done_later is None  # the later starts ran out

@@ -32,7 +32,15 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
-from sc2mindshare.analysis.build_steps import WARP_IN_UNITS, SupplyReading, _seconds, every_start, supply_reading
+from sc2mindshare.analysis.build_steps import (
+    RICH_GEYSERS,
+    WARP_IN_UNITS,
+    SupplyReading,
+    _cancelled,
+    _seconds,
+    every_start,
+    supply_reading,
+)
 from sc2mindshare.analysis.guides import GuideError, load
 from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.guides import (
@@ -101,7 +109,7 @@ def occurrences(order: BuildOrder, player: int) -> list[Occurrence]:
         for _ in range(st.count):
             out.append(
                 Occurrence(
-                    st.item,
+                    RICH_GEYSERS.get(st.item, st.item),  # a rich geyser's building pairs as its base building
                     st.number,
                     st.start,
                     st.supply,
@@ -148,19 +156,31 @@ def _pair(slots: Sequence[_Slot], players: Sequence[Occurrence], cost: Callable[
 
 def _moment(slot: _Slot, slots: Sequence[_Slot], exposed: Exposed, player: int, times: dict[str, Fraction]) -> Fraction | None:
     """A trigger's moment in seconds, or None when it never came or cannot be evaluated (Leo §2, Iris O-3):
-    ``@100% <building>``: the guide's earlier step of that building, as the player made it, plus its build time;
-    ``@n gas`` / ``@n minerals``: the first stats sample with that much."""
+    ``@100% <building>``: the guide's earlier step of that building, as the player made it, plus its build time; with no
+    such step, the player's own first building of that type started after loop 0 and not cancelled, plus its build time
+    (Leo, 2026-11-07); ``@n gas`` / ``@n minerals``: the first stats sample with that much."""
     trigger = slot.step.trigger or ""
     match = re.fullmatch(r"@100% (.+)", trigger)
     if match:
         ref = re.sub(r"[^A-Za-z]", "", match.group(1))
         ref = TRIGGER_NAMES.get(ref, ref)
         earlier = [s for s in slots if ref in s.step.items and s.step.number < slot.step.number and s.paired]
-        if earlier and ref in times:
+        if ref not in times:
+            return None
+        if earlier:
             paired = earlier[-1].paired
             assert paired is not None
             return paired.seconds + times[ref]
-        return None
+        own = [
+            u.init_loop
+            for u in exposed.units
+            if u.owner == player
+            and RICH_GEYSERS.get(u.first_type, u.first_type) == ref
+            and u.init_loop
+            and not u.hallucinated
+            and not _cancelled(u)
+        ]
+        return Fraction(min(own)) / LOOPS_PER_SECOND + times[ref] if own else None
     match = re.fullmatch(r"@(\d+) (gas|minerals)", trigger)
     if match:
         need, resource = int(match.group(1)), match.group(2)
@@ -328,11 +348,14 @@ def first_moment(guide: Guide, check: BuildCheck, reading: SupplyReading) -> Fra
 
 
 def _too_short(guide: Guide, check: BuildCheck, reading: SupplyReading) -> bool:
-    """AC10: nothing paired, and the game ended before the moment of the guide's first step (or it never came)."""
+    """AC10 (Leo, amended 2026-11-07): nothing paired, and the game ended before the earlier of the first step's moment
+    and the window's edge (the reach + 30 s); a moment that never comes counts as the window's edge. A game that runs
+    past the window and pairs nothing is compared: every step missing."""
     if any(r.paired is not None for r in check.rows):
         return False
     moment = first_moment(guide, check, reading)
-    return moment is None or check.game_second < moment
+    edge = Fraction(guide.window) if moment is None else min(moment, Fraction(guide.window))
+    return check.game_second < edge
 
 
 def suggestion_key(check: BuildCheck) -> tuple[Fraction, int, str]:

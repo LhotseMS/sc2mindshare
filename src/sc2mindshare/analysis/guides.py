@@ -228,7 +228,7 @@ def check(data: Any) -> list[str]:
     if missing:
         return [f"`{missing[0]}` is required for a {kind} source"]
     if kind != "spawningtool-link" and not steps:
-        return [f"`steps` is required for a {kind} source"]
+        return [f"`steps` must list at least one step for a {kind} source"]
     for n, step in enumerate(steps, start=1):
         problems += _step_problems(n, step, data["race"])
     if problems:

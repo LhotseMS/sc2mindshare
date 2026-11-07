@@ -165,7 +165,7 @@ def test_a_spawning_tool_link_with_no_steps_is_valid_and_another_kind_needs_step
     assert check(link) == []
     empty = _base()
     empty["steps"] = []
-    assert check(empty) == ["`steps` is required for a liquipedia source"]
+    assert check(empty) == ["`steps` must list at least one step for a liquipedia source"]
 
 
 def test_a_file_that_is_not_json_is_unreadable(tmp_path):

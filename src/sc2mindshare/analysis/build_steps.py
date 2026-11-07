@@ -118,6 +118,10 @@ PRODUCERS: dict[str, frozenset[str]] = {
 }
 _SAME_PRODUCER = {"WarpGate": "Gateway"}
 
+#: CR-035 (Kevin's call, Leo): a gas building on a rich geyser is its base building for the build check: the same
+#: item, supply and build time (the support tables have no row of its own).
+RICH_GEYSERS = {"ExtractorRich": "Extractor", "AssimilatorRich": "Assimilator", "RefineryRich": "Refinery"}
+
 #: CR-035 (Leo's reading): Zerg structures that are not made from a Drone (a Queen's tumor, the Nydus worm).
 NO_DRONE = re.compile(r"CreepTumor\w*|NydusCanal\w*")
 
@@ -235,7 +239,10 @@ def every_start(exposed: Exposed, player: int) -> tuple[Later, ...]:
     never count as made, call 6), in start order: where a guide step not made in time was made later."""
     made = [s for s in _starts(exposed, []) if s.player == player and not s.cancelled]
     made.sort(key=lambda s: (s.start, s.unit_id if s.unit_id is not None else 0, s.item))
-    return tuple(Later(s.item, s.start, s.kind, s.unit_id, s.done if s.kind == "upgrade" else None) for s in made)
+    return tuple(
+        Later(RICH_GEYSERS.get(s.item, s.item), s.start, s.kind, s.unit_id, s.done if s.kind == "upgrade" else None)
+        for s in made
+    )
 
 
 @dataclass(frozen=True)
@@ -302,6 +309,9 @@ def supply_reading(exposed: Exposed) -> dict[int, SupplyReading]:
     for cocoon, result in UNIT_MORPH_COCOONS.items():
         supplies.setdefault(cocoon, supplies.get(result, Fraction(0)))
     times = {k: _seconds(v) for k, v in exposed.tables.build_times}
+    for rich, base in RICH_GEYSERS.items():  # a rich geyser's building reads its base type's rows
+        supplies.setdefault(rich, supplies.get(base, Fraction(0)))
+        times.setdefault(rich, times.get(base))
     zerg = {p.pid for p in exposed.game.players if p.race.startswith("Z")}
     returning = _returning_drones(exposed.units)
     changes_of: dict[int, list[TypeChange]] = defaultdict(list)
