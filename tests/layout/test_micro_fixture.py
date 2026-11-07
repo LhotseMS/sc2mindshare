@@ -23,7 +23,7 @@ def fixture_items():
         LayoutItem("Units-3", "Units", 40, 10, player="B", size_basis=2),
         LayoutItem("Chat-1", "Chat", 45, 11, player="A"),
         LayoutItem("Supply Block-1", "Supply Block", 3, 12, player="A", t_end=44),
-        LayoutItem("Energy Excess-1", "Energy Excess", 30, 13, player="A"),
+        LayoutItem("Mystery-1", "Mystery", 30, 13, player="A"),  # CR-073: a type with no lane, so the grid
     ]
 
 
@@ -49,10 +49,10 @@ def test_compressed():
         ("0-50.png", 1, 5, -5.76),
         ("0-50.png", 2, 5, 5.76),
     ]
-    assert r.positions["Energy Excess-1"] == approx((18, 3))
+    assert r.positions["Mystery-1"] == approx((18, 3))
     assert r.positions["Game-1"] == (-12, 0)
     assert r.positions["Player-1"] == (-6, -9) and r.positions["Player-2"] == (-6, 9)
-    assert r.warnings == []
+    assert r.warnings == ["Mystery-1: type 'Mystery' has no lane: placed on the grid"]
 
 
 def test_linear():
@@ -63,3 +63,4 @@ def test_linear():
     assert r.positions["Supply Block-1"] == approx((5, -12.16)) and r.sizes["Supply Block-1"] == approx([12.5, 1])
     # everything else is where it is in compressed mode (windows 0 and 1 are rows 0 and 1 in both)
     assert r.positions["Battle-1"] == approx((2.5, 3.5)) and r.positions["Building-2"] == approx((0, -9.05))
+    assert r.positions["Mystery-1"] == approx((18, 3))

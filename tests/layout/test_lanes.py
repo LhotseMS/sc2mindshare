@@ -120,5 +120,9 @@ def test_7_two_concurrent_blocks_are_both_placed():
 
 
 def test_8_grid():
-    r = lay([it(f"Energy Excess-{k}", "Energy Excess", 5) for k in range(5)])
-    assert [r.positions[f"Energy Excess-{k}"] for k in range(5)] == [(18, 3), (21, 3), (24, 3), (27, 3), (18, 6)]
+    # CR-073: every type the export writes has a lane, so the grid example is a type with none, and it is reported
+    r = lay([it(f"Mystery-{k}", "Mystery", 5) for k in range(5)])
+    assert [r.positions[f"Mystery-{k}"] for k in range(5)] == [(18, 3), (21, 3), (24, 3), (27, 3), (18, 6)]
+    assert r.warnings == [f"Mystery-{k}: type 'Mystery' has no lane: placed on the grid" for k in range(5)] + [
+        "no items to sweep (G4)"
+    ]

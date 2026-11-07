@@ -870,8 +870,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 3,
+    "x": 95,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -889,8 +889,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 3,
+    "x": 115,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -908,8 +908,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 24,
-    "y": 3,
+    "x": 115,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -927,8 +927,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 3,
+    "x": 150,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -946,8 +946,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 6,
+    "x": 150,
+    "y": 23.45,
     "z": 0.01
    }
   },
@@ -965,8 +965,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 6,
+    "x": 190,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -984,8 +984,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 6,
+    "x": 212.5,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -1003,8 +1003,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 27,
-    "y": 6,
+    "x": 207.5,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -1022,8 +1022,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 18,
-    "y": 9,
+    "x": 210,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -1041,8 +1041,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 21,
-    "y": 9,
+    "x": 210,
+    "y": -21.55,
     "z": 0.01
    }
   },
@@ -1060,8 +1060,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 24,
-    "y": 9,
+    "x": 212.5,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -1079,8 +1079,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 27,
-    "y": 9,
+    "x": 220,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -1098,8 +1098,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 18,
-    "y": 12,
+    "x": 227.5,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -15035,7 +15035,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-2",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15043,8 +15043,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 12,
+    "x": 32.5,
+    "y": -26.25,
     "z": 0.01
    }
   },
@@ -15054,7 +15054,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-6",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15062,8 +15062,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 12,
+    "x": 123.75,
+    "y": -26.25,
     "z": 0.01
    }
   },
@@ -15073,7 +15073,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-7",
    "size": [
-    2.65,
+    15,
     1
    ],
    "properties": {
@@ -15081,8 +15081,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 12,
+    "x": 126.25,
+    "y": -27.3,
     "z": 0.01
    }
   },
@@ -15092,7 +15092,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-8",
    "size": [
-    2.65,
+    35,
     1
    ],
    "properties": {
@@ -15100,8 +15100,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 15,
+    "x": 138.75,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -15111,7 +15111,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-9",
    "size": [
-    2.65,
+    27.5,
     1
    ],
    "properties": {
@@ -15119,8 +15119,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 15,
+    "x": 142.5,
+    "y": -26.25,
     "z": 0.01
    }
   },
@@ -15130,7 +15130,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-12",
    "size": [
-    2.65,
+    35,
     1
    ],
    "properties": {
@@ -15138,8 +15138,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 15,
+    "x": 178.75,
+    "y": -26.25,
     "z": 0.01
    }
   },
@@ -15149,7 +15149,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-13",
    "size": [
-    2.65,
+    27.5,
     1
    ],
    "properties": {
@@ -15157,8 +15157,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 15,
+    "x": 182.5,
+    "y": -27.3,
     "z": 0.01
    }
   },
@@ -15168,7 +15168,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-14",
    "size": [
-    2.65,
+    25,
     1
    ],
    "properties": {
@@ -15176,8 +15176,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 18,
+    "x": 203.75,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -15187,7 +15187,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-0",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15195,8 +15195,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 21,
-    "y": 18,
+    "x": 2.5,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -15206,7 +15206,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-1",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15214,8 +15214,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 24,
-    "y": 18,
+    "x": 18.75,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -15225,7 +15225,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-3",
    "size": [
-    2.65,
+    30,
     1
    ],
    "properties": {
@@ -15233,8 +15233,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 27,
-    "y": 18,
+    "x": 58.75,
+    "y": 28.15,
     "z": 0.01
    }
   },
@@ -15244,7 +15244,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-4",
    "size": [
-    2.65,
+    5,
     1
    ],
    "properties": {
@@ -15252,8 +15252,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 18,
-    "y": 21,
+    "x": 78.75,
+    "y": 28.15,
     "z": 0.01
    }
   },
@@ -15263,7 +15263,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-5",
    "size": [
-    2.65,
+    72.5,
     1
    ],
    "properties": {
@@ -15271,8 +15271,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 21,
-    "y": 21,
+    "x": 75,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -15282,7 +15282,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-10",
    "size": [
-    2.65,
+    5,
     1
    ],
    "properties": {
@@ -15290,8 +15290,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 24,
-    "y": 21,
+    "x": 158.75,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -15301,7 +15301,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-11",
    "size": [
-    2.65,
+    105,
     1
    ],
    "properties": {
@@ -15309,8 +15309,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 27,
-    "y": 21,
+    "x": 123.75,
+    "y": 29.2,
     "z": 0.01
    }
   },
@@ -15320,7 +15320,7 @@
    "type": "Energy Excess",
    "ID": "Energy Excess-15",
    "size": [
-    2.65,
+    12.5,
     1
    ],
    "properties": {
@@ -15328,8 +15328,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 18,
-    "y": 24,
+    "x": 210,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -15339,7 +15339,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-0",
    "size": [
-    2.65,
+    15,
     1
    ],
    "properties": {
@@ -15347,8 +15347,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 24,
+    "x": 61.25,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15358,7 +15358,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-1",
    "size": [
-    2.65,
+    25,
     1
    ],
    "properties": {
@@ -15366,8 +15366,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 24,
+    "x": 63.75,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15377,7 +15377,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-2",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15385,8 +15385,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 24,
+    "x": 76.25,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15396,7 +15396,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-3",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15404,8 +15404,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 27,
+    "x": 93.75,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15415,7 +15415,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-4",
    "size": [
-    2.65,
+    22.5,
     1
    ],
    "properties": {
@@ -15423,8 +15423,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 27,
+    "x": 95,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15434,7 +15434,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-5",
    "size": [
-    2.65,
+    17.5,
     1
    ],
    "properties": {
@@ -15442,8 +15442,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 27,
+    "x": 120,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15453,7 +15453,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-6",
    "size": [
-    2.65,
+    32.5,
     1
    ],
    "properties": {
@@ -15461,8 +15461,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 27,
+    "x": 112.5,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -15472,7 +15472,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-7",
    "size": [
-    2.65,
+    22.5,
     1
    ],
    "properties": {
@@ -15480,8 +15480,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 30,
+    "x": 127.5,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15491,7 +15491,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-8",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15499,8 +15499,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 30,
+    "x": 140,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15510,7 +15510,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-9",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15518,8 +15518,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 30,
+    "x": 152.5,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -15529,7 +15529,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-10",
    "size": [
-    2.65,
+    17.5,
     1
    ],
    "properties": {
@@ -15537,8 +15537,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 30,
+    "x": 147.5,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15548,7 +15548,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-11",
    "size": [
-    2.65,
+    12.5,
     1
    ],
    "properties": {
@@ -15556,8 +15556,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 33,
+    "x": 150,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15567,7 +15567,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-12",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15575,8 +15575,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 33,
+    "x": 166.25,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15586,7 +15586,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-13",
    "size": [
-    2.65,
+    27.5,
     1
    ],
    "properties": {
@@ -15594,8 +15594,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 33,
+    "x": 182.5,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15605,7 +15605,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-14",
    "size": [
-    2.65,
+    20,
     1
    ],
    "properties": {
@@ -15613,8 +15613,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 33,
+    "x": 186.25,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -15624,7 +15624,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-15",
    "size": [
-    2.65,
+    30,
     1
    ],
    "properties": {
@@ -15632,8 +15632,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 36,
+    "x": 186.25,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15643,7 +15643,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-16",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15651,8 +15651,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 36,
+    "x": 205,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15662,7 +15662,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-17",
    "size": [
-    2.65,
+    10,
     1
    ],
    "properties": {
@@ -15670,8 +15670,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 36,
+    "x": 216.25,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15681,7 +15681,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-18",
    "size": [
-    2.65,
+    27.5,
     1
    ],
    "properties": {
@@ -15689,8 +15689,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 36,
+    "x": 215,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15700,7 +15700,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-19",
    "size": [
-    2.65,
+    12.5,
     1
    ],
    "properties": {
@@ -15708,8 +15708,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 39,
+    "x": 227.5,
+    "y": -23.9,
     "z": 0.01
    }
   },
@@ -15719,7 +15719,7 @@
    "type": "Inject Delay",
    "ID": "Inject Delay-20",
    "size": [
-    2.65,
+    7.5,
     1
    ],
    "properties": {
@@ -15727,8 +15727,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 39,
+    "x": 240,
+    "y": -22.85,
     "z": 0.01
    }
   },
@@ -15746,8 +15746,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 39,
+    "x": 25,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -15765,8 +15765,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 39,
+    "x": 25,
+    "y": -21.55,
     "z": 0.01
    }
   },
@@ -15784,8 +15784,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 18,
-    "y": 42,
+    "x": 42.5,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -15803,8 +15803,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 21,
-    "y": 42,
+    "x": 70,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -15822,8 +15822,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 24,
-    "y": 42,
+    "x": 70,
+    "y": -21.55,
     "z": 0.01
    }
   },
@@ -15841,8 +15841,8 @@
     "player": "lilTiGGer"
    },
    "position": {
-    "x": 27,
-    "y": 42,
+    "x": 147.5,
+    "y": -20.5,
     "z": 0.01
    }
   },
@@ -15860,8 +15860,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 18,
-    "y": 45,
+    "x": 55,
+    "y": 22.4,
     "z": 0.01
    }
   },
@@ -15879,8 +15879,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 21,
-    "y": 45,
+    "x": 55,
+    "y": 23.45,
     "z": 0.01
    }
   },
@@ -15898,8 +15898,8 @@
     "player": "blacksquall"
    },
    "position": {
-    "x": 24,
-    "y": 45,
+    "x": 57.5,
+    "y": 24.5,
     "z": 0.01
    }
   },
