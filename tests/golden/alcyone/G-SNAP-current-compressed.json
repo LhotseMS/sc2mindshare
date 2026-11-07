@@ -1197,7 +1197,7 @@
   },
   {
    "name": "Warp Gate Research · done later",
-   "description": "blacksquall completed Warp Gate Research at 00:05:34\n\nDone later: the build order guide has this step earlier; it was missing at 2:13.",
+   "description": "blacksquall completed Warp Gate Research at 00:05:34\n\nDone later: the build order guide has this step earlier; it was missing at 2:13. You were at about 66–70 supply when you started it.",
    "type": "Upgrade",
    "ID": "Upgrade-1",
    "size": [
@@ -2467,7 +2467,7 @@
   },
   {
    "name": "Gateway 1 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 22–24 supply when you started it.",
    "type": "Building",
    "ID": "Building-11",
    "size": [
@@ -2699,7 +2699,7 @@
   },
   {
    "name": "Pylon 4 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 52–56 supply when you started it.",
    "type": "Building",
    "ID": "Building-22",
    "size": [
@@ -2728,7 +2728,7 @@
   },
   {
    "name": "Pylon 5 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 54–58 supply when you started it.",
    "type": "Building",
    "ID": "Building-23",
    "size": [
@@ -2786,7 +2786,7 @@
   },
   {
    "name": "Pylon 7 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 58–62 supply when you started it.",
    "type": "Building",
    "ID": "Building-27",
    "size": [
@@ -2873,7 +2873,7 @@
   },
   {
    "name": "Pylon 10",
-   "description": "",
+   "description": "You were at about 64–68 supply when you started it.",
    "type": "Building",
    "ID": "Building-32",
    "size": [
@@ -5340,7 +5340,7 @@
   },
   {
    "name": "6 Zerglings · done",
-   "description": "6 Zerglings completed by lilTiGGer in last 10s from 00:01:20\n\nDone: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it.",
+   "description": "6 Zerglings completed by lilTiGGer in last 10s from 00:01:20\n\nDone: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it. You were at about 14–16 supply when you started it.",
    "type": "Units",
    "ID": "Units-13",
    "size": 0.75,
@@ -5369,7 +5369,7 @@
   },
   {
    "name": "4 Zerglings · extra",
-   "description": "4 Zerglings completed by lilTiGGer in last 10s from 00:01:40\n\nExtra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "4 Zerglings completed by lilTiGGer in last 10s from 00:01:40\n\nExtra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. Step 8: you were at about 16–18 supply when you started it. Step 9: you were at about 15–17 supply when you started it.",
    "type": "Units",
    "ID": "Units-15",
    "size": 0.75,
@@ -7631,7 +7631,7 @@
   },
   {
    "name": "Probe",
-   "description": "Probe completed by blacksquall in last 10s from 00:00:30",
+   "description": "Probe completed by blacksquall in last 10s from 00:00:30\n\nYou were at about 13–14 supply when you started it.",
    "type": "Units",
    "ID": "Units-7",
    "size": 0.75,
@@ -7776,7 +7776,7 @@
   },
   {
    "name": "Probe",
-   "description": "Probe completed by blacksquall in last 10s from 00:01:40",
+   "description": "Probe completed by blacksquall in last 10s from 00:01:40\n\nYou were at about 17–19 supply when you started it.",
    "type": "Units",
    "ID": "Units-16",
    "size": 0.75,
@@ -7805,7 +7805,7 @@
   },
   {
    "name": "Zealot",
-   "description": "Zealot completed by blacksquall in last 10s from 00:02:00",
+   "description": "Zealot completed by blacksquall in last 10s from 00:02:00\n\nYou were at about 18–20 supply when you started it.",
    "type": "Units",
    "ID": "Units-19",
    "size": 0.75,
@@ -7834,7 +7834,7 @@
   },
   {
    "name": "Zealot",
-   "description": "Zealot completed by blacksquall in last 10s from 00:02:20",
+   "description": "Zealot completed by blacksquall in last 10s from 00:02:20\n\nYou were at about 20–22 supply when you started it.",
    "type": "Units",
    "ID": "Units-21",
    "size": 0.75,
@@ -8356,7 +8356,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by blacksquall in last 10s from 00:05:00",
+   "description": "2 Probes completed by blacksquall in last 10s from 00:05:00\n\nYou were at about 52–56 supply when you started it.",
    "type": "Units",
    "ID": "Units-55",
    "size": 0.75,
@@ -8414,7 +8414,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by blacksquall in last 10s from 00:05:10",
+   "description": "2 Probes completed by blacksquall in last 10s from 00:05:10\n\nYou were at about 54–58 supply when you started it.",
    "type": "Units",
    "ID": "Units-57",
    "size": 0.75,
@@ -8472,7 +8472,7 @@
   },
   {
    "name": "Void Ray · done",
-   "description": "Void Ray completed by blacksquall in last 10s from 00:05:30\n\nDone: the build order guide asks for this step as soon as your Stargate finishes, and you made it.",
+   "description": "Void Ray completed by blacksquall in last 10s from 00:05:30\n\nDone: the build order guide asks for this step as soon as your Stargate finishes, and you made it. You were at about 48–52 supply when you started it.",
    "type": "Units",
    "ID": "Units-60",
    "size": 1,
@@ -8530,7 +8530,7 @@
   },
   {
    "name": "Probe",
-   "description": "Probe completed by blacksquall in last 10s from 00:05:40",
+   "description": "Probe completed by blacksquall in last 10s from 00:05:40\n\nYou were at about 64–68 supply when you started it.",
    "type": "Units",
    "ID": "Units-64",
    "size": 0.75,
@@ -8617,7 +8617,7 @@
   },
   {
    "name": "Void Ray · extra",
-   "description": "Void Ray completed by blacksquall in last 10s from 00:06:00\n\nExtra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Void Ray completed by blacksquall in last 10s from 00:06:00\n\nExtra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 58–62 supply when you started it.",
    "type": "Units",
    "ID": "Units-70",
    "size": 1,

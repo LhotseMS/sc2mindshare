@@ -1485,7 +1485,7 @@
   },
   {
    "name": "Gateway 1 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 18–20 supply when you started it.",
    "type": "Building",
    "ID": "Building-10",
    "size": [
@@ -1601,7 +1601,7 @@
   },
   {
    "name": "Pylon 3 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 52–54 supply when you started it.",
    "type": "Building",
    "ID": "Building-17",
    "size": [
@@ -1630,7 +1630,7 @@
   },
   {
    "name": "Pylon 4 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 56–58 supply when you started it.",
    "type": "Building",
    "ID": "Building-18",
    "size": [
@@ -1659,7 +1659,7 @@
   },
   {
    "name": "Gateway 2 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 54–56 supply when you started it.",
    "type": "Building",
    "ID": "Building-23",
    "size": [
@@ -1688,7 +1688,7 @@
   },
   {
    "name": "Gateway 3 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 54–56 supply when you started it.",
    "type": "Building",
    "ID": "Building-24",
    "size": [
@@ -1746,7 +1746,7 @@
   },
   {
    "name": "Gateway 4 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 58–60 supply when you started it.",
    "type": "Building",
    "ID": "Building-30",
    "size": [
@@ -1775,7 +1775,7 @@
   },
   {
    "name": "Gateway 5 · extra",
-   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure.",
+   "description": "Extra: not in the build order guide at this point. That can be the right call, for example to defend early pressure. You were at about 58–60 supply when you started it.",
    "type": "Building",
    "ID": "Building-31",
    "size": [
@@ -4503,7 +4503,7 @@
   },
   {
    "name": "Zealot",
-   "description": "Zealot completed by serega in last 10s from 00:01:50",
+   "description": "Zealot completed by serega in last 10s from 00:01:50\n\nYou were at about 17–19 supply when you started it.",
    "type": "Units",
    "ID": "Units-18",
    "size": 0.75,
@@ -4619,7 +4619,7 @@
   },
   {
    "name": "Stalker",
-   "description": "Stalker completed by serega in last 10s from 00:02:50",
+   "description": "Stalker completed by serega in last 10s from 00:02:50\n\nYou were at about 22–24 supply when you started it.",
    "type": "Units",
    "ID": "Units-27",
    "size": 0.75,
@@ -4735,7 +4735,7 @@
   },
   {
    "name": "Probe",
-   "description": "Probe completed by serega in last 10s from 00:03:30",
+   "description": "Probe completed by serega in last 10s from 00:03:30\n\nYou were at about 28–29 supply when you started it.",
    "type": "Units",
    "ID": "Units-34",
    "size": 0.75,
@@ -4764,7 +4764,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by serega in last 10s from 00:03:40",
+   "description": "2 Probes completed by serega in last 10s from 00:03:40\n\nStep 28: you were at about 30–33 supply when you started it.",
    "type": "Units",
    "ID": "Units-36",
    "size": 0.75,
@@ -4793,7 +4793,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by serega in last 10s from 00:03:50",
+   "description": "2 Probes completed by serega in last 10s from 00:03:50\n\nStep 29: you were at about 32–34 supply when you started it. Step 30: you were at about 33–35 supply when you started it.",
    "type": "Units",
    "ID": "Units-37",
    "size": 0.75,
@@ -4909,7 +4909,7 @@
   },
   {
    "name": "Immortal",
-   "description": "Immortal completed by serega in last 10s from 00:04:20",
+   "description": "Immortal completed by serega in last 10s from 00:04:20\n\nYou were at about 34–36 supply when you started it.",
    "type": "Units",
    "ID": "Units-45",
    "size": 1,
@@ -5025,7 +5025,7 @@
   },
   {
    "name": "Sentry",
-   "description": "Sentry completed by serega in last 10s from 00:05:00",
+   "description": "Sentry completed by serega in last 10s from 00:05:00\n\nYou were at about 52–54 supply when you started it.",
    "type": "Units",
    "ID": "Units-54",
    "size": 0.75,
@@ -5054,7 +5054,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by serega in last 10s from 00:05:00",
+   "description": "2 Probes completed by serega in last 10s from 00:05:00\n\nYou were at about 54–56 supply when you started it.",
    "type": "Units",
    "ID": "Units-55",
    "size": 0.75,
@@ -5112,7 +5112,7 @@
   },
   {
    "name": "2 Probes",
-   "description": "2 Probes completed by serega in last 10s from 00:05:10",
+   "description": "2 Probes completed by serega in last 10s from 00:05:10\n\nStep 53: you were at about 57–59 supply when you started it.",
    "type": "Units",
    "ID": "Units-58",
    "size": 0.75,
@@ -5141,7 +5141,7 @@
   },
   {
    "name": "Sentry",
-   "description": "Sentry completed by serega in last 10s from 00:05:10",
+   "description": "Sentry completed by serega in last 10s from 00:05:10\n\nYou were at about 54–58 supply when you started it.",
    "type": "Units",
    "ID": "Units-59",
    "size": 0.75,
@@ -5199,7 +5199,7 @@
   },
   {
    "name": "Warp Prism",
-   "description": "Warp Prism completed by serega in last 10s from 00:05:20",
+   "description": "Warp Prism completed by serega in last 10s from 00:05:20\n\nYou were at about 56–60 supply when you started it.",
    "type": "Units",
    "ID": "Units-62",
    "size": 0.75,

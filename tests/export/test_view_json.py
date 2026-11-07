@@ -178,7 +178,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "H1", "P3d-view", "A12-view", "P3e-view", "P1-view", "P1b-view", "P1c-view", "S1-view", "S1b-view",
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
-        "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view", "BC1c-alcyone-view", "BC1d-alcyone-view",
+        "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view", "BC1c-alcyone-view", "BC1d-alcyone-view", "BC1e-alcyone-view",
     )  # fmt: skip
 
 
@@ -315,6 +315,10 @@ def test_buildings_net_of_the_ledger():
         if n["properties"]["verdict"]:  # a compared Building: its ending and its sentence (after one blank line)
             head, sep, _sentence = n["description"].rpartition("\n\n")
             n = {**n, "name": n["name"].rpartition(" · ")[0], "description": head if sep else ""}
+        elif n["properties"]["supply range"]:  # G1 (D1b): a Building's only step, ranged and not compared
+            head, sep, sentence = n["description"].rpartition("\n\n")
+            assert sentence.startswith("You were at about "), n["ID"]
+            n = {**n, "description": head if sep else ""}
         return {**n, "properties": {k: v for k, v in n["properties"].items() if k not in (*steps, *check)}}
 
     assert sum(1 for n in new if n["properties"]["verdict"]) == 24
