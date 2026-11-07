@@ -33,11 +33,13 @@ from pathlib import Path
 from typing import Any
 
 from sc2mindshare.analysis.build_steps import (
+    HORIZON_SECOND,
     RICH_GEYSERS,
     WARP_IN_UNITS,
     SupplyReading,
     _cancelled,
     _seconds,
+    build_order,
     every_start,
     supply_reading,
 )
@@ -48,6 +50,7 @@ from sc2mindshare.domain.exposed import Exposed
 from sc2mindshare.domain.guides import (
     A_BIT_LATE,
     DONE,
+    DONE_LATER,
     EARLY,
     GAME_ENDED,
     LATE,
@@ -74,6 +77,8 @@ LOOPS_PER_SECOND = Fraction(112, 5)
 TRIGGER_NAMES = {"Core": "CyberneticsCore", "Pool": "SpawningPool"}
 #: O-12: the morphs the game makes by itself after an upgrade: counted, not graded.
 AUTOMATIC_MORPHS = frozenset({"WarpGate"})
+#: A trigger on the bank (``@100 gas``, ``@150 minerals``): read from the 7-second samples, so not a pairing bound.
+RESOURCE_TRIGGER = re.compile(r"@\d+ (gas|minerals)")
 #: The rank of a band, nearest on time first (TD-38's interval rule).
 _RANK = {ON_SUPPLY: 0, ON_TIME: 0, A_BIT_LATE: 1, EARLY: 1, LATE: 2}
 
@@ -163,7 +168,12 @@ def _moment(slot: _Slot, slots: Sequence[_Slot], exposed: Exposed, player: int, 
     """A trigger's moment in seconds, or None when it never came or cannot be evaluated (Leo §2, Iris O-3):
     ``@100% <building>``: the guide's earlier step of that building, as the player made it, plus its build time; with no
     such step, the player's own first building of that type started after loop 0 and not cancelled, plus its build time
-    (Leo, 2026-11-07); ``@n gas`` / ``@n minerals``: the first stats sample with that much."""
+    (Leo, 2026-11-07); ``@n gas`` / ``@n minerals``: the first stats sample with that much.
+
+    A resource moment is read from the 7-second samples of the bank, so it is never early but can be up to one sample
+    (160 loops, 7.1 s) late, and later still, or never, when the gas or minerals were spent between two samples. It is
+    therefore used only for a missing entry's text and place, never as a pairing bound (Leo, review round 1, finding 4);
+    an ``@100% <building>`` moment is exact and stays a bound."""
     trigger = slot.step.trigger or ""
     match = re.fullmatch(r"@100% (.+)", trigger)
     if match:
@@ -206,6 +216,8 @@ def compare(exposed: Exposed, order: BuildOrder, guide: Guide, player: int, pick
     """The player's build compared with ``guide`` (AC2-AC6)."""
     window = guide.window
     times = {k: t for k, v in exposed.tables.build_times if (t := _seconds(v)) is not None}
+    if window > HORIZON_SECOND:  # Stefan's D1a (review round 1): every start up to the window, whatever the reach
+        order = build_order(exposed, (), horizon_second=window)  # items and starts only: names are not compared
     players = [o for o in occurrences(order, player) if o.seconds <= window]
     slots = [_Slot(step, k) for step in guide.steps for k in range(1, step.count + 1)]
     used: set[int] = set()  # ids of paired player occurrences
@@ -215,11 +227,9 @@ def compare(exposed: Exposed, order: BuildOrder, guide: Guide, player: int, pick
         if step.time is not None:
             return Fraction(abs(int(o.seconds // 1) - step.time), 10)
         if step.time_interval is not None:
-            low, high = step.time_interval
-            second = int(o.seconds // 1)
-            return Fraction(max(0, low - second, second - high), 10)
+            return Fraction(abs(interval_distance(int(o.seconds // 1), step.time_interval)), 10)
         if step.trigger is not None:
-            if slot.moment is None:
+            if slot.moment is None or RESOURCE_TRIGGER.fullmatch(step.trigger):  # finding 4: no pairing bound
                 return Fraction(0)
             epsilon = Fraction(0) if o.exact else (None if o.chrono_possible else Fraction(1))
             if epsilon is not None and o.seconds < slot.moment - epsilon:
@@ -285,20 +295,19 @@ def _row(slot: _Slot, game_second: int, window: int, later: list[Later], taken: 
             return Row(step.number, slot.occurrence, OPTIONAL, moment=slot.moment)
         if game_second < window:
             return Row(step.number, slot.occurrence, GAME_ENDED, moment=slot.moment)
-        done_later = next((s for k, s in enumerate(later) if s.item in step.items and k not in taken), None)
-        if done_later is not None:
-            taken.add(later.index(done_later))
+        k = next((k for k, s in enumerate(later) if s.item in step.items and k not in taken), None)
+        if k is not None:
+            taken.add(k)
+        done_later = None if k is None else later[k]
         return Row(step.number, slot.occurrence, MISSING, moment=slot.moment, done_later=done_later)
     if o.estimated:
         return Row(step.number, slot.occurrence, NOT_COMPARED, paired=o, moment=slot.moment)
     if step.time is not None:
         d = int(o.seconds // 1) - step.time
         return Row(step.number, slot.occurrence, time_band(d), "time", o, d, moment=slot.moment)
-    if step.time_interval is not None:
-        low, high = step.time_interval
-        second = int(o.seconds // 1)
-        verdict, d, approx = interval_verdict(second - high, second - low, time_band)
-        return Row(step.number, slot.occurrence, verdict, "time", o, d, approx, slot.moment)
+    if step.time_interval is not None:  # Leo, finding 10: by the distance to the nearest edge; the start is exact
+        d = interval_distance(int(o.seconds // 1), step.time_interval)
+        return Row(step.number, slot.occurrence, time_band(d), "time", o, d, moment=slot.moment)
     if step.trigger is not None:
         return Row(step.number, slot.occurrence, DONE, paired=o, moment=slot.moment)
     a, b = int(_supply_distance(o.low, step)), int(_supply_distance(o.high, step))
@@ -344,12 +353,31 @@ def first_moment(guide: Guide, check: BuildCheck, reading: SupplyReading) -> Fra
         return Fraction(step.time)
     if step.time_interval is not None:
         return Fraction(step.time_interval[0])
+    return due(step, check.rows_of(step.number)[0].moment, reading)
+
+
+def due(step: GuideStep, moment: Fraction | None, reading: SupplyReading) -> Fraction | None:
+    """When a guide step without a time is due, in seconds (Leo, review round 1, finding 1): the later of its trigger's
+    moment and the moment the player first reached its supply (R, the lower edge), whichever of the two it has; None
+    when either never came."""
+    parts: list[Fraction] = []
     if step.trigger is not None:
-        return check.rows_of(step.number)[0].moment
-    bounds = step.supply_bounds
-    assert bounds is not None
-    loop = reading.reached(bounds[0])
-    return None if loop is None else loop / LOOPS_PER_SECOND
+        if moment is None:
+            return None
+        parts.append(moment)
+    if step.supply_bounds is not None:
+        loop = reading.reached(step.supply_bounds[0])
+        if loop is None:
+            return None
+        parts.append(loop / LOOPS_PER_SECOND)
+    return max(parts) if parts else None
+
+
+def interval_distance(second: int, interval: tuple[int, int]) -> int:
+    """A start's distance in whole seconds to a guide time interval: 0 inside, else to the nearest edge (Leo, finding
+    10; the pairing cost and the verdict both read it)."""
+    low, high = interval
+    return second - high if second > high else (second - low if second < low else 0)
 
 
 def _too_short(guide: Guide, check: BuildCheck, reading: SupplyReading) -> bool:
@@ -361,6 +389,11 @@ def _too_short(guide: Guide, check: BuildCheck, reading: SupplyReading) -> bool:
     moment = first_moment(guide, check, reading)
     edge = Fraction(guide.window) if moment is None else min(moment, Fraction(guide.window))
     return check.game_second < edge
+
+
+def _gradable(guide: Guide) -> bool:
+    """A guide with at least one step that is not optional: one there is something to compare with (Iris R1)."""
+    return any(not s.optional for s in guide.steps)
 
 
 def suggestion_key(check: BuildCheck) -> tuple[Fraction, int, str]:
@@ -418,9 +451,24 @@ def checks(
                 )
                 out.append(NoBuildCheck(pid, "none, other matchup", line))
                 continue
+            if not guide.steps:  # Iris R1 (Stefan's D1a, AC10): nothing to compare
+                line = (
+                    f'No build check: the build order guide "{guide.name}" is a link to Spawning Tool, with no steps to compare.'
+                )
+                out.append(NoBuildCheck(pid, "none, link only", line))
+                continue
+            if not _gradable(guide):
+                line = (
+                    f'No build check: every step of the build order guide "{guide.name}" is optional, so there is '
+                    "nothing to compare."
+                )
+                out.append(NoBuildCheck(pid, "none, only optional steps", line))
+                continue
             candidates = [compare(exposed, order, guide, pid, picked=True)]
-        else:
-            candidates = [compare(exposed, order, g, pid, picked=False) for g in guides if g.matches(race, opponent)]
+        else:  # a guide with no required step is never suggested (Iris R1)
+            candidates = [
+                compare(exposed, order, g, pid, picked=False) for g in guides if g.matches(race, opponent) and _gradable(g)
+            ]
             if not candidates:
                 letters = f"{RACE_LETTER.get(race, race)}v{RACE_LETTER.get(opponent or '', opponent or '?')}"
                 line = f"No build check: there is no build order guide for {_matchup(race, opponent)} yet."
@@ -544,7 +592,7 @@ def ending(row: Row) -> str:
     """A compared step's name ending (Iris; Stefan's Q2 (a)): "on supply", "15 supply late", "3 supply early", "on time",
     "28 s late" under 60 s and "1:59 late" from 60 s, "done", "not compared"; " ≈" added to an ending graded by supply
     whenever the step's supply is only known as a range (Iris A1; Stefan's D1a: never on done, extra or a time
-    verdict). At most 14 characters, 15 with " ≈"."""
+    verdict). At most 15 characters, 17 with " ≈" (e.g. "15 supply early ≈"); never truncated (Iris R2)."""
     if row.verdict in (ON_SUPPLY, ON_TIME, DONE, NOT_COMPARED):
         text = row.verdict
     else:
@@ -605,23 +653,22 @@ def _row_verdict(row: Row, step: GuideStep) -> StepVerdict:
 def _done_later_verdict(step: GuideStep, missing_at: float) -> StepVerdict:
     """The real step of a guide step that was missing at its moment and made later (Iris: ends ``· done later``)."""
     sentence = f"Done later: the build order guide has this step earlier; it was missing at {_mmss_of(missing_at)}."
-    return StepVerdict(MISSING, "done later", _guide_time(step), "", _guide_supply(step), sentence)
+    return StepVerdict(DONE_LATER, DONE_LATER, _guide_time(step), "", _guide_supply(step), sentence)  # Iris R3
 
 
 def ghost_seconds(row: Row, step: GuideStep, guide: Guide, reading: SupplyReading) -> float:
     """Where a missing entry sits, in seconds (spec §13.3 rule 1, TD-43, TD-44; Kevin's call 5): the guide's time (an
-    interval's middle); else the moment the player first reached the guide's supply (its lower edge) by the exact
-    reading R; else the trigger's moment; else the guide's horizon (Leo §4, S35). The rule of
+    interval's middle); else when the step is due (``due``: the later of its trigger's moment and the moment the
+    player first reached its supply by the exact reading R; Leo, finding 1); else the guide's horizon (Leo §4, S35). The
+    rule of
     ``layout.items.ghost_time``, applied here because analysis may not import layout (CR-009); moving that function
     into domain is a follow-up."""
     if step.time is not None:
         return float(step.time)
     if step.time_interval is not None:
         return (step.time_interval[0] + step.time_interval[1]) / 2
-    if step.supply_bounds is not None:
-        loop = reading.reached(step.supply_bounds[0])
-        return float(guide.horizon) if loop is None else float(loop / LOOPS_PER_SECOND)
-    return float(guide.horizon) if row.moment is None else float(row.moment)
+    moment = due(step, row.moment, reading)
+    return float(guide.horizon) if moment is None else float(moment)
 
 
 def _same_start(later: Later, step: BuildStep) -> bool:
@@ -783,8 +830,9 @@ def card(
         )
     names = {s.number: s.name for s in order.of(check.player)}
     extra_counts: dict[str, int] = {}
-    for number, _item in check.extras:
-        extra_counts[names[number]] = extra_counts.get(names[number], 0) + 1
+    for number, item in check.extras:  # a start after 6:00 (a guide reaching past 5:30) has no step in the order
+        name = names.get(number) or item_name(item, "unit", order, exposed, fixes)
+        extra_counts[name] = extra_counts.get(name, 0) + 1
     if extra_counts:
         ranked = sorted(extra_counts.items(), key=lambda kv: -kv[1])  # stable: first made first among equals
         lines.append("Extra, not in the build order guide: " + ", ".join(f"{n} {_plural(k, n)}" for k, n in ranked) + ".")
@@ -948,9 +996,11 @@ def with_build_check(
             )
         )
         by_number = {s.number: s for s in check.guide.steps}
+        number = 0  # Stefan's D2a: numbered per player, as the cards are, so no player renumbers the other's
         for row in check.rows:
             if row.verdict != MISSING:
                 continue
+            number += 1
             step = by_number[row.guide_step]
             seconds = ghost_seconds(row, step, check.guide, readings[pid])
             item = item_name(step.item, step.kind, order, exposed, names)
@@ -959,7 +1009,7 @@ def with_build_check(
             start = GameTime.from_seconds(int(seconds // 1))
             ghost = Node(
                 "Missing Step",
-                f"Missing Step-{len(ghosts) + 1}",
+                f"Missing Step-{contexts[pid].order + 1}-{number}",
                 f"{item} · missing",
                 _ghost_text(row, step, check.guide, item, check),
                 (),

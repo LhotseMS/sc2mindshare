@@ -393,12 +393,13 @@ def _chrono_possible(members: list[_Start], chronos: list[tuple[int, str]]) -> b
     return False
 
 
-def build_order(exposed: Exposed, fixes: Iterable[str]) -> BuildOrder:
-    """Every player's numbered steps up to the horizon, and the building morphs of the whole game."""
+def build_order(exposed: Exposed, fixes: Iterable[str], horizon_second: int = HORIZON_SECOND) -> BuildOrder:
+    """Every player's numbered steps up to the horizon (6:00, D48a; the build check reads further for a guide that
+    reaches past 5:30, Stefan's D1a), and the building morphs of the whole game."""
     names = frozenset(fixes)
     estimated: list[str] = []
     starts = _starts(exposed, estimated)
-    horizon = min(HORIZON_SECOND, second_of(Fraction(exposed.game.loops)))
+    horizon = min(horizon_second, second_of(Fraction(exposed.game.loops)))
     morphs = tuple(sorted((s.morph for s in starts if s.morph is not None), key=lambda m: (m.start, m.unit_id)))
     supply = supply_reading(exposed)
     chronos = _chrono_marks(exposed)

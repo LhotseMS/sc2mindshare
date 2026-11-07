@@ -18,6 +18,9 @@ from typing import Any
 ON_SUPPLY, ON_TIME, A_BIT_LATE, LATE, EARLY = "on supply", "on time", "a bit late", "late", "early"
 DONE, MISSING, NOT_COMPARED, GAME_ENDED, OPTIONAL = "done", "missing", "not compared", "not compared (game ended)", "optional"
 VERDICTS = (ON_SUPPLY, ON_TIME, A_BIT_LATE, LATE, EARLY, DONE, MISSING, NOT_COMPARED, GAME_ENDED, OPTIONAL)
+#: Iris R3: the verdict of a real node whose guide step was missing at its moment and made later. A node property only:
+#: not a row verdict (that row is MISSING, on the grey entry), so not in VERDICTS and not counted on the card.
+DONE_LATER = "done later"
 
 
 @dataclass(frozen=True)

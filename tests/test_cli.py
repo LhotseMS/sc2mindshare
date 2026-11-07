@@ -380,7 +380,7 @@ def test_s26_an_unknown_player_is_a_usage_error(tmp_path, config, guide):
     need(ALCYONE)
     out = tmp_path / "game" / "graph.json"
     code, _stdout, stderr = run("build", ALCYONE, "--out", out, "--config-root", config, "--guide", guide)
-    assert code == 2 and "no player" in stderr and not out.exists()
+    assert code == 2 and "no player" in stderr and not out.parent.exists()  # nothing written, graph.log included (finding 9)
 
 
 @pytest.mark.parametrize("guide", ["lilTiGGer", "=zvp-12-pool-economic-liquipedia", "lilTiGGer="])

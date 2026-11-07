@@ -303,11 +303,14 @@ def parse(data: Any, file: str = "") -> Guide:
 
 
 def load(path: Path) -> Guide:
-    """One guide file, read and checked. A file that is not JSON is unreadable too."""
+    """One guide file, read and checked. A file that is not JSON, or that cannot be read at all (a permission error,
+    say: Rex's finding 8), is unreadable too."""
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise GuideError("it is not a JSON file") from exc
+    except OSError as exc:
+        raise GuideError(f"it could not be opened ({exc.strerror or type(exc).__name__})") from exc
     return parse(data, path.name)
 
 

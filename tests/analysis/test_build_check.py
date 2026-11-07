@@ -19,8 +19,12 @@ import pytest
 from sc2mindshare.analysis.build_check import (
     _ghost_text,
     _graded_line,
+    _row,
+    _signed,
+    _Slot,
     age_line,
     compare,
+    due,
     ending,
     ghost_seconds,
     interval_verdict,
@@ -836,13 +840,15 @@ def test_s16_s17_the_missing_entries_on_alcyone(alcyone_docs):
     )
     links = [(lk["node1"], lk["node2"], lk["name1"], lk["name2"]) for lk in doc["links"] if lk["name1"] == "done later"]
     assert links == [
-        ("Missing Step-1", "Upgrade-9", "done later", "was missing at 4:10"),
-        ("Missing Step-2", "Upgrade-1", "done later", "was missing at 2:13"),
+        ("Missing Step-1-1", "Upgrade-9", "done later", "was missing at 4:10"),  # D2a: numbered per player
+        ("Missing Step-2-1", "Upgrade-1", "done later", "was missing at 2:13"),
     ]
     by_id = {n["ID"]: n for n in doc["nodes"]}
     assert (
         by_id["Upgrade-9"]["name"].endswith(" · done later") and by_id["Upgrade-1"]["name"] == "Warp Gate Research · done later"
     )
+    # Iris R3: a real node done later says so in its verdict too
+    assert [by_id[i]["properties"]["verdict"] for i in ("Upgrade-9", "Upgrade-1")] == ["done later", "done later"]
 
 
 def test_s30_the_build_check_moves_no_existing_node_and_adds_no_row(alcyone_docs, spine_docs):
@@ -904,7 +910,7 @@ def test_s25_a_player_with_no_build_check_gets_one_line_and_no_card(alcyone_docs
     theirs = lambda g: [
         (n.id, n.name, n.description, n.added)
         for n in g.nodes
-        if n.kind not in ("Player", "Missing Step") and n.added and n.value("player") == "blacksquall"
+        if n.kind != "Player" and n.added and n.value("player") == "blacksquall"  # D2a: the missing entries too
     ]
     assert theirs(graph) == theirs(plain)
 
@@ -1018,3 +1024,167 @@ def test_ac9_leos_patch_rows(patch, version, expected):
 def test_ac9_no_patch_wins_over_an_unreadable_game_patch():
     old, line = age_line(GUIDES[POOL12], "")
     assert old and line.startswith("Patch unknown:")
+
+
+# --- CR-035 review round 1 (Rex's findings; Stefan's D1a, D2a; Leo's and Iris's rulings) ------------------------------
+
+
+def test_finding1_a_step_with_a_supply_and_a_trigger_sits_at_the_later_moment():
+    """Leo, finding 1: Alcyone, lilTiGGer named Hatchery First; Zergling Movement Speed (17 supply, @100 gas) is due at
+    the later of 1:40 (R reached the guide's 21 supply) and 4:10 (100 gas): it sits at 4:10."""
+    _graph, docs = _documents(ALCYONE, guides=("lilTiGGer=zvx-17-hatch-17-gas-17-pool-liquipedia",))
+    for mode, x in (("compressed", 45.0), ("linear", 60.0)):
+        ghost = next(n for n in _nodes(docs[mode][0], "Missing Step") if n["properties"]["player"] == "lilTiGGer")
+        assert (ghost["ID"], ghost["properties"]["time"], ghost["position"]["x"], ghost["position"]["y"]) == (
+            "Missing Step-1-1",
+            "00:04:10",
+            x,
+            -8,
+        )
+        assert len(docs[mode][1].rows) == 86
+    doc = docs["compressed"][0]
+    assert [(lk["node2"], lk["name2"]) for lk in doc["links"] if lk["node1"] == "Missing Step-1-1"] == [
+        ("Upgrade-9", "was missing at 4:10")
+    ]
+    upgrade = next(n for n in doc["nodes"] if n["ID"] == "Upgrade-9")
+    assert upgrade["description"].endswith("it was missing at 4:10.")
+
+
+def test_finding1_due_is_the_later_moment_and_none_if_either_never_came(alcyone):
+    exposed, _ = alcyone
+    reading = supply_reading(exposed)[LIL]
+    both = _guide(
+        [{"item": "zerglingmovementspeed", "text": "21 @100 gas speed", "kind": "upgrade", "supply": 21, "trigger": "@100 gas"}]
+    )
+    step = both.steps[0]
+    assert due(step, Fraction(250), reading) == 250  # the gas came after the supply (1:40)
+    assert due(step, Fraction(10), reading) == Fraction(11236, 5) / Fraction(112, 5)  # the supply came later: 100.32 s
+    assert due(step, None, reading) is None
+
+
+def test_finding2_d1a_starts_up_to_the_window_are_compared_whatever_the_reach(alcyone):
+    """Stefan's D1a: Rex's probe, 12 Pool with a 6:00 reach and "Glial Reconstitution at 5:50"; lilTiGGer started it at
+    6:07 (367.5 s), inside the window (6:30): +17, a bit late, not missing."""
+    data = json.loads((CHECKOUT / "src/sc2mindshare/config/guides" / f"{POOL12}.benchmark.json").read_text(encoding="utf-8"))
+    data["horizon"] = "6:00"
+    data["steps"].append(
+        {"item": "GlialReconstitution", "text": "Glial at 5:50", "kind": "upgrade", "time": "5:50", "time_source": "source"}
+    )
+    check = _check(alcyone, parse(data), LIL)
+    row = check.rows[-1]
+    assert (row.verdict, row.graded_by, row.off, row.done_later) == ("a bit late", "time", 17, None)
+    assert ending(row) == "17 s late"
+
+
+def test_finding4_a_gas_trigger_is_no_pairing_bound(spine):
+    """Leo, finding 4: spine, the Zerg player against Hatchery First, with the sample at loop 4480 lowered from 112 to 96
+    gas (as if sampled just before he reached 100): the speed step is still done, paired with step 24, with no extra."""
+    exposed, order = spine
+    edited = dataclasses.replace(
+        exposed,
+        stats=tuple(dataclasses.replace(s, vespene=96) if (s.player == 1 and s.loop == 4480) else s for s in exposed.stats),
+    )
+    check = compare(edited, order, GUIDES[HATCH1], 1, picked=True)
+    row = check.rows_of(6)[0]
+    assert (row.verdict, row.paired.step, row.moment) == ("done", 24, Fraction(1900, 7))
+    assert not [e for e in check.extras if e[1] == "zerglingmovementspeed"] and check.score == Fraction(11, 42)
+
+
+@pytest.mark.parametrize(
+    ("second", "verdict", "off", "shown"),
+    [  # Leo, finding 10: interval 2:00-2:30, graded by the distance to the nearest edge, never ≈
+        (135, "on time", 0, "on time"),
+        (160, "on time", 10, "on time"),
+        (161, "a bit late", 11, "11 s late"),
+        (165, "a bit late", 15, "15 s late"),
+        (181, "late", 31, "31 s late"),
+        (110, "on time", -10, "on time"),
+        (109, "early", -11, "11 s early"),
+    ],
+)
+def test_finding10_a_time_interval_is_graded_by_its_nearest_edge(second, verdict, off, shown):
+    step = _guide(
+        [
+            {
+                "item": "Hatchery",
+                "text": "Hatchery 2:00-2:30",
+                "kind": "building",
+                "time_interval": ["2:00", "2:30"],
+                "time_source": "source",
+            }
+        ]
+    ).steps[0]
+    o = Occurrence("Hatchery", 7, Fraction(second) * Fraction(112, 5) + 1, 19, None, "building", True, False, False)
+    row = _row(_Slot(step, 1, paired=o), 1000, 210, [], set())
+    assert (row.verdict, row.off, row.approx, ending(row), _signed(row.off)) == (
+        verdict,
+        off,
+        False,
+        shown,
+        f"{off:+d}" if off else "0",
+    )
+
+
+def test_r2_the_longest_ending():
+    o = Occurrence("Pylon", 3, Fraction(448), 14, (13, 14), "building", True, False, False)
+    assert ending(Row(1, 1, "early", "supply", o, -15, False)) == "15 supply early ≈"  # 17 characters, never truncated
+
+
+LINK = {
+    "format_version": "1", "id": "link-only", "name": "Link only", "race": "Zerg", "vs": "Protoss", "era": "LotV",
+    "patch": None, "as_of": "2026-11-07", "source": {"kind": "spawningtool-link", "title": "x", "url": "https://example.org"},
+    "steps": [],
+}  # fmt: skip
+
+
+def test_r1_a_named_guide_with_nothing_to_compare_gives_a_reason(alcyone, tmp_path):
+    link = tmp_path / "link.benchmark.json"
+    link.write_text(json.dumps(LINK), encoding="utf-8")
+    optional = tmp_path / "optional.benchmark.json"
+    data = json.loads((CHECKOUT / "src/sc2mindshare/config/guides" / f"{POOL12}.benchmark.json").read_text(encoding="utf-8"))
+    data |= {"id": "all-optional", "name": "All optional", "steps": [dict(s, optional=True) for s in data["steps"]]}
+    optional.write_text(json.dumps(data), encoding="utf-8")
+    plain = _picks(alcyone)
+    for path, value, line in (
+        (
+            link,
+            "none, link only",
+            'No build check: the build order guide "Link only" is a link to Spawning Tool, with no steps to compare.',
+        ),
+        (
+            optional,
+            "none, only optional steps",
+            'No build check: every step of the build order guide "All optional" is optional, so there is nothing to compare.',
+        ),
+    ):
+        picks = _picks(alcyone, {LIL: str(path)})
+        assert picks[0] == (value, line)
+        assert picks[1] == plain[1]  # the other player's check is unchanged
+
+
+def test_r1_a_guide_with_no_required_step_is_never_suggested(alcyone):
+    only_optional = dataclasses.replace(
+        GUIDES[POOL12], id="aaa-only-optional", steps=tuple(dataclasses.replace(s, optional=True) for s in GUIDES[POOL12].steps)
+    )
+    assert _picks(alcyone, guides=(only_optional, *GUIDES.values()))[0] == (POOL12, False)
+    assert _picks(alcyone, guides=(only_optional, GUIDES[STARGATE]))[0] == (
+        "none, no build order guide for ZvP",
+        "No build check: there is no build order guide for Zerg vs Protoss yet.",
+    )
+
+
+def test_finding8_a_guide_file_that_cannot_be_opened_is_unreadable(alcyone, tmp_path, monkeypatch):
+    path = tmp_path / "locked.benchmark.json"
+    path.write_text("{}", encoding="utf-8")
+    real = pathlib.Path.read_text
+
+    def refuse(self, *args, **kwargs):
+        if self == path:
+            raise PermissionError(13, "Permission denied")
+        return real(self, *args, **kwargs)
+
+    monkeypatch.setattr(pathlib.Path, "read_text", refuse)
+    assert _picks(alcyone, {LIL: str(path)})[0] == (
+        "none, file unreadable",
+        f'No build check: the build order guide file "{path}" could not be read: it could not be opened (Permission denied).',
+    )

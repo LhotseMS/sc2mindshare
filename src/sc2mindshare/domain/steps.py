@@ -39,7 +39,8 @@ def loops_of(seconds: Fraction) -> Fraction:
 @dataclass(frozen=True)
 class StepVerdict:
     """What the build check says of a step (CR-035, AC3; Iris's endings, Kevin's calls 1 and 4): the verdict word,
-    the name ending (at most 14 characters, 15 with " ≈"), the guide's time and supply and the Δ in seconds as text
+    the name ending (at most 15 characters, 17 with " ≈" (e.g. "15 supply early ≈"); never truncated, Iris R2), the
+    guide's time and supply and the Δ in seconds as text
     ("" when blank, call 1), and the sentence its node's description gets."""
 
     verdict: str  # "on supply", "late", "extra", "missing" (a step done later) ...

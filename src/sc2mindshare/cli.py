@@ -31,8 +31,6 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from sc2mindshare.analysis.build_check import UnknownPlayer
-from sc2mindshare.analysis.build_steps import build_order
-from sc2mindshare.analysis.guides import library
 from sc2mindshare.analysis.run import AnalysisResult, analyse
 from sc2mindshare.analysis.to_domain import to_graph
 from sc2mindshare.domain.guides import BuildCheck, NoBuildCheck
@@ -157,6 +155,11 @@ def _laid_out(
     return result, graph, placed
 
 
+def _write_log(log: Path, text: str) -> None:
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text(text, encoding="utf-8")
+
+
 def build(
     replay: Path,
     out: Path,
@@ -168,36 +171,37 @@ def build(
     guides: Sequence[str] = (),
 ) -> int:
     clocks, no_clocks = _clock_map(config_root, clock_server or parse_server(DEFAULT_SERVER))
-    log.parent.mkdir(parents=True, exist_ok=True)
-    with log.open("w", encoding="utf-8") as log_file:
-        try:
-            with contextlib.redirect_stdout(log_file):  # the layer's debug prints
-                result, graph, placed = _laid_out(replay, config_root, timeline, clocks, guides)
-                build_checks = graph.build_checks
-                document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
-                if graph.intervals is None:
-                    raise ValueError("the analysis produced no battle intervals")
-                intervals = parse_intervals(graph.intervals)
-                csv_text = intervals_csv(graph.intervals)
-            if no_clocks:
-                print(f"clock record: {no_clocks}", file=log_file)
-                print(f"{PROG}: {no_clocks}", file=sys.stderr)
-            for check in build_checks:
-                if isinstance(check, NoBuildCheck):
-                    print(f"build check: player {check.player}: {check.line}", file=log_file)
-                    print(f"{PROG}: build check: {check.line}", file=sys.stderr)
-                else:
-                    how = "picked" if check.picked else "suggested"
-                    print(f"build check: player {check.player}: {check.guide.name} ({how}, score {check.score})", file=log_file)
-            for warning in placed.warnings:
-                print(f"layout warning: {warning}", file=log_file)
-                print(f"{PROG}: layout warning: {warning}", file=sys.stderr)
-        except UnknownPlayer as exc:
-            return _usage_error(str(exc))
-        except Exception as exc:  # noqa: BLE001  # the CLI top level: any failure is logged with its traceback, exit 1
-            traceback.print_exc(file=log_file)
-            print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
-            return 1
+    log_file = io.StringIO()  # the run's log, written once the run is known not to be a usage error (finding 9)
+    try:
+        with contextlib.redirect_stdout(log_file):  # the layer's debug prints
+            result, graph, placed = _laid_out(replay, config_root, timeline, clocks, guides)
+            build_checks = graph.build_checks
+            document = to_json(build_document(graph, placed, analysis=result.exposed if with_analysis else None))
+            if graph.intervals is None:
+                raise ValueError("the analysis produced no battle intervals")
+            intervals = parse_intervals(graph.intervals)
+            csv_text = intervals_csv(graph.intervals)
+        if no_clocks:
+            print(f"clock record: {no_clocks}", file=log_file)
+            print(f"{PROG}: {no_clocks}", file=sys.stderr)
+        for check in build_checks:
+            if isinstance(check, NoBuildCheck):
+                print(f"build check: player {check.player}: {check.line}", file=log_file)
+                print(f"{PROG}: build check: {check.line}", file=sys.stderr)
+            else:
+                how = "picked" if check.picked else "suggested"
+                print(f"build check: player {check.player}: {check.guide.name} ({how}, score {check.score})", file=log_file)
+        for warning in placed.warnings:
+            print(f"layout warning: {warning}", file=log_file)
+            print(f"{PROG}: layout warning: {warning}", file=sys.stderr)
+    except UnknownPlayer as exc:  # a usage error writes nothing, the log included (Rex's finding 9)
+        return _usage_error(str(exc))
+    except Exception as exc:  # noqa: BLE001  # the CLI top level: any failure is logged with its traceback, exit 1
+        traceback.print_exc(file=log_file)
+        _write_log(log, log_file.getvalue())
+        print(f"{PROG}: the analysis failed: {type(exc).__name__}: {exc} (traceback in {log})", file=sys.stderr)
+        return 1
+    _write_log(log, log_file.getvalue())
     outputs = {
         out: document,
         out.parent / "intervals.json": intervals_json(intervals, graph=out.name),
