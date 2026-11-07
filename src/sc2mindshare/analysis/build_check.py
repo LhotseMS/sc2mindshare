@@ -542,8 +542,9 @@ def _guide_supply(step: GuideStep) -> str:
 
 def ending(row: Row) -> str:
     """A compared step's name ending (Iris; Stefan's Q2 (a)): "on supply", "15 supply late", "3 supply early", "on time",
-    "28 s late" under 60 s and "1:59 late" from 60 s, "done", "not compared"; " ≈" added when the supply is only known as
-    a range. At most 14 characters, 15 with " ≈"."""
+    "28 s late" under 60 s and "1:59 late" from 60 s, "done", "not compared"; " ≈" added to an ending graded by supply
+    whenever the step's supply is only known as a range (Iris A1; Stefan's D1a: never on done, extra or a time
+    verdict). At most 14 characters, 15 with " ≈"."""
     if row.verdict in (ON_SUPPLY, ON_TIME, DONE, NOT_COMPARED):
         text = row.verdict
     else:
@@ -551,7 +552,8 @@ def ending(row: Row) -> str:
         size = abs(row.off)
         amount = f"{size} supply" if row.graded_by == "supply" else (f"{size} s" if size < 60 else _mmss(size))
         text = f"{amount} {'late' if row.off > 0 else 'early'}"
-    return f"{text} ≈" if row.approx else text
+    ranged = row.paired is not None and row.paired.supply_range is not None
+    return f"{text} ≈" if row.graded_by == "supply" and (ranged or row.approx) else text
 
 
 def _condition(step: GuideStep) -> str:
@@ -573,7 +575,7 @@ def _sentence(row: Row, step: GuideStep) -> str:
     if row.verdict == NOT_COMPARED:
         return _NOT_COMPARED
     if row.verdict == DONE:
-        return f"Done: the build order guide has this step {_condition(step)}, and you made it."
+        return f"Done: the build order guide asks for this step {_condition(step)}, and you made it."
     if row.graded_by == "time":
         label = _TIME_LABEL[row.verdict]
         return f"{label}: you started it at {_mmss_of(o.seconds)}; the build order guide has it at {_guide_time(step)}."
@@ -689,8 +691,8 @@ def _patch(version: str) -> tuple[int, ...] | None:
 
 def age_line(guide: Guide, game_version: str) -> tuple[bool, str]:
     """AC9 (D8a; Iris, Leo (e)): whether the guide is old, and the card's age line ("" for a guide within 2 patches).
-    Patches are counted on the third number of the same major.minor (5.0.11 -> 5.0.14 is 3); another major.minor is
-    more than 2 apart."""
+    Patches are counted on the third number of the same major.minor (5.0.11 -> 5.0.14 is 3); a guide for an older
+    major.minor is always more than 2 behind, and a guide for a newer one (or a newer patch) is never old (Leo)."""
     if guide.patch is None:
         written = "last edited" if guide.source.get("kind") == "liquipedia" else "written"
         line = (
@@ -731,7 +733,8 @@ def _graded_line(check: BuildCheck) -> str:
         return "By time: each step is compared with the time in the build order guide."
     if check.graded_by == "time and supply":
         return (
-            f"Mostly by supply: this build order guide gives times for {timed} steps, and those are compared by time; "
+            f"Mostly by supply: this build order guide gives times for {timed} {'step' if timed == 1 else 'steps'}, "
+            "and those are compared by time; "
             f"the rest by the supply you were on. {_APPROX_LINE}"
         )
     return (
@@ -748,10 +751,13 @@ def card(
     verdicts = {s.number: check.step_verdict(s) for s in guide.steps}
     graded = {n: v for n, v in verdicts.items() if v != OPTIONAL}
     counts = {v: sum(1 for x in graded.values() if (x == v or (v == NOT_COMPARED and x == GAME_ENDED))) for v in _COUNT_ORDER}
-    done_later = sum(
-        1 for s in guide.steps if graded.get(s.number) == MISSING and any(r.done_later for r in check.rows_of(s.number))
-    )
     partly = [s for s in guide.steps if graded.get(s.number) == MISSING and any(r.paired for r in check.rows_of(s.number))]
+    # Iris A4: a partly made step is counted once, as partly made; its own line says when the rest came
+    done_later = sum(
+        1
+        for s in guide.steps
+        if graded.get(s.number) == MISSING and s not in partly and any(r.done_later for r in check.rows_of(s.number))
+    )
     parts = [f"{counts[v]} {v}" for v in _COUNT_ORDER if counts[v]]
     if counts[MISSING]:
         notes = [f"{n} {label}" for n, label in ((done_later, "done later"), (len(partly), "partly made")) if n]
@@ -847,7 +853,7 @@ def _ghost_text(row: Row, step: GuideStep, guide: Guide, name: str, check: Build
     elif step.timed:
         first = f"Missing: the build order guide {verb} {thing} at {_guide_time(step)}."
     else:
-        first = f"Missing: expected at {_guide_supply(step)} supply. The build order guide {verb} {thing} at {_guide_supply(step)} supply."
+        first = f"Missing: expected at {_guide_supply(step)} supply, where the build order guide {verb} {thing}."
     if made:
         second = f"You made {made} of the {step.count} by {window}."
     elif step.trigger is not None and (gas := re.fullmatch(r"@(\d+) (gas|minerals)", step.trigger)):
@@ -865,8 +871,8 @@ def _ghost_text(row: Row, step: GuideStep, guide: Guide, name: str, check: Build
             second = f"Your {building.group(1)} finished at {_mmss_of(row.moment)}, after the {window} this build check covers."
         else:
             second = f"Your {building.group(1)} finished at {_mmss_of(row.moment)}, and you had not started it by {window}."
-    else:
-        second = f"You had not started it by {window}."
+    else:  # Iris A6: a step of several units, none made
+        second = f"You had not started {'them' if step.count > 1 else 'it'} by {window}."
     if row.done_later is not None:
         when = _mmss_of(row.done_later.start / LOOPS_PER_SECOND)
         if made:

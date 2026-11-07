@@ -16,7 +16,17 @@ from fractions import Fraction
 
 import pytest
 
-from sc2mindshare.analysis.build_check import age_line, compare, ending, ghost_seconds, interval_verdict, supply_band, time_band
+from sc2mindshare.analysis.build_check import (
+    _ghost_text,
+    _graded_line,
+    age_line,
+    compare,
+    ending,
+    ghost_seconds,
+    interval_verdict,
+    supply_band,
+    time_band,
+)
 from sc2mindshare.analysis.build_steps import build_order, supply_reading
 from sc2mindshare.analysis.fixes import LAYER_FIXES
 from sc2mindshare.analysis.guides import library, parse
@@ -31,7 +41,7 @@ from sc2mindshare.domain.exposed import (
     TypeChange,
     UnitLife,
 )
-from sc2mindshare.domain.guides import Row
+from sc2mindshare.domain.guides import Occurrence, Row
 from sc2mindshare.export.mindshare_json import build_document
 from sc2mindshare.layout.items import items
 from sc2mindshare.layout.profile import Profile
@@ -866,7 +876,8 @@ def test_s20_s34_s36_spine(spine_docs):
     ]
     zerg, protoss = _nodes(doc, "Build Comparison")
     assert zerg["description"].split("\n\n")[1].split("\n")[:2] == [
-        "7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 done later, 1 partly made).",
+        # Iris A4: the partly made step is counted once, as partly made (its own line says when the rest came)
+        "7 steps in the build order guide: 4 on supply · 1 done · 1 late · 1 missing (1 partly made).",
         "2 Queens: you made 1 of the 2 in time, and the other later, at 9:48.",
     ]
     assert (_by_step(doc, "Piliskner", 10)["name"], _by_step(doc, "Piliskner", 17)["name"]) == ("Queen · extra", "Queen · done")
@@ -922,3 +933,88 @@ def test_s18_a_supply_step_missing_entry_sits_where_the_player_first_reached_its
     nydus = _guide([{"item": "NydusNetwork", "text": "16 Nydus Network", "kind": "building", "supply": 16}])
     check = _check(alcyone, nydus, LIL)
     assert ghost_seconds(check.rows[0], nydus.steps[0], nydus, reading) == pytest.approx(66.4375)
+
+
+# --- CR-035 fix round (Iris A1-A6, Stefan's D1a, Leo on AC9) ----------------------------------------------------------
+
+
+def test_a1_d1a_a_supply_verdict_on_a_range_is_marked_and_only_a_supply_verdict(alcyone_docs, spine_docs):
+    """Iris A1: " ≈" whenever a supply-graded step's supply is a range, also when the range sits in one band; D1a: never
+    on done, extra or a time verdict."""
+    doc = alcyone_docs[1]["compressed"][0]
+    shown = lambda d, player, k: (_by_step(d, player, k)["name"], _by_step(d, player, k)["properties"]["supply range"])
+    assert shown(doc, "blacksquall", 4) == ("Pylon · on supply ≈", "14–15")
+    assert shown(doc, "blacksquall", 14) == ("Cybernetics Core · on supply ≈", "20–22")
+    assert shown(doc, "lilTiGGer", 6) == ("6 Zerglings · done", "14–16")  # done: no ≈
+    assert shown(doc, "lilTiGGer", 8) == ("4 Zerglings · extra", "16–18")  # extra: no ≈
+    spine = spine_docs[1]["compressed"][0]
+    natural = next(n for n in spine["nodes"] if n["name"].startswith("Natural · ") and n["properties"]["player"] == "serega")
+    assert (natural["name"], natural["properties"]["supply range"]) == ("Natural · 3 supply late ≈", "22–24")
+    core = next(
+        n for n in spine["nodes"] if n["name"].startswith("Cybernetics Core · ") and n["properties"]["player"] == "serega"
+    )
+    assert (core["name"], core["properties"]["supply range"]) == ("Cybernetics Core · on supply ≈", "18–20")
+    ranged = Occurrence("Hatchery", 7, Fraction(1792), 19, (17, 19), "building", True, False, False)
+    assert ending(Row(1, 1, "on supply", "supply", ranged, 1, False)) == "on supply ≈"  # one band, still ≈
+    assert ending(Row(1, 1, "a bit late", "time", ranged, 28, True)) == "28 s late"  # a time verdict: no ≈
+    assert ending(Row(1, 1, "done", None, ranged)) == "done"
+
+
+def test_a3_the_done_sentence(alcyone_docs):
+    lings = _by_step(alcyone_docs[1]["compressed"][0], "lilTiGGer", 6)
+    assert lings["description"].endswith(
+        "\n\nDone: the build order guide asks for this step as soon as your Spawning Pool finishes, and you made it."
+    )
+
+
+def test_a2_a6_a_missing_supply_step(alcyone):
+    nydus = _guide([{"item": "NydusNetwork", "text": "16 Nydus Network", "kind": "building", "supply": 16}])
+    check = _check(alcyone, nydus, LIL)
+    assert _ghost_text(check.rows[0], nydus.steps[0], nydus, "Nydus Network", check) == (
+        "Missing: expected at 16 supply, where the build order guide builds a Nydus Network. You had not started it by "
+        "3:30.X_LDYou did not build one in this game."  # X_LD: the layer's line break, "\\n" in the view
+    )
+    two = _guide([{"item": "NydusNetwork", "text": "16 2 Nydus Networks", "kind": "building", "supply": 16, "count": 2}])
+    check = _check(alcyone, two, LIL)
+    assert _ghost_text(check.rows[0], two.steps[0], two, "Nydus Network", check).split("X_LD")[0] == (
+        "Missing: expected at 16 supply, where the build order guide builds 2 Nydus Networks. You had not started them by 3:30."
+    )
+
+
+def test_a5_one_timed_step_is_a_step(alcyone):
+    one = _guide(
+        [
+            {"item": "SpawningPool", "text": "12 Pool", "kind": "building", "supply": 12},
+            {"item": "Hatchery", "text": "Hatchery at 0:52", "kind": "building", "time": "0:52", "time_source": "simulated"},
+        ]
+    )
+    assert _graded_line(_check(alcyone, one, LIL)).startswith(
+        "Mostly by supply: this build order guide gives times for 1 step, and those are compared by time;"
+    )
+    assert "gives times for 2 steps," in _graded_line(_check(alcyone, GUIDES[HATCH3], LIL))
+
+
+OLDER = "Older build order guide: written for patch {}, more than 2 patches before this game ({}), so some timings may have changed since."
+NOT_COMPARED_LINE = "Patch not compared: we could not read this game's patch, so some timings may differ."
+
+
+@pytest.mark.parametrize(
+    ("patch", "version", "expected"),
+    [  # Leo's AC9 rows (ac9-patch.md); the rows test_s24 has already are not repeated
+        ("5.0.14", "5.0.14.93272", (False, "")),  # equal
+        ("5.0.13", "5.0.14.93272", (False, "")),  # 1 behind
+        ("5.0.15", "5.0.14.93272", (False, "")),  # the guide is newer, same major.minor
+        ("5.1.0", "5.0.14.93272", (False, "")),  # the guide is newer, another major.minor
+        ("4.11.4", "5.0.2.81102", (True, OLDER.format("4.11.4", "5.0.2"))),  # an older major.minor
+        ("5.0.14", "5.0.0.80949", (False, "")),  # the guide is newer by 14
+        ("5.0.10", "5.0.14", (True, OLDER.format("5.0.10", "5.0.14"))),  # a 3-part game version, no build
+        ("5.0.12", "5.0", (False, NOT_COMPARED_LINE)),  # a 2-part game version
+    ],
+)
+def test_ac9_leos_patch_rows(patch, version, expected):
+    assert age_line(dataclasses.replace(GUIDES[POOL12], patch=patch), version) == expected
+
+
+def test_ac9_no_patch_wins_over_an_unreadable_game_patch():
+    old, line = age_line(GUIDES[POOL12], "")
+    assert old and line.startswith("Patch unknown:")
