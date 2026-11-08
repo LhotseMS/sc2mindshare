@@ -60,8 +60,23 @@ class InjectTracker(Tracker):
     def isHatchery(self, unit):
         return unit.name in ("Hatchery", "Lair", "Hive")
 
+    def isOwnKnownHatchery(self, event):
+        """CR-075 (D2a): the event aims at a Hatchery, Lair or Hive this tracker knows, owned by the commanding player.
+
+        A follow-up command carries the previous command's name, so an inject-named event can aim at any unit, an
+        opponent's hatchery or a point; only an inject on the player's own known hatchery counts (D1a keeps own
+        follow-ups counted)."""
+        target = getattr(event, "target", None)
+        if target is None or target.id not in self.hatcheries:
+            return False
+        owner = getattr(target, "owner", None)
+        return owner is not None and event.player is not None and owner.pid == event.player.pid
+
     #TODO time handling should be optimized so that this layer gets the dates and the node one changes it to strings
     def processInject(self, event):
+
+        if not self.isOwnKnownHatchery(event):  # CR-075: skipped, not counted (D2a)
+            return
 
         currentInjectTime = datetime.strptime(event.time, "%M.%S") 
         injectDuration = timedelta(seconds=self.INJECT_DURATION)
