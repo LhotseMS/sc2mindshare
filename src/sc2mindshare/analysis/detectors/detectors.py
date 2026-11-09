@@ -797,7 +797,7 @@ class ActionsDetector(EventsDetector):
             elif isinstance(e, UpdateTargetUnitCommandEvent) or isinstance(e, UpdateTargetPointCommandEvent): #again getting SCV as caster
                 # TODO the self.lastTargetEvent is always there, maybe have it missing as an exception?
                 if e.player in self.lastUnitCommandEvent and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e.time, self.getLastSelectionUnits(e.player), e.ability_name) 
+                    self.et.processEnergyEvent(e.time, self.getLastSelectionUnits(e.player), e.ability_name, player=e.player)  # CR-076 E1
 
                     # TODO
                     # TODO
@@ -813,7 +813,7 @@ class ActionsDetector(EventsDetector):
             elif isinstance(e, TargetUnitCommandEvent) or isinstance(e, TargetPointCommandEvent):
                 comandedUnits = self.getLastSelectionUnits(e.player)
                 if self.abilityEligible(e) and self.et.isEnergyAbility(e.ability_name):
-                    self.et.processEnergyEvent(e.time, comandedUnits, e.ability_name) # e.ability.name can be "Right click" while the ability_name is "chronoboost"
+                    self.et.processEnergyEvent(e.time, comandedUnits, e.ability_name, player=e.player) # CR-076 E1; e.ability.name can be "Right click" while the ability_name is "chronoboost"
                     #self.lastTargetEvent[e.player] = e
 
                     if self.it.isInjectAbility(e.ability_name):

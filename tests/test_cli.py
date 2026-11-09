@@ -87,7 +87,8 @@ def test_compressed_is_the_default_and_the_config_root_can_come_from_the_environ
 
 
 def test_another_replay_builds(tmp_path, config):
-    """G5 smoke through the CLI: 200k dmg spine crawler ZvP (1000 spores ZvP fails in the legacy layer, L1)."""
+    """G5 smoke through the CLI: 200k dmg spine crawler ZvP. (1000 spores ZvP stopped in the legacy layer's energy
+    check, L1, until CR-076's layer fix E1; it now stops there only in the bug-faithful run.)"""
     need(SPINE)
     out = tmp_path / "graph.json"
     code, _, stderr = run("build", SPINE, "--out", out, "--config-root", config)
@@ -97,6 +98,26 @@ def test_another_replay_builds(tmp_path, config):
     doc = json.loads(out.read_text(encoding="utf-8"))
     assert list(doc) == ["visuals", "detail", "dataTypes", "nodes", "links"]
     assert all("position" in n for n in doc["nodes"])
+
+
+SPORES = MS_SC / "1000 spores ZvP.SC2Replay"
+
+
+def test_spores_builds_and_its_energy_mismatches_stay_in_the_log(tmp_path, config):
+    """CR-076 (AC3, AC5, AC6): 1000 spores ZvP builds through the CLI. Its 11 casts the energy check cannot charge
+    (Stefan's D2a) are lines in graph.log only: the graph carries no warning. No Energy Excess node is made for the
+    five spellcaster types without a threshold (D2a)."""
+    need(SPORES)
+    out = tmp_path / "graph.json"
+    code, _, _ = run("build", SPORES, "--out", out, "--config-root", config)
+    assert code == 0
+    log = (tmp_path / "graph.log").read_text(encoding="utf-8")
+    assert log.count("data doesn't match") == 11
+    text = out.read_text(encoding="utf-8")
+    assert "data doesn't match" not in text and "energy check" not in text
+    excess = [n["name"] for n in json.loads(text)["nodes"] if n.get("type") == "Energy Excess"]
+    assert excess, "spores has Energy Excess nodes (Queens, Nexuses)"
+    assert not [n for n in excess if n.split(" ")[0] in ("Sentry", "Oracle", "Infestor", "HighTemplar", "Overseer")]
 
 
 def test_usage_errors_exit_2_and_write_nothing(tmp_path, monkeypatch):

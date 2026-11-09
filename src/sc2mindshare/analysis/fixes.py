@@ -6,6 +6,12 @@ Two kinds. A graph fix here is a function on the domain graph; ``to_domain.to_gr
 something, so it lives at its call site in the layer, switched by its ledger id in
 ``AnalysisContext.fixes``. Both are off for the bug-faithful run (``analyse(..., fixes=())`` and
 ``to_graph(..., fixes=())``), so its CSV oracle keeps proving the move changed nothing.
+
+Which changes take a ledger id (the batch rule, CR-076, Morgan's design review finding 4): a change that alters a
+result the legacy code produced is a fix here, with a ledger id, off in the bug-faithful run. A change that only turns
+a legacy crash into a result takes none and applies in both modes, since wherever the legacy code completes it is inert
+(CR-075's inject guard, for example). A crash-only part of a fix that has an id may ride that id instead (E1's
+threshold guard, by the CR-076 Step 3 choice); the oracle is the same either way.
 """
 
 from __future__ import annotations
@@ -103,9 +109,13 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: G1 (CR-067), the Game node's game type is the replay's, its length keeps its hours and its date has its own format;
 #: F1 (CR-023), a lifted town hall and an Overlord in its cocoon still provide supply, and every death of a finished
 #: provider lowers the limit, also one the fork does not count (only the supply changes); F2 (CR-023), the type change
-#: of a unit still waiting in the unwritten 10 s interval moves its count once the interval is written.
+#: of a unit still waiting in the unwritten 10 s interval moves its count once the interval is written; E1 (CR-076; D1a,
+#: D2a), where the energy check took a lone selected unit with no energy record as the caster (and stopped), it charges
+#: the commanding player's one standing unit of the ability's caster type with the energy, else nobody, with a "data
+#: doesn't match" line in the run log; and the spare-energy check runs only for a type with a threshold.
 LAYER_FIXES: tuple[str, ...] = (
     "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
+    "E1",
 )  # fmt: skip
 
 

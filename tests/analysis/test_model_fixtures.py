@@ -5,7 +5,8 @@ and of the 200k dmg spine crawler replay, frozen by ``scripts/freeze_parity_fixt
 rendered exactly the CSV a live legacy run wrote. These tests compare the pipeline with the fixtures,
 so a refactor of the analysis keeps its parity check after the legacy venv is gone (T24). The
 fixtures' own link to the legacy code is re-checked live when the venv is present (``legacy`` marker).
-The 1000 spores replay has no model fixture: its analysis fails in the legacy layer (L1, CR-023).
+The 1000 spores replay has no model fixture: its bug-faithful analysis stops in the legacy layer's energy check (L1,
+CR-023). CR-076's layer fix E1 lets the default run get past it; that run is not bug-faithful, so it makes no fixture.
 """
 
 import importlib.util

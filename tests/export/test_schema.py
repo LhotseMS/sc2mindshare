@@ -1,8 +1,8 @@
 """CR-018 (T17): schema/mindshare-graph.schema.json, and the documents sc2mindshare writes validate against it.
 
 TD-16: existing properties are required and typed; further properties on existing node types, and new
-node types, are allowed. The 1000 spores replay cannot be checked: its analysis fails in the legacy
-layer (L1, the known G5 failure awaiting Stefan); Alcyone (both modes) and the spine replay are.
+node types, are allowed. Alcyone (both modes) and the spine replay are checked. The 1000 spores replay is not:
+its analysis stopped in the legacy layer (L1) until CR-076's layer fix E1, and it has no golden (Stefan's D3a).
 """
 
 import contextlib
