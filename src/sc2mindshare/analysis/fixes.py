@@ -115,10 +115,11 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: doesn't match" line in the run log; and the spare-energy check runs only for a type with a threshold; CG1 (CR-080;
 #: D1a, D1b, Q-2), a control group follows the game's meaning: set and steal-and-set make it exactly the selection, add
 #: and steal-and-add put the selection beside what it holds, a unit is in a group once, and a steal takes the stolen
-#: units out of the player's other groups.
+#: units out of the player's other groups; BT1 (CR-079; D1a), the battle finder closes the last open group of deaths
+#: as a battle, and a battle whose first deaths fall in the first 3 seconds is no longer dropped as the placeholder.
 LAYER_FIXES: tuple[str, ...] = (
     "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
-    "E1", "CG1",
+    "E1", "CG1", "BT1",
 )  # fmt: skip
 
 

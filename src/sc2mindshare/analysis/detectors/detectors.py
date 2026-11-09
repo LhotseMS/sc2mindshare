@@ -1090,6 +1090,16 @@ class BattleDetector(EventsDetector):
         
         self.battleStart = 0
         self.secondsOfBattle = []
+
+        # CR-079 BT1 (b): the loop adds an empty placeholder battle at the first death second only when it is above 3
+        # (previousSecond starts at -1), and the pop(0) below drops the first battle as that placeholder. When the
+        # first deaths fall at 0-3 s, the same placeholder is added here, so a real battle is never dropped and the
+        # numbering (from Battle-1) and the battle links are the same in every game
+        bt1 = "BT1" in self.ctx.fixes
+        if bt1 and self.deathsByTime:
+            first = next(iter(self.deathsByTime))
+            if not self.previousSecond + self.BATTLE_UPPER_BOUND < first:
+                self.battles.append(BattleNode(self.player1, self.player2, first, -1, [], [], 0, self.ctx))
                         
         for self.currentSecond, self.currentDeathEvents in self.deathsByTime.items():
             
@@ -1112,6 +1122,11 @@ class BattleDetector(EventsDetector):
             #if battles.__len__() > 10:
                 #break
         
+        # CR-079 BT1 (a, Stefan's D1a): nothing in the loop closes the last open group of deaths; close it, from its first
+        # to its last death second, by the same rule as every other battle
+        if bt1 and self.deathsByTime:
+            self._closeBattle()
+
         #for some reason there is a 00 empty battle at the start TODO?
         if self.battles:  # CR-077 (D4a): a game with no battle has none to drop (IndexError before)
             self.battles.pop(0)

@@ -45,7 +45,7 @@ def need(path):
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
         "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
-        "E1", "CG1",
+        "E1", "CG1", "BT1",
     )  # fmt: skip
 
 
