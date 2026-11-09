@@ -607,14 +607,37 @@ def config_root(root):
     return root
 
 
-def head():
-    """The commit built, and whether the tracked tree differs from it (numbers from a dirty tree are not its)."""
+def head(checkout=CHECKOUT):
+    """The commit built, for AC4's report; it never fails the test. ``SC2MS_COMMIT``, when set, is reported as given:
+    a copy that is not a git checkout (QA's ``git archive`` export) passes the commit it was made from. Otherwise git is
+    asked about ``checkout`` itself, never a folder above it, with whether the tracked tree differs from that commit
+    (numbers from a dirty tree are not its); and when that fails, "not a git checkout" (CR-080, Vera's QA blocker)."""
+    given = os.environ.get("SC2MS_COMMIT", "").strip()
+    if given:
+        return f"{given} (SC2MS_COMMIT)"
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    env["GIT_CEILING_DIRECTORIES"] = str(pathlib.Path(checkout).resolve().parent)
 
     def git(*args):
-        return subprocess.run(["git", "-C", str(CHECKOUT), *args], capture_output=True, text=True, check=True).stdout
+        return subprocess.run(["git", "-C", str(checkout), *args], capture_output=True, text=True, check=False, env=env)
 
-    dirty = git("status", "--porcelain", "--untracked-files=no").strip()
-    return f"{git('rev-parse', '--short', 'HEAD').strip()}{' (dirty tree)' if dirty else ''}"
+    try:
+        rev, status = git("rev-parse", "--short", "HEAD"), git("status", "--porcelain", "--untracked-files=no")
+    except OSError:
+        return "not a git checkout (no git)"
+    if rev.returncode or status.returncode:
+        return "not a git checkout"
+    return f"{rev.stdout.strip()}{' (dirty tree)' if status.stdout.strip() else ''}"
+
+
+def test_the_commit_report_works_outside_a_git_checkout(tmp_path, monkeypatch):
+    """Vera's CR-080 QA blocker: in an exported copy the AC4 test must still run and state the commit it is given."""
+    monkeypatch.delenv("SC2MS_COMMIT", raising=False)
+    assert head(tmp_path) == "not a git checkout"
+    monkeypatch.setenv("SC2MS_COMMIT", "b015f46")
+    assert head(tmp_path) == "b015f46 (SC2MS_COMMIT)"
+    monkeypatch.setenv("SC2MS_COMMIT", "")
+    assert head(tmp_path) == "not a git checkout"
 
 
 @pytest.mark.parametrize("name", sorted(LONG_GAMES))
