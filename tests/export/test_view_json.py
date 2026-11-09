@@ -148,6 +148,11 @@ VIEW_NET_ADDED = [
     "Missing Step-1-1>Upgrade-9#1",
     "Missing Step-2-1>Upgrade-1#1",
 ]
+#: CR-079 (BT1): the last battle, added in the middle of the document, and its two links. The net check pairs records
+#: by sequence, which a record added mid-document misleads on this larger diff, so they are set aside here; BT1's own
+#: entry (BT1-alcyone-view) checks them exactly against the golden before it (its harassment cards are set aside with
+#: the Harrasment type and checked in the Harrasment row below).
+BT1_SET_ASIDE = {"Battle-31"}
 
 
 SET_ASIDE = (
@@ -208,6 +213,11 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         assert not [p for p in pairs if (p[0] in SET_ASIDE or p[1] in SET_ASIDE) and p != ("Units", "Units")], name
     old_rest = _part(GOLDEN / "G-VIEW-1.json", tmp_path, "old-rest.json", supply_blocks=False)
     new_rest = _part(GOLDEN / "G-VIEW-current.json", tmp_path, "new-rest.json", supply_blocks=False)
+    doc = json.loads(new_rest.read_text(encoding="utf-8"))
+    assert {n["ID"] for n in doc["nodes"]} >= BT1_SET_ASIDE
+    doc["nodes"] = [n for n in doc["nodes"] if n["ID"] not in BT1_SET_ASIDE]
+    doc["links"] = [lk for lk in doc["links"] if not {lk["node1"], lk["node2"]} & BT1_SET_ASIDE]
+    new_rest.write_text(json.dumps(doc), encoding="utf-8")
     net = {
         "entry": "+".join(VIEW_LEDGER),
         "base_sha256": cgd.golden.sha256(old_rest),
@@ -252,7 +262,14 @@ def _by_player_and_time(name, typ, p13=False):
     [
         # H1 numbers the Harrasment nodes 1-14; P11 drops the one at lilTiGGer's 14:03 (a dropped base) and
         # renames the base in three descriptions; the 13 left are Harrasment-1..13
-        ("Harrasment", [("lilTiGGer", "14:03:00")], [], 3, [f"Harrasment-{i}" for i in range(1, 14)]),
+        # CR-079 (BT1) adds the last battle's two cards, lilTiGGer's at 15:57 and 16:17: Harrasment-14 and -15
+        (
+            "Harrasment",
+            [("lilTiGGer", "14:03:00")],
+            [("lilTiGGer", "15:57:00"), ("lilTiGGer", "16:17:00")],
+            3,
+            [f"Harrasment-{i}" for i in range(1, 16)],
+        ),
         # P11 drops blacksquall's two Probe scouts of the 4th base (a dropped base); CR-080 (CG1, Q-2 Set) drops
         # lilTiGGer's Zergling (02:59) and blacksquall's Zealot (03:42) and Adept (03:48), and adds lilTiGGer's four
         # Larva scouts (01:54 to 02:03) and blacksquall's Oracle (09:04); the 11 are Scouting-0..10
@@ -315,7 +332,7 @@ def test_units_net_of_the_ledger():
     units = {name: [n for n in _doc(name)["nodes"] if n["type"] == "Units"] for name in ("G-VIEW-1.json", "G-VIEW-current.json")}
     assert (len(units["G-VIEW-1.json"]), len(units["G-VIEW-current.json"])) == (192, 172)
     links = [lk for lk in _doc("G-VIEW-current.json")["links"] if not lk["node1"].startswith("Missing Step-")]  # CR-035
-    assert len(links) - len(_doc("G-VIEW-1.json")["links"]) == 152 - 163
+    assert len(links) - len(_doc("G-VIEW-1.json")["links"]) == 152 - 163 + 2  # + CR-079's two links of Battle-31
 
 
 def test_buildings_net_of_the_ledger():

@@ -728,6 +728,22 @@
    }
   },
   {
+   "name": "Overlords Drones Zerglings Roachs Banelings Ultralisks Mutalisks Hydralisks Ravagers Overseers Stalkers Zealots High Templars Observers Immortals died near lilTiGGer 3rd base",
+   "description": "lilTiGGer lost 105 units, 116.0 supply, 7200 min 3100 gas.\n\nblacksquall lost 23 units, 49 supply, 2675 min 1075 gas.\n\nFrom 0:15:50 to 0:16:37. \n\n====lilTiGGer==== \nKILLS(s): Zergling killed Stalker, Mutalisk killed Stalker, Roach killed Stalker(7), Roach killed Zealot(2), Mutalisk killed Zealot, Zergling killed Zealot, Ravager killed Zealot, Ultralisk killed Zealot(3), Mutalisk killed High Templar(2), High Templar killed Observer, Roach killed Immortal(2), Ultralisk killed Stalker, \n \nLOST: Creep Tumor Burrowed(21), Hatchery, Spore Crawler(2), Extractor(2), Roach Warren, Hydralisk Den,  \nCOMBAT: A move(13),  \nNON-COMBAT: Build Creep Tumor(5), Right Click(97), Creep Tumor(13), Spawn Larva, Scan Move(2),  \n\nCONTROL GROUPS: \n0: \n5: \n1: \n4: \n6: \n8: \n9:  \n\n====blacksquall==== \nKILLS(s): Stalker killed Overlord, Void Ray killed Drone, Archon killed Drone(8), Zealot killed Drone(2), Stalker killed Zergling(6), Stalker killed Roach(6), Baneling killed Baneling(4), Zealot killed Zergling(3), Disruptor killed Drone, Immortal killed Ultralisk(2), High Templar killed Zergling(6), Stalker killed Mutalisk(3), Immortal killed Roach(3), Immortal killed Zergling(2), Void Ray killed Mutalisk(4), Archon killed Mutalisk(3), High Templar killed Mutalisk(2), Zealot killed Roach, Zealot killed Ultralisk, Stalker killed Ultralisk, Archon killed Baneling, High Templar killed Roach(6), Archon killed Roach(3), Stalker killed Hydralisk, Stalker killed Ravager, Void Ray killed Hydralisk, Archon killed Overseer(3), Void Ray killed Overseer, \n  \nCOMBAT: A move(23), Purification Nova Targeted,  \nNON-COMBAT: Warp In Stalker(2), Right Click(38), Psionic Storm,  \n\nCONTROL GROUPS: \n1: ",
+   "type": "Battle",
+   "ID": "Battle-31",
+   "size": 3.65,
+   "properties": {
+    "time": "00:15:50",
+    "player": "Common",
+    "dead": 128,
+    "p1 dead": 105,
+    "p2 dead": 23,
+    "supply dead": 165,
+    "end time": "00:16:37"
+   }
+  },
+  {
    "name": "1 died, no pull",
    "description": "1 workers died at 3rd base from 06:28 to 06:28.",
    "type": "Harrasment",
@@ -907,6 +923,34 @@
    "properties": {
     "time": "00:15:17",
     "player": "blacksquall"
+   }
+  },
+  {
+   "name": "4 died, no pull",
+   "description": "4 workers died at 3rd base from 15:57 to 16:04.",
+   "type": "Harrasment",
+   "ID": "Harrasment-14",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:15:57",
+    "player": "lilTiGGer"
+   }
+  },
+  {
+   "name": "6 died, no pull",
+   "description": "6 workers died at Natural from 16:17 to 16:29.",
+   "type": "Harrasment",
+   "ID": "Harrasment-15",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:16:17",
+    "player": "lilTiGGer"
    }
   },
   {
@@ -14286,6 +14330,14 @@
    "description": "Two consecutive battles"
   },
   {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Battle-30",
+   "node2": "Battle-31",
+   "description": "Two consecutive battles"
+  },
+  {
    "name1": "used during",
    "name2": "involved",
    "direction": 0,
@@ -15891,6 +15943,14 @@
    "direction": 0,
    "node1": "Battle-29",
    "node2": "Ability-207",
+   "description": "Ability used in battle"
+  },
+  {
+   "name1": "used during",
+   "name2": "involved",
+   "direction": 0,
+   "node1": "Battle-31",
+   "node2": "Ability-215",
    "description": "Ability used in battle"
   },
   {

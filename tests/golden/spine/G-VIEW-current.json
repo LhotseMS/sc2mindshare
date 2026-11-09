@@ -504,6 +504,22 @@
    }
   },
   {
+   "name": "Stalker killed Overlord near serega 3rd base",
+   "description": "Piliskner lost an Overlord.\n\nAt 0:10:16. \n\n====Piliskner====    \nNON-COMBAT: Right Click(5),  \n\nCONTROL GROUPS: \n3:  \n\n====serega==== \nKILLS(s): Stalker killed Overlord, \n   \nNON-COMBAT: Build Assimilator(2), Build Photon Cannon(2), Build Shield Battery(2),  \n\nCONTROL GROUPS: \n4: ",
+   "type": "Battle",
+   "ID": "Battle-17",
+   "size": 0.7,
+   "properties": {
+    "time": "00:10:16",
+    "player": "Common",
+    "dead": 1,
+    "p1 dead": 1,
+    "p2 dead": 0,
+    "supply dead": 0,
+    "end time": "00:10:16"
+   }
+  },
+  {
    "name": "1 died, no pull",
    "description": "1 workers died at 3rd base from 05:33 to 05:33.",
    "type": "Harrasment",
@@ -6998,6 +7014,14 @@
    "direction": 1,
    "node1": "Battle-15",
    "node2": "Battle-16",
+   "description": "Two consecutive battles"
+  },
+  {
+   "name1": "previous",
+   "name2": "next",
+   "direction": 1,
+   "node1": "Battle-16",
+   "node2": "Battle-17",
    "description": "Two consecutive battles"
   },
   {

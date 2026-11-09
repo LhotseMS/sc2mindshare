@@ -68,9 +68,12 @@ def test_one_command_reproduces_the_goldens(tmp_path, config, mode):
     code, stdout, stderr = run("build", ALCYONE, "--out", out, "--timeline", mode, "--config-root", config)
     assert (code, stderr) == (0, "")
     assert out.read_bytes() == (GOLDEN / f"G-SNAP-current-{mode}.json").read_bytes()
-    assert (out.parent / "Intervals.csv").read_bytes() == (GOLDEN / "Intervals-1.csv").read_bytes()
+    # CR-079 (BT1, ledger entry BT1): the workbook-faithful Intervals-1.csv plus the last battle's window
+    battle_31 = b"0:15:48,0:16:39,Battle-31\n"
+    assert (out.parent / "Intervals.csv").read_bytes() == (GOLDEN / "Intervals-1.csv").read_bytes() + battle_31
     doc = json.loads((out.parent / "intervals.json").read_text(encoding="utf-8"))
-    assert doc["graph"] == "graph.json" and len(doc["intervals"]) == 30 and doc["intervals"][0]["id"] == "Battle-1"
+    assert doc["graph"] == "graph.json" and len(doc["intervals"]) == 31 and doc["intervals"][0]["id"] == "Battle-1"
+    assert doc["intervals"][-1]["id"] == "Battle-31"
     # the layer's debug prints go to the log, never to the console or into the JSON
     assert stdout == f"wrote {out}, {out.parent / 'intervals.json'}, {out.parent / 'Intervals.csv'}\n"
     assert (out.parent / "graph.log").read_text(encoding="utf-8") != ""
