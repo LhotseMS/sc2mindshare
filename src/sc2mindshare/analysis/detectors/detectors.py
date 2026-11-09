@@ -641,10 +641,18 @@ class ActionsDetector(EventsDetector):
                     # the target is opponents base
                     if command.targetBase != None and command.targetBase.player != command.player: 
                         
-                        # get confirmation of arrival 
+                        # get confirmation of arrival
                         # has the unit been detected at the target location
+                        # CR-081 (option 4): whole seconds as numbers, strictly later, as MsUtils.isLater on the
+                        # "MM.SS" texts gave: a position keeps its minutes and seconds only (strftime("%M.%S") dropped
+                        # the hour, so a PATH time past the hour wraps, as before); the order's text is parsed once, at
+                        # its first position checked
+                        commandSecond = None
                         for position in self.unitsPositions[command.unit.id]:
-                            if (MsUtils.isLater(command.time, position.time.strftime("%M.%S")) and
+                            if commandSecond is None:
+                                commandTime = datetime.strptime(command.time.replace(".", ":"), "%M:%S")
+                                commandSecond = commandTime.minute * 60 + commandTime.second
+                            if (position.time.minute * 60 + position.time.second > commandSecond and
                                 Location.isLocationOnLocation(command.targetBase.location[0], command.targetBase.location[1], position.x, position.y)):
                                 
                                 unitPressenceAtLocationConfirmed = True
