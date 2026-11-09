@@ -313,3 +313,47 @@ def test_one_entry_is_the_length_of_the_list_not_the_distinct_units():
     assert records(d) == {B_ID: [], A_ID: []}
     assert list(d.unitsCommands) == [B_ID, A_ID]
     assert [len(d.unitsPositions[B_ID]), len(d.unitsPositions[A_ID])] == [4, 1]
+
+
+# --- AC4: an order's time is worked out once for all its units (CR-081, option 3) -------------------------------------
+
+
+class CountingDatetime(datetime):
+    """``datetime`` as the detectors module sees it, counting ``strptime`` calls."""
+
+    calls = 0
+
+    @classmethod
+    def strptime(cls, text, fmt):
+        cls.calls += 1
+        return datetime.strptime(text, fmt)  # noqa: DTZ007 - naive, as the layer's own
+
+
+@pytest.mark.parametrize(("camera", "at", "accuracy"), [((20, 20), "00:05:19", "PATH"), (AWAY, "00:05:12", "MAYBE")])
+@pytest.mark.parametrize("size", [1, 50])
+def test_an_orders_time_is_parsed_once_and_shared(size, camera, at, accuracy, monkeypatch):
+    """QA-5: one parse per order, whatever the number of units; every position of the order holds one time object
+    (the order's time, plus 7 s when the travel time is known). Before CR-081: one parse per unit."""
+    monkeypatch.setattr(CountingDatetime, "calls", 0)
+    monkeypatch.setattr(detectors, "datetime", CountingDatetime)
+    d = detector()
+    units = [unit(A_ID + 262144 * i) for i in range(size)]
+    order(d, units, "05.12", (150, 150), camera=camera)
+    assert CountingDatetime.calls == 1
+    times = [p.time for ps in d.unitsPositions.values() for p in ps]
+    assert len(times) == size and all(t is times[0] for t in times)
+    assert positions(d) == {u.id: [(at, 150, 150, accuracy)] for u in units}
+
+
+def test_two_orders_in_one_second_parse_their_own_time(monkeypatch):
+    """QA-5 edges: each order parses once; their positions are equal in value; a duplicated list (bug-faithful run)
+    still parses once and gives one position per entry."""
+    monkeypatch.setattr(CountingDatetime, "calls", 0)
+    monkeypatch.setattr(detectors, "datetime", CountingDatetime)
+    d = detector()
+    a, b = unit(A_ID), unit(B_ID)
+    order(d, [a, b], "05.12", (150, 150))
+    order(d, [a, b], "05.12", (150, 150))
+    order(d, [a, a], "05.13", (150, 150), via=Recall(P1, 1))
+    assert CountingDatetime.calls == 3
+    assert positions(d)[A_ID] == [("00:05:12", 150, 150, "MAYBE")] * 2 + [("00:05:13", 150, 150, "MAYBE")] * 2

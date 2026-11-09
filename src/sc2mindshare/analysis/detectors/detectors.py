@@ -698,14 +698,18 @@ class ActionsDetector(EventsDetector):
             pass
 
 
-        for unit in units: 
+        # CR-081 (option 3): the order's time once for all its units (an order at 60 or more minutes raises here, as
+        # it raised at its first unit before); the travel time is the same for every unit (getTravelTime is constant)
+        when = datetime.strptime(e.time, "%M.%S")
+        if travelTimeAvailable:
+            travelTime = self.getTravelTime(units[0], baseAtSelection.location, (e.x, e.y))
+            at, accuracy = when + timedelta(seconds=travelTime), PositionAccuracy.PATH
+        else:
+            travelTime, at, accuracy = None, when, PositionAccuracy.MAYBE
+
+        for unit in units:
             self.initUnitCommands(unit.id)
-            if travelTimeAvailable:
-                travelTime = self.getTravelTime(unit, baseAtSelection.location, (e.x, e.y))
-                self.addUnitsPosition([unit], e.location, datetime.strptime(e.time, "%M.%S") + timedelta(seconds=travelTime), PositionAccuracy.PATH)
-            else:
-                travelTime = None
-                self.addUnitsPosition([unit], e.location, datetime.strptime(e.time, "%M.%S"), PositionAccuracy.MAYBE)
+            self.addUnitsPosition([unit], e.location, at, accuracy)
 
             # CR-081 (option 2): the scouting check reads a record only when the order went to one entry
             # (len(selUnits) == 1), so an order to several entries keeps none; every unit still gets its key above, in
