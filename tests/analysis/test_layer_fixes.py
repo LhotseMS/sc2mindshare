@@ -1069,7 +1069,7 @@ def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
         ("analysis/battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
         ("analysis/battle.py", "getCountableDeaths"): 1,
         ("analysis/battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
-        ("analysis/detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
+        ("analysis/detectors/detectors.py", "_closeBattle"): 1,  # a structure's death links to its Initiated node (CR-079)
         ("analysis/detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
     }
 

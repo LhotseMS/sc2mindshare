@@ -179,7 +179,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
         "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view", "BC1c-alcyone-view", "BC1d-alcyone-view", "BC1e-alcyone-view",
-        "CG1-alcyone-view",
+        "CG1-alcyone-view", "BT1-alcyone-view",
     )  # fmt: skip
 
 

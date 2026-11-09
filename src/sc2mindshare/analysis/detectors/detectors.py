@@ -1097,50 +1097,7 @@ class BattleDetector(EventsDetector):
                 self.battleStart = self.currentSecond
                 
             if self.previousSecond != -self.BATTLE_LOWER_BOUND and self.previousSecond + self.BATTLE_UPPER_BOUND < self.currentSecond:
-                # print("BB")
-                self.battles.append( 
-                    BattleNode(
-                        self.player1,
-                        self.player2,
-                        self.battleStart, 
-                        self.previousSecond, 
-                        [e for e in self.replay.events 
-                            if e.second >= self.battleStart - self.BATTLE_LOWER_BOUND and 
-                            e.second<= self.previousSecond + self.BATTLE_UPPER_BOUND], 
-                        self.secondsOfBattle,
-                        len(self.battles),
-                        self.ctx))
-                
-                if len(self.battles[-1].harrasmentNodes) > 0:
-                    self.harrasmentNodes = self.harrasmentNodes + self.battles[-1].harrasmentNodes
-                
-                #link units that died in battle
-                self.unitNodesCounts = {}
-                for deathEvent in self.battles[-1].getCountableDeaths():
-                    if deathEvent.unit.unitsNode != None:
-                        if deathEvent.buildingDeath(self.ctx.fixes):  # CR-068 P10c: the two structures too
-                            if deathEvent.unit.doneEvent == None:
-                                self.unitLinks.append(InitBuildingBattleLink(self.battles[-1], deathEvent.unit.initNode))
-                            #else:
-                            #    self.unitLinks.append(BuildingBattleLink(self.battles[-1], deathEvent.unit.unitsNode))
-                        else:
-                            if deathEvent.unit.unitsNode in self.unitNodesCounts:
-                                self.unitNodesCounts[deathEvent.unit.unitsNode] += 1
-                            else:
-                                self.unitNodesCounts[deathEvent.unit.unitsNode] = 1
-
-                #for unitsNode, count in self.unitNodesCounts.items():
-                #    if unitsNode.name not in ("Drone", "Probe", "SCV"): # TODO definition of worker units is duplicate
-                #        self.unitLinks.append(UnitBattleLink(self.battles[-1], unitsNode, count))
-                
-                # add reference for abilities detected in simple detector
-                for e in self.battles[-1].allAbilities:
-                    if e.abilityNode != None:
-                        self.abilityLinks.append(AbilityBattleLink(self.battles[-1], e.abilityNode))
-
-                #link prev and next battles
-                if len(self.battles) > 2:
-                    self.battleLinks.append(BattleLink(self.battles[-2],self.battles[-1]))
+                self._closeBattle()  # CR-079: the block moved verbatim into _closeBattle
 
                 self.resetBuffers()
                  
@@ -1159,6 +1116,54 @@ class BattleDetector(EventsDetector):
         if self.battles:  # CR-077 (D4a): a game with no battle has none to drop (IndexError before)
             self.battles.pop(0)
     
+    def _closeBattle(self):
+        """CR-079: append the open group of deaths as a battle, from ``battleStart`` to ``previousSecond``, with its
+        harassment nodes and its unit, ability and battle links (the loop's block, moved verbatim)."""
+        # print("BB")
+        self.battles.append( 
+            BattleNode(
+                self.player1,
+                self.player2,
+                self.battleStart, 
+                self.previousSecond, 
+                [e for e in self.replay.events 
+                    if e.second >= self.battleStart - self.BATTLE_LOWER_BOUND and 
+                    e.second<= self.previousSecond + self.BATTLE_UPPER_BOUND], 
+                self.secondsOfBattle,
+                len(self.battles),
+                self.ctx))
+        
+        if len(self.battles[-1].harrasmentNodes) > 0:
+            self.harrasmentNodes = self.harrasmentNodes + self.battles[-1].harrasmentNodes
+        
+        #link units that died in battle
+        self.unitNodesCounts = {}
+        for deathEvent in self.battles[-1].getCountableDeaths():
+            if deathEvent.unit.unitsNode != None:
+                if deathEvent.buildingDeath(self.ctx.fixes):  # CR-068 P10c: the two structures too
+                    if deathEvent.unit.doneEvent == None:
+                        self.unitLinks.append(InitBuildingBattleLink(self.battles[-1], deathEvent.unit.initNode))
+                    #else:
+                    #    self.unitLinks.append(BuildingBattleLink(self.battles[-1], deathEvent.unit.unitsNode))
+                else:
+                    if deathEvent.unit.unitsNode in self.unitNodesCounts:
+                        self.unitNodesCounts[deathEvent.unit.unitsNode] += 1
+                    else:
+                        self.unitNodesCounts[deathEvent.unit.unitsNode] = 1
+
+        #for unitsNode, count in self.unitNodesCounts.items():
+        #    if unitsNode.name not in ("Drone", "Probe", "SCV"): # TODO definition of worker units is duplicate
+        #        self.unitLinks.append(UnitBattleLink(self.battles[-1], unitsNode, count))
+        
+        # add reference for abilities detected in simple detector
+        for e in self.battles[-1].allAbilities:
+            if e.abilityNode != None:
+                self.abilityLinks.append(AbilityBattleLink(self.battles[-1], e.abilityNode))
+
+        #link prev and next battles
+        if len(self.battles) > 2:
+            self.battleLinks.append(BattleLink(self.battles[-2],self.battles[-1]))
+
     def createBattleIntervals(self):
 
         gameBattlesIntervalsStr = self.INTERVALS_FILE_HEADER
