@@ -1126,7 +1126,8 @@ class BattleDetector(EventsDetector):
                 #break
         
         #for some reason there is a 00 empty battle at the start TODO?
-        self.battles.pop(0) 
+        if self.battles:  # CR-077 (D4a): a game with no battle has none to drop (IndexError before)
+            self.battles.pop(0)
     
     def createBattleIntervals(self):
 
