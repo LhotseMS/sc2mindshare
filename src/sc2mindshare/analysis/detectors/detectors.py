@@ -679,8 +679,10 @@ class ActionsDetector(EventsDetector):
         selectionEvent = self.getLastSelectionEvent(units[0].player)
         # if the command is for selection, there is a record for unit position at the screen of the selection
         # when we know the start we can calculate the time of travel. 
-        if isinstance(selectionEvent, SelectionEvent):
-            
+        # CR-078 (b) (D3a): a selection made before the player's camera was known has no camera location; its move
+        # takes the control-group path below (no travel time; TypeError before)
+        if isinstance(selectionEvent, SelectionEvent) and selectionEvent.cameraLocation is not None:
+
             # if the unit started the move in main or natural, the travel times are experimentally determined
             baseAtSelection = self.ctx.bases.getBaseForLocation(selectionEvent.cameraLocation[0], selectionEvent.cameraLocation[1])
             if baseAtSelection != None and baseAtSelection.name in ["Main base", "Natural"]:
@@ -722,6 +724,8 @@ class ActionsDetector(EventsDetector):
 
     def processUnitPositionEvent(self, e):
         if isinstance(e, SelectionEvent):
+            if e.player not in self.lastCamera:  # CR-078 (a) (D3a): no camera of his yet: no position (KeyError before)
+                return
             e.cameraLocation = self.lastCamera[e.player].location
             self.addUnitsPosition(e.new_units, self.lastCamera[e.player].location, datetime.strptime(e.time, "%M.%S"), PositionAccuracy.SCREEN)
         elif isinstance(e, UnitPositionsEvent):
