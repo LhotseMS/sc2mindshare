@@ -258,8 +258,8 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
     # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change);
     # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds the 17 building-morph nodes; CR-035 (BC1) the 2
-    # cards and the 2 missing entries
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 660)
+    # cards and the 2 missing entries; CR-080 (CG1) 3 scouting steps fewer and 5 more (660 -> 662)
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 662)
 
 
 # --- CR-073: the timeline lanes ---------------------------------------------------------------------------------
@@ -278,6 +278,43 @@ LANE_LITERALS = {
 }
 
 
+#: CR-080 (CG1, Q-2 Set): Leo's independent layout prediction after D1b (``.scratch/leo/cr-080/prediction-d1b.md``,
+#: computed without the fix), applied on top of TL1 by ``after_cg1``: the Scouting renumber (old id -> new id), the
+#: three scouts removed (old ids), the 38 y-moves (by old id; only y moves, the same in both timelines) and the five
+#: scouts added (new ids; compressed, linear position). The ledger entries CG1-alcyone-snap-* state the same.
+CG1_RENUMBER = {
+    "Scouting-0": "Scouting-4", "Scouting-1": "Scouting-5", "Scouting-3": "Scouting-6", "Scouting-4": "Scouting-7",
+    "Scouting-7": "Scouting-8", "Scouting-8": "Scouting-10",
+}  # fmt: skip
+CG1_REMOVED = {"Scouting-2", "Scouting-5", "Scouting-6"}
+CG1_DY = {
+    **{f"Energy Excess-{i}": -2.1 for i in (2, 6, 7, 8, 9, 12, 13, 14)},
+    **{f"Energy Excess-{i}": -1.05 for i in (0, 1, 3, 4, 5, 10, 11, 15)},
+    **{f"Inject Delay-{i}": -2.1 for i in range(21)},
+    "Scouting-7": -2.1,
+}
+CG1_ADDED = {
+    "Scouting-0": ((22.5, -20.5), (27.5, -20.5)),
+    "Scouting-1": ((22.5, -21.55), (27.5, -21.55)),
+    "Scouting-2": ((22.5, -22.6), (27.5, -22.6)),
+    "Scouting-3": ((22.5, -23.65), (30.0, -23.65)),
+    "Scouting-9": ((115.0, 22.4), (135.0, 22.4)),
+}
+
+
+def after_cg1(by_old_id, mode, added=True):
+    """``{old id: (position, size)}`` before CR-080 -> ``{new id: (position, size)}`` after it."""
+    out = {}
+    for old, (position, size) in by_old_id.items():
+        if old in CG1_REMOVED:
+            continue
+        x, y = position
+        out[CG1_RENUMBER.get(old, old)] = ((x, round(y + CG1_DY.get(old, 0), 4)), size)
+    if added:
+        out.update({new: (both[0 if mode == "compressed" else 1], [2.65, 1]) for new, both in CG1_ADDED.items()})
+    return out
+
+
 def _ledger_expected(mode):
     changes = (CHECKOUT / "tests" / "golden" / "CHANGES.md").read_text(encoding="utf-8")
     entry = next(
@@ -290,14 +327,16 @@ def _ledger_expected(mode):
 def test_cr073_the_four_types_are_where_leo_predicted(graph, clock_map, mode):
     doc = _document(graph, clock_map, mode)
     lane_nodes = {n["ID"]: n for n in doc["nodes"] if n["type"] in TIMELINE_LANES}
-    expected = _ledger_expected(mode)
-    assert len(lane_nodes) == len(expected) == 59 and set(lane_nodes) == set(expected)
-    for node_id, want in expected.items():
+    tl1 = {k: (tuple(v["position"]), v.get("size", [2.65, 1])) for k, v in _ledger_expected(mode).items()}
+    assert len(tl1) == 59
+    expected = after_cg1(tl1, mode)  # CR-080: 59 - 3 + 5
+    assert len(lane_nodes) == len(expected) == 61 and set(lane_nodes) == set(expected)
+    for node_id, (position, size) in expected.items():
         n = lane_nodes[node_id]
-        assert [n["position"]["x"], n["position"]["y"]] == [round(v, 4) for v in want["position"]], node_id
-        assert n["size"] == [round(v, 4) for v in want.get("size", [2.65, 1])], node_id
-    for node_id, by_mode in LANE_LITERALS.items():
-        position, size = by_mode[0 if mode == "compressed" else 1]
+        assert [n["position"]["x"], n["position"]["y"]] == [round(v, 4) for v in position], node_id
+        assert n["size"] == [round(v, 4) for v in size], node_id
+    literals = after_cg1({k: v[0 if mode == "compressed" else 1] for k, v in LANE_LITERALS.items()}, mode, added=False)
+    for node_id, (position, size) in literals.items():
         n = lane_nodes[node_id]
         assert (n["position"]["x"], n["position"]["y"]) == position and n["size"] == size, node_id
 

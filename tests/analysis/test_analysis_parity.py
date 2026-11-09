@@ -12,6 +12,7 @@ import importlib.util
 import io
 import os
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -112,7 +113,7 @@ SPORES_LINES = [
 def test_spores_gets_past_the_energy_step():
     """CR-076 (AC6, Stefan's D3a): replaces ``test_spores_fails_like_the_legacy_code_l1``, which pinned L1
     (``KeyError: 118489090`` in ``getEnergyAtTime``) in the bug-faithful run. With the default fixes (E1 on) the
-    analysis finishes, and the run log holds the 11 lines. The bug-faithful run still stops at L1, unpinned (D3a)."""
+    analysis finishes, and the run log holds the 11 lines (among 35 since CR-080). The bug-faithful run still stops at L1, unpinned (D3a)."""
     replay = need(SPORES, "1000 spores replay")
     log = io.StringIO()
     with contextlib.redirect_stdout(log):
@@ -120,7 +121,16 @@ def test_spores_gets_past_the_energy_step():
 
     assert "E1" in result.fixes
     lines = log.getvalue().splitlines()
-    assert [line for line in lines if "data doesn't match" in line] == SPORES_LINES
+    found = [line for line in lines if "data doesn't match" in line]
+    # CR-080 (CG1): a recalled group now holds only the units the player put in it, so a lone recalled unit the check
+    # has no record for (an unfinished Nexus, a zergling the code names Larva) takes E1's search more often. The 11
+    # lines from Rex's independent probe (before CG1) are all still there, in order; the total is a characterisation
+    # of the CG1 build (2026-11-09, ``.scratch/cr-080/probe-lines/spores.json``), not an independent prediction.
+    remaining = iter(found)
+    assert all(any(line == other for other in remaining) for line in SPORES_LINES)
+    assert len(found) == 35
+    assert all(re.fullmatch(r"energy check: \d\d\.\d\d \w+: selected \w+ \[[0-9A-F]+\]: data doesn't match "
+                            r"\((no|\d+) own \w+ with \d+ energy\)", line) for line in found)  # fmt: skip
     assert not [line for line in lines if line.startswith("ERROR unit:")]
 
 

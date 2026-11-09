@@ -418,10 +418,13 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     # P10 drops 7 spell-effect groups; P10b turns Units groups into Buildings (Alcyone 3 for 3, spine 1 for 2);
     # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds a Building node per building
     # morph (Alcyone 17: a Lair, a Hive, a Greater Spire and 14 Warp Gates; spine 9: a Lair and 8 Warp Gates); CR-035
-    # (BC1) adds a build check card per player and the missing entries (Alcyone 2, spine 1)
+    # (BC1) adds a build check card per player and the missing entries (Alcyone 2, spine 1); CR-080 (CG1) gives
+    # Alcyone 2 scouting steps more (9 -> 11) and spine 1 fewer (7 -> 6)
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (
         4 + 3 + 11 + 2 if "Alcyone" in replay else 0
-    ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9) + 2 + (2 if "Alcyone" in replay else 1)
+    ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9) + 2 + (2 if "Alcyone" in replay else 1) + (
+        2 if "Alcyone" in replay else -1
+    )
 
 
 # --- P2: race words are no longer stripped from inside names -----------------------------------------------

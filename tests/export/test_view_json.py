@@ -179,6 +179,7 @@ def test_the_view_ledger_is_every_g_view_current_entry():
         "P8-view", "P2-view", "P11-view", "N1-view", "B3-view", "P10-view", "P13-view", "S6-view", "B12-view",
         "P10b-view", "S7-view", "P10c-view", "G2-view", "G2r-view", "F2-view", "F2b-view", "BO1-view", "BO1d-view",
         "BO2-alcyone-view", "BC1-alcyone-view", "BC1b-alcyone-view", "BC1c-alcyone-view", "BC1d-alcyone-view", "BC1e-alcyone-view",
+        "CG1-alcyone-view",
     )  # fmt: skip
 
 
@@ -197,6 +198,7 @@ def test_g_view_current_is_g_view_1_plus_the_ledger(tmp_path):
         "P10b-view",
         "S7-view",
         "BC1c-alcyone-view",  # CR-035 D2a: the missing entries numbered per player (their net effect: added below)
+        "CG1-alcyone-view",  # CR-080: renumbers Scouting only (set aside; its net effect in the Scouting row below)
     ]
     assert all(c["select"].get("type") not in SET_ASIDE for c in VIEW_NET_DELTA)
     for name in ("G-VIEW-1.json", "G-VIEW-current.json"):
@@ -246,23 +248,45 @@ def _by_player_and_time(name, typ, p13=False):
 
 
 @pytest.mark.parametrize(
-    ("typ", "removed", "descriptions", "ids"),
+    ("typ", "removed", "added", "descriptions", "ids"),
     [
         # H1 numbers the Harrasment nodes 1-14; P11 drops the one at lilTiGGer's 14:03 (a dropped base) and
         # renames the base in three descriptions; the 13 left are Harrasment-1..13
-        ("Harrasment", [("lilTiGGer", "14:03:00")], 3, [f"Harrasment-{i}" for i in range(1, 14)]),
-        # P11 drops blacksquall's two Probe scouts of the 4th base (a dropped base); the 9 left are Scouting-0..8
-        ("Scouting", [("blacksquall", "00:41:00"), ("blacksquall", "01:11:00")], 0, [f"Scouting-{i}" for i in range(9)]),
+        ("Harrasment", [("lilTiGGer", "14:03:00")], [], 3, [f"Harrasment-{i}" for i in range(1, 14)]),
+        # P11 drops blacksquall's two Probe scouts of the 4th base (a dropped base); CR-080 (CG1, Q-2 Set) drops
+        # lilTiGGer's Zergling (02:59) and blacksquall's Zealot (03:42) and Adept (03:48), and adds lilTiGGer's four
+        # Larva scouts (01:54 to 02:03) and blacksquall's Oracle (09:04); the 11 are Scouting-0..10
+        (
+            "Scouting",
+            [
+                ("blacksquall", "00:41:00"),
+                ("blacksquall", "01:11:00"),
+                ("blacksquall", "03:42:00"),
+                ("blacksquall", "03:48:00"),
+                ("lilTiGGer", "02:59:00"),
+            ],
+            [
+                ("blacksquall", "09:04:00"),
+                ("lilTiGGer", "01:54:00"),
+                ("lilTiGGer", "01:57:00"),
+                ("lilTiGGer", "02:00:00"),
+                ("lilTiGGer", "02:03:00"),
+            ],
+            0,
+            [f"Scouting-{i}" for i in range(11)],
+        ),
     ],
 )
-def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, descriptions, ids):
-    """The net effect of H1 and P11 on the two types P11 renumbers, paired by (player, time) (QA design Addendum C)."""
+def test_harrasment_and_scouting_net_of_the_ledger(typ, removed, added, descriptions, ids):
+    """The net effect of H1, P11 and CG1 on the two types they renumber, paired by (player, time) (QA design
+    Addendum C)."""
     old, new = _by_player_and_time("G-VIEW-1.json", typ), _by_player_and_time("G-VIEW-current.json", typ, p13=True)
     assert sorted(set(old) - set(new)) == removed  # the legacy time text of these nodes reads mm:ss:00
-    assert set(new) <= set(old)
-    changed = {k: sorted(f for f in set(old[k]) | set(new[k]) if f != "ID" and old[k].get(f) != new[k].get(f)) for k in new}
-    assert sorted(changed.values()) == sorted([["description"]] * descriptions + [[]] * (len(new) - descriptions))
+    assert sorted(set(new) - set(old)) == added
     assert sorted(n["ID"] for n in new.values()) == sorted(ids)
+    kept = {k: v for k, v in new.items() if k in old}
+    changed = {k: sorted(f for f in set(old[k]) | set(kept[k]) if f != "ID" and old[k].get(f) != kept[k].get(f)) for k in kept}
+    assert sorted(changed.values()) == sorted([["description"]] * descriptions + [[]] * (len(kept) - descriptions))
 
 
 def test_units_net_of_the_ledger():

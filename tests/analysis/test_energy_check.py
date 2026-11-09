@@ -682,15 +682,15 @@ def test_a_recent_game_gets_past_the_energy_step(name, tmp_path):
 
 
 def test_the_bounded_run_kills_the_child_at_its_limits(tmp_path):
-    """The limits work: a normal game (Alcyone) stopped by a 1 s wall limit, then by a 50 MiB memory cap, and its
-    process group is gone."""
+    """The limits work: a normal game (Alcyone) stopped by a 0.2 s wall limit (since CR-080 its whole build takes
+    about 1 s, the interpreter's start alone more than 0.2 s), then by a 50 MiB memory cap."""
     path = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
     if not path.exists():
         if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
             pytest.fail(f"{path} not found (SC2MS_REQUIRE_GOLDEN=1)")
         pytest.skip(f"{path} not found")
 
-    wall = run_bounded(path, tmp_path / "wall", wall_s=1)
+    wall = run_bounded(path, tmp_path / "wall", wall_s=0.2)
     memory = run_bounded(path, tmp_path / "memory", rss_kib=50 * 1024)
 
     assert (wall["result"], wall["limit"]) == ("stopped", "wall")

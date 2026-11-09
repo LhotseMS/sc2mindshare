@@ -264,7 +264,13 @@ def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
         analyse(load_replay(RAINFALL), MS_SC)  # the default fixes: E1 on
 
     lines = log.getvalue().splitlines()
-    assert [line for line in lines if "data doesn't match" in line] == RAINFALL_LINES
+    found = [line for line in lines if "data doesn't match" in line]
+    # CR-080 (CG1): smaller recalled groups give E1's search more lone units with no record (here a zergling the code
+    # names Larva, at 02:27 and from 17:55). Rex's 10 lines (before CG1) are all still there, in order; the total is a
+    # characterisation of the CG1 build (2026-11-09, ``.scratch/cr-080/probe-lines/rainfall104.json``).
+    remaining = iter(found)
+    assert all(any(line == other for other in remaining) for line in RAINFALL_LINES)
+    assert len(found) == 21
     assert not [line for line in lines if line.startswith("ERROR unit:")]
 
     counted = [c for c in calls if c[5] == "count"]
