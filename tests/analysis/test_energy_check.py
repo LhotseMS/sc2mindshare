@@ -19,7 +19,7 @@ type 50; 0.7905 a second), never recomputed by the code under test. The AC4 lite
 
 The corpus tests (AC1) build Stefan's recent games, read in place from ``MS SC/cr-074-recent/`` by SHA-256, each in
 a child process of its own under a wall-time limit (60 s) and a memory cap (1 GiB); they run in every gate on this
-Mac and are skipped elsewhere when the replays are absent. Two of them are pinned as stopped at the cap (CR-080).
+Mac and are skipped elsewhere when the replays are absent.
 """
 
 import contextlib
@@ -537,15 +537,16 @@ RECENT_45 = {
     "Rorschach LE (98)": "7c2b49068cb6e84b4308c8933da8fe04487adf454507c5147e97e366ec808f0b",
     "Washout LE (105)": "5111526e386359cdb71b9e9cf2c7a93ac86c39b81da609005b09de1da8f19228",
 }
-NOT_BUILT = ("Lockdown LE (103)", "Washout LE (107)", "At Eternity's Edge LE (109)")  # CR-080's, never built here
+#: Built by CR-080's AC4 test (``tests/analysis/test_control_groups.py``), under its tighter bounds.
+NOT_BUILT = ("Lockdown LE (103)", "Washout LE (107)", "At Eternity's Edge LE (109)")
 
-#: Two of the 45 carry CR-080's growing control-group lists once the energy step passes: built to the end they take
-#: 3-4 GiB, so the gate does not build them to the end (Rex's P1 on 3c32d7b). They are pinned at the cap instead.
-CR080_PAIR = ("Lockdown LE (101)", "Washout LE (105)")
-RECENT_43 = {name: sha for name, sha in RECENT_45.items() if name not in CR080_PAIR}
+#: Lockdown LE (101) and Washout LE (105) were pinned as stopped at the cap by CR-080's defect (control-group lists
+#: that only grew); CR-080 (layer fix CG1) flipped that pin (QA-13): they finish under the same limits, and reach the
+#: last energy cast that CR-076 measured when they were built to the end outside the gate.
+LAST_CAST = {"Lockdown LE (101)": "23.08 FungalGrowth", "Washout LE (105)": "13.11 PsionicStorm"}
 
-#: The 43 healthy games peak at 70-600 MiB and finish within 12 s here (2026-11-09), so 1 GiB and 60 s leave room
-#: and still catch a growth like CR-080's within seconds.
+#: The games peak at 70-600 MiB and finish within 12 s here (2026-11-09), so 1 GiB and 60 s leave room and still
+#: catch a growth like CR-080's defect within seconds.
 WALL_S = 60
 RSS_KIB = 1024 * 1024  # 1 GiB of resident memory
 POLL_S = 0.05  # how often the child's memory is read; a fast-growing child is killed within one interval
@@ -592,11 +593,12 @@ def _rss_kib(pid):
     return int(out.strip() or 0)
 
 
-def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
+def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB, child_code=CHILD):
     """Analyse ``replay`` in a child process in its own process group; the whole group is killed when it runs past
     ``wall_s`` seconds or its resident memory passes ``rss_kib`` KiB. Returns the child's record, or
     ``{"result": "stopped", "limit": "wall" | "memory"}``, with ``seconds``, ``peak_kib``, and ``casts`` and
-    ``last_cast`` (the energy casts the check reached, and the last of them as ``"MM.SS Ability"``)."""
+    ``last_cast`` (the energy casts the check reached, and the last of them as ``"MM.SS Ability"``). ``child_code``
+    replaces the child (the limit tests use a stand-in)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     stdout, stderr, casts = out_dir / "child.json", out_dir / "child.err", out_dir / "casts.txt"
     start = time.monotonic()
@@ -604,7 +606,7 @@ def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
     limit = None
     with stdout.open("w") as out, stderr.open("w") as err:
         child = subprocess.Popen(
-            [sys.executable, "-I", "-B", "-c", CHILD, str(replay), str(MS_SC), str(GUARD), str(casts)],
+            [sys.executable, "-I", "-B", "-c", child_code, str(replay), str(MS_SC), str(GUARD), str(casts)],
             stdout=out,
             stderr=err,
             start_new_session=True,
@@ -660,57 +662,36 @@ def test_the_45_are_the_manifests_files():
     assert len(RECENT_45) == 45 and not set(NOT_BUILT) & set(RECENT_45)
 
 
-@pytest.mark.parametrize("name", sorted(RECENT_43))
+@pytest.mark.parametrize("name", sorted(RECENT_45))
 def test_a_recent_game_gets_past_the_energy_step(name, tmp_path):
     """AC1 (QA-1): the game builds, under 1 GiB and 60 s, without an error in the energy step and without an
     ``ERROR unit:`` line; at 6315553 each of them stopped there. The 'data doesn't match' lines are counted for the
     record (QA-10). Runs in every gate on this Mac (``SC2MS_REQUIRE_GOLDEN=1``); skipped elsewhere when the replays
     are absent."""
     path = _need_recent(name)
-    assert _sha256(path) == RECENT_43[name], f"{name} changed"
+    assert _sha256(path) == RECENT_45[name], f"{name} changed"
 
     record = run_bounded(path, tmp_path)
 
     lines = len(record.get("mismatch", []))
     print(f"{name}: {record['result']} in {record['seconds']} s, peak {record['peak_kib'] // 1024} MiB, {lines} lines")
     assert not ENERGY_STEP & set(record.get("frames", ())), record  # no error in the energy step
-    assert record["result"] == "finished", record  # nor later: each of the 43 builds to the end (no later failure)
+    assert record["result"] == "finished", record  # nor later: each of the 45 builds to the end (no later failure)
     assert record["error_unit"] == []
+    if name in LAST_CAST:  # CR-080, QA-13
+        assert record["last_cast"] == LAST_CAST[name]
 
 
-@pytest.mark.parametrize("name", CR080_PAIR)
-def test_two_recent_games_are_stopped_by_the_control_group_growth(name, tmp_path):
-    """CR-080's defect, pinned at the gate's cap (Rex's P1 on 3c32d7b): once E1 lets them past the stop in the energy
-    check, Lockdown LE (101) and Washout LE (105) grow past 1 GiB in a few seconds (a control group's unit list that
-    only grows, ``ControlGroup.addUnits``) and are killed there, with no error before it. **CR-080 updates this
-    test**: with its fix both must finish under the 1 GiB cap, so they move back into the 43.
-
-    Measured once each, outside the gate, under limits (2026-11-09): built to the end they finish, Lockdown LE (101)
-    in about 46 s at a 3.3 GiB peak with 166 energy casts, the last at 23.08 (FungalGrowth), and Washout LE (105)
-    in about 13 s at 3.9 GiB with 65, the last at 13.11 (PsionicStorm), no ``ERROR unit:`` line in either; at 1 GiB
-    the cap is reached after about 110 and 54 of them."""
-    path = _need_recent(name)
-    assert _sha256(path) == RECENT_45[name], f"{name} changed"
-
-    record = run_bounded(path, tmp_path)
-
-    reached = f"{record['casts']} energy casts reached, the last {record['last_cast']}"
-    print(f"{name}: {record['result']} in {record['seconds']} s, peak {record['peak_kib'] // 1024} MiB, {reached}")
-    assert (record["result"], record.get("limit")) == ("stopped", "memory"), record
-    assert record["casts"] > 0 and record["last_cast"] is not None
+#: Stand-ins for the limit test, so it does not depend on how fast a build is (Rex's F2 on CR-080): one sleeps, one
+#: grows in 10 MiB steps.
+SLEEPER = "import time; time.sleep(60)"
+GROWER = "import time\nhoard = []\nfor _ in range(40):\n    hoard.append(bytearray(10 * 1024 * 1024)); time.sleep(0.05)\ntime.sleep(60)"
 
 
 def test_the_bounded_run_kills_the_child_at_its_limits(tmp_path):
-    """The limits work: a normal game (Alcyone) stopped by a 1 s wall limit, then by a 50 MiB memory cap, and its
-    process group is gone."""
-    path = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
-    if not path.exists():
-        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
-            pytest.fail(f"{path} not found (SC2MS_REQUIRE_GOLDEN=1)")
-        pytest.skip(f"{path} not found")
-
-    wall = run_bounded(path, tmp_path / "wall", wall_s=1)
-    memory = run_bounded(path, tmp_path / "memory", rss_kib=50 * 1024)
+    """The limits work: a sleeping stand-in stopped by a 1 s wall limit, then a growing one by a 50 MiB memory cap."""
+    wall = run_bounded(tmp_path / "none", tmp_path / "wall", wall_s=1, child_code=SLEEPER)
+    memory = run_bounded(tmp_path / "none", tmp_path / "memory", rss_kib=50 * 1024, child_code=GROWER)
 
     assert (wall["result"], wall["limit"]) == ("stopped", "wall")
     assert wall["seconds"] < 5

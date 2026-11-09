@@ -222,6 +222,32 @@ RAINFALL_LINES = [
     *["energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)"] * 4,
 ]
 
+#: With CR-080's CG1: the full list, from Rex's independent probe (CG1 patched in memory, not the code under
+#: test; ``.scratch/cr-080-review/energy/03-patched.json``). The pre-CG1 lines above are all among them, in order.
+RAINFALL_LINES_CG1 = [
+    "energy check: 02.27 SpawnLarva: selected Larva [3800001]: data doesn't match (no own Queen with 25 energy)",
+    "energy check: 02.28 SpawnLarva: selected Larva [3800001]: data doesn't match (no own Queen with 25 energy)",
+    "energy check: 10.41 SpawnLarva: selected Ravager [4E00001]: data doesn't match (3 own Queen with 25 energy)",
+    "energy check: 13.58 SpawnLarva: selected Roach [8280004]: data doesn't match (4 own Queen with 25 energy)",
+    "energy check: 15.39 PsionicStorm: selected VoidRay [3380004]: data doesn't match (2 own HighTemplar with 75 energy)",
+    "energy check: 17.55 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.01 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.07 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.11 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.35 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.37 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.37 ParasiticBomb: selected Larva [6D40015]: data doesn't match (no own Viper with 125 energy)",
+    "energy check: 18.45 FungalGrowth: selected Corruptor [680000B]: data doesn't match (3 own Infestor with 75 energy)",
+    "energy check: 19.09 ParasiticBomb: selected Larva [6D40015]: data doesn't match (4 own Viper with 125 energy)",
+    "energy check: 19.10 ParasiticBomb: selected Larva [6D40015]: data doesn't match (4 own Viper with 125 energy)",
+    "energy check: 26.30 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+    "energy check: 26.30 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+    "energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+    "energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+    "energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+    "energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)",
+]
+
 
 def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
     """AC1 as amended (Stefan's D1a, 19:31): the build gets past the inject step. Before CR-075 it stops at 02:27 in
@@ -264,7 +290,12 @@ def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
         analyse(load_replay(RAINFALL), MS_SC)  # the default fixes: E1 on
 
     lines = log.getvalue().splitlines()
-    assert [line for line in lines if "data doesn't match" in line] == RAINFALL_LINES
+    found = [line for line in lines if "data doesn't match" in line]
+    # CR-080 (CG1): smaller recalled groups give E1's search more lone units with no record (a unit the reader names
+    # Larva, at 02:27 and from 17:55): 10 -> 21 lines
+    assert found == RAINFALL_LINES_CG1
+    remaining = iter(found)
+    assert all(any(line == other for other in remaining) for line in RAINFALL_LINES)
     assert not [line for line in lines if line.startswith("ERROR unit:")]
 
     counted = [c for c in calls if c[5] == "count"]

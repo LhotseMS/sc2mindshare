@@ -112,10 +112,13 @@ FIXES: tuple[Callable[[Graph], Graph], ...] = (unique_harassment_ids, pre_game_d
 #: of a unit still waiting in the unwritten 10 s interval moves its count once the interval is written; E1 (CR-076; D1a,
 #: D2a), where the energy check took a lone selected unit with no energy record as the caster (and stopped), it charges
 #: the commanding player's one standing unit of the ability's caster type with the energy, else nobody, with a "data
-#: doesn't match" line in the run log; and the spare-energy check runs only for a type with a threshold.
+#: doesn't match" line in the run log; and the spare-energy check runs only for a type with a threshold; CG1 (CR-080;
+#: D1a, D1b, Q-2), a control group follows the game's meaning: set and steal-and-set make it exactly the selection, add
+#: and steal-and-add put the selection beside what it holds, a unit is in a group once, and a steal takes the stolen
+#: units out of the player's other groups.
 LAYER_FIXES: tuple[str, ...] = (
     "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
-    "E1",
+    "E1", "CG1",
 )  # fmt: skip
 
 

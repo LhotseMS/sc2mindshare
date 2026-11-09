@@ -297,7 +297,7 @@ def test_the_bc0_entries_change_nothing(entry, name):
 
 
 #: CR-035 (L-B): Leo's independent spine prediction, a few nodes: (compressed position, size), (linear position, size).
-#: The full 34 are the ledger entries TL1-spine-snap-compressed and TL1-spine-snap-linear.
+#: The full 34 are the ledger entries TL1-spine-snap-compressed and TL1-spine-snap-linear (33 after CR-080's CG1).
 SPINE_LANE_LITERALS = {
     "Scouting-2": (((20.0, -21.0), [2.65, 1]), ((25.0, -21.0), [2.65, 1])),
     "Harrasment-6": (((115.0, -21.0), [2.65, 1]), ((132.5, -21.0), [2.65, 1])),  # serega's, on Piliskner's side (D2b)
@@ -311,8 +311,13 @@ SPINE_LANE_TYPES = {"Harrasment", "Scouting", "Energy Excess", "Inject Delay"}
 def test_spines_lane_nodes_are_where_leo_predicted(mode):
     doc = json.loads((regen.golden_dir("spine") / f"G-SNAP-current-{mode}.json").read_text(encoding="utf-8"))
     lane_nodes = {n["ID"]: n for n in doc["nodes"] if n["type"] in SPINE_LANE_TYPES}
-    expected = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))[f"TL1-spine-snap-{mode}"]["expected"]
-    assert len(lane_nodes) == len(expected) == 34 and set(lane_nodes) == set(expected)
+    tl1 = regen.check_golden_delta.entries(regen.CHANGES.read_text(encoding="utf-8"))[f"TL1-spine-snap-{mode}"]["expected"]
+    assert len(tl1) == 34
+    # CR-080 (CG1, Q-2 Set; Leo's prediction-d1b.md, ledger CG1-spine-snap-*): Piliskner's old Scouting-4 goes and
+    # Scouting-5, -6 become -4, -5; no spine position moves
+    renumber = {"Scouting-5": "Scouting-4", "Scouting-6": "Scouting-5"}
+    expected = {renumber.get(k, k): v for k, v in tl1.items() if k != "Scouting-4"}
+    assert len(lane_nodes) == len(expected) == 33 and set(lane_nodes) == set(expected)
     for node_id, want in expected.items():
         n = lane_nodes[node_id]
         assert [n["position"]["x"], n["position"]["y"]] == [round(v, 4) for v in want["position"]], node_id

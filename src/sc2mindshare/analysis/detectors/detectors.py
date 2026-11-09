@@ -32,6 +32,7 @@ from sc2mindshare.analysis.utils import MsUtils
 from sc2mindshare.reader.fork_api import Replay
 from sc2mindshare.analysis.fileHandler import FileHandler
 from sc2mindshare.analysis.context import AnalysisContext
+from sc2mindshare.reader.compat import ControlGroupKind, control_group_kind
 from sc2mindshare.reader.compat import P10B_STRUCTURES, clean_name, object_text, supply_at, type_at, unit_text_at, unnamed_missing_type
 from sc2mindshare.analysis.offline import ImageUploader
 from sc2mindshare.analysis.offline import generateBattleHeatMap
@@ -674,6 +675,8 @@ class ActionsDetector(EventsDetector):
         return 7
 
     def addUnitsPointCommand(self, units, e):
+        if not units:  # CR-080 (AC7): a recalled group a steal emptied: the order moves no unit (IndexError before)
+            return
             
         travelTimeAvailable = False
         selectionEvent = self.getLastSelectionEvent(units[0].player)
@@ -781,7 +784,7 @@ class ActionsDetector(EventsDetector):
                 self.updateCG(e)
 
             elif isinstance(e, StealControlGroupEvent):
-                self.removeUnitsFromOtherCGs(e.player, "")
+                self.removeUnitsFromOtherCGs(e.player, "", e)
                 self.updateCG(e)
 
                 #TODO CASE if larva is a selection event after cg get its a hatch build 
@@ -876,17 +879,24 @@ class ActionsDetector(EventsDetector):
     def addActionToCG(self, e):
         pass
 
-    def removeUnitsFromOtherCGs(self, player, unitIDs):
-        pass
-       # for id in unitIDs:
-            #self.CONTROL_GROUPS[player].
+    def removeUnitsFromOtherCGs(self, player, unitIDs, e):
+        # CR-080 CG1 (Stefan's D1b): a steal takes the stolen units out of every other group of the stealing player
+        # (the event does not name the group they came from); the steal branch's call with "" removes nothing
+        if "CG1" not in self.ctx.fixes or not unitIDs:
+            return
+        for no, cg in self.CONTROL_GROUPS[player].items():
+            if no != e.control_group:
+                cg.removeUnits(e.second, unitIDs)
 
     def updateCG(self, e):
         
+        units = self.getLastSelectionUnits(e.player)  # CR-080 CG1: read once, before any group changes
         if e.control_group in self.CONTROL_GROUPS[e.player]:
-            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, self.getLastSelectionUnits(e.player))
+            self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, units)
         else:
-            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, self.getLastSelectionUnits(e.player))
+            self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, units, fixes=self.ctx.fixes)
+        if "CG1" in self.ctx.fixes and units is not None and control_group_kind(e) in (ControlGroupKind.STEAL, ControlGroupKind.WEIRD):
+            self.removeUnitsFromOtherCGs(e.player, {u.id for u in units}, e)
     
     def printEnergyInfo(self):
         print("\n\n ---History--- \n")

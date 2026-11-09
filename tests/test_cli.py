@@ -104,7 +104,7 @@ SPORES = MS_SC / "1000 spores ZvP.SC2Replay"
 
 
 def test_spores_builds_and_its_energy_mismatches_stay_in_the_log(tmp_path, config):
-    """CR-076 (AC3, AC5, AC6): 1000 spores ZvP builds through the CLI. Its 11 casts the energy check cannot charge
+    """CR-076 (AC3, AC5, AC6): 1000 spores ZvP builds through the CLI. Its 35 casts the energy check cannot charge
     (Stefan's D2a) are lines in graph.log only: the graph carries no warning. No Energy Excess node is made for the
     five spellcaster types without a threshold (D2a)."""
     need(SPORES)
@@ -112,7 +112,7 @@ def test_spores_builds_and_its_energy_mismatches_stay_in_the_log(tmp_path, confi
     code, _, _ = run("build", SPORES, "--out", out, "--config-root", config)
     assert code == 0
     log = (tmp_path / "graph.log").read_text(encoding="utf-8")
-    assert log.count("data doesn't match") == 11
+    assert log.count("data doesn't match") == 35  # 11 before CR-080's CG1 (see test_spores_gets_past_the_energy_step)
     text = out.read_text(encoding="utf-8")
     assert "data doesn't match" not in text and "energy check" not in text
     excess = [n["name"] for n in json.loads(text)["nodes"] if n.get("type") == "Energy Excess"]
