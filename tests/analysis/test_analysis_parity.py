@@ -2,8 +2,9 @@
 
 The test-only renderer is the layer's own CSVExporter (the product never writes the CSV). On
 Alcyone the result must equal G-CSV-1 byte for byte (and the intervals Intervals-1); on
-``200k dmg spine crawler ZvP`` it must equal a live run of the legacy code; on ``1000 spores ZvP``
-it must fail exactly as the legacy code does (defect L1, kept on purpose until its fix).
+``200k dmg spine crawler ZvP`` it must equal a live run of the legacy code. ``1000 spores ZvP`` stopped in the
+energy check (defect L1, ``KeyError: 118489090``) until CR-076's layer fix E1; with the default fixes it now gets
+past it (Stefan's D3a: that test replaced the pin of the old failure, and spores has no golden).
 """
 
 import contextlib
@@ -98,10 +99,29 @@ def test_spine_csv_equals_a_live_legacy_run(tmp_path):
     assert report.ok, str(report)
 
 
-def test_spores_fails_like_the_legacy_code_l1():
+#: Spores' 11 casts where the energy check took a lone Lair as the caster: E1 finds 8 of the player's Queens with the
+#: energy each time, so it charges none and logs the cast (Stefan's D2a). From Rex's independent probe at dafcf59
+#: (``.scratch/rex/cr-076/v2-refs-076.json``), not from the code under test.
+SPORES_LINES = [
+    *["energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)"] * 5,
+    *["energy check: 20.01 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)"] * 2,
+    *["energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)"] * 4,
+]
+
+
+def test_spores_gets_past_the_energy_step():
+    """CR-076 (AC6, Stefan's D3a): replaces ``test_spores_fails_like_the_legacy_code_l1``, which pinned L1
+    (``KeyError: 118489090`` in ``getEnergyAtTime``) in the bug-faithful run. With the default fixes (E1 on) the
+    analysis finishes, and the run log holds the 11 lines. The bug-faithful run still stops at L1, unpinned (D3a)."""
     replay = need(SPORES, "1000 spores replay")
-    with pytest.raises(KeyError, match="118489090"):
-        render(replay)
+    log = io.StringIO()
+    with contextlib.redirect_stdout(log):
+        result = analyse(load_replay(replay), MS_SC)  # the default fixes: E1 on
+
+    assert "E1" in result.fixes
+    lines = log.getvalue().splitlines()
+    assert [line for line in lines if "data doesn't match" in line] == SPORES_LINES
+    assert not [line for line in lines if line.startswith("ERROR unit:")]
 
 
 def test_the_analysis_writes_nothing(tmp_path, monkeypatch):

@@ -53,6 +53,6 @@ Counted in the legacy run log by `scripts/run_legacy.py` (`summary.json`, `creep
 |---|---|---|
 | Alcyone LE (92440) | 926 | 1 blocked map download (CreepTracker calls `load_map`) |
 | 200k dmg spine crawler ZvP (83830) | 354 | |
-| 1000 spores ZvP (81433) | n/a | crashes: `EnergyTracker.getEnergyAtTime` KeyError 118489090 (G5 failure, awaiting Stefan) |
+| 1000 spores ZvP (81433) | n/a | crashes: `EnergyTracker.getEnergyAtTime` KeyError 118489090 (defect L1; the legacy code keeps it. In `sc2mindshare`, CR-076's layer fix E1 gets the default run past it; the bug-faithful run still stops there) |
 
 Morgan's planning spike counted 24 CreepTracker messages on Alcyone, but with `load_map=False` and without running the Mindshare detectors, so that number is not comparable with these runs (corrected after his CR-004 review).

@@ -199,6 +199,7 @@ class EnergyTracker(Tracker):
         super().__init__(player1, player2, fixes)
         
         self.energyHistory = {}
+        self.energyUnits = {}  # CR-076 E1: the registered units by id, kept beside their records (the search's candidates)
         self.excessEnergy = {}
         self.excessEnergy[player1] = list()
         self.excessEnergy[player2] = list()
@@ -239,6 +240,7 @@ class EnergyTracker(Tracker):
     def registerEnergyUnit(self, unit, time):
         if unit.id not in self.energyHistory:
             self.energyHistory[unit.id] = list()
+            self.energyUnits[unit.id] = unit
 
             if unit.name in self.UNIT_INITIAL:
                 initEnergy = self.UNIT_INITIAL[unit.name]
@@ -293,16 +295,54 @@ class EnergyTracker(Tracker):
     def isexcessActive(self, player) -> bool:
         return len(self.excessEnergy[player]) > 0 and self.excessEnergy[player][-1].end == None
 
-    def processEnergyEvent(self, time, units, abilityName):
+    def casterTypes(self, abilityName):
+        """CR-076 E1: the unit types whose abilities hold ``abilityName`` (one for every ability in the table)."""
+        return [name for name, abilities in self.UNIT_ABILITIES.items() if abilityName in abilities]
+
+    @staticmethod
+    def isStandingAt(unit, time):
+        """CR-076 E1: the unit is finished at or before the cast second and not dead at or before it. The check keeps
+        a dead unit's record (``removeEnergyUnit`` does nothing), so a dead unit is ruled out here (Vera's E1)."""
+        done = getattr(unit, "doneEvent", None)
+        if done is None or MsUtils.isLater(time, done.time):  # not done, or done after the cast
+            return False
+        death = getattr(unit, "deathEvent", None)
+        return death is None or MsUtils.isLater(time, death.time)
+
+    def findRealCaster(self, time, abilityName, cost, player, selected):
+        """CR-076 E1 (Stefan's D1a, D2a): the cast's caster when the one selected unit has no energy record.
+
+        The candidates are the units the check registered: the commanding player's own, of the ability's caster type,
+        standing at the cast, with at least ``cost`` energy by their record. Exactly one: it is the caster. None or
+        several: no caster, and one line for the run log (``graph.log``), which names no player."""
+        kinds = self.casterTypes(abilityName)
+        fit = [
+            u for u in self.energyUnits.values()
+            if u.name in kinds and player is not None and getattr(u, "owner", None) is not None
+            and u.owner.pid == player.pid and self.isStandingAt(u, time) and self.getEnergyAtTime(u, time) >= cost
+        ]
+        if len(fit) == 1:
+            return fit[0]
+        found = f"{len(fit)} own" if fit else "no own"
+        print(f"energy check: {time} {abilityName}: selected {selected.name} [{selected.id:X}]: data doesn't match "
+              f"({found} {'/'.join(kinds)} with {cost} energy)")
+        return None
+
+    def processEnergyEvent(self, time, units, abilityName, player=None):
+        """``player``: the commanding player (the event's); CR-076 E1 searches only that player's units."""
 
         for u, abilities in self.UNIT_ABILITIES.items():
             if abilityName in abilities:
                 energyChange = abilities[abilityName]
                 break
-                    
+
         unit = None
         if len(units) == 1:
             unit = units[0]
+            if "E1" in self.fixes and unit.id not in self.energyHistory:  # CR-076 E1: where the fork's check stops
+                unit = self.findRealCaster(time, abilityName, energyChange, player, unit)
+                if unit is None:
+                    return  # kept, charged to no one, logged (D1a, D2a)
         else:
             for u in units:
                 # TODO time here is still with ".", it should be replaced for ":" sooner, before it comes here. Refactor time calcualtions add property
@@ -321,14 +361,17 @@ class EnergyTracker(Tracker):
 
         newEnergy = currentEnergy - energyChange
 
-        if self.isexcessActive(unit.player):
-            if newEnergy <= self.getThreshold(time, unit):
-                self.endEnergyexcess(unit.player, time)
-        else:
-            self.detectEnergyexcess(unit, time, currentEnergy)
-            if self.isexcessActive(unit.player) and newEnergy <= self.getThreshold(time, unit):
-                self.endEnergyexcess(unit.player, time)
-        
+        # CR-076 E1 (D2a): the spare-energy check only for a type with a threshold; a cast by any other type leaves a
+        # running period as it is (Q-F, D1a). The spend is still recorded below.
+        if "E1" not in self.fixes or unit.name in self.UNIT_SURPLAS:
+            if self.isexcessActive(unit.player):
+                if newEnergy <= self.getThreshold(time, unit):
+                    self.endEnergyexcess(unit.player, time)
+            else:
+                self.detectEnergyexcess(unit, time, currentEnergy)
+                if self.isexcessActive(unit.player) and newEnergy <= self.getThreshold(time, unit):
+                    self.endEnergyexcess(unit.player, time)
+
 
         self.energyHistory[unit.id].append(EnergyStatus(time, newEnergy, abilityName, unit))
 

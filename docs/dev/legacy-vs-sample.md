@@ -56,7 +56,7 @@ No committed version reproduces it exactly, so it came from a local, uncommitted
 |---|---|---|
 | H1 | Harrasment node IDs repeat: `Harrasment-0` ×7, `Harrasment-1` ×3 (cause not yet checked; likely a per-battle sequence) | B, 14 nodes, 6 distinct IDs |
 | H2 | A harassment description says "Pull occured after -16.0s": a negative pull delay | B, `Harrasment-1` at 07:49 |
-| L1 | `1000 spores ZvP` (5.0.2.81433) crashes in `EnergyTracker.getEnergyAtTime` (KeyError on a Lair never registered) | CR-003 run log; G5 awaiting Stefan |
+| L1 | `1000 spores ZvP` (5.0.2.81433) crashes in `EnergyTracker.getEnergyAtTime` (KeyError on a Lair never registered) | CR-003 run log. Fixed in `sc2mindshare` by CR-076's layer fix E1 (the default run gets past it); it remains in the bug-faithful run and the legacy code |
 
 ## Risks to the legacy output from the environment
 

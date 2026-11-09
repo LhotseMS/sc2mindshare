@@ -210,11 +210,25 @@ def _verdict(tracker_, event):
     return "count"
 
 
+#: Rainfall LE (104)'s casts where the energy check took a lone selected unit as the caster (the Ravager at 10:41 first):
+#: E1 finds several of the player's casters with the energy each time, so it charges none and logs the cast (D2a). From
+#: Rex's independent probe with CR-075 and E1 (``.scratch/rex/cr-076/v2-a7.json``), not from the code under test.
+RAINFALL_LINES = [
+    "energy check: 10.41 SpawnLarva: selected Ravager [4E00001]: data doesn't match (3 own Queen with 25 energy)",
+    "energy check: 13.58 SpawnLarva: selected Roach [8280004]: data doesn't match (4 own Queen with 25 energy)",
+    "energy check: 15.39 PsionicStorm: selected VoidRay [3380004]: data doesn't match (2 own HighTemplar with 75 energy)",
+    "energy check: 18.45 FungalGrowth: selected Corruptor [680000B]: data doesn't match (3 own Infestor with 75 energy)",
+    *["energy check: 26.30 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)"] * 2,
+    *["energy check: 26.31 SpawnLarva: selected Hive [2F40001]: data doesn't match (5 own Queen with 25 energy)"] * 4,
+]
+
+
 def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
-    """AC1 as amended (Stefan's D1a, 19:31): the build gets past the inject step; its next failure is the energy
-    check at 10:41 (``getEnergyAtTime``, ``KeyError: 81788929``), which is CR-076's. **When CR-076 lands, it
-    updates this test** (the build then goes further). Before CR-075 it stops at 02:27 in ``processInject`` with
-    ``KeyError: 53477378``. The replay is Stefan's: read in place, never copied into the repository."""
+    """AC1 as amended (Stefan's D1a, 19:31): the build gets past the inject step. Before CR-075 it stops at 02:27 in
+    ``processInject`` with ``KeyError: 53477378``; with CR-075 alone its next failure was the energy check at 10:41
+    (``getEnergyAtTime``, ``KeyError: 81788929``). CR-076 (layer fix E1) landed second and updated this pin, as the
+    two stories agreed: the analysis now finishes, with the energy check's 10 'data doesn't match' lines. The
+    replay is Stefan's: read in place, never copied into the repository."""
     if not RAINFALL.exists():
         message = f"Rainfall LE (104) not found: {RAINFALL}"
         if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
@@ -245,11 +259,13 @@ def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
 
     monkeypatch.setattr(InjectTracker, "processInject", recording)
 
-    with pytest.raises(KeyError, match="81788929") as failure, contextlib.redirect_stdout(io.StringIO()):
-        analyse(load_replay(RAINFALL), MS_SC)
+    log = io.StringIO()
+    with contextlib.redirect_stdout(log):
+        analyse(load_replay(RAINFALL), MS_SC)  # the default fixes: E1 on
 
-    assert failure.traceback[-1].name == "getEnergyAtTime"
-    assert "processInject" not in [entry.name for entry in failure.traceback]
+    lines = log.getvalue().splitlines()
+    assert [line for line in lines if "data doesn't match" in line] == RAINFALL_LINES
+    assert not [line for line in lines if line.startswith("ERROR unit:")]
 
     counted = [c for c in calls if c[5] == "count"]
     skipped = [c for c in calls if c[5] != "count"]
@@ -257,7 +273,7 @@ def test_rainfall_104_gets_past_the_inject_tracker(monkeypatch):
         f"Rainfall LE (104): {len(calls)} inject-named calls, {len(counted)} counted, {len(skipped)} skipped:",
         sorted({(c[5], c[3]) for c in skipped}),
     )
-    assert len(counted) == 29
+    assert len(counted) == 116  # over the whole game now (29 up to the energy stop at 10:41, before CR-076)
     assert {(c[1], c[4]) for c in counted} == {(2, 2)}
     assert {c[3] for c in counted} <= {"Hatchery", "Lair", "Hive"}
     assert skipped == [
