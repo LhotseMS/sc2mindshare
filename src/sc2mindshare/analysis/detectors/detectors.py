@@ -707,17 +707,21 @@ class ActionsDetector(EventsDetector):
                 travelTime = None
                 self.addUnitsPosition([unit], e.location, datetime.strptime(e.time, "%M.%S"), PositionAccuracy.MAYBE)
 
-            newCommand = UnitMoveCommand(
-                        unit, 
-                        e.time, 
-                        e.x, 
-                        e.y,   
-                        travelTime,
-                        units, 
-                        selectionEvent,
-                        self.ctx)
+            # CR-081 (option 2): the scouting check reads a record only when the order went to one entry
+            # (len(selUnits) == 1), so an order to several entries keeps none; every unit still gets its key above, in
+            # list order, which numbers the Scouting steps
+            if len(units) == 1:
+                newCommand = UnitMoveCommand(
+                            unit,
+                            e.time,
+                            e.x,
+                            e.y,
+                            travelTime,
+                            units,
+                            selectionEvent,
+                            self.ctx)
 
-            self.unitsCommands[unit.id].append(newCommand)
+                self.unitsCommands[unit.id].append(newCommand)
             
     
     def initUnitCommands(self, unitId):

@@ -154,7 +154,8 @@ def test_a_selection_before_the_camera_gives_no_position_and_its_move_no_travel_
         U1: [("00:06", 50, 60, "MAYBE"), ("00:10", 10, 10, "SCREEN"), ("00:18", 70, 80, "PATH")],
         U2: [("00:06", 50, 60, "MAYBE"), ("00:12", 30, 40, "EXACT")],
     }
-    assert commands(d) == {U1: [("00.06", 50, 60, None), ("00.11", 70, 80, 7)], U2: [("00.06", 50, 60, None)]}
+    # the 00.06 move went to two units: since CR-081 (option 2) it keeps no record (the scouting check never read one)
+    assert commands(d) == {U1: [("00.11", 70, 80, 7)], U2: []}
     assert d.lastSelection[A].cameraLocation == (10, 10)
 
 

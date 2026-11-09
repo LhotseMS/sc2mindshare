@@ -274,3 +274,42 @@ def test_empty_and_missing_selections_as_today():
     assert (d.unitsCommands, d.unitsPositions) == ({}, {})
     with pytest.raises(KeyError):
         d.addUnitsPointCommand([unit(A_ID)], Move(P1, "02.10", (150, 150)))
+
+
+# --- AC1: an order given to several units makes no move-order record (CR-081, option 2) -------------------------------
+
+
+@pytest.mark.parametrize("size", [2, 3, 200])
+@pytest.mark.parametrize("camera", [(20, 20), AWAY], ids=["PATH", "MAYBE"])
+def test_an_order_to_several_units_makes_no_record_but_keys_and_positions(size, camera):
+    """QA-1 (D1a's structural check): every unit keeps its key, in list order, and its one position; no record.
+    Before CR-081 each unit got a record that the scouting check never read."""
+    d = detector()
+    units = [unit(A_ID + 262144 * i) for i in range(size)]
+    order(d, units, "05.12", (150, 150), camera=camera)
+    assert list(d.unitsCommands) == [u.id for u in units]
+    assert all(cs == [] for cs in d.unitsCommands.values())
+    accuracy, at = ("PATH", "00:05:19") if camera == (20, 20) else ("MAYBE", "00:05:12")
+    assert positions(d) == {u.id: [(at, 150, 150, accuracy)] for u in units}
+
+
+def test_a_recalled_group_and_a_second_order_in_the_same_second_make_no_record():
+    """QA-1 edges: a recalled group of three, then another several-unit order in the same second."""
+    d = detector()
+    group = [unit(A_ID), unit(B_ID), unit(C_ID)]
+    order(d, group, "02.10", (150, 150), via=Recall(P1, 2))
+    order(d, group, "02.10", (130, 150), via=Recall(P1, 2))
+    assert records(d) == {A_ID: [], B_ID: [], C_ID: []}
+    assert [len(ps) for ps in d.unitsPositions.values()] == [2, 2, 2]
+
+
+def test_one_entry_is_the_length_of_the_list_not_the_distinct_units():
+    """QA-2 (bug-faithful run, where a recalled group can list a unit twice): [A, A] and [A, A, B] are 2 and 3 entries,
+    so no record; each entry still gets its position, and keys come in first-listed order."""
+    d = detector(fixes=frozenset())
+    a, b = unit(B_ID), unit(A_ID)
+    order(d, [a, a], "02.10", (150, 150), via=Recall(P1, 1))
+    order(d, [a, a, b], "02.20", (150, 150), via=Recall(P1, 1))
+    assert records(d) == {B_ID: [], A_ID: []}
+    assert list(d.unitsCommands) == [B_ID, A_ID]
+    assert [len(d.unitsPositions[B_ID]), len(d.unitsPositions[A_ID])] == [4, 1]
