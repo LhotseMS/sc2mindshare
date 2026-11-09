@@ -17,8 +17,9 @@ and ``deathEvent.time`` as tracker times ``"MM:SS"`` (None when absent); a cast 
 Every expected energy is a literal worked out by hand from the check's rule (Queen 25 at the start, every other
 type 50; 0.7905 a second), never recomputed by the code under test. The AC4 literals hold on the code before E1.
 
-The corpus test (AC1) builds Stefan's recent games, read in place from ``MS SC/cr-074-recent/`` by SHA-256, each in a
-child process of its own under a wall-time limit and a memory cap.
+The corpus tests (AC1) build Stefan's recent games, read in place from ``MS SC/cr-074-recent/`` by SHA-256, each in
+a child process of its own under a wall-time limit (60 s) and a memory cap (1 GiB); they run in every gate on this
+Mac and are skipped elsewhere when the replays are absent. Two of them are pinned as stopped at the cap (CR-080).
 """
 
 import contextlib
@@ -472,7 +473,7 @@ def test_a_cast_with_a_threshold_still_ends_the_running_period():
     assert [(n.unitName, n.end) for n in t.excessEnergy[Z]] == [("Nexus", "00:02:40")]
 
 
-# --- AC1: Stefan's recent games get past the energy step (opt-in: his replays, read in place) -----------------------
+# --- AC1: Stefan's recent games get past the energy step (his replays, read in place; every gate on this Mac) ------
 
 
 def _root():
@@ -538,25 +539,39 @@ RECENT_45 = {
 }
 NOT_BUILT = ("Lockdown LE (103)", "Washout LE (107)", "At Eternity's Edge LE (109)")  # CR-080's, never built here
 
-#: A recent game analyses in under a minute here. Two of the 45 already carry CR-080's growing control-group lists
-#: once the energy step passes, and still finish: Lockdown LE (101) in about 46 s at a 3.3 GiB peak (lists of up to
-#: about 196,000 units), Washout LE (105) in about 13 s at 3.8 GiB (measured 2026-11-09, one child each).
-WALL_S = 120
-RSS_KIB = 6 * 1024 * 1024  # 6 GiB of resident memory
+#: Two of the 45 carry CR-080's growing control-group lists once the energy step passes: built to the end they take
+#: 3-4 GiB, so the gate does not build them to the end (Rex's P1 on 3c32d7b). They are pinned at the cap instead.
+CR080_PAIR = ("Lockdown LE (101)", "Washout LE (105)")
+RECENT_43 = {name: sha for name, sha in RECENT_45.items() if name not in CR080_PAIR}
+
+#: The 43 healthy games peak at 70-600 MiB and finish within 12 s here (2026-11-09), so 1 GiB and 60 s leave room
+#: and still catch a growth like CR-080's within seconds.
+WALL_S = 60
+RSS_KIB = 1024 * 1024  # 1 GiB of resident memory
+POLL_S = 0.05  # how often the child's memory is read; a fast-growing child is killed within one interval
 ENERGY_STEP = {"getEnergyAtTime", "getThreshold", "processEnergyEvent", "findRealCaster"}
 
 #: The child: analyse one replay with the default fixes, its prints captured as the CLI captures them for
-#: graph.log, the network guard on; one JSON line on stdout.
+#: graph.log, the network guard on; one JSON line on stdout. Each energy cast the check reaches is streamed to the
+#: casts file (time and ability, flushed), so a child killed at a limit still tells the last cast it reached.
 CHILD = """
 import contextlib, importlib.util, io, json, socket, sys, traceback
-replay, support, guard_path = sys.argv[1:4]
+replay, support, guard_path, casts_path = sys.argv[1:5]
 spec = importlib.util.spec_from_file_location("sc2ms_network_guard", guard_path)
 guard = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(guard)
 socket.socket.connect = guard._guarded_connect
 socket.socket.connect_ex = guard._guarded_connect_ex
 from sc2mindshare.analysis.run import analyse
+from sc2mindshare.analysis.detectors.detectors import EnergyTracker
 from sc2mindshare.reader.loader import load_replay
+casts = open(casts_path, "w", encoding="utf-8")
+process = EnergyTracker.processEnergyEvent
+def streamed(self, time, units, abilityName, *args, **kwargs):
+    casts.write(f"{time} {abilityName}\\n")
+    casts.flush()
+    return process(self, time, units, abilityName, *args, **kwargs)
+EnergyTracker.processEnergyEvent = streamed
 log = io.StringIO()
 record = {"result": "finished"}
 try:
@@ -580,15 +595,16 @@ def _rss_kib(pid):
 def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
     """Analyse ``replay`` in a child process in its own process group; the whole group is killed when it runs past
     ``wall_s`` seconds or its resident memory passes ``rss_kib`` KiB. Returns the child's record, or
-    ``{"result": "stopped", "limit": "wall" | "memory"}``, with ``seconds`` and ``peak_kib``."""
+    ``{"result": "stopped", "limit": "wall" | "memory"}``, with ``seconds``, ``peak_kib``, and ``casts`` and
+    ``last_cast`` (the energy casts the check reached, and the last of them as ``"MM.SS Ability"``)."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    stdout, stderr = out_dir / "child.json", out_dir / "child.err"
+    stdout, stderr, casts = out_dir / "child.json", out_dir / "child.err", out_dir / "casts.txt"
     start = time.monotonic()
     peak = 0
     limit = None
     with stdout.open("w") as out, stderr.open("w") as err:
         child = subprocess.Popen(
-            [sys.executable, "-I", "-B", "-c", CHILD, str(replay), str(MS_SC), str(GUARD)],
+            [sys.executable, "-I", "-B", "-c", CHILD, str(replay), str(MS_SC), str(GUARD), str(casts)],
             stdout=out,
             stderr=err,
             start_new_session=True,
@@ -602,17 +618,19 @@ def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
                 if peak > rss_kib:
                     limit = "memory"
                     break
-                time.sleep(0.2)
+                time.sleep(POLL_S)
         finally:
             if child.poll() is None:
                 os.killpg(child.pid, signal.SIGKILL)
                 child.wait()
-    seconds = round(time.monotonic() - start, 1)
+    reached = casts.read_text(encoding="utf-8").splitlines() if casts.exists() else []
+    stats = {"seconds": round(time.monotonic() - start, 1), "peak_kib": peak, "casts": len(reached)}
+    stats["last_cast"] = reached[-1] if reached else None
     if limit is not None:
-        return {"result": "stopped", "limit": limit, "seconds": seconds, "peak_kib": peak}
+        return {"result": "stopped", "limit": limit, **stats}
     text = stdout.read_text(encoding="utf-8")
     assert text, f"the child wrote nothing (exit {child.returncode}): {stderr.read_text(encoding='utf-8')[-2000:]}"
-    return {**json.loads(text), "seconds": seconds, "peak_kib": peak}
+    return {**json.loads(text), **stats}
 
 
 def _need_recent(name):
@@ -642,20 +660,44 @@ def test_the_45_are_the_manifests_files():
     assert len(RECENT_45) == 45 and not set(NOT_BUILT) & set(RECENT_45)
 
 
-@pytest.mark.parametrize("name", sorted(RECENT_45))
+@pytest.mark.parametrize("name", sorted(RECENT_43))
 def test_a_recent_game_gets_past_the_energy_step(name, tmp_path):
-    """AC1 (QA-1): the game builds without an error in the energy step and without an ``ERROR unit:`` line; at
-    6315553 each of them stopped there. The 'data doesn't match' lines are counted for the record (QA-10)."""
+    """AC1 (QA-1): the game builds, under 1 GiB and 60 s, without an error in the energy step and without an
+    ``ERROR unit:`` line; at 6315553 each of them stopped there. The 'data doesn't match' lines are counted for the
+    record (QA-10). Runs in every gate on this Mac (``SC2MS_REQUIRE_GOLDEN=1``); skipped elsewhere when the replays
+    are absent."""
     path = _need_recent(name)
-    assert _sha256(path) == RECENT_45[name], f"{name} changed"
+    assert _sha256(path) == RECENT_43[name], f"{name} changed"
 
     record = run_bounded(path, tmp_path)
 
     lines = len(record.get("mismatch", []))
     print(f"{name}: {record['result']} in {record['seconds']} s, peak {record['peak_kib'] // 1024} MiB, {lines} lines")
     assert not ENERGY_STEP & set(record.get("frames", ())), record  # no error in the energy step
-    assert record["result"] == "finished", record  # nor later: each of the 45 builds to the end (no later failure)
+    assert record["result"] == "finished", record  # nor later: each of the 43 builds to the end (no later failure)
     assert record["error_unit"] == []
+
+
+@pytest.mark.parametrize("name", CR080_PAIR)
+def test_two_recent_games_are_stopped_by_the_control_group_growth(name, tmp_path):
+    """CR-080's defect, pinned at the gate's cap (Rex's P1 on 3c32d7b): once E1 lets them past the stop in the energy
+    check, Lockdown LE (101) and Washout LE (105) grow past 1 GiB in a few seconds (a control group's unit list that
+    only grows, ``ControlGroup.addUnits``) and are killed there, with no error before it. **CR-080 updates this
+    test**: with its fix both must finish under the 1 GiB cap, so they move back into the 43.
+
+    Measured once each, outside the gate, under limits (2026-11-09): built to the end they finish, Lockdown LE (101)
+    in about 46 s at a 3.3 GiB peak with 166 energy casts, the last at 23.08 (FungalGrowth), and Washout LE (105)
+    in about 13 s at 3.9 GiB with 65, the last at 13.11 (PsionicStorm), no ``ERROR unit:`` line in either; at 1 GiB
+    the cap is reached after about 110 and 54 of them."""
+    path = _need_recent(name)
+    assert _sha256(path) == RECENT_45[name], f"{name} changed"
+
+    record = run_bounded(path, tmp_path)
+
+    reached = f"{record['casts']} energy casts reached, the last {record['last_cast']}"
+    print(f"{name}: {record['result']} in {record['seconds']} s, peak {record['peak_kib'] // 1024} MiB, {reached}")
+    assert (record["result"], record.get("limit")) == ("stopped", "memory"), record
+    assert record["casts"] > 0 and record["last_cast"] is not None
 
 
 def test_the_bounded_run_kills_the_child_at_its_limits(tmp_path):

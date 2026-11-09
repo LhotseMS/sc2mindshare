@@ -10,7 +10,8 @@ something, so it lives at its call site in the layer, switched by its ledger id 
 Which changes take a ledger id (the batch rule, CR-076, Morgan's design review finding 4): a change that alters a
 result the legacy code produced is a fix here, with a ledger id, off in the bug-faithful run. A change that only turns
 a legacy crash into a result takes none and applies in both modes, since wherever the legacy code completes it is inert
-(CR-075's inject guard, for example).
+(CR-075's inject guard, for example). A crash-only part of a fix that has an id may ride that id instead (E1's
+threshold guard, by the CR-076 Step 3 choice); the oracle is the same either way.
 """
 
 from __future__ import annotations
