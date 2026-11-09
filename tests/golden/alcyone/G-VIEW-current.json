@@ -13774,10 +13774,66 @@
    }
   },
   {
+   "name": "Larva scouted Natural",
+   "description": "At 01.54 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-0",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:01:54",
+    "player": "lilTiGGer"
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 01.57 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-1",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:01:57",
+    "player": "lilTiGGer"
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 02.00 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-2",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:00",
+    "player": "lilTiGGer"
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 02.03 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-3",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:03",
+    "player": "lilTiGGer"
+   }
+  },
+  {
    "name": "Overlord scouted 3rd base",
    "description": "At 01.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-0",
+   "ID": "Scouting-4",
    "size": [
     2.65,
     1
@@ -13791,7 +13847,7 @@
    "name": "Overlord scouted Main base",
    "description": "At 01.43 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-1",
+   "ID": "Scouting-5",
    "size": [
     2.65,
     1
@@ -13802,24 +13858,10 @@
    }
   },
   {
-   "name": "Zergling scouted Natural",
-   "description": "At 02.59 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-2",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:02:59",
-    "player": "lilTiGGer"
-   }
-  },
-  {
    "name": "Zergling scouted 3rd base",
    "description": "At 04.46 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-3",
+   "ID": "Scouting-6",
    "size": [
     2.65,
     1
@@ -13833,7 +13875,7 @@
    "name": "Zergling scouted 5th base",
    "description": "At 04.49 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-4",
+   "ID": "Scouting-7",
    "size": [
     2.65,
     1
@@ -13847,7 +13889,7 @@
    "name": "Overseer scouted 3rd base",
    "description": "At 09.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-8",
+   "ID": "Scouting-10",
    "size": [
     2.65,
     1
@@ -13858,44 +13900,30 @@
    }
   },
   {
-   "name": "Zealot scouted Natural",
-   "description": "At 03.42 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-5",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:03:42",
-    "player": "blacksquall"
-   }
-  },
-  {
-   "name": "Adept scouted Natural",
-   "description": "At 03.48 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-6",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:03:48",
-    "player": "blacksquall"
-   }
-  },
-  {
    "name": "AdeptPhaseShift scouted Natural",
    "description": "At 03.52 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-7",
+   "ID": "Scouting-8",
    "size": [
     2.65,
     1
    ],
    "properties": {
     "time": "00:03:52",
+    "player": "blacksquall"
+   }
+  },
+  {
+   "name": "Oracle scouted Main base",
+   "description": "At 09.04 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-9",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:09:04",
     "player": "blacksquall"
    }
   },

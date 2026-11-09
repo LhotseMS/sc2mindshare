@@ -547,7 +547,7 @@
   },
   {
    "name": "2 dief, before pull",
-   "description": "2 workers died at 3rd base from 08:09 to 08:11.\nPull occured after -4.0s with 0 workers dead.",
+   "description": "2 workers died at 3rd base from 08:09 to 08:11.\nPull occured after 11.0s with 0 workers dead.",
    "type": "Harrasment",
    "ID": "Harrasment-4",
    "size": [
@@ -560,8 +560,8 @@
    }
   },
   {
-   "name": "1 dief, before pull",
-   "description": "1 workers died at Main base from 08:26 to 08:26.\nPull occured after 7.0s with 0 workers dead.",
+   "name": "1 died, no pull",
+   "description": "1 workers died at Main base from 08:26 to 08:26.",
    "type": "Harrasment",
    "ID": "Harrasment-5",
    "size": [
@@ -588,8 +588,8 @@
    }
   },
   {
-   "name": "2 dief, before pull",
-   "description": "2 workers died at 3rd base from 09:13 to 09:15.\nPull occured after -1.0s with 0 workers dead.",
+   "name": "2 died, no pull",
+   "description": "2 workers died at 3rd base from 09:13 to 09:15.",
    "type": "Harrasment",
    "ID": "Harrasment-7",
    "size": [
@@ -6725,24 +6725,10 @@
    }
   },
   {
-   "name": "Larva scouted Natural",
-   "description": "At 02.22 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-4",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:02:22",
-    "player": "Piliskner"
-   }
-  },
-  {
    "name": "Zergling scouted Main base",
    "description": "At 02.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-5",
+   "ID": "Scouting-4",
    "size": [
     2.65,
     1
@@ -6756,7 +6742,7 @@
    "name": "Overlord scouted Main base",
    "description": "At 05.13 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-6",
+   "ID": "Scouting-5",
    "size": [
     2.65,
     1

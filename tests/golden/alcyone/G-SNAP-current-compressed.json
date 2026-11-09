@@ -16320,7 +16320,7 @@
    },
    "position": {
     "x": 23.75,
-    "y": -26.25,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -16339,7 +16339,7 @@
    },
    "position": {
     "x": 105,
-    "y": -26.25,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -16358,7 +16358,7 @@
    },
    "position": {
     "x": 107.5,
-    "y": -27.3,
+    "y": -29.4,
     "z": 0.01
    }
   },
@@ -16377,7 +16377,7 @@
    },
    "position": {
     "x": 120,
-    "y": -28.35,
+    "y": -30.45,
     "z": 0.01
    }
   },
@@ -16396,7 +16396,7 @@
    },
    "position": {
     "x": 122.5,
-    "y": -26.25,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -16415,7 +16415,7 @@
    },
    "position": {
     "x": 155,
-    "y": -26.25,
+    "y": -28.35,
     "z": 0.01
    }
   },
@@ -16434,7 +16434,7 @@
    },
    "position": {
     "x": 158.75,
-    "y": -27.3,
+    "y": -29.4,
     "z": 0.01
    }
   },
@@ -16453,7 +16453,7 @@
    },
    "position": {
     "x": 175,
-    "y": -28.35,
+    "y": -30.45,
     "z": 0.01
    }
   },
@@ -16472,7 +16472,7 @@
    },
    "position": {
     "x": 2.5,
-    "y": 27.1,
+    "y": 26.05,
     "z": 0.01
    }
   },
@@ -16491,7 +16491,7 @@
    },
    "position": {
     "x": 15,
-    "y": 27.1,
+    "y": 26.05,
     "z": 0.01
    }
   },
@@ -16510,7 +16510,7 @@
    },
    "position": {
     "x": 45,
-    "y": 28.15,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -16529,7 +16529,7 @@
    },
    "position": {
     "x": 61.25,
-    "y": 28.15,
+    "y": 27.1,
     "z": 0.01
    }
   },
@@ -16548,7 +16548,7 @@
    },
    "position": {
     "x": 61.25,
-    "y": 27.1,
+    "y": 26.05,
     "z": 0.01
    }
   },
@@ -16567,7 +16567,7 @@
    },
    "position": {
     "x": 138.75,
-    "y": 27.1,
+    "y": 26.05,
     "z": 0.01
    }
   },
@@ -16586,7 +16586,7 @@
    },
    "position": {
     "x": 105,
-    "y": 29.2,
+    "y": 28.15,
     "z": 0.01
    }
   },
@@ -16605,7 +16605,7 @@
    },
    "position": {
     "x": 181.25,
-    "y": 27.1,
+    "y": 26.05,
     "z": 0.01
    }
   },
@@ -16624,7 +16624,7 @@
    },
    "position": {
     "x": 46.25,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16643,7 +16643,7 @@
    },
    "position": {
     "x": 50,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16662,7 +16662,7 @@
    },
    "position": {
     "x": 58.75,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16681,7 +16681,7 @@
    },
    "position": {
     "x": 76.25,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16700,7 +16700,7 @@
    },
    "position": {
     "x": 77.5,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16719,7 +16719,7 @@
    },
    "position": {
     "x": 101.25,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16738,7 +16738,7 @@
    },
    "position": {
     "x": 93.75,
-    "y": -24.95,
+    "y": -27.05,
     "z": 0.01
    }
   },
@@ -16757,7 +16757,7 @@
    },
    "position": {
     "x": 108.75,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16776,7 +16776,7 @@
    },
    "position": {
     "x": 120,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16795,7 +16795,7 @@
    },
    "position": {
     "x": 132.5,
-    "y": -24.95,
+    "y": -27.05,
     "z": 0.01
    }
   },
@@ -16814,7 +16814,7 @@
    },
    "position": {
     "x": 127.5,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16833,7 +16833,7 @@
    },
    "position": {
     "x": 130,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16852,7 +16852,7 @@
    },
    "position": {
     "x": 146.25,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16871,7 +16871,7 @@
    },
    "position": {
     "x": 158.75,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16890,7 +16890,7 @@
    },
    "position": {
     "x": 162.5,
-    "y": -24.95,
+    "y": -27.05,
     "z": 0.01
    }
   },
@@ -16909,7 +16909,7 @@
    },
    "position": {
     "x": 162.5,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16928,7 +16928,7 @@
    },
    "position": {
     "x": 177.5,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16947,7 +16947,7 @@
    },
    "position": {
     "x": 187.5,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -16966,7 +16966,7 @@
    },
    "position": {
     "x": 186.25,
-    "y": -22.85,
+    "y": -24.95,
     "z": 0.01
    }
   },
@@ -16985,7 +16985,7 @@
    },
    "position": {
     "x": 197.5,
-    "y": -23.9,
+    "y": -26,
     "z": 0.01
    }
   },
@@ -17004,7 +17004,83 @@
    },
    "position": {
     "x": 208.75,
-    "y": -22.85,
+    "y": -24.95,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 01.54 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-0",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:01:54",
+    "player": "lilTiGGer"
+   },
+   "position": {
+    "x": 22.5,
+    "y": -20.5,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 01.57 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-1",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:01:57",
+    "player": "lilTiGGer"
+   },
+   "position": {
+    "x": 22.5,
+    "y": -21.55,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 02.00 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-2",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:00",
+    "player": "lilTiGGer"
+   },
+   "position": {
+    "x": 22.5,
+    "y": -22.6,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Larva scouted Natural",
+   "description": "At 02.03 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-3",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:02:03",
+    "player": "lilTiGGer"
+   },
+   "position": {
+    "x": 22.5,
+    "y": -23.65,
     "z": 0.01
    }
   },
@@ -17012,7 +17088,7 @@
    "name": "Overlord scouted 3rd base",
    "description": "At 01.42 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-0",
+   "ID": "Scouting-4",
    "size": [
     2.65,
     1
@@ -17031,7 +17107,7 @@
    "name": "Overlord scouted Main base",
    "description": "At 01.43 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-1",
+   "ID": "Scouting-5",
    "size": [
     2.65,
     1
@@ -17047,29 +17123,10 @@
    }
   },
   {
-   "name": "Zergling scouted Natural",
-   "description": "At 02.59 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-2",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:02:59",
-    "player": "lilTiGGer"
-   },
-   "position": {
-    "x": 32.5,
-    "y": -20.5,
-    "z": 0.01
-   }
-  },
-  {
    "name": "Zergling scouted 3rd base",
    "description": "At 04.46 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-3",
+   "ID": "Scouting-6",
    "size": [
     2.65,
     1
@@ -17088,7 +17145,7 @@
    "name": "Zergling scouted 5th base",
    "description": "At 04.49 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-4",
+   "ID": "Scouting-7",
    "size": [
     2.65,
     1
@@ -17107,7 +17164,7 @@
    "name": "Overseer scouted 3rd base",
    "description": "At 09.59 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-8",
+   "ID": "Scouting-10",
    "size": [
     2.65,
     1
@@ -17123,48 +17180,10 @@
    }
   },
   {
-   "name": "Zealot scouted Natural",
-   "description": "At 03.42 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-5",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:03:42",
-    "player": "blacksquall"
-   },
-   "position": {
-    "x": 42.5,
-    "y": 22.4,
-    "z": 0.01
-   }
-  },
-  {
-   "name": "Adept scouted Natural",
-   "description": "At 03.48 the following was scouted:",
-   "type": "Scouting",
-   "ID": "Scouting-6",
-   "size": [
-    2.65,
-    1
-   ],
-   "properties": {
-    "time": "00:03:48",
-    "player": "blacksquall"
-   },
-   "position": {
-    "x": 42.5,
-    "y": 23.45,
-    "z": 0.01
-   }
-  },
-  {
    "name": "AdeptPhaseShift scouted Natural",
    "description": "At 03.52 the following was scouted:",
    "type": "Scouting",
-   "ID": "Scouting-7",
+   "ID": "Scouting-8",
    "size": [
     2.65,
     1
@@ -17175,7 +17194,26 @@
    },
    "position": {
     "x": 42.5,
-    "y": 24.5,
+    "y": 22.4,
+    "z": 0.01
+   }
+  },
+  {
+   "name": "Oracle scouted Main base",
+   "description": "At 09.04 the following was scouted:",
+   "type": "Scouting",
+   "ID": "Scouting-9",
+   "size": [
+    2.65,
+    1
+   ],
+   "properties": {
+    "time": "00:09:04",
+    "player": "blacksquall"
+   },
+   "position": {
+    "x": 115,
+    "y": 22.4,
     "z": 0.01
    }
   },
