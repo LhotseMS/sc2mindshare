@@ -258,8 +258,9 @@ def test_the_layout_changes_only_what_it_owns(graph, clock_map, mode):
     # less the 3 nodes P11 drops (Harrasment-7, Scouting-0, Scouting-1), less the 11 Units nodes N1 merges,
     # less the 7 spell-effect Units nodes P10 drops; P10b turns 3 Units groups into 3 Buildings (no change);
     # S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds the 17 building-morph nodes; CR-035 (BC1) the 2
-    # cards and the 2 missing entries; CR-080 (CG1) 3 scouting steps fewer and 5 more (660 -> 662)
-    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 662)
+    # cards and the 2 missing entries; CR-080 (CG1) 3 scouting steps fewer and 5 more (660 -> 662); CR-079 (BT1) the last
+    # battle and its 2 harassment cards (662 -> 665)
+    assert (view_report.budget_actual["M4 clock"], view_report.budget_actual["M4 position"]) == (142, 665)
 
 
 # --- CR-073: the timeline lanes ---------------------------------------------------------------------------------
@@ -302,6 +303,14 @@ CG1_ADDED = {
 }
 
 
+#: CR-079 (BT1): Leo's re-based prediction on 2603f74 (``.scratch/leo/cr-079/prediction-2603f74.md``; ledger
+#: BT1-alcyone-snap-*): the last battle's two harassment cards (compressed, linear); no lane node moves.
+BT1_ADDED = {
+    "Harrasment-14": ((207.5, 22.4), (237.5, 22.4)),
+    "Harrasment-15": ((210.0, 22.4), (242.5, 22.4)),
+}
+
+
 def after_cg1(by_old_id, mode, added=True):
     """``{old id: (position, size)}`` before CR-080 -> ``{new id: (position, size)}`` after it."""
     out = {}
@@ -330,7 +339,8 @@ def test_cr073_the_four_types_are_where_leo_predicted(graph, clock_map, mode):
     tl1 = {k: (tuple(v["position"]), v.get("size", [2.65, 1])) for k, v in _ledger_expected(mode).items()}
     assert len(tl1) == 59
     expected = after_cg1(tl1, mode)  # CR-080: 59 - 3 + 5
-    assert len(lane_nodes) == len(expected) == 61 and set(lane_nodes) == set(expected)
+    expected.update({k: (both[0 if mode == "compressed" else 1], [2.65, 1]) for k, both in BT1_ADDED.items()})  # CR-079
+    assert len(lane_nodes) == len(expected) == 63 and set(lane_nodes) == set(expected)
     for node_id, (position, size) in expected.items():
         n = lane_nodes[node_id]
         assert [n["position"]["x"], n["position"]["y"]] == [round(v, 4) for v in position], node_id
@@ -349,7 +359,7 @@ def test_cr073_a_harassment_card_sits_on_the_attackers_side_and_keeps_its_player
         loser = n.value("player")  # the domain node, which the export writes: unchanged
         lost[loser] += 1
         assert (r.positions[n.id][1] > 0) == (loser == side_a), n.id  # on the opponent's side
-    assert lost == {"lilTiGGer": 6, "blacksquall": 7}
+    assert lost == {"lilTiGGer": 8, "blacksquall": 7}  # CR-079 (BT1): the last battle's two cards, lilTiGGer's
 
 
 def test_cr073_without_the_four_types_nothing_else_moves(graph, clock_map, placed):

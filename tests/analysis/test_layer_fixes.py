@@ -45,7 +45,7 @@ def need(path):
 def test_the_layer_fixes_in_ledger_order():
     assert LAYER_FIXES == (
         "P1", "P1b", "P1c", "S1", "P8", "P2", "P11", "N1", "P10", "S6", "P9", "P10b", "S7", "S8", "P10c", "G1", "F1", "F2",
-        "E1", "CG1",
+        "E1", "CG1", "BT1",
     )  # fmt: skip
 
 
@@ -419,12 +419,13 @@ def test_p8_the_last_interval_gets_its_units_node(replay, node_id, player, unit_
     # on Alcyone S6 and S7 leave 2 Supply Blocks fewer (7 -> 5); CR-034 (BO1) adds a Building node per building
     # morph (Alcyone 17: a Lair, a Hive, a Greater Spire and 14 Warp Gates; spine 9: a Lair and 8 Warp Gates); CR-035
     # (BC1) adds a build check card per player and the missing entries (Alcyone 2, spine 1); CR-080 (CG1) gives
-    # Alcyone 2 scouting steps more (9 -> 11) and spine 1 fewer (7 -> 6)
+    # Alcyone 2 scouting steps more (9 -> 11) and spine 1 fewer (7 -> 6); CR-079 (BT1) adds the last battle (Alcyone with
+    # its 2 harassment cards, 3 nodes; spine 1)
     assert len(graphs["fixed"].nodes) == len(graphs["faithful"].nodes) + 1 - 7 - (
         4 + 3 + 11 + 2 if "Alcyone" in replay else 0
     ) + (2 + 1 if "spine" in replay else 0) + (17 if "Alcyone" in replay else 9) + 2 + (2 if "Alcyone" in replay else 1) + (
         2 if "Alcyone" in replay else -1
-    )
+    ) + (3 if "Alcyone" in replay else 1)
 
 
 # --- P2: race words are no longer stripped from inside names -----------------------------------------------
@@ -1069,7 +1070,7 @@ def test_every_battle_death_rule_without_the_fixes_is_listed_with_a_reason():
         ("analysis/battle.py", "__init__"): 1,  # sorting the battle's events (LOST list, bases, workers)
         ("analysis/battle.py", "getCountableDeaths"): 1,
         ("analysis/battle.py", "processLocationEvent"): 1,  # LOST, not KILLS (D32a)
-        ("analysis/detectors/detectors.py", "findBattles"): 1,  # a structure's death links to its Initiated node
+        ("analysis/detectors/detectors.py", "_closeBattle"): 1,  # a structure's death links to its Initiated node (CR-079)
         ("analysis/detectors/detectors.py", "sortDeaths"): 1,  # the deaths battles are formed from (Kevin's call)
     }
 
@@ -2009,7 +2010,7 @@ def test_cr072_ac2_every_battle_records_one_killer_for_each_of_its_dead(cr072_ru
     from collections import Counter
 
     battles, _log = cr072_runs(replay, mode)
-    assert len(battles) == {"alcyone": 30, "spine": 16}[replay]
+    assert len(battles) == {"alcyone": 30, "spine": 16}[replay] + (1 if mode == "fixed" else 0)  # CR-079 (BT1): the last
     for battle in battles:
         dead = _cr072_dead(battle)
         assert _cr072_killer_record(battle) == Counter(id(e.unit.killing_unit) for e in dead), battle.startSec
@@ -2020,11 +2021,29 @@ def test_cr072_ac2_every_battle_records_one_killer_for_each_of_its_dead(cr072_ru
         for e in _cr072_dead(b)
         if b.deathCost(e)[2] >= b.BIG_UNIT_SUPPLY_THRESHOLD
     )
-    assert big == [(*death, True) for death in CR072_BIG_DEATHS[replay]]
+    expected = CR072_BIG_DEATHS[replay] + (CR079_LAST_BATTLE_BIG_DEATHS[replay] if mode == "fixed" else [])
+    assert big == [(*death, True) for death in expected]
 
+
+#: CR-079 (BT1, current run only): Alcyone's last battle (950 s), now closed, loses 4 Ultralisks (6 supply) and a
+#: Ravager (3) of lilTiGGer's and 2 Immortals (4) of blacksquall's: from the CR-079 build, checked against each type's
+#: supply and Rex's predicted losses (lilTiGGer 116.0 supply, blacksquall 49). Spine's last battle is one Overlord.
+CR079_LAST_BATTLE_BIG_DEATHS = {
+    "alcyone": [
+        (982, "Ultralisk", "Immortal", 950),
+        (989, "Ultralisk", "Immortal", 950),
+        (990, "Immortal", "Roach", 950),
+        (990, "Immortal", "Roach", 950),
+        (990, "Ultralisk", "Zealot", 950),
+        (991, "Ultralisk", "Stalker", 950),
+        (995, "Ravager", "Stalker", 950),
+    ],
+    "spine": [],
+}
 
 CR072_BIG_UNITS_LOST = {  # battle start (s) -> {player name: big units lost}; every other battle and player 0
-    "alcyone": {486: {"lilTiGGer": 1}, 503: {"lilTiGGer": 1}, 605: {"blacksquall": 2}, 665: {"blacksquall": 1}, 917: {"blacksquall": 1}},
+    "alcyone": {486: {"lilTiGGer": 1}, 503: {"lilTiGGer": 1}, 605: {"blacksquall": 2}, 665: {"blacksquall": 1}, 917: {"blacksquall": 1},
+                950: {"lilTiGGer": 5, "blacksquall": 2}},  # 950: CR-079's last battle, current run only
     "spine": {381: {"serega": 2}},
 }  # fmt: skip
 
