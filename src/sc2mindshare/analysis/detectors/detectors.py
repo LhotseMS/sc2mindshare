@@ -784,7 +784,7 @@ class ActionsDetector(EventsDetector):
                 self.updateCG(e)
 
             elif isinstance(e, StealControlGroupEvent):
-                self.removeUnitsFromOtherCGs(e.player, "")
+                self.removeUnitsFromOtherCGs(e.player, "", e)
                 self.updateCG(e)
 
                 #TODO CASE if larva is a selection event after cg get its a hatch build 
@@ -879,7 +879,7 @@ class ActionsDetector(EventsDetector):
     def addActionToCG(self, e):
         pass
 
-    def removeUnitsFromOtherCGs(self, player, unitIDs, e=None):
+    def removeUnitsFromOtherCGs(self, player, unitIDs, e):
         # CR-080 CG1 (Stefan's D1b): a steal takes the stolen units out of every other group of the stealing player
         # (the event does not name the group they came from); the steal branch's call with "" removes nothing
         if "CG1" not in self.ctx.fixes or not unitIDs:
@@ -895,8 +895,8 @@ class ActionsDetector(EventsDetector):
             self.CONTROL_GROUPS[e.player][e.control_group].addUnits(e, units)
         else:
             self.CONTROL_GROUPS[e.player][e.control_group] = ControlGroup(e, units, fixes=self.ctx.fixes)
-        if units is not None and control_group_kind(e) in (ControlGroupKind.STEAL, ControlGroupKind.WEIRD):
-            self.removeUnitsFromOtherCGs(e.player, {u.id for u in units}, e)  # CG1 only (inside)
+        if "CG1" in self.ctx.fixes and units is not None and control_group_kind(e) in (ControlGroupKind.STEAL, ControlGroupKind.WEIRD):
+            self.removeUnitsFromOtherCGs(e.player, {u.id for u in units}, e)
     
     def printEnergyInfo(self):
         print("\n\n ---History--- \n")

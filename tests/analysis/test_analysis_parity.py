@@ -12,7 +12,6 @@ import importlib.util
 import io
 import os
 import pathlib
-import re
 import subprocess
 import sys
 
@@ -109,6 +108,46 @@ SPORES_LINES = [
     *["energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)"] * 4,
 ]
 
+#: With CR-080's CG1: the full list, from Rex's independent probe (CG1 patched in memory, not the code under
+#: test; ``.scratch/cr-080-review/energy/01-patched.json``). The pre-CG1 lines above are all among them, in order.
+SPORES_LINES_CG1 = [
+    "energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 13.47 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 15.22 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 15.26 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 15.28 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 15.33 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 16.02 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 16.25 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 16.42 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.42 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.43 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.43 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.52 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.52 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.52 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.53 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 16.53 ParasiticBomb: selected Larva [4900004]: data doesn't match (7 own Viper with 125 energy)",
+    "energy check: 17.32 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 17.33 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 17.42 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 18.19 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (3 own Nexus with 50 energy)",
+    "energy check: 19.40 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 20.01 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.01 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.02 SpawnLarva: selected Lair [7100002]: data doesn't match (8 own Queen with 25 energy)",
+    "energy check: 20.44 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 21.20 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 21.58 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+    "energy check: 22.15 ChronoBoostEnergyCost: selected Nexus [C30000A]: data doesn't match (4 own Nexus with 50 energy)",
+]
+
 
 def test_spores_gets_past_the_energy_step():
     """CR-076 (AC6, Stefan's D3a): replaces ``test_spores_fails_like_the_legacy_code_l1``, which pinned L1
@@ -122,15 +161,11 @@ def test_spores_gets_past_the_energy_step():
     assert "E1" in result.fixes
     lines = log.getvalue().splitlines()
     found = [line for line in lines if "data doesn't match" in line]
-    # CR-080 (CG1): a recalled group now holds only the units the player put in it, so a lone recalled unit the check
-    # has no record for (an unfinished Nexus, a zergling the code names Larva) takes E1's search more often. The 11
-    # lines from Rex's independent probe (before CG1) are all still there, in order; the total is a characterisation
-    # of the CG1 build (2026-11-09, ``.scratch/cr-080/probe-lines/spores.json``), not an independent prediction.
+    # CR-080 (CG1): a recalled group holds only what the player put in it, so a lone recalled unit the check has no
+    # record for (an unfinished Nexus, a unit the reader names Larva) takes E1's search more often: 11 -> 35 lines
+    assert found == SPORES_LINES_CG1
     remaining = iter(found)
     assert all(any(line == other for other in remaining) for line in SPORES_LINES)
-    assert len(found) == 35
-    assert all(re.fullmatch(r"energy check: \d\d\.\d\d \w+: selected \w+ \[[0-9A-F]+\]: data doesn't match "
-                            r"\((no|\d+) own \w+ with \d+ energy\)", line) for line in found)  # fmt: skip
     assert not [line for line in lines if line.startswith("ERROR unit:")]
 
 

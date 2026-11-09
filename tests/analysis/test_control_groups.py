@@ -10,7 +10,7 @@ unconditional guard with no id). The bug-faithful run (``fixes=()``) keeps today
 The unit tests drive ``ControlGroup`` and ``ActionsDetector.updateCG`` on a bare detector with fake events (the
 fields the code reads: ``player``, ``control_group``, ``update_type``, ``second``, ``pid``, ``playerName``) and fake
 units with real-shaped ids, taking the dispatch's own steps for the control-group events (``processSelectionsAndCommands``:
-a steal-and-set first calls ``removeUnitsFromOtherCGs(player, "")``, then ``updateCG``). Expected lists are written
+a steal-and-set first calls ``removeUnitsFromOtherCGs(player, "", e)``, then ``updateCG``). Expected lists are written
 from the rule, by hand. The AC4 test builds Stefan's three long games, read in place by SHA-256, each in a child of
 its own (process group, ``os.wait4``), killed at 30 s or 1 GiB; it runs in every gate on this Mac
 (``SC2MS_REQUIRE_GOLDEN=1``) and is skipped elsewhere when the replays are absent.
@@ -100,7 +100,7 @@ def cg(d, kind, group, second, player=P1):
     """The dispatch's steps for a control-group event (``processSelectionsAndCommands``)."""
     e = cg_event(kind, group, second, player)
     if kind == STEAL_SET:
-        d.removeUnitsFromOtherCGs(e.player, "")
+        d.removeUnitsFromOtherCGs(e.player, "", e)
     d.updateCG(e)
 
 

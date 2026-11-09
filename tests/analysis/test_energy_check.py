@@ -593,11 +593,12 @@ def _rss_kib(pid):
     return int(out.strip() or 0)
 
 
-def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
+def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB, child_code=CHILD):
     """Analyse ``replay`` in a child process in its own process group; the whole group is killed when it runs past
     ``wall_s`` seconds or its resident memory passes ``rss_kib`` KiB. Returns the child's record, or
     ``{"result": "stopped", "limit": "wall" | "memory"}``, with ``seconds``, ``peak_kib``, and ``casts`` and
-    ``last_cast`` (the energy casts the check reached, and the last of them as ``"MM.SS Ability"``)."""
+    ``last_cast`` (the energy casts the check reached, and the last of them as ``"MM.SS Ability"``). ``child_code``
+    replaces the child (the limit tests use a stand-in)."""
     out_dir.mkdir(parents=True, exist_ok=True)
     stdout, stderr, casts = out_dir / "child.json", out_dir / "child.err", out_dir / "casts.txt"
     start = time.monotonic()
@@ -605,7 +606,7 @@ def run_bounded(replay, out_dir, *, wall_s=WALL_S, rss_kib=RSS_KIB):
     limit = None
     with stdout.open("w") as out, stderr.open("w") as err:
         child = subprocess.Popen(
-            [sys.executable, "-I", "-B", "-c", CHILD, str(replay), str(MS_SC), str(GUARD), str(casts)],
+            [sys.executable, "-I", "-B", "-c", child_code, str(replay), str(MS_SC), str(GUARD), str(casts)],
             stdout=out,
             stderr=err,
             start_new_session=True,
@@ -681,17 +682,16 @@ def test_a_recent_game_gets_past_the_energy_step(name, tmp_path):
         assert record["last_cast"] == LAST_CAST[name]
 
 
-def test_the_bounded_run_kills_the_child_at_its_limits(tmp_path):
-    """The limits work: a normal game (Alcyone) stopped by a 0.2 s wall limit (since CR-080 its whole build takes
-    about 1 s, the interpreter's start alone more than 0.2 s), then by a 50 MiB memory cap."""
-    path = MS_SC / "Alcyone LE__lilTiGGer_vs_blacksquall" / "Alcyone LE__lilTiGGer_vs_blacksquall.SC2Replay"
-    if not path.exists():
-        if os.environ.get("SC2MS_REQUIRE_GOLDEN") == "1":
-            pytest.fail(f"{path} not found (SC2MS_REQUIRE_GOLDEN=1)")
-        pytest.skip(f"{path} not found")
+#: Stand-ins for the limit test, so it does not depend on how fast a build is (Rex's F2 on CR-080): one sleeps, one
+#: grows in 10 MiB steps.
+SLEEPER = "import time; time.sleep(60)"
+GROWER = "import time\nhoard = []\nfor _ in range(40):\n    hoard.append(bytearray(10 * 1024 * 1024)); time.sleep(0.05)\ntime.sleep(60)"
 
-    wall = run_bounded(path, tmp_path / "wall", wall_s=0.2)
-    memory = run_bounded(path, tmp_path / "memory", rss_kib=50 * 1024)
+
+def test_the_bounded_run_kills_the_child_at_its_limits(tmp_path):
+    """The limits work: a sleeping stand-in stopped by a 1 s wall limit, then a growing one by a 50 MiB memory cap."""
+    wall = run_bounded(tmp_path / "none", tmp_path / "wall", wall_s=1, child_code=SLEEPER)
+    memory = run_bounded(tmp_path / "none", tmp_path / "memory", rss_kib=50 * 1024, child_code=GROWER)
 
     assert (wall["result"], wall["limit"]) == ("stopped", "wall")
     assert wall["seconds"] < 5
