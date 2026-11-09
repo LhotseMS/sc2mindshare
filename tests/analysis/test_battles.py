@@ -118,6 +118,18 @@ def test_a_first_death_at_second_0_keeps_todays_start():
         assert found([0, 1, 60], BT1, mp)[:2] == ([(1, 1, 1), (60, 60, 2)], [(1, 2)])
 
 
+def test_a_first_death_at_second_0_then_a_gap_gives_an_inverted_battle_as_today():
+    """Characterisation (Rex's F1 on CR-079), expected values from his hand trace of the loop, not from a build.
+    Out of Scope: "a start of 0 reads as not set". With deaths at 0 s and 10 s, ``battleStart`` stays 0 at the first
+    second and becomes 10 at the next, where the gap closes a battle from 10 to 0: under BT1 it is kept as Battle-1
+    (start 10, end 0; its battle window would read ``0:00:08,0:00:02``), then the last group 10-10 is Battle-2. Before
+    BT1 that inverted entry was the one ``pop(0)`` dropped. It cannot happen in a real game: no unit dies at 0:00, and
+    the first death in Stefan's 100 recent games is at 16 s or later. A later fix of the "start 0" habit flips this
+    test on purpose."""
+    with pytest.MonkeyPatch.context() as mp:
+        assert found([0, 10], BT1, mp)[:2] == ([(10, 0, 1), (10, 10, 2)], [(1, 2)])
+
+
 @pytest.mark.parametrize("deaths", [[2, 60], [3, 4, 30], [10, 30, 60]])
 def test_no_link_or_harassment_node_points_at_a_missing_battle(deaths):
     """AC3, CR-077's review point (c): before BT1 a real battle at 0-3 s was dropped after its links and harassment
